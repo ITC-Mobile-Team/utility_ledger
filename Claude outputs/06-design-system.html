@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><title>Utility Ledger — дизайн-система</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Utility Ledger — design tokens + shared UI for every artboard.
+   Light theme on :root; dark theme on any ancestor with class "theme-dark". */
+:root{
+  /* surfaces & text */
+  --bg:#F1F3F7; --surface:#FFFFFF; --surface-2:#F1F3F7; --ink:#0F1B2D; --muted:#566173;
+  --line:#E2E6EC; --chev:#8A94A3; --placeholder:#7B8494; --track:#E4E8EE; --faint:#B9C2CE;
+  --disabled-bg:#D5DAE1; --disabled-ink:#5F6977; --ink-tile:#1C2B40; --tab-ink:#6B7584;
+  --shadow:0 6px 18px rgba(16,32,64,.08); --shadow-lg:0 8px 28px rgba(16,32,64,.12);
+  --scrim:rgba(15,27,45,.42);
+  /* brand */
+  --blue:#0B57C2; --blue-soft:#E7F0FC; --blue-soft-2:#D3E3F8; --blue-ink:#0A4CA8;
+  --coral:#D2392F; --coral-soft:#FDECEA; --coral-ink:#A82A22;
+  --green:#17804F; --green-soft:#E3F4EB; --green-soft-2:#CFE5D6; --green-ink:#1F6B3E; --green-brand:#2B6B42;
+  --amber:#B86400; --amber-soft:#FFF2DE; --amber-ink:#7A4300;
+  --water:#1F6FE0; --water-soft:#E5EFFD;
+  --gas:#C2410C; --gas-soft:#FDEEE6;
+  --heat:#B42318; --heat-soft:#FDECEA;
+  --hero-blue:linear-gradient(180deg,#0A45A3 0%,#1567C4 55%,#1E7BD0 100%); --hero-end:#1E7BD0;
+  --hero-green:linear-gradient(180deg,#1D4E33 0%,#2B6B42 55%,#3C8753 100%);
+  --hero-purple:linear-gradient(180deg,#24103F 0%,#3D1F66 55%,#5B2E88 100%);
+  --purple:#6B3FA0; --purple-soft:#EFE8F8; --purple-ink:#5A2E88;
+  /* secondary text on nav-bar gradients */
+  --hero-sub:#D4E3F8; --hero-sub-green:#D2EBDA; --hero-sub-purple:#E3D6F5;
+  /* shape */
+  --r-xl:28px; --r-lg:22px; --r-md:16px; --r-sm:12px;
+  --month-dim:transparent;
+  /* liquid glass */
+  --glass-bg:rgba(255,255,255,.58); --glass-rim:rgba(255,255,255,.75); --glass-hi:rgba(255,255,255,.9);
+  --glass-lo:rgba(0,0,0,.04); --glass-pill:rgba(120,130,150,.16);
+}
+.theme-dark{
+  --bg:#111214; --surface:#222327; --surface-2:#2D2E33; --ink:#F2F3F5; --muted:#A3A9B3;
+  --line:#34363C; --chev:#8B919B; --placeholder:#858B95; --track:#3A3D43; --faint:#555A62;
+  --disabled-bg:#3A3C41; --disabled-ink:#8D929A; --ink-tile:#3A3D44; --tab-ink:#9AA0A9;
+  --shadow:0 6px 18px rgba(0,0,0,.35); --shadow-lg:0 10px 30px rgba(0,0,0,.5);
+  --scrim:rgba(0,0,0,.6);
+  --blue:#3D82E6; --blue-soft:rgba(77,140,235,.18); --blue-soft-2:rgba(77,140,235,.30); --blue-ink:#8DB8F5;
+  --coral-soft:rgba(235,85,75,.18); --coral-ink:#FF8E86;
+  --green:#4CC285; --green-soft:rgba(70,180,115,.18); --green-soft-2:rgba(70,180,115,.32); --green-ink:#7FD3A2; --green-brand:#3C9A62;
+  --amber:#F2A93B; --amber-soft:rgba(240,160,50,.18); --amber-ink:#F2B866;
+  --water:#6FA5F5; --water-soft:rgba(80,140,240,.2);
+  --gas:#F59362; --gas-soft:rgba(240,120,60,.2);
+  --heat:#F27A6E; --heat-soft:rgba(235,90,80,.2);
+  --hero-blue:linear-gradient(180deg,#07326F 0%,#0B4F9E 55%,#1262B4 100%); --hero-end:#1262B4;
+  --hero-green:linear-gradient(180deg,#123222 0%,#1E4E31 55%,#2B6B42 100%);
+  --hero-purple:linear-gradient(180deg,#170A2A 0%,#2A1548 55%,#422264 100%);
+  --purple:#A47BDB; --purple-soft:rgba(160,120,220,.18); --purple-ink:#C3A2EE;
+  --hero-sub:#B9CDEB; --hero-sub-green:#B8D9C4; --hero-sub-purple:#D2C2EC;
+  --month-dim:rgba(17,18,20,.62);
+  --glass-bg:rgba(40,41,46,.55); --glass-rim:rgba(255,255,255,.14); --glass-hi:rgba(255,255,255,.18);
+  --glass-lo:rgba(0,0,0,.3); --glass-pill:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#E4E7EC}
+a{color:inherit;text-decoration:none}
+.screen{width:402px;height:874px;position:relative;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Onest',-apple-system,system-ui,sans-serif;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.screen.white{background:var(--surface)}
+svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+svg.i.sm{width:18px;height:18px}
+svg.i.lg{width:28px;height:28px}
+
+/* header */
+.hero{background:var(--hero-blue);color:#fff;padding:58px 20px 52px;display:flex;flex-direction:column;gap:6px;flex:none;position:relative}
+.hero.green{background:var(--hero-green)}
+.hero.purple{background:var(--hero-purple)}
+.hero.purple p{color:var(--hero-sub-purple)}
+.hero.green p{color:var(--hero-sub-green)}
+.hero.with-tiles{padding-bottom:64px}
+.hero-row{display:flex;align-items:center;gap:6px;min-height:44px}
+.hero h1{margin:0;font-size:22px;line-height:1.2;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero h1.big{font-size:32px;font-weight:700;letter-spacing:-.02em}
+.hero p{margin:0;font-size:14px;color:var(--hero-sub)}
+.back{width:44px;height:44px;margin-left:-10px;border-radius:22px;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.back.dark{color:var(--coral)}
+.sheet{flex:1;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;margin-top:-28px;padding:24px 20px 0;display:flex;flex-direction:column;gap:16px;position:relative;min-height:0}
+.sheet.white{background:var(--surface)}
+.scroll{overflow-y:auto;overscroll-behavior:contain}
+.scroll>*{flex-shrink:0}
+.tiles{display:flex;gap:12px;padding:0 20px;margin-top:-40px;position:relative;z-index:2;flex:none}
+.tile{flex:1;background:var(--surface);border-radius:var(--r-lg);padding:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);min-height:76px;font-weight:600;font-size:16px;line-height:1.2}
+.tile-ic{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
+/* Collapsible nav bar (rule for all screens with action tiles):
+   back arrow + title stay pinned; on scroll the big tiles turn into compact chips
+   placed between the title and the bottom edge of the gradient. */
+.hero.collapsible{padding-bottom:0;z-index:3}
+.hero-band{height:64px;background:var(--hero-end);flex:none}
+.chips{display:flex;gap:8px;padding:8px 0 14px;overflow-x:auto;scrollbar-width:none}
+.chip{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 6px;border-radius:999px;flex:none;
+  background:rgba(255,255,255,.18);border:.5px solid rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);
+  color:#fff;font-size:14px;font-weight:600;white-space:nowrap}
+.chip .tile-ic{width:28px;height:28px;border-radius:14px}
+.chip .tile-ic svg.i{width:15px;height:15px}
+.after-tiles{flex:1;padding:24px 20px 0;display:flex;flex-direction:column;gap:14px;min-height:0}
+
+/* empty state */
+.empty{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:22px;padding:0 16px;text-align:center}
+.empty-art{position:relative;width:168px;height:168px;display:flex;align-items:center;justify-content:center;flex:none}
+.empty-art::before{content:"";position:absolute;inset:0;border-radius:84px;background:var(--blue-soft)}
+.empty-art::after{content:"";position:absolute;inset:24px;border-radius:60px;background:var(--blue-soft-2)}
+.empty-art .core{position:relative;z-index:1;width:80px;height:80px;border-radius:24px;background:var(--surface);color:var(--blue);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(16,32,64,.12)}
+.empty-art .core svg.i{width:38px;height:38px}
+.empty-art .plus{position:absolute;z-index:2;right:4px;bottom:20px;width:42px;height:42px;border-radius:21px;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(210,57,47,.3)}
+.empty h2{margin:0;font-size:24px;font-weight:700;letter-spacing:-.02em}
+.empty p{margin:0;font-size:15px;line-height:1.5;color:var(--muted);max-width:300px}
+
+/* steps */
+.step{display:flex;flex-direction:column;gap:8px}
+.step-label{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
+.progress{height:6px;border-radius:3px;background:var(--track);overflow:hidden;display:flex}
+.progress span{display:block;background:var(--blue);border-radius:3px}
+
+/* type */
+.title{margin:0;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em}
+.title.center{text-align:center}
+.lead{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.lead.center{text-align:center}
+.section{display:flex;align-items:baseline;justify-content:space-between;font-size:18px;font-weight:600;margin-top:4px}
+.section small{font-size:13px;font-weight:500;color:var(--muted)}
+.overline{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.help{font-size:13px;line-height:1.45;color:var(--muted);margin:0}
+
+/* cards / rows */
+.card{background:var(--surface);border-radius:var(--r-lg);overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;padding:14px 16px;min-height:64px;background:var(--surface)}
+.card .row+.row{border-top:1px solid var(--line)}
+.row-copy{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.row-title{font-size:16px;font-weight:600;line-height:1.3}
+.row-sub{font-size:13px;color:var(--muted);line-height:1.3}
+.chev{color:var(--chev)}
+.ic{width:42px;height:42px;border-radius:21px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--blue-soft);color:var(--blue)}
+.ic.amber{background:var(--amber-soft);color:var(--amber)}
+.ic.water{background:var(--water-soft);color:var(--water)}
+.ic.gas{background:var(--gas-soft);color:var(--gas)}
+.ic.heat{background:var(--heat-soft);color:var(--heat)}
+.ic.green{background:var(--green-soft);color:var(--green)}
+.ic.ink{background:var(--ink-tile);color:#fff}
+.ic.solid{background:var(--blue);color:#fff}
+.month-num{width:42px;height:42px;border-radius:12px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex:none;line-height:1;box-shadow:inset 0 0 0 100px var(--month-dim)}
+.badge{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--coral-soft);color:var(--coral-ink);white-space:nowrap}
+.badge.ok{background:var(--green-soft);color:var(--green-ink)}
+.badge.blue{background:var(--blue-soft);color:var(--blue-ink)}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;height:54px;border-radius:var(--r-md);background:var(--coral);color:#fff;font-size:17px;font-weight:600;width:100%;border:0;font-family:inherit}
+.btn.secondary{background:var(--blue-soft);color:var(--blue-ink)}
+.btn.outline{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.disabled{background:var(--disabled-bg);color:var(--disabled-ink)}
+.btn.dark{background:#0F1B2D;color:#fff}
+.theme-dark .btn.dark{background:#FFFFFF;color:#0F1B2D}
+.stack{display:flex;flex-direction:column;gap:12px}
+.footer{padding:12px 20px 34px;display:flex;flex-direction:column;gap:12px;flex:none;background:var(--bg)}
+.footer.white{background:var(--surface)}
+.text-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue-ink);font-weight:600;font-size:15px;min-height:44px}
+
+/* form */
+.field{background:var(--surface-2);border-radius:var(--r-md);padding:10px 16px;min-height:60px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:1.5px solid transparent}
+.field.focus{border-color:var(--blue);background:var(--surface)}
+.field label{font-size:12px;color:var(--muted);font-weight:500}
+.field input,.field .val{border:0;background:transparent;font-family:inherit;font-size:17px;color:var(--ink);padding:0;outline:none;width:100%}
+.field input::placeholder{color:var(--placeholder)}
+.field-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.field-inline{display:flex;align-items:center;gap:8px}
+.field-inline .unit{font-size:15px;color:var(--muted);flex:none}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{background:var(--surface);border-radius:var(--r-md);padding:14px;display:flex;flex-direction:column;gap:10px;border:1.5px solid transparent;font-size:15px;font-weight:600;font-family:inherit;color:var(--ink);text-align:left;min-height:88px}
+.choice.selected{border-color:var(--blue);background:var(--blue-soft)}
+.option{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);padding:12px 14px;display:flex;align-items:center;gap:12px;font-family:inherit;color:var(--ink);text-align:left;width:100%}
+.option.selected{border-color:var(--blue);background:var(--blue-soft)}
+.radio{width:22px;height:22px;border-radius:11px;border:2px solid var(--faint);flex:none}
+.option.selected .radio{border:7px solid var(--blue)}
+.segmented{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:var(--track);border-radius:12px;padding:3px;gap:3px}
+.segmented span{height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted)}
+.segmented span.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.toggle{width:51px;height:31px;border-radius:16px;background:var(--blue);position:relative;flex:none}
+.toggle::after{content:"";position:absolute;right:2px;top:2px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+/* callouts / states */
+.callout{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r-md);background:var(--blue-soft);color:var(--blue-ink);font-size:13px;line-height:1.45}
+.callout strong{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+.callout.warn{background:var(--amber-soft);color:var(--amber-ink)}
+.status-circle{width:96px;height:96px;border-radius:48px;display:flex;align-items:center;justify-content:center;background:var(--blue-soft);color:var(--blue);margin:0 auto}
+.status-circle.big{width:148px;height:148px;border-radius:74px;background:var(--blue);color:#fff}
+.status-circle.error{background:var(--coral-soft);color:var(--coral)}
+.spinner{width:64px;height:64px;border-radius:32px;border:5px solid var(--blue-soft);border-top-color:var(--blue);margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--blue-ink)}
+.brand-mark{width:36px;height:36px;border-radius:11px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center}
+.meter-display{background:#0F1B2D;color:#fff;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center;gap:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:34px;letter-spacing:.12em}
+.meter-display span{background:#1E2D44;border-radius:6px;width:36px;text-align:center;padding:6px 0;transition:opacity .15s}
+.theme-dark .meter-display{background:#05080D;border:1px solid #2A2D33}
+.meter-display span.last{background:var(--coral)}
+
+/* tab bar */
+/* Liquid Glass tab bar — mirrors the native iOS 26 UITabBar that React Native renders
+   via native tabs (expo-router NativeTabs / react-native-bottom-tabs): floating capsule,
+   translucent blurred material, specular rim, selected item in a glass pill, tint on icon+label. */
+.tabbar{position:absolute;left:24px;right:24px;bottom:26px;height:62px;border-radius:999px;padding:4px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;z-index:5;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  border:.5px solid var(--glass-rim);
+  box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 var(--glass-lo),0 10px 30px rgba(0,0,0,.14),0 1px 3px rgba(0,0,0,.08)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--tab-ink);border-radius:999px;position:relative}
+.tab svg.i{width:24px;height:24px}
+.tab.on{color:var(--blue);background:var(--glass-pill);box-shadow:inset 0 .5px 0 var(--glass-hi)}
+.tab.on.green{color:var(--green-ink)}
+.tab.on.purple{color:var(--purple-ink)}
+.ic.purple{background:var(--purple-soft);color:var(--purple)}
+.danger-row{color:var(--coral)}
+.doc h2{margin:6px 0 0;font-size:17px;font-weight:700}
+.doc p{margin:0;font-size:15px;line-height:1.6;color:var(--muted)}
+
+/* receipt */
+.receipt{background:var(--surface);border-radius:var(--r-lg);padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.dash{border-top:1.5px dashed var(--line)}
+/* receipt with torn-paper (zig-zag) top and bottom edges */
+.receipt-wrap{filter:drop-shadow(0 6px 14px rgba(16,32,64,.10))}
+.receipt.torn{border-radius:0;padding:30px 20px;
+  -webkit-mask:conic-gradient(from 135deg at 50% 0,#000 90deg,#0000 0) top/14px 7px repeat-x,conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom/14px 7px repeat-x,linear-gradient(#000 0 0) center/100% calc(100% - 14px) no-repeat;
+  mask:conic-gradient(from 135deg at 50% 0,#000 90deg,#0000 0) top/14px 7px repeat-x,conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom/14px 7px repeat-x,linear-gradient(#000 0 0) center/100% calc(100% - 14px) no-repeat}
+.kind{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);border-radius:6px;padding:3px 7px}
+.formula{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);gap:8px}
+.tariff-tag{font-size:13px;font-weight:600;color:var(--ink);background:var(--surface-2);border-radius:8px;padding:5px 9px;white-space:nowrap}
+.line-item{display:flex;flex-direction:column;gap:8px}
+.line-head{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:16px}
+.mini-field{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+.mini-field .box{background:var(--surface-2);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:15px;font-weight:600;min-width:110px;text-align:right}
+.mini-field .box.empty{color:var(--placeholder);font-weight:500}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.total strong{font-size:28px;letter-spacing:-.02em}
+
+/* design-system page helpers */
+.ds{font-family:'Onest',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+.swatch{height:56px;border-radius:12px;border:1px solid var(--line)}
+
+/* export layout */
+html,body{margin:0;background:#E4E7EC}
+.export{font-family:'Onest',-apple-system,system-ui,sans-serif;padding:80px;display:flex;flex-direction:column;gap:120px;width:max-content}
+.export-page{display:flex;flex-direction:column;gap:96px}
+.export-page-title{margin:0;font-size:56px;font-weight:700;color:#0F1B2D;letter-spacing:-.02em}
+.export-flow{display:flex;flex-direction:column;gap:32px}
+.export-flow-title{margin:0;font-size:32px;font-weight:700;color:#0F1B2D}
+.export-row{display:flex;gap:80px;align-items:flex-start}
+.export-frame{display:flex;flex-direction:column;gap:16px;flex:none}
+.export-label{font-size:18px;font-weight:600;color:#566173;max-width:402px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.export-board{flex:none;overflow:hidden;position:relative;border-radius:0}
+</style></head><body>
+<div class="export">
+<section class="export-flow" data-name="Дизайн-система"><h2 class="export-flow-title">Дизайн-система</h2><div class="export-row"><div class="export-frame" id="DesignSystem" data-name="Дизайн-система"><div class="export-label">Дизайн-система</div><div class="export-board" style="width:1280px;height:7560px" data-name="Дизайн-система"><div><div class="ds" style="width: 1280px; box-sizing: border-box; padding: 64px; display: flex; flex-direction: column; gap: 56px; background: rgb(255, 255, 255);">
+  <header style="display: flex; flex-direction: column; gap: 10px;">
+    <div class="brand"><span class="brand-mark"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span>Utility Ledger</div>
+    <h1 style="margin: 0px; font-size: 48px; font-weight: 700; letter-spacing: -0.03em;">Дизайн-система</h1>
+    <p class="lead" style="max-width: 720px; font-size: 17px;">Токени, типографіка та компоненти застосунку. Кожен колір — CSS-змінна з двома значеннями: світла тема на <code>:root</code>, темна — на контейнері з класом <code>theme-dark</code>.</p>
+  </header>
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <h2 style="margin: 0px; font-size: 28px; font-weight: 700;">Кольори</h2>
+    <div style="display: grid; grid-template-columns: 220px minmax(0px, 1fr) 180px 180px; gap: 12px 20px; align-items: center;">
+      <span class="overline">Токен</span><span class="overline">Призначення</span><span class="overline">Світла</span><span class="overline">Темна</span>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--surface-2); border: 1px solid var(--line);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Поверхні й текст</span>
+          <span class="row-sub">спільні для всіх флоу</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--bg</code>
+          <span style="font-size: 15px; color: var(--muted);">Тло екрана</span>
+          <div class="swatch" style="background: var(--bg);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--bg);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--surface</code>
+          <span style="font-size: 15px; color: var(--muted);">Картки, поля у фокусі, діалоги</span>
+          <div class="swatch" style="background: var(--surface);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--surface);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--surface-2</code>
+          <span style="font-size: 15px; color: var(--muted);">Поля вводу, вкладені блоки, теги</span>
+          <div class="swatch" style="background: var(--surface-2);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--surface-2);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Основний текст</span>
+          <div class="swatch" style="background: var(--ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--ink);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--muted</code>
+          <span style="font-size: 15px; color: var(--muted);">Вторинний текст</span>
+          <div class="swatch" style="background: var(--muted);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--muted);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--placeholder</code>
+          <span style="font-size: 15px; color: var(--muted);">Плейсхолдер у полях</span>
+          <div class="swatch" style="background: var(--placeholder);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--placeholder);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--chev</code>
+          <span style="font-size: 15px; color: var(--muted);">Шеврони рядків</span>
+          <div class="swatch" style="background: var(--chev);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--chev);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--line</code>
+          <span style="font-size: 15px; color: var(--muted);">Розділювачі, контури</span>
+          <div class="swatch" style="background: var(--line);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--line);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--track</code>
+          <span style="font-size: 15px; color: var(--muted);">Сегменти, треки прогресу</span>
+          <div class="swatch" style="background: var(--track);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--track);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--faint</code>
+          <span style="font-size: 15px; color: var(--muted);">Порожня радіокнопка</span>
+          <div class="swatch" style="background: var(--faint);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--faint);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--disabled-bg</code>
+          <span style="font-size: 15px; color: var(--muted);">Неактивна кнопка · тло</span>
+          <div class="swatch" style="background: var(--disabled-bg);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--disabled-bg);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--disabled-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Неактивна кнопка · текст</span>
+          <div class="swatch" style="background: var(--disabled-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--disabled-ink);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--ink-tile</code>
+          <span style="font-size: 15px; color: var(--muted);">Темні круглі значки плиток</span>
+          <div class="swatch" style="background: var(--ink-tile);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--ink-tile);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--tab-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Неактивний таб</span>
+          <div class="swatch" style="background: var(--tab-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--tab-ink);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--scrim</code>
+          <span style="font-size: 15px; color: var(--muted);">Затемнення під sheet і діалогом</span>
+          <div class="swatch" style="background: var(--scrim);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--scrim);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--blue);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Обʼєкти й авторизація</span>
+          <span class="row-sub">синій флоу</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--blue</code>
+          <span style="font-size: 15px; color: var(--muted);">Бренд, активний таб «Обʼєкти», фокус</span>
+          <div class="swatch" style="background: var(--blue);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--blue);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--blue-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Тінт вибору, вторинна кнопка</span>
+          <div class="swatch" style="background: var(--blue-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--blue-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--blue-soft-2</code>
+          <span style="font-size: 15px; color: var(--muted);">Внутрішнє коло empty state</span>
+          <div class="swatch" style="background: var(--blue-soft-2);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--blue-soft-2);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--blue-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Посилання, текст на синьому тінті</span>
+          <div class="swatch" style="background: var(--blue-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--blue-ink);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--hero-end</code>
+          <span style="font-size: 15px; color: var(--muted);">Нижній колір градієнта під плитками</span>
+          <div class="swatch" style="background: var(--hero-end);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--hero-end);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--green);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Аналітика</span>
+          <span class="row-sub">зелений флоу</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--green</code>
+          <span style="font-size: 15px; color: var(--muted);">Успіх, графіки</span>
+          <div class="swatch" style="background: var(--green);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--green);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--green-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Бейдж «Заповнено», тінт</span>
+          <div class="swatch" style="background: var(--green-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--green-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--green-soft-2</code>
+          <span style="font-size: 15px; color: var(--muted);">Виділення періоду</span>
+          <div class="swatch" style="background: var(--green-soft-2);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--green-soft-2);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--green-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Активний таб «Аналітика», текст на тінті</span>
+          <div class="swatch" style="background: var(--green-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--green-ink);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--green-brand</code>
+          <span style="font-size: 15px; color: var(--muted);">Акцент аналітики</span>
+          <div class="swatch" style="background: var(--green-brand);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--green-brand);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--purple);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Ще · профіль</span>
+          <span class="row-sub">фіолетовий флоу</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--purple</code>
+          <span style="font-size: 15px; color: var(--muted);">Значки профілю, акценти «Ще»</span>
+          <div class="swatch" style="background: var(--purple);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--purple);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--purple-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Тінт значків рядків</span>
+          <div class="swatch" style="background: var(--purple-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--purple-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--purple-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Активний таб «Ще», текст на тінті</span>
+          <div class="swatch" style="background: var(--purple-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--purple-ink);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--hero-sub-purple);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Текст на градієнті</span>
+          <span class="row-sub">вторинний текст у навбарі</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--hero-sub</code>
+          <span style="font-size: 15px; color: var(--muted);">Підзаголовок на синьому градієнті</span>
+          <div class="swatch" style="background: var(--hero-sub);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--hero-sub);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--hero-sub-green</code>
+          <span style="font-size: 15px; color: var(--muted);">Підзаголовок на зеленому градієнті</span>
+          <div class="swatch" style="background: var(--hero-sub-green);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--hero-sub-green);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--hero-sub-purple</code>
+          <span style="font-size: 15px; color: var(--muted);">Підзаголовок на фіолетовому градієнті («Ще»)</span>
+          <div class="swatch" style="background: var(--hero-sub-purple);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--hero-sub-purple);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--coral);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Акцент і небезпека</span>
+          <span class="row-sub">корал</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--coral</code>
+          <span style="font-size: 15px; color: var(--muted);">Основна кнопка, «Видалити», плитка «Додати»</span>
+          <div class="swatch" style="background: var(--coral);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--coral);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--coral-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Бейдж «Новий», тінт помилки</span>
+          <div class="swatch" style="background: var(--coral-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--coral-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--coral-ink</code>
+          <span style="font-size: 15px; color: var(--muted);">Текст на кораловому тінті</span>
+          <div class="swatch" style="background: var(--coral-ink);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--coral-ink);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--amber);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Послуги</span>
+          <span class="row-sub">пари «колір + тінт»</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--amber</code>
+          <span style="font-size: 15px; color: var(--muted);">Електроенергія</span>
+          <div class="swatch" style="background: var(--amber);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--amber);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--amber-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Електроенергія · тінт</span>
+          <div class="swatch" style="background: var(--amber-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--amber-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--water</code>
+          <span style="font-size: 15px; color: var(--muted);">Вода</span>
+          <div class="swatch" style="background: var(--water);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--water);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--water-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Вода · тінт</span>
+          <div class="swatch" style="background: var(--water-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--water-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--gas</code>
+          <span style="font-size: 15px; color: var(--muted);">Газ</span>
+          <div class="swatch" style="background: var(--gas);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--gas);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--gas-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Газ · тінт</span>
+          <div class="swatch" style="background: var(--gas-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--gas-soft);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--heat</code>
+          <span style="font-size: 15px; color: var(--muted);">Опалення</span>
+          <div class="swatch" style="background: var(--heat);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--heat);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--heat-soft</code>
+          <span style="font-size: 15px; color: var(--muted);">Опалення · тінт</span>
+          <div class="swatch" style="background: var(--heat-soft);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--heat-soft);"></div></div>
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);">
+          <span style="width: 14px; height: 14px; border-radius: 7px; flex: 0 0 auto; background: var(--glass-pill);"></span>
+          <span style="font-size: 17px; font-weight: 700;">Liquid Glass</span>
+          <span class="row-sub">таб-бар і чипи</span>
+        </div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--glass-bg</code>
+          <span style="font-size: 15px; color: var(--muted);">Матеріал таб-бару</span>
+          <div class="swatch" style="background: var(--glass-bg);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--glass-bg);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--glass-rim</code>
+          <span style="font-size: 15px; color: var(--muted);">Контур скла</span>
+          <div class="swatch" style="background: var(--glass-rim);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--glass-rim);"></div></div>
+          <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px;">--glass-pill</code>
+          <span style="font-size: 15px; color: var(--muted);">Пігулка активного табу</span>
+          <div class="swatch" style="background: var(--glass-pill);"></div>
+          <div class="theme-dark" style="border-radius: 12px;"><div class="swatch" style="background: var(--glass-pill);"></div></div>
+    </div>
+  </section>
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <h2 style="margin: 0px; font-size: 28px; font-weight: 700;">Градієнти навбару · колір флоу</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 17px; font-weight: 700;">Обʼєкти</span><span class="row-sub">Обʼєкти, авторизація, онбординг</span></div>
+            <div class="" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-blue); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Обʼєкти</span><span style="font-size: 13px; color: var(--hero-sub);">Обʼєкти, авторизація, онбординг</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Додати</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-blue · світла</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#0A45A3 → #1567C4 → #1E7BD0</span>
+            </div>
+            <div class="theme-dark" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-blue); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Обʼєкти</span><span style="font-size: 13px; color: var(--hero-sub);">Обʼєкти, авторизація, онбординг</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Додати</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-blue · темна</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#07326F → #0B4F9E → #1262B4</span>
+            </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tab on " style="height: 44px; padding: 0px 14px; flex-direction: row; gap: 6px; font-size: 13px; background: var(--glass-pill); box-shadow: none;">Активний таб</span>
+            <span class="ic " style="width: 44px; height: 44px;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle></svg></span>
+            <span class="badge" style="background: var(--blue-soft); color: var(--blue-ink);">Тінт · ink</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 17px; font-weight: 700;">Аналітика</span><span class="row-sub">Витрати, періоди, адреси</span></div>
+            <div class="" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-green); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Аналітика</span><span style="font-size: 13px; color: var(--hero-sub-green);">Витрати, періоди, адреси</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Період</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-green · світла</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#1D4E33 → #2B6B42 → #3C8753</span>
+            </div>
+            <div class="theme-dark" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-green); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Аналітика</span><span style="font-size: 13px; color: var(--hero-sub-green);">Витрати, періоди, адреси</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Період</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-green · темна</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#123222 → #1E4E31 → #2B6B42</span>
+            </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tab on green" style="height: 44px; padding: 0px 14px; flex-direction: row; gap: 6px; font-size: 13px; background: var(--glass-pill); box-shadow: none;">Активний таб</span>
+            <span class="ic green" style="width: 44px; height: 44px;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle></svg></span>
+            <span class="badge" style="background: var(--green-soft); color: var(--green-ink);">Тінт · ink</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 17px; font-weight: 700;">Ще</span><span class="row-sub">Профіль, документи, акаунт</span></div>
+            <div class="" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-purple); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Ще</span><span style="font-size: 13px; color: var(--hero-sub-purple);">Профіль, документи, акаунт</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Профіль</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-purple · світла</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#24103F → #3D1F66 → #5B2E88</span>
+            </div>
+            <div class="theme-dark" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="height: 132px; border-radius: 20px; background: var(--hero-purple); padding: 18px; color: rgb(255, 255, 255); display: flex; flex-direction: column; justify-content: space-between;">
+                <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 22px; font-weight: 700;">Ще</span><span style="font-size: 13px; color: var(--hero-sub-purple);">Профіль, документи, акаунт</span></span>
+                <span class="chip" style="align-self: flex-start;"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Профіль</span>
+              </div>
+              <code style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: rgb(86, 97, 115);">--hero-purple · темна</code>
+              <span class="row-sub" style="color: rgb(86, 97, 115);">#170A2A → #2A1548 → #422264</span>
+            </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tab on purple" style="height: 44px; padding: 0px 14px; flex-direction: row; gap: 6px; font-size: 13px; background: var(--glass-pill); box-shadow: none;">Активний таб</span>
+            <span class="ic purple" style="width: 44px; height: 44px;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle></svg></span>
+            <span class="badge" style="background: var(--purple-soft); color: var(--purple-ink);">Тінт · ink</span>
+          </div>
+        </div>
+    </div>
+    <p class="help" style="font-size: 14px;">Кожен розділ таб-бару має свій колір: синій — Обʼєкти й авторизація, зелений — Аналітика, фіолетовий — Ще. Градієнт навбару, активний таб, значки рядків і аватар беруть колір свого флоу. Заголовок на градієнті завжди білий; вторинний текст — світлий тінт свого флоу (<code>--hero-sub</code>, <code>--hero-sub-green</code>, <code>--hero-sub-purple</code>). Нижній колір градієнта (<code>--hero-end</code>) продовжується під плитками, щоб навбар не мав шва.</p>
+  </section>
+  <section style="display: grid; grid-template-columns: minmax(0px, 1.4fr) minmax(0px, 1fr); gap: 48px;">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0px; font-size: 28px; font-weight: 700;">Типографіка · Onest</h2>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Display · 32/700</span>
+          <span style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em;">Обʼєкти</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Title · 28/700</span>
+          <span style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em;">Додати нову адресу</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Amount · 38/700</span>
+          <span style="font-size: 38px; font-weight: 700; letter-spacing: -0.03em;">12 803,00 ₴</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Headline · 22/600</span>
+          <span style="font-size: 22px; font-weight: 600;">вул. Соборності, 24</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Section · 18/600</span>
+          <span style="font-size: 18px; font-weight: 600;">Ваші адреси</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Row title · 16/600</span>
+          <span style="font-size: 16px; font-weight: 600;">Електроенергія</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Body · 15/400</span>
+          <span style="font-size: 15px; line-height: 1.5; color: var(--muted);">Додайте адресу, фіксуйте показники.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0px, 1fr); gap: 16px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+          <span class="row-sub">Overline · 12/600</span>
+          <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Як обліковувати</span>
+        </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0px; font-size: 28px; font-weight: 700;">Радіуси</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0px, 1fr)); gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;"><div style="width: 72px; height: 72px; background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 28px;"></div><span class="row-sub">xl · 28</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;"><div style="width: 72px; height: 72px; background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 22px;"></div><span class="row-sub">lg · 22</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;"><div style="width: 72px; height: 72px; background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 16px;"></div><span class="row-sub">md · 16</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;"><div style="width: 72px; height: 72px; background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 12px;"></div><span class="row-sub">sm · 12</span></div>
+      </div>
+      <h2 style="margin: 16px 0px 0px; font-size: 28px; font-weight: 700;">Відступи</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">4</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 24px;"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">8</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 48px;"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">12</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 72px;"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">16</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 96px;"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">20</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 120px;"></div></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span class="row-sub" style="width: 40px;">24</span><div style="height: 14px; border-radius: 4px; background: var(--coral); width: 144px;"></div></div>
+      </div>
+      <p class="help" style="font-size: 14px;">Поля екрана — 20px. Між картками — 12–14px. Мінімальна зона дотику — 44px.</p>
+    </div>
+  </section>
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <h2 style="margin: 0px; font-size: 28px; font-weight: 700;">Компоненти</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 24px;">
+        <div class="" style="background: var(--bg); color: var(--ink); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 18px; border: 1px solid var(--line);">
+          <div class="overline">Світла тема</div>
+          <div class="stack">
+            <span class="btn">Основна дія</span>
+            <span class="btn secondary">Вторинна дія</span>
+            <span class="btn outline">Контурна кнопка</span>
+            <span class="btn disabled">Неактивна</span>
+          </div>
+          <div class="field"><label>Поле</label><span class="val">Полтава</span></div>
+          <div class="field focus"><label>Поле у фокусі</label><span class="val">Соборності</span></div>
+          <div class="segmented"><span class="on">Послуги</span><span>Місяці</span></div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;"><span class="badge">Новий</span><span class="badge ok">Заповнено</span><span class="badge blue">UAH</span></div>
+          <div class="option selected"><span class="radio"></span><span class="row-copy"><span class="row-title" style="font-size: 15px;">За показником</span><span class="row-sub">Лічильник · кВт·год</span></span></div>
+          <div class="card">
+            <div class="row"><span class="ic amber"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><span class="row-copy"><span class="row-title">Електроенергія</span><span class="row-sub">Лічильник · кВт·год</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row"><span class="ic water"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s7 7.5 7 12a7 7 0 0 1-14 0c0-4.5 7-12 7-12z"></path></svg></span><span class="row-copy"><span class="row-title">Холодна вода</span><span class="row-sub">Лічильник · м³</span></span><span class="badge ok">Внесено</span></div>
+            <div class="row"><span class="month-num" style="font-size: 22px; background: rgb(253, 233, 218);">🍂</span><span class="row-copy"><span class="row-title">Вересень</span><span class="row-sub">Потрібно внести показники</span></span><span class="badge">Новий</span></div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <span class="tile"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Додати адресу</span>
+            <span class="tile"><span class="tile-ic" style="background: var(--ink-tile);"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"></rect><path d="M5 9v11h14V9M10 13h4"></path></svg></span>Архів</span>
+          </div>
+          <div class="callout"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span><strong>Підказка</strong>Запис збережеться навіть без мережі.</span></div>
+          <div class="overline" style="margin-top: 4px;">Таб-бар · Liquid Glass</div>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab on "><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab on green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab on purple"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <div class="overline" style="margin-top: 4px;">Профіль · «Ще»</div>
+          <div class="card row" style="border-radius: 22px; padding: 16px;">
+            <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 28px; background: var(--hero-purple); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex: 0 0 auto;">Б</span>
+            <span class="row-copy"><span class="row-title" style="font-size: 18px;">Богдан</span><span class="row-sub">bohdan@icloud.com</span></span>
+            <svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+          <div class="card">
+            <div class="row"><span class="ic purple"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span><span class="row-copy"><span class="row-title">Імʼя</span><span class="row-sub">Як до вас звертатися</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row"><span class="ic"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="row-copy"><span class="row-title">Політика конфіденційності</span><span class="row-sub">Документ</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row danger-row"><span class="ic" style="background: var(--coral-soft); color: var(--coral);"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></span><span class="row-copy"><span class="row-title" style="color: var(--coral);">Видалити акаунт</span><span class="row-sub">Небезпечна дія</span></span></div>
+          </div>
+          <div class="overline" style="margin-top: 4px;">Свайп-дії рядка</div>
+          <div class="card" style="position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0px; right: 0px; bottom: 0px; display: flex;">
+              <span style="width: 80px; background: var(--blue); color: rgb(255, 255, 255); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 600;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Редагувати</span>
+              <span style="width: 80px; background: var(--coral); color: rgb(255, 255, 255); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 600;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>Видалити</span>
+            </div>
+            <div class="row" style="position: relative; transform: translateX(-160px);"><span class="ic amber"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><span class="row-copy"><span class="row-title">Електроенергія</span><span class="row-sub">Показник · 4,32 ₴</span></span></div>
+          </div>
+          <div class="overline" style="margin-top: 4px;">Показник і тариф</div>
+          <div class="meter-display"><span>0</span><span>1</span><span>2</span><span>5</span><span>3</span><span class="last">4</span></div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"><span class="kind">Показник</span><span class="kind">Фіксована</span><span class="kind">За днями</span><span class="tariff-tag">4,32 ₴ / кВт·год</span></div>
+        </div>
+        <div class="theme-dark" style="background: var(--bg); color: var(--ink); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 18px; border: 1px solid var(--line);">
+          <div class="overline">Темна тема</div>
+          <div class="stack">
+            <span class="btn">Основна дія</span>
+            <span class="btn secondary">Вторинна дія</span>
+            <span class="btn outline">Контурна кнопка</span>
+            <span class="btn disabled">Неактивна</span>
+          </div>
+          <div class="field"><label>Поле</label><span class="val">Полтава</span></div>
+          <div class="field focus"><label>Поле у фокусі</label><span class="val">Соборності</span></div>
+          <div class="segmented"><span class="on">Послуги</span><span>Місяці</span></div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;"><span class="badge">Новий</span><span class="badge ok">Заповнено</span><span class="badge blue">UAH</span></div>
+          <div class="option selected"><span class="radio"></span><span class="row-copy"><span class="row-title" style="font-size: 15px;">За показником</span><span class="row-sub">Лічильник · кВт·год</span></span></div>
+          <div class="card">
+            <div class="row"><span class="ic amber"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><span class="row-copy"><span class="row-title">Електроенергія</span><span class="row-sub">Лічильник · кВт·год</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row"><span class="ic water"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s7 7.5 7 12a7 7 0 0 1-14 0c0-4.5 7-12 7-12z"></path></svg></span><span class="row-copy"><span class="row-title">Холодна вода</span><span class="row-sub">Лічильник · м³</span></span><span class="badge ok">Внесено</span></div>
+            <div class="row"><span class="month-num" style="font-size: 22px; background: rgb(253, 233, 218);">🍂</span><span class="row-copy"><span class="row-title">Вересень</span><span class="row-sub">Потрібно внести показники</span></span><span class="badge">Новий</span></div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <span class="tile"><span class="tile-ic" style="background: var(--coral);"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Додати адресу</span>
+            <span class="tile"><span class="tile-ic" style="background: var(--ink-tile);"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"></rect><path d="M5 9v11h14V9M10 13h4"></path></svg></span>Архів</span>
+          </div>
+          <div class="callout"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span><strong>Підказка</strong>Запис збережеться навіть без мережі.</span></div>
+          <div class="overline" style="margin-top: 4px;">Таб-бар · Liquid Glass</div>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab on "><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab on green"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <nav class="tabbar" aria-label="Таб-бар" style="position: relative; left: auto; right: auto; bottom: auto;"><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"></path></svg>Обʼєкти</span><span class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 15l4-4 3 3 5-6"></path></svg>Аналітика</span><span class="tab on purple"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3;"><path d="M5 12h.01M12 12h.01M19 12h.01"></path></svg>Ще</span></nav>
+          <div class="overline" style="margin-top: 4px;">Профіль · «Ще»</div>
+          <div class="card row" style="border-radius: 22px; padding: 16px;">
+            <span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 28px; background: var(--hero-purple); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex: 0 0 auto;">Б</span>
+            <span class="row-copy"><span class="row-title" style="font-size: 18px;">Богдан</span><span class="row-sub">bohdan@icloud.com</span></span>
+            <svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+          <div class="card">
+            <div class="row"><span class="ic purple"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span><span class="row-copy"><span class="row-title">Імʼя</span><span class="row-sub">Як до вас звертатися</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row"><span class="ic"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="row-copy"><span class="row-title">Політика конфіденційності</span><span class="row-sub">Документ</span></span><svg class="i sm chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></div>
+            <div class="row danger-row"><span class="ic" style="background: var(--coral-soft); color: var(--coral);"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></span><span class="row-copy"><span class="row-title" style="color: var(--coral);">Видалити акаунт</span><span class="row-sub">Небезпечна дія</span></span></div>
+          </div>
+          <div class="overline" style="margin-top: 4px;">Свайп-дії рядка</div>
+          <div class="card" style="position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0px; right: 0px; bottom: 0px; display: flex;">
+              <span style="width: 80px; background: var(--blue); color: rgb(255, 255, 255); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 600;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Редагувати</span>
+              <span style="width: 80px; background: var(--coral); color: rgb(255, 255, 255); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 600;"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>Видалити</span>
+            </div>
+            <div class="row" style="position: relative; transform: translateX(-160px);"><span class="ic amber"><svg class="i sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><span class="row-copy"><span class="row-title">Електроенергія</span><span class="row-sub">Показник · 4,32 ₴</span></span></div>
+          </div>
+          <div class="overline" style="margin-top: 4px;">Показник і тариф</div>
+          <div class="meter-display"><span>0</span><span>1</span><span>2</span><span>5</span><span>3</span><span class="last">4</span></div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"><span class="kind">Показник</span><span class="kind">Фіксована</span><span class="kind">За днями</span><span class="tariff-tag">4,32 ₴ / кВт·год</span></div>
+        </div>
+    </div>
+  </section>
+  <section style="display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 20px;">
+    <div class="card" style="background: rgb(241, 243, 247); padding: 22px; display: flex; flex-direction: column; gap: 8px;"><strong style="font-size: 17px;">Іконки</strong><span class="help" style="font-size: 14px;">Контурні 24×24, штрих 2px, заокруглені кінці. Колір — від батька (currentColor). Сервіси мають власну пару «тінт + колір».</span></div>
+    <div class="card" style="background: rgb(241, 243, 247); padding: 22px; display: flex; flex-direction: column; gap: 8px;"><strong style="font-size: 17px;">Місяці</strong><span class="help" style="font-size: 14px;">Емодзі сезону на пастельному тлі. У темній темі тло приглушується токеном <code>--month-dim</code>.</span></div>
+    <div class="card" style="background: rgb(241, 243, 247); padding: 22px; display: flex; flex-direction: column; gap: 8px;"><strong style="font-size: 17px;">Контраст</strong><span class="help" style="font-size: 14px;">Текст ≥ 4.5:1 в обох темах. Основна кнопка лишається кораловою; кнопка Apple в темній темі — біла.</span></div>
+  </section></div></div></div></div></div></section>
+</div></body></html>
