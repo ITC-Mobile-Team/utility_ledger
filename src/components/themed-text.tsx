@@ -1,12 +1,23 @@
 import { Text, TextProps } from 'react-native';
 import { typography } from '@/constants/typography';
+import { AppColor } from '@/constants/colors';
+import { useThemeColor } from '@/hooks/use-theme-colors';
 
 export type AppFont = keyof typeof typography;
 
 type ThemedTextProps = TextProps & {
-  font: AppFont;
+  color?: AppColor;
+  font?: AppFont;
 };
 
-export function ThemedText({ font, style, ...rest }: ThemedTextProps) {
-  return <Text style={[typography[font], style]} {...rest} />;
+export function ThemedText({
+  color = 'ink',
+  font = 'body',
+  style,
+  ...rest
+}: ThemedTextProps) {
+  const themedColor = useThemeColor(color);
+  return (
+    <Text style={[{ color: themedColor }, typography[font], style]} {...rest} />
+  );
 }

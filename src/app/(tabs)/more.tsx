@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { ThemedView, ThemedText } from '@/components';
 
 export default function More() {
   return (
-    <View style={styles.container}>
-      <Text>More screen</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <ThemedText>More screen</ThemedText>
+    </ThemedView>
   );
 }
 

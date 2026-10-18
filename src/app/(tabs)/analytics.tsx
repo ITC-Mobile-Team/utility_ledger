@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { ThemedText, ThemedView } from '@/components';
 
 export default function Analytics() {
   return (
-    <View style={styles.container}>
-      <Text>Analytics screen</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <ThemedText>Analytics screen</ThemedText>
+    </ThemedView>
   );
 }
 

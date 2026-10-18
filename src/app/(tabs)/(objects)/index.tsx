@@ -1,14 +1,15 @@
+import { ThemedText, ThemedView } from '@/components';
 import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default function Index() {
   return (
-    <View style={styles.container}>
-      <Text>Objects screen</Text>
+    <ThemedView style={styles.container}>
+      <ThemedText>Objects screen</ThemedText>
       <Link href='/preview' style={styles.preview}>
         Open preview
       </Link>
-    </View>
+    </ThemedView>
   );
 }
 

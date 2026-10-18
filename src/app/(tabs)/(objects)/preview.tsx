@@ -1,34 +1,41 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
-
-import { ThemedText } from '@/components/themed-text';
-
-import type { AppFont } from '@/components/themed-text';
+import { ScrollView, StyleSheet } from 'react-native';
+import { ThemedText, AppFont, ThemedView } from '@/components';
 import { typography } from '@/constants/typography';
+import { useThemeColor } from '@/hooks/use-theme-colors';
 
 const fonts = Object.keys(typography) as AppFont[];
 const weights = ['400', '500', '600', '700'] as const;
 const previewText = 'Їжак Йод 12 803,00 ₴';
 
 export default function Preview() {
+  const bgColor = useThemeColor('bg');
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView
+      style={{ backgroundColor: bgColor }}
+      contentContainerStyle={[styles.content]}
+    >
       {fonts.map((font) => {
         const { fontSize, fontWeight, lineHeight } = typography[font];
         return (
-          <View key={font} style={styles.item}>
-            <ThemedText font='overline'>
+          <ThemedView key={font} style={styles.item}>
+            <ThemedText color='muted' font='overline'>
               {`${font} ${fontSize}/${fontWeight} lh: ${lineHeight}`}
             </ThemedText>
-            <ThemedText font={font}>{previewText}</ThemedText>
-          </View>
+            <ThemedText color='ink' font={font}>
+              {previewText}
+            </ThemedText>
+          </ThemedView>
         );
       })}
 
-      <ThemedText font='section'>Ваги</ThemedText>
+      <ThemedText color='ink' font='section'>
+        Ваги
+      </ThemedText>
       {weights.map((weight) => {
         return (
           <ThemedText
             key={weight}
+            color='ink'
             font='body'
             style={{ fontWeight: weight }}
           >{`${weight} ${previewText}`}</ThemedText>
