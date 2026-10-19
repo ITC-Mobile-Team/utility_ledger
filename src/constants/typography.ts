@@ -62,4 +62,10 @@ export const typography = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 17,
   },
+  button: {
+    fontFamily: family,
+    fontSize: 17,
+    fontWeight: '600',
+    lineHeight: 22,
+  },
 });
