@@ -1,7 +1,14 @@
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { AppColor } from '@/constants/colors';
-import { ThemedView } from './themed-view';
-import { ThemedText } from './themed-text';
+import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
+import { useThemeColor } from '@/hooks/use-theme-colors';
+import { typography } from '@/constants/typography';
 
 type ButtonType = 'primary' | 'secondary' | 'outline';
 
@@ -35,6 +42,9 @@ export function ActionButton({
   ...rest
 }: ActionButtonProps) {
   const colors = disabled ? disabledButtonColors : buttonColors[type];
+  const bg = useThemeColor(colors.bg);
+  const text = useThemeColor(colors.text);
+  const border = useThemeColor(colors.border ?? colors.bg);
   return (
     <Pressable
       accessibilityRole='button'
@@ -42,23 +52,44 @@ export function ActionButton({
       style={(state) => [
         state.pressed && styles.pressed,
         typeof style === 'function' ? style(state) : style,
+        styles.button,
       ]}
       {...rest}
     >
-      <ThemedView
-        backgroundColor={colors.bg}
-        borderColor={colors.border}
-        style={styles.container}
+      <Animated.View
+        style={[
+          styles.container,
+          { backgroundColor: bg, borderColor: border, borderWidth: 1 },
+          viewTransition,
+        ]}
       >
-        <ThemedText color={colors.text} font='button'>
+        <Animated.Text
+          style={[typography.button, { color: text }, textTransition]}
+        >
           {title}
-        </ThemedText>
-      </ThemedView>
+        </Animated.Text>
+      </Animated.View>
     </Pressable>
   );
 }
 
+const viewTransition: CSSTransitionProperties<ViewStyle> = {
+  transitionProperty: ['backgroundColor', 'borderColor'],
+  transitionDuration: 250,
+  transitionTimingFunction: 'ease-out',
+};
+
+const textTransition: CSSTransitionProperties<TextStyle> = {
+  transitionProperty: 'color',
+  transitionDuration: 250,
+  transitionTimingFunction: 'ease-out',
+};
+
 const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'stretch',
+    marginHorizontal: 20,
+  },
   container: {
     borderRadius: 16,
     padding: 16,
