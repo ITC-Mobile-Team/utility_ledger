@@ -44,7 +44,8 @@ export function ActionButton({
   const colors = disabled ? disabledButtonColors : buttonColors[type];
   const bg = useThemeColor(colors.bg);
   const text = useThemeColor(colors.text);
-  const border = useThemeColor(colors.border ?? colors.bg);
+  const borderColor = useThemeColor(colors.border ?? colors.bg);
+  const border = colors.border ? borderColor : 'transparent';
   return (
     <Pressable
       accessibilityRole='button'
