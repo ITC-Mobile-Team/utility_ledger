@@ -24,11 +24,17 @@ export default function Preview() {
   const [disabled, setDisabled] = useState(true);
   const [displayText, setDisplayText] = useState<string | null>(null);
 
-  const periods = [
-    { value: 'services', label: 'Послуги' },
-    { value: 'months', label: 'Місяці' },
-  ] as const;
-  type SegmentPeriod = (typeof periods)[number]['value'];
+  const periodLabels = {
+    services: 'Послуги',
+    months: 'Місяці',
+  } as const;
+  type SegmentPeriod = keyof typeof periodLabels;
+  const periods = (Object.keys(periodLabels) as SegmentPeriod[]).map(
+    (value) => ({
+      value,
+      label: periodLabels[value],
+    }),
+  );
   const [period, setPeriod] = useState<SegmentPeriod>('months');
   return (
     <ScrollView
@@ -37,6 +43,8 @@ export default function Preview() {
       contentContainerStyle={[styles.content]}
     >
       <Segment items={periods} value={period} onChange={setPeriod} />
+
+      <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
 
       <ActionButton
         title='Основна дія'
@@ -123,7 +131,5 @@ const styles = StyleSheet.create({
   },
   item: {
     gap: 4,
-    // borderColor: 'white',
-    // borderWidth: 1,
   },
 });
