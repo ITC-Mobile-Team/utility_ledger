@@ -73,7 +73,7 @@ export default function Preview() {
           const { fontSize, fontWeight, lineHeight } = typography[font];
           return (
             <ThemedView key={font} style={styles.item}>
-              <ThemedText color='muted' font='overline'>
+              <ThemedText color='coral' font='headline'>
                 {`${font} ${fontSize}/${fontWeight} lh: ${lineHeight}`}
               </ThemedText>
               <ThemedText color='ink' font={font}>
@@ -108,5 +108,7 @@ const styles = StyleSheet.create({
   },
   item: {
     gap: 4,
+    // borderColor: 'white',
+    // borderWidth: 1,
   },
 });

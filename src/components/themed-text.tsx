@@ -1,4 +1,4 @@
-import { Text, TextProps } from 'react-native';
+import { Text, TextProps, StyleSheet } from 'react-native';
 import { typography } from '@/constants/typography';
 import { AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -18,6 +18,16 @@ export function ThemedText({
 }: ThemedTextProps) {
   const themedColor = useThemeColor(color);
   return (
-    <Text style={[{ color: themedColor }, typography[font], style]} {...rest} />
+    <Text
+      style={[{ color: themedColor }, typography[font], styles.text, style]}
+      {...rest}
+    />
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    paddingHorizontal: 2,
+    marginHorizontal: -2,
+  },
+});
