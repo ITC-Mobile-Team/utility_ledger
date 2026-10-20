@@ -68,4 +68,10 @@ export const typography = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 22,
   },
+  segment: {
+    fontFamily: family,
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 18,
+  },
 });

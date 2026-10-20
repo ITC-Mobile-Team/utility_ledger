@@ -1,5 +1,11 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import { ThemedText, AppFont, ThemedView, ActionButton } from '@/components';
+import {
+  ThemedText,
+  AppFont,
+  ThemedView,
+  ActionButton,
+  Segment,
+} from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
@@ -17,12 +23,21 @@ export default function Preview() {
   const bgColor = useThemeColor('bg');
   const [disabled, setDisabled] = useState(true);
   const [displayText, setDisplayText] = useState<string | null>(null);
+
+  const periods = [
+    { value: 'services', label: 'Послуги' },
+    { value: 'months', label: 'Місяці' },
+  ] as const;
+  type SegmentPeriod = (typeof periods)[number]['value'];
+  const [period, setPeriod] = useState<SegmentPeriod>('months');
   return (
     <ScrollView
       contentInsetAdjustmentBehavior='automatic'
       style={{ backgroundColor: bgColor }}
       contentContainerStyle={[styles.content]}
     >
+      <Segment items={periods} value={period} onChange={setPeriod} />
+
       <ActionButton
         title='Основна дія'
         onPress={() => {
