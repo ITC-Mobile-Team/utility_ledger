@@ -1,10 +1,11 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   ThemedText,
   AppFont,
   ThemedView,
   ActionButton,
   Segment,
+  SaveAreaScrollView,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -37,8 +38,7 @@ export default function Preview() {
   );
   const [period, setPeriod] = useState<SegmentPeriod>('months');
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior='automatic'
+    <SaveAreaScrollView
       style={{ backgroundColor: bgColor }}
       contentContainerStyle={[styles.content]}
     >
@@ -120,13 +120,14 @@ export default function Preview() {
           );
         })}
       </Animated.View>
-    </ScrollView>
+    </SaveAreaScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
-    padding: 16,
+    // padding: 16,
+    paddingHorizontal: 16,
     gap: 20,
   },
   item: {

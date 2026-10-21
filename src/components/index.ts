@@ -3,3 +3,4 @@ export type { AppFont } from './themed-text';
 export { ThemedView } from './themed-view';
 export { ActionButton } from './action-button';
 export { Segment } from './segment';
+export { SaveAreaScrollView } from './save-area-scoll-view';

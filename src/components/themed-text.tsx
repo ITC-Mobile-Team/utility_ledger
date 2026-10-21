@@ -19,6 +19,7 @@ export function ThemedText({
   const themedColor = useThemeColor(color);
   return (
     <Text
+      textBreakStrategy='simple'
       style={[{ color: themedColor }, typography[font], styles.text, style]}
       {...rest}
     />
