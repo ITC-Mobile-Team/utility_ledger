@@ -31,7 +31,7 @@ export function ThemedTextInput({
       </ThemedText>
       <TextInput
         {...rest}
-        style={[{ color: textColor }, typography.textInput]}
+        style={[{ color: textColor }, typography.textInput, styles.input]}
         onFocus={(e) => {
           setFocus(true);
           onFocus?.(e);
@@ -52,5 +52,10 @@ const styles = StyleSheet.create({
     gap: 2,
     borderRadius: 16,
     borderWidth: 1,
+  },
+  input: {
+    padding: 0, // прибирає дефолтні відступи Android
+    includeFontPadding: false, // Android: прибирає зайвий простір над/під текстом
+    textAlignVertical: 'center',
   },
 });
