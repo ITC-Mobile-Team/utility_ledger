@@ -14,7 +14,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { ThemedView, ThemedText } from './index';
+import { ThemedView } from './themed-view';
+import { ThemedText } from './themed-text';
 
 const PADDING = 3;
 const GAP = 3;
