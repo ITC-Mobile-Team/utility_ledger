@@ -6,6 +6,7 @@ import {
   ActionButton,
   Segment,
   SaveAreaScrollView,
+  ThemedTextInput,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -45,6 +46,8 @@ export default function Preview() {
       <Segment items={periods} value={period} onChange={setPeriod} />
 
       <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
+
+      <ThemedTextInput title='Поле' />
 
       <ActionButton
         title='Продовжити з Apple'
