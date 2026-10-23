@@ -38,6 +38,7 @@ export default function Preview() {
     }),
   );
   const [period, setPeriod] = useState<SegmentPeriod>('months');
+  const [inputText, setInputText] = useState('');
   return (
     <SaveAreaScrollView
       style={{ backgroundColor: bgColor }}
@@ -47,7 +48,9 @@ export default function Preview() {
 
       <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
 
-      <ThemedTextInput title='Поле' />
+      <ThemedTextInput title='Поле' onChangeText={setInputText} />
+
+      <ThemedText>Заповнено в полі: {inputText}</ThemedText>
 
       <ActionButton
         title='Продовжити з Apple'

@@ -30,6 +30,7 @@ export function ThemedTextInput({
         {title}
       </ThemedText>
       <TextInput
+        {...rest}
         style={[{ color: textColor }, typography.textInput]}
         onFocus={(e) => {
           setFocus(true);
