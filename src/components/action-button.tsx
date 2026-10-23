@@ -4,13 +4,15 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  useColorScheme,
 } from 'react-native';
 import { AppColor } from '@/constants/colors';
 import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { typography } from '@/constants/typography';
+import { Image, ImageSource } from 'expo-image';
 
-type ButtonType = 'primary' | 'secondary' | 'outline';
+type ButtonType = 'primary' | 'secondary' | 'outline' | 'google' | 'apple';
 
 type ButtonColor = {
   bg: AppColor;
@@ -22,6 +24,24 @@ const buttonColors: Record<ButtonType, ButtonColor> = {
   primary: { bg: 'coral', text: 'onPrimary' },
   secondary: { bg: 'blueSoft', text: 'blueInk' },
   outline: { bg: 'surface', text: 'ink', border: 'line' },
+  google: { bg: 'surface', text: 'ink', border: 'line' },
+  apple: { bg: 'btnDarkBg', text: 'btnDarkInk' },
+};
+
+const googleIcon: ImageSource = require('@/assets/images/socials/google.svg');
+
+const buttonIcons: Record<
+  'light' | 'dark',
+  Partial<Record<ButtonType, ImageSource>>
+> = {
+  light: {
+    google: googleIcon,
+    apple: require('@/assets/images/socials/apple-light.svg'),
+  },
+  dark: {
+    google: googleIcon,
+    apple: require('@/assets/images/socials/apple-dark.svg'),
+  },
 };
 
 const disabledButtonColors: ButtonColor = {
@@ -46,6 +66,8 @@ export function ActionButton({
   const text = useThemeColor(colors.text);
   const borderColor = useThemeColor(colors.border ?? colors.bg);
   const border = colors.border ? borderColor : 'transparent';
+  const scheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const icon = buttonIcons[scheme][type];
   return (
     <Pressable
       accessibilityRole='button'
@@ -64,6 +86,7 @@ export function ActionButton({
           viewTransition,
         ]}
       >
+        {icon && <Image source={icon} style={styles.icon} />}
         <Animated.Text
           style={[typography.button, { color: text }, textTransition]}
         >
@@ -92,10 +115,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   container: {
+    flexDirection: 'row',
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 10,
   },
+  icon: { width: 20, height: 20 },
   pressed: { opacity: 0.75 },
 });

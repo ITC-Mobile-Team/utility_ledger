@@ -47,6 +47,22 @@ export default function Preview() {
       <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
 
       <ActionButton
+        title='Продовжити з Apple'
+        type='apple'
+        onPress={() => {
+          setDisplayText('Натиснуто на Apple кнопку');
+        }}
+      />
+
+      <ActionButton
+        title='Продовжити з Google'
+        type='google'
+        onPress={() => {
+          setDisplayText('Натиснуто на Google кнопку');
+        }}
+      />
+
+      <ActionButton
         title='Основна дія'
         onPress={() => {
           setDisabled((prev) => !prev);
