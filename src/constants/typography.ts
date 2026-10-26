@@ -80,4 +80,16 @@ export const typography = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 22,
   },
+  radioCardTitle: {
+    fontFamily: family,
+    fontSize: 15,
+    fontWeight: '600',
+    lineHeight: 19.5,
+  },
+  radioCardSubtitle: {
+    fontFamily: family,
+    fontSize: 13,
+    fontWeight: '400',
+    lineHeight: 16.9,
+  },
 });

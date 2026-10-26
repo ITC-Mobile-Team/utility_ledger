@@ -8,6 +8,7 @@ import {
   SaveAreaScrollView,
   ThemedTextInput,
   ThemedBadge,
+  RadioCard,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -57,6 +58,17 @@ export default function Preview() {
         <ThemedBadge text='Заповнено' type='green' />
         <ThemedBadge text='UAH' type='blue' />
       </ThemedView>
+
+      <RadioCard
+        title='За показником'
+        subtitle='Різниця показників × тариф'
+        isSelected={true}
+      />
+      <RadioCard
+        title='Фіксована сума'
+        subtitle='Однакова сума щомісяця'
+        isSelected={false}
+      />
 
       <Segment items={periods} value={period} onChange={setPeriod} />
 
