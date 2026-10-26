@@ -26,10 +26,7 @@ export function ThemedBadge({ text, type }: ThemedBadgeProps) {
   const badgeColor = badgeColors[type];
   return (
     <ThemedView backgroundColor={badgeColor.bg} style={[styles.container]}>
-      <ThemedText
-        color={badgeColor.text}
-        style={[typography.overline, styles.text]}
-      >
+      <ThemedText color={badgeColor.text} font='overline' style={styles.text}>
         {text}
       </ThemedText>
     </ThemedView>
