@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 2,
     borderRadius: 16,
+    borderCurve: 'continuous',
     borderWidth: 1,
   },
   input: {

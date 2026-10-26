@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
+    borderCurve: 'continuous',
   },
   icon: { width: 20, height: 20 },
   pressed: { opacity: 0.75 },

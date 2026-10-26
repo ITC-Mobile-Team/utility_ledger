@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderRadius: 12,
+    borderCurve: 'continuous',
     paddingHorizontal: PADDING,
     gap: GAP,
   },
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
     bottom: PADDING,
     left: PADDING,
     borderRadius: 10,
+    borderCurve: 'continuous',
   },
   item: {
     flex: 1,
