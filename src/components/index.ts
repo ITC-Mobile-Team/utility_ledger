@@ -5,3 +5,4 @@ export { ActionButton } from './action-button';
 export { Segment } from './segment';
 export { SaveAreaScrollView } from './save-area-scoll-view';
 export { ThemedTextInput } from './themed-text-input';
+export { ThemedBadge } from './themed-badge';

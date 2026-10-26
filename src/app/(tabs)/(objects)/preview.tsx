@@ -7,6 +7,7 @@ import {
   Segment,
   SaveAreaScrollView,
   ThemedTextInput,
+  ThemedBadge,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -44,6 +45,19 @@ export default function Preview() {
       style={{ backgroundColor: bgColor }}
       contentContainerStyle={[styles.content]}
     >
+      <ThemedView
+        style={{
+          flexDirection: 'row',
+          paddingTop: 16,
+          gap: 16,
+          alignSelf: 'center',
+        }}
+      >
+        <ThemedBadge text='Новий' type='red' />
+        <ThemedBadge text='Заповнено' type='green' />
+        <ThemedBadge text='UAH' type='blue' />
+      </ThemedView>
+
       <Segment items={periods} value={period} onChange={setPeriod} />
 
       <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
