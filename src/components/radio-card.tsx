@@ -1,8 +1,9 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
 import { AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { ThemedText } from './themed-text';
+import { VStack } from './stack';
 
 const colorTransition: CSSTransitionProperties = {
   transitionProperty: ['backgroundColor', 'borderColor', 'borderWidth'],
@@ -69,14 +70,14 @@ export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
         ]}
       />
 
-      <View style={styles.textContainer}>
+      <VStack spacing={2}>
         <ThemedText color='ink' font='radioCardTitle'>
           {title}
         </ThemedText>
         <ThemedText color='muted' font='radioCardSubtitle'>
           {subtitle}
         </ThemedText>
-      </View>
+      </VStack>
     </Animated.View>
   );
 }
@@ -91,9 +92,6 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     gap: 12,
     alignItems: 'center',
-  },
-  textContainer: {
-    gap: 2,
   },
   circle: {
     width: 22,

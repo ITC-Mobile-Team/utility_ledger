@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable } from 'react-native';
 import { RadioCard } from './radio-card';
+import { VStack } from './stack';
 
 export type RadioItem<T extends string> = {
   value: T;
@@ -19,7 +20,7 @@ export function RadioGroup<T extends string>({
   onChange,
 }: RadioGroupProps<T>) {
   return (
-    <View style={styles.container}>
+    <VStack spacing={8}>
       {items.map((item) => {
         return (
           <Pressable
@@ -36,12 +37,6 @@ export function RadioGroup<T extends string>({
           </Pressable>
         );
       })}
-    </View>
+    </VStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    gap: 8,
-  },
-});
