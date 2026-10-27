@@ -1,7 +1,14 @@
 import { StyleSheet, View } from 'react-native';
-import { ThemedView } from './themed-view';
+import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
 import { AppColor } from '@/constants/colors';
+import { useThemeColor } from '@/hooks/use-theme-colors';
 import { ThemedText } from './themed-text';
+
+const colorTransition: CSSTransitionProperties = {
+  transitionProperty: ['backgroundColor', 'borderColor', 'borderWidth'],
+  transitionDuration: 200,
+  transitionTimingFunction: 'ease-out',
+};
 
 type RadioCardState = 'normal' | 'selected';
 
@@ -35,16 +42,31 @@ type RadioCardProps = {
 export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
   const state = isSelected ? radioCardStates.selected : radioCardStates.normal;
   const circle = isSelected ? radioCircles.selected : radioCircles.normal;
+  const cardBg = useThemeColor(state.bg);
+  const cardBorder = useThemeColor(state.borderColor);
+  const circleBg = useThemeColor(circle.bg);
+  const circleBorder = useThemeColor(circle.lineColor);
+
+  // Reanimated CSS transitions: при зміні isSelected кольори й товщина рамки
+  // плавно інтерполюються до нових значень
   return (
-    <ThemedView
-      backgroundColor={state.bg}
-      borderColor={state.borderColor}
-      style={styles.container}
+    <Animated.View
+      style={[
+        styles.container,
+        { backgroundColor: cardBg, borderColor: cardBorder },
+        colorTransition,
+      ]}
     >
-      <ThemedView
-        backgroundColor={circle.bg}
-        borderColor={circle.lineColor}
-        style={[styles.circle, { borderWidth: circle.lineWidth }]}
+      <Animated.View
+        style={[
+          styles.circle,
+          {
+            backgroundColor: circleBg,
+            borderColor: circleBorder,
+            borderWidth: circle.lineWidth,
+          },
+          colorTransition,
+        ]}
       />
 
       <View style={styles.textContainer}>
@@ -55,7 +77,7 @@ export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
           {subtitle}
         </ThemedText>
       </View>
-    </ThemedView>
+    </Animated.View>
   );
 }
 
@@ -65,6 +87,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderRadius: 16,
+    borderWidth: 1,
     borderCurve: 'continuous',
     gap: 12,
     alignItems: 'center',
