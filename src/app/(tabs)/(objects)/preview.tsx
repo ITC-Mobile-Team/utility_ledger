@@ -8,7 +8,7 @@ import {
   SaveAreaScrollView,
   ThemedTextInput,
   ThemedBadge,
-  RadioCard,
+  RadioGroup,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -18,6 +18,7 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from 'react-native-reanimated';
+import { BillingMode, billingModes } from '@/constants/billing-mode';
 
 const fonts = Object.keys(typography) as AppFont[];
 const weights = ['400', '500', '600', '700'] as const;
@@ -41,6 +42,7 @@ export default function Preview() {
   );
   const [period, setPeriod] = useState<SegmentPeriod>('months');
   const [inputText, setInputText] = useState('');
+  const [mode, setMode] = useState<BillingMode>('meter');
   return (
     <SaveAreaScrollView
       style={{ backgroundColor: bgColor }}
@@ -59,18 +61,9 @@ export default function Preview() {
         <ThemedBadge text='UAH' type='blue' />
       </ThemedView>
 
-      <RadioCard
-        title='За показником'
-        subtitle='Різниця показників × тариф'
-        isSelected={true}
-      />
-      <RadioCard
-        title='Фіксована сума'
-        subtitle='Однакова сума щомісяця'
-        isSelected={false}
-      />
-
       <Segment items={periods} value={period} onChange={setPeriod} />
+
+      <RadioGroup items={billingModes} value={mode} onChange={setMode} />
 
       <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
 
