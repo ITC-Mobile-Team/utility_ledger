@@ -20,7 +20,6 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 import { BillingMode, billingModes } from '@/constants/billing-mode';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const fonts = Object.keys(typography) as AppFont[];
 const weights = ['400', '500', '600', '700'] as const;

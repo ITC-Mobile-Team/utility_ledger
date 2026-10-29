@@ -1,4 +1,10 @@
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import {
+  ColorValue,
+  StyleSheet,
+  useColorScheme,
+  ColorSchemeName,
+  View,
+} from 'react-native';
 import { AppFont, ThemedText } from './themed-text';
 import { VStack } from './stack';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,18 +19,39 @@ type ThemedNavigationBarProps = {
   subtitle?: string;
 };
 
+const getColors = ({
+  type,
+  scheme,
+}: {
+  type: NavigationBarType;
+  scheme: ColorSchemeName;
+}): readonly [ColorValue, ColorValue, ...ColorValue[]] => {
+  if (type === 'transparent') {
+    return ['transparent', 'transparent'];
+  } else {
+    switch (type) {
+      case 'blue':
+        return gradients[scheme].heroBlue;
+      case 'green':
+        return gradients[scheme].heroGreen;
+      case 'purple':
+        return gradients[scheme].heroPurple;
+    }
+  }
+};
+
 export function ThemedNavigationBar({
   type = 'transparent',
   title,
   subtitle,
 }: ThemedNavigationBarProps) {
+  const scheme = useColorScheme() ?? 'light';
+  const gradientColors = getColors({ type, scheme });
   const isTransparent = type === 'transparent';
-  const scheme = useColorScheme() === 'light' ? 'light' : 'dark';
-  const gradientColors = gradients[scheme].heroBlue;
-  const { top: safeAreaTop } = useSafeAreaInsets();
   const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
   const titleFont: AppFont = isTransparent ? 'display' : 'title';
   const subtitleColor: AppColor = isTransparent ? 'muted' : 'heroSub';
+  const { top: safeAreaTop } = useSafeAreaInsets();
   const content = (
     <VStack
       spacing={6}
