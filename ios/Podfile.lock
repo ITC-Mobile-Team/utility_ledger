@@ -140,6 +140,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (58.0.3):
     - ExpoModulesCore
+  - ExpoLinearGradient (58.0.3):
+    - ExpoModulesCore
   - ExpoLinking (58.0.13):
     - ExpoModulesCore
   - ExpoLogBox (58.0.12):
@@ -2304,6 +2306,7 @@ DEPENDENCIES:
   - ExpoGlassEffect (from `../node_modules/expo-glass-effect/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios/ExpoImage.podspec`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - "ExpoLogBox (from `../node_modules/@expo/log-box`)"
   - ExpoModulesCore (from `../node_modules/expo/node_modules/expo-modules-core/ExpoModulesCore.podspec`)
@@ -2446,6 +2449,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/expo-image/ios/ExpoImage.podspec"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLinearGradient:
+    :path: "../node_modules/expo-linear-gradient/ios"
   ExpoLinking:
     :path: "../node_modules/expo-linking/ios"
   ExpoLogBox:
@@ -2673,6 +2678,7 @@ SPEC CHECKSUMS:
   ExpoGlassEffect: 008d906ff11ffeb03a8e702af9d6a471c16c10eb
   ExpoImage: 0765d30c52245e378639f83dd2c39f12dfa059f6
   ExpoKeepAwake: fd18a5d233329013c578030ad399d8e10b252b5f
+  ExpoLinearGradient: 0a669599d57e1421c4718d59eed8c96fe02c1467
   ExpoLinking: 5e84f6510eef3dd1985e3afce4de809610f7f0c4
   ExpoLogBox: 14c42e5429c85e1e2acfb9316b4e821db8e40d42
   ExpoModulesCore: d98306de766d5f7e8ad875f6c1c20a10338fb402
