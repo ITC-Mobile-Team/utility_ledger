@@ -45,7 +45,7 @@ export default function Preview() {
   const [inputText, setInputText] = useState('');
   const [mode, setMode] = useState<BillingMode>('meter');
   return (
-    <VStack>
+    <VStack style={{ flex: 1 }}>
       <ThemedNavigationBar type='blue' title='Preview' />
 
       <ScrollView
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     gap: 20,
+    paddingBottom: 16,
   },
   item: {
     gap: 4,
