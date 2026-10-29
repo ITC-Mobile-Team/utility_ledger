@@ -46,11 +46,7 @@ export default function Preview() {
   const [mode, setMode] = useState<BillingMode>('meter');
   return (
     <VStack>
-      <ThemedNavigationBar
-        type='blue'
-        title='Обʼєкти'
-        subtitle='2 адреси · жовтень 2026'
-      />
+      <ThemedNavigationBar type='blue' title='Preview' />
 
       <ScrollView
         contentInsetAdjustmentBehavior='automatic'

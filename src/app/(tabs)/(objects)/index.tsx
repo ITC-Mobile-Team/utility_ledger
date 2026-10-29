@@ -1,26 +1,20 @@
-import { ActionButton, ThemedText, ThemedView } from '@/components';
+import { ActionButton, ThemedNavigationBar, VStack } from '@/components';
 import { router } from 'expo-router';
-import { StyleSheet } from 'react-native';
 
 export default function Index() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>Objects screen</ThemedText>
+    <VStack spacing={8}>
+      <ThemedNavigationBar
+        type='blue'
+        title='Обʼєкти'
+        subtitle='2 адреси · жовтень 2026'
+      />
       <ActionButton
         title='Превʼю'
         onPress={() => {
           router.push('/preview');
         }}
       />
-    </ThemedView>
+    </VStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-});
