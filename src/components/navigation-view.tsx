@@ -1,11 +1,14 @@
-import { ScrollView, StyleSheet, ViewProps } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { VStack } from './stack';
-import { ThemedNavigationBar } from './themed-navigation-bar';
 import {
   ThemedNavigationBar,
   ThemedNavigationBarProps,
-} from './themed-navigation-bar';
+} from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 type NavigationContentInsets = {
   top?: number;
@@ -27,6 +30,11 @@ export const NavigationView = ({
   ...rest
 }: NavigationViewProps) => {
   const bg = useThemeColor('bg');
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.value = e.contentOffset.y;
+  });
+
   return (
     <VStack style={styles.container}>
       <ThemedNavigationBar
@@ -35,7 +43,11 @@ export const NavigationView = ({
         subtitle={subtitle}
         navigationBarButtons={navigationBarButtons}
         onNavigationButtonPress={onNavigationButtonPress}
+        scrollY={scrollY}
       />
+      <Animated.ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         contentInsetAdjustmentBehavior='automatic'
         style={{ backgroundColor: bg }}
         contentContainerStyle={{

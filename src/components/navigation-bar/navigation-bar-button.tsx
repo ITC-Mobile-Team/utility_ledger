@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
-import { ThemedView } from './themed-view';
-import { ThemedText } from './themed-text';
-import { HStack } from './stack';
+import { ThemedView } from '../themed-view';
+import { ThemedText } from '../themed-text';
+import { HStack } from '../stack';
 import { AppColor } from '@/constants/colors';
 import { Image } from 'expo-image';
 import {
@@ -21,7 +21,7 @@ export type NavigationBarButtonProps = NavigationBarButtonItem & {
   onPress?: () => void;
 };
 
-const NavigationBarButton = ({
+export const NavigationBarButton = ({
   title,
   icon,
   iconBackground,
@@ -55,8 +55,6 @@ const NavigationBarButton = ({
     </Pressable>
   );
 };
-
-export default NavigationBarButton;
 
 const styles = StyleSheet.create({
   button: {

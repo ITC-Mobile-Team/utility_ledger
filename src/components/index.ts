@@ -7,5 +7,5 @@ export { ThemedTextInput } from './themed-text-input';
 export { ThemedBadge } from './themed-badge';
 export { RadioGroup } from './radio-group';
 export { VStack, HStack } from './stack';
-export { ThemedNavigationBar } from './themed-navigation-bar';
+export * from './navigation-bar';
 export { NavigationView } from './navigation-view';
