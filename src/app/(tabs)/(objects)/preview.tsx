@@ -21,6 +21,7 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 import { BillingMode, billingModes } from '@/constants/billing-mode';
+import { NavigationBarButtonItem } from '@/components/navigation-bar-button';
 
 const fonts = Object.keys(typography) as AppFont[];
 const weights = ['400', '500', '600', '700'] as const;
@@ -45,12 +46,22 @@ export default function Preview() {
   const [period, setPeriod] = useState<SegmentPeriod>('months');
   const [inputText, setInputText] = useState('');
   const [mode, setMode] = useState<BillingMode>('meter');
+  const testNavigationBarItem: NavigationBarButtonItem = {
+    id: 'test',
+    title: 'test',
+    icon: 'plus',
+    iconBackground: 'inkTile',
+  };
   return (
     <VStack style={{ flex: 1 }}>
       <ThemedNavigationBar
         type='blue'
         title='Preview'
         subtitle='and other components'
+        navigationBarButtons={[testNavigationBarItem]}
+        onNavigationButtonPress={(id) => {
+          console.log(`tap on button with id: ${id}`);
+        }}
       />
 
       <ScrollView

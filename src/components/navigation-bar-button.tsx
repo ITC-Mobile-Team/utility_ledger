@@ -10,10 +10,14 @@ import {
 } from '@/constants/navigationBarIcons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 
-type NavigationBarButtonProps = {
+export type NavigationBarButtonItem = {
+  id: string;
   title: string;
   icon: NavigationBarIcon;
   iconBackground: AppColor;
+};
+
+type NavigationBarButtonProps = NavigationBarButtonItem & {
   onPress?: () => void;
 };
 
@@ -43,7 +47,7 @@ const NavigationBarButton = ({
             />
           </ThemedView>
 
-          <ThemedText color='ink' font='rowTitle'>
+          <ThemedText color='ink' font='rowTitle' style={styles.title}>
             {title}
           </ThemedText>
         </HStack>
@@ -70,5 +74,8 @@ const styles = StyleSheet.create({
   icon: {
     width: 22,
     height: 22,
+  },
+  title: {
+    flexShrink: 1,
   },
 });

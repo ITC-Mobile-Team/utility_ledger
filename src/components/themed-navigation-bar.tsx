@@ -5,6 +5,7 @@ import {
   ColorSchemeName,
   Pressable,
   ScrollView,
+  ViewProps,
 } from 'react-native';
 import { AppFont, ThemedText } from './themed-text';
 import { HStack, VStack } from './stack';
@@ -15,7 +16,9 @@ import { Image } from 'expo-image';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
-import NavigationBarButton from './navigation-bar-button';
+import NavigationBarButton, {
+  NavigationBarButtonItem,
+} from './navigation-bar-button';
 
 type NavigationBarType = 'blue' | 'green' | 'purple' | 'transparent';
 
@@ -40,16 +43,20 @@ const getColors = ({
   }
 };
 
-type ThemedNavigationBarProps = {
+export type ThemedNavigationBarProps = ViewProps & {
   type?: NavigationBarType;
   title: string;
   subtitle?: string;
+  navigationBarButtons?: NavigationBarButtonItem[];
+  onNavigationButtonPress?: (id: string) => void;
 };
 
 export function ThemedNavigationBar({
   type = 'transparent',
   title,
   subtitle,
+  navigationBarButtons = [],
+  onNavigationButtonPress = (id) => {},
 }: ThemedNavigationBarProps) {
   const router = useRouter();
   const route = useRoute();
@@ -69,12 +76,14 @@ export function ThemedNavigationBar({
   const backIconTintColor = useThemeColor(
     isTransparent ? 'coral' : 'onPrimary',
   );
+  const isNotEmptyNavBarButtons = navigationBarButtons.length > 0;
+  const paddingBottom = isNotEmptyNavBarButtons ? 48 : 24;
   const content = (
     <VStack
       spacing={6}
       style={[
         styles.stack,
-        { paddingTop: safeAreaTop, paddingBottom: 48 /* 24 */ },
+        { paddingTop: safeAreaTop, paddingBottom: paddingBottom },
       ]}
     >
       {canGoBack && (
@@ -117,35 +126,29 @@ export function ThemedNavigationBar({
           {content}
         </LinearGradient>
 
-        <ScrollView
-          horizontal
-          style={{ marginTop: -36 }}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <HStack spacing={12} style={{ flex: 1 }}>
-            <NavigationBarButton
-              title='Button 1'
-              icon='plus'
-              iconBackground='coral'
-            />
-            <NavigationBarButton
-              title='Button 2'
-              icon='plus'
-              iconBackground='inkTile'
-            />
-            <NavigationBarButton
-              title='Button 3'
-              icon='plus'
-              iconBackground='coral'
-            />
-            <NavigationBarButton
-              title='Button 4'
-              icon='plus'
-              iconBackground='coral'
-            />
-          </HStack>
-        </ScrollView>
+        {isNotEmptyNavBarButtons && (
+          <ScrollView
+            horizontal
+            style={{ marginTop: -36 }}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            showsHorizontalScrollIndicator={false}
+          >
+            <HStack spacing={12} style={{ flex: 1 }}>
+              {navigationBarButtons.map((button) => {
+                return (
+                  <NavigationBarButton
+                    key={button.id}
+                    id={button.id}
+                    title={button.title}
+                    icon={button.icon}
+                    iconBackground={button.iconBackground}
+                    onPress={() => onNavigationButtonPress(button.id)}
+                  />
+                );
+              })}
+            </HStack>
+          </ScrollView>
+        )}
       </VStack>
     );
   }
