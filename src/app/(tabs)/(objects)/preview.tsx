@@ -12,6 +12,7 @@ import {
   NavigationBarButtonItem,
   VStack,
   HStack,
+  NavigationView,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -53,22 +54,13 @@ export default function Preview() {
     iconBackground: 'inkTile',
   };
   return (
-    <VStack style={{ flex: 1 }}>
-      <ThemedNavigationBar
-        type='blue'
-        title='Preview'
-        subtitle='and other components'
-        navigationBarButtons={[testNavigationBarItem]}
-        onNavigationButtonPress={(id) => {
-          console.log(`tap on button with id: ${id}`);
-        }}
-      />
-
-      <ScrollView
-        contentInsetAdjustmentBehavior='automatic'
-        style={{ backgroundColor: bgColor }}
-        contentContainerStyle={[styles.content]}
-      >
+    <NavigationView
+      type='blue'
+      title='Preview'
+      contentInsets={{ horizontal: 20 }}
+      navigationBarButtons={[testNavigationBarItem]}
+    >
+      <VStack spacing={20}>
         <HStack spacing={16} style={{ paddingTop: 16, alignSelf: 'center' }}>
           <ThemedBadge text='Новий' type='red' />
           <ThemedBadge text='Заповнено' type='green' />
@@ -77,9 +69,9 @@ export default function Preview() {
 
         <Segment items={periods} value={period} onChange={setPeriod} />
 
-        <RadioGroup items={billingModes} value={mode} onChange={setMode} />
-
         <ThemedText>Вибрано: {periodLabels[period]}</ThemedText>
+
+        <RadioGroup items={billingModes} value={mode} onChange={setMode} />
 
         <ThemedTextInput title='Поле' onChangeText={setInputText} />
 
@@ -175,8 +167,8 @@ export default function Preview() {
             );
           })}
         </Animated.View>
-      </ScrollView>
-    </VStack>
+      </VStack>
+    </NavigationView>
   );
 }
 
