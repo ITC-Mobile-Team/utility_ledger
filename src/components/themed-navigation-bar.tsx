@@ -19,6 +19,7 @@ import { useNavigationState } from 'expo-router/build/react-navigation/index.js'
 import NavigationBarButton, {
   NavigationBarButtonItem,
 } from './navigation-bar-button';
+import { ShortNavigationBarButton } from './short-navigation-bar-button';
 
 type NavigationBarType = 'blue' | 'green' | 'purple' | 'transparent';
 
@@ -77,37 +78,60 @@ export function ThemedNavigationBar({
     isTransparent ? 'coral' : 'onPrimary',
   );
   const isNotEmptyNavBarButtons = navigationBarButtons.length > 0;
-  const paddingBottom = isNotEmptyNavBarButtons ? 48 : 24;
+  const isShortNavBarButtons = true;
+  const paddingBottom =
+    isNotEmptyNavBarButtons && !isShortNavBarButtons ? 48 : 24;
   const content = (
     <VStack
-      spacing={6}
-      style={[
-        styles.stack,
-        { paddingTop: safeAreaTop, paddingBottom: paddingBottom },
-      ]}
+      spacing={14}
+      style={{ paddingTop: safeAreaTop, paddingBottom: paddingBottom }}
     >
-      {canGoBack && (
-        <Pressable
-          style={(state) => [state.pressed && styles.pressed, styles.back]}
-          onPress={() => {
-            router.back();
-          }}
-        >
-          <Image
-            source={require('@/images/navigation/arrow-back.svg')}
-            contentFit='contain'
-            tintColor={backIconTintColor}
-            style={styles.backIcon}
-          />
-        </Pressable>
-      )}
-      <ThemedText color={titleColor} font={titleFont}>
-        {title}
-      </ThemedText>
-      {subtitle && (
-        <ThemedText color={subtitleColor} font='navigationSubtitle'>
-          {subtitle}
+      <VStack spacing={6} style={{ paddingHorizontal: 20 }}>
+        {canGoBack && (
+          <Pressable
+            style={(state) => [state.pressed && styles.pressed, styles.back]}
+            onPress={() => {
+              router.back();
+            }}
+          >
+            <Image
+              source={require('@/images/navigation/arrow-back.svg')}
+              contentFit='contain'
+              tintColor={backIconTintColor}
+              style={styles.backIcon}
+            />
+          </Pressable>
+        )}
+        <ThemedText color={titleColor} font={titleFont}>
+          {title}
         </ThemedText>
+        {subtitle && (
+          <ThemedText color={subtitleColor} font='navigationSubtitle'>
+            {subtitle}
+          </ThemedText>
+        )}
+      </VStack>
+      {isNotEmptyNavBarButtons && isShortNavBarButtons && (
+        <ScrollView
+          horizontal
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          <HStack spacing={12} style={{ flex: 1 }}>
+            {navigationBarButtons.map((button) => {
+              return (
+                <ShortNavigationBarButton
+                  key={button.id}
+                  id={button.id}
+                  title={button.title}
+                  icon={button.icon}
+                  iconBackground={button.iconBackground}
+                  onPress={() => onNavigationButtonPress(button.id)}
+                />
+              );
+            })}
+          </HStack>
+        </ScrollView>
       )}
     </VStack>
   );
@@ -126,7 +150,7 @@ export function ThemedNavigationBar({
           {content}
         </LinearGradient>
 
-        {isNotEmptyNavBarButtons && (
+        {isNotEmptyNavBarButtons && !isShortNavBarButtons && (
           <ScrollView
             horizontal
             style={{ marginTop: -36 }}
@@ -164,9 +188,6 @@ const styles = StyleSheet.create({
   backIcon: {
     width: 22,
     height: 22,
-  },
-  stack: {
-    paddingHorizontal: 20,
   },
   pressed: {
     opacity: 0.5,

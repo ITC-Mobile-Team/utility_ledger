@@ -17,7 +17,7 @@ export type NavigationBarButtonItem = {
   iconBackground: AppColor;
 };
 
-type NavigationBarButtonProps = NavigationBarButtonItem & {
+export type NavigationBarButtonProps = NavigationBarButtonItem & {
   onPress?: () => void;
 };
 
