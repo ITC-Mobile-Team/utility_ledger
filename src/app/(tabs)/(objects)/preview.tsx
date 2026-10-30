@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   ThemedText,
   AppFont,
@@ -8,14 +8,12 @@ import {
   ThemedTextInput,
   ThemedBadge,
   RadioGroup,
-  ThemedNavigationBar,
   NavigationBarButtonItem,
   VStack,
   HStack,
   NavigationView,
 } from '@/components';
 import { typography } from '@/constants/typography';
-import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
 import Animated, {
   FadeIn,
@@ -29,7 +27,6 @@ const weights = ['400', '500', '600', '700'] as const;
 const previewText = 'Їжак Йод 12 803,00 ₴';
 
 export default function Preview() {
-  const bgColor = useThemeColor('bg');
   const [disabled, setDisabled] = useState(true);
   const [displayText, setDisplayText] = useState<string | null>(null);
 
