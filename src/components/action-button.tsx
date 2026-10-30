@@ -28,7 +28,7 @@ const buttonColors: Record<ButtonType, ButtonColor> = {
   apple: { bg: 'btnDarkBg', text: 'btnDarkInk' },
 };
 
-const googleIcon: ImageSource = require('@/assets/images/socials/google.svg');
+const googleIcon: ImageSource = require('@/images/socials/google.svg');
 
 const buttonIcons: Record<
   'light' | 'dark',
@@ -36,11 +36,11 @@ const buttonIcons: Record<
 > = {
   light: {
     google: googleIcon,
-    apple: require('@/assets/images/socials/apple-light.svg'),
+    apple: require('@/images/socials/apple-light.svg'),
   },
   dark: {
     google: googleIcon,
-    apple: require('@/assets/images/socials/apple-dark.svg'),
+    apple: require('@/images/socials/apple-dark.svg'),
   },
 };
 
@@ -112,7 +112,6 @@ const textTransition: CSSTransitionProperties<TextStyle> = {
 const styles = StyleSheet.create({
   button: {
     alignSelf: 'stretch',
-    marginHorizontal: 20,
   },
   container: {
     flexDirection: 'row',

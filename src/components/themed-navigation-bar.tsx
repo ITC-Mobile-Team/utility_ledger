@@ -4,9 +4,10 @@ import {
   useColorScheme,
   ColorSchemeName,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import { AppFont, ThemedText } from './themed-text';
-import { VStack } from './stack';
+import { HStack, VStack } from './stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { gradients, gradientLocations, AppColor } from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +15,7 @@ import { Image } from 'expo-image';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
+import NavigationBarButton from './navigation-bar-button';
 
 type NavigationBarType = 'blue' | 'green' | 'purple' | 'transparent';
 
@@ -70,7 +72,10 @@ export function ThemedNavigationBar({
   const content = (
     <VStack
       spacing={6}
-      style={[styles.stack, { paddingTop: safeAreaTop, paddingBottom: 26 }]}
+      style={[
+        styles.stack,
+        { paddingTop: safeAreaTop, paddingBottom: 48 /* 24 */ },
+      ]}
     >
       {canGoBack && (
         <Pressable
@@ -80,7 +85,7 @@ export function ThemedNavigationBar({
           }}
         >
           <Image
-            source={require('@/assets/images/navigation/arrow-back.svg')}
+            source={require('@/images/navigation/arrow-back.svg')}
             contentFit='contain'
             tintColor={backIconTintColor}
             style={styles.backIcon}
@@ -102,14 +107,35 @@ export function ThemedNavigationBar({
     return <VStack>{content}</VStack>;
   } else {
     return (
-      <LinearGradient
-        colors={gradientColors}
-        locations={gradientLocations}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        {content}
-      </LinearGradient>
+      <VStack>
+        <LinearGradient
+          colors={gradientColors}
+          locations={gradientLocations}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
+          {content}
+        </LinearGradient>
+
+        <ScrollView
+          horizontal
+          style={{ marginTop: -36 }}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        >
+          <HStack spacing={12}>
+            <NavigationBarButton
+              title='Button 1'
+              icon='plus'
+              iconBackground='coral'
+            />
+            <NavigationBarButton
+              title='Button 2'
+              icon='plus'
+              iconBackground='inkTile'
+            />
+          </HStack>
+        </ScrollView>
+      </VStack>
     );
   }
 }

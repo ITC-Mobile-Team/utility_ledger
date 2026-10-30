@@ -1,0 +1,68 @@
+import { Pressable, StyleSheet, View } from 'react-native';
+import { ThemedView } from './themed-view';
+import { ThemedText } from './themed-text';
+import { HStack } from './stack';
+import { AppColor, colors } from '@/constants/colors';
+import { Image } from 'expo-image';
+import {
+  NavigationBarIcon,
+  navigationBarIcons,
+} from '@/constants/navigationBarIcons';
+import { useThemeColor } from '@/hooks/use-theme-colors';
+
+type NavigationBarButtonProps = {
+  title: string;
+  icon: NavigationBarIcon;
+  iconBackground: AppColor;
+  onPress?: () => void;
+};
+
+const NavigationBarButton = ({
+  title,
+  icon,
+  iconBackground,
+  onPress,
+}: NavigationBarButtonProps) => {
+  const navigationBarIcon = navigationBarIcons[icon];
+  const onPrimary = useThemeColor('onPrimary');
+  return (
+    <Pressable onPress={onPress}>
+      <ThemedView backgroundColor='surface' style={styles.button}>
+        <HStack align='center' spacing={12}>
+          <ThemedView backgroundColor={iconBackground} style={styles.circle}>
+            <Image
+              source={navigationBarIcon}
+              tintColor={onPrimary}
+              style={styles.icon}
+            />
+          </ThemedView>
+
+          <ThemedText color='ink' font='rowTitle'>
+            {title}
+          </ThemedText>
+        </HStack>
+      </ThemedView>
+    </Pressable>
+  );
+};
+
+export default NavigationBarButton;
+
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+  },
+  circle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    width: 22,
+    height: 22,
+  },
+});

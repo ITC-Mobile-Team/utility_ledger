@@ -10,6 +10,7 @@ import {
   RadioGroup,
   ThemedNavigationBar,
   VStack,
+  HStack,
 } from '@/components';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -46,25 +47,22 @@ export default function Preview() {
   const [mode, setMode] = useState<BillingMode>('meter');
   return (
     <VStack style={{ flex: 1 }}>
-      <ThemedNavigationBar type='blue' title='Preview' />
+      <ThemedNavigationBar
+        type='blue'
+        title='Preview'
+        subtitle='and other components'
+      />
 
       <ScrollView
         contentInsetAdjustmentBehavior='automatic'
         style={{ backgroundColor: bgColor }}
         contentContainerStyle={[styles.content]}
       >
-        <ThemedView
-          style={{
-            flexDirection: 'row',
-            paddingTop: 16,
-            gap: 16,
-            alignSelf: 'center',
-          }}
-        >
+        <HStack spacing={16} style={{ paddingTop: 16, alignSelf: 'center' }}>
           <ThemedBadge text='Новий' type='red' />
           <ThemedBadge text='Заповнено' type='green' />
           <ThemedBadge text='UAH' type='blue' />
-        </ThemedView>
+        </HStack>
 
         <Segment items={periods} value={period} onChange={setPeriod} />
 

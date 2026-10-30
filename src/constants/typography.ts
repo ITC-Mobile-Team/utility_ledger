@@ -40,7 +40,7 @@ export const typography = StyleSheet.create({
     fontFamily: family,
     fontSize: 16,
     fontWeight: '600',
-    lineHeight: 21,
+    lineHeight: 19.2,
   },
   body: { fontFamily: family, fontSize: 15, fontWeight: '400', lineHeight: 22 },
   overline: {
