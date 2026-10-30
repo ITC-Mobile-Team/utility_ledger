@@ -121,8 +121,9 @@ export function ThemedNavigationBar({
           horizontal
           style={{ marginTop: -36 }}
           contentContainerStyle={{ paddingHorizontal: 20 }}
+          showsHorizontalScrollIndicator={false}
         >
-          <HStack spacing={12}>
+          <HStack spacing={12} style={{ flex: 1 }}>
             <NavigationBarButton
               title='Button 1'
               icon='plus'
@@ -132,6 +133,16 @@ export function ThemedNavigationBar({
               title='Button 2'
               icon='plus'
               iconBackground='inkTile'
+            />
+            <NavigationBarButton
+              title='Button 3'
+              icon='plus'
+              iconBackground='coral'
+            />
+            <NavigationBarButton
+              title='Button 4'
+              icon='plus'
+              iconBackground='coral'
             />
           </HStack>
         </ScrollView>

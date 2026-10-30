@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 import { HStack } from './stack';
-import { AppColor, colors } from '@/constants/colors';
+import { AppColor } from '@/constants/colors';
 import { Image } from 'expo-image';
 import {
   NavigationBarIcon,
@@ -25,8 +25,14 @@ const NavigationBarButton = ({
 }: NavigationBarButtonProps) => {
   const navigationBarIcon = navigationBarIcons[icon];
   const onPrimary = useThemeColor('onPrimary');
+  const { width: screenWidth } = useWindowDimensions();
+  const horizontalPadding = 20;
+  const gap = 12;
+  const columns = 2;
+  const buttonWidth =
+    (screenWidth - horizontalPadding * 2 - gap * (columns - 1)) / columns;
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={{ width: buttonWidth }}>
       <ThemedView backgroundColor='surface' style={styles.button}>
         <HStack align='center' spacing={12}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
