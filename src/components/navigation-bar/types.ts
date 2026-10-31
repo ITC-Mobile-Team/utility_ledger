@@ -4,10 +4,13 @@ import { NavigationBarButtonItem } from './navigation-bar-button';
 
 export type NavigationBarType = 'blue' | 'green' | 'purple' | 'transparent';
 
+export type NavigationBarVariant = 'full' | 'short';
+
 export type NavigationBarButtonVariant = 'full' | 'short';
 
 export type ThemedNavigationBarProps = ViewProps & {
-  type?: NavigationBarType;
+  type: NavigationBarVariant;
+  barType?: NavigationBarType;
   title: string;
   subtitle?: string;
   navigationBarButtons?: NavigationBarButtonItem[];

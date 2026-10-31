@@ -8,14 +8,21 @@ import {
   VStack,
   ScreenView,
 } from '@/components';
+import { router } from 'expo-router';
 
 const Onboarding = () => {
+  const signInPress = () => {
+    router.push('/sign-in');
+  };
   return (
     <ScreenView backgroundColor='surface' contentInsets={{ horizontal: 24 }}>
       <VStack style={styles.fill}>
         <Header />
         <Content />
-        <ActionButton title='Увійти або зареєструватися' />
+        <ActionButton
+          title='Увійти або зареєструватися'
+          onPress={signInPress}
+        />
       </VStack>
     </ScreenView>
   );

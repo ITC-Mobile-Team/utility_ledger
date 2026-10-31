@@ -8,7 +8,8 @@ import { useNavigationBarCollapse } from './use-navigation-bar-collapse';
 import { ThemedView } from '../themed-view';
 
 export function ThemedNavigationBar({
-  type = 'transparent',
+  type,
+  barType = 'transparent',
   title,
   subtitle,
   navigationBarButtons = [],
@@ -20,13 +21,17 @@ export function ThemedNavigationBar({
 
   return (
     <ThemedView>
-      {type !== 'transparent' && (
-        <NavigationBarBackground type={type} style={collapse.gradientStyle} />
+      {barType !== 'transparent' && (
+        <NavigationBarBackground
+          type={barType}
+          style={collapse.gradientStyle}
+        />
       )}
       <NavigationBarHeader
+        type={type}
         title={title}
         subtitle={subtitle}
-        isTransparent={type === 'transparent'}
+        isTransparent={barType === 'transparent'}
         paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM}
       />
       {hasButtons && (

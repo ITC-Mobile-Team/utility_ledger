@@ -16,7 +16,8 @@ type NavigationViewProps = ThemedNavigationBarProps & {
 };
 
 export const NavigationView = ({
-  type,
+  type = 'full',
+  barType,
   title,
   subtitle,
   navigationBarButtons,
@@ -34,6 +35,7 @@ export const NavigationView = ({
     <VStack style={styles.container}>
       <ThemedNavigationBar
         type={type}
+        barType={barType}
         title={title}
         subtitle={subtitle}
         navigationBarButtons={navigationBarButtons}

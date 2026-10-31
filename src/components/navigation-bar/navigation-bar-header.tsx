@@ -6,10 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { AppFont, ThemedText } from '../themed-text';
-import { VStack } from '../stack';
-import { HORIZONTAL_PADDING } from './constants';
+import { HStack, VStack } from '../stack';
+import { NavigationBarVariant } from './types';
 
 type NavigationBarHeaderProps = {
+  type: NavigationBarVariant;
   title: string;
   subtitle?: string;
   isTransparent: boolean;
@@ -17,6 +18,7 @@ type NavigationBarHeaderProps = {
 };
 
 export const NavigationBarHeader = ({
+  type,
   title,
   subtitle,
   isTransparent,
@@ -31,11 +33,21 @@ export const NavigationBarHeader = ({
     );
   });
   const { top: safeAreaTop } = useSafeAreaInsets();
-  const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
-  const titleFont: AppFont = isTransparent ? 'display' : 'title';
   const subtitleColor: AppColor = isTransparent ? 'muted' : 'heroSub';
   const backIconTintColor = useThemeColor(
     isTransparent ? 'coral' : 'onPrimary',
+  );
+  const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
+  const titleFont: AppFont = isTransparent
+    ? 'display'
+    : type == 'full'
+      ? 'title'
+      : 'headline';
+
+  const titleLabel = (
+    <ThemedText color={titleColor} font={titleFont}>
+      {title}
+    </ThemedText>
   );
 
   return (
@@ -43,33 +55,35 @@ export const NavigationBarHeader = ({
       spacing={6}
       style={{
         paddingTop: safeAreaTop,
-        paddingHorizontal: HORIZONTAL_PADDING,
         paddingBottom,
       }}
     >
-      {canGoBack && (
-        <Pressable
-          style={(state) => [state.pressed && styles.pressed, styles.back]}
-          onPress={() => {
-            router.back();
-          }}
-        >
-          <Image
-            source={require('@/images/navigation/arrow-back.svg')}
-            contentFit='contain'
-            tintColor={backIconTintColor}
-            style={styles.backIcon}
-          />
-        </Pressable>
-      )}
-      <ThemedText color={titleColor} font={titleFont}>
-        {title}
-      </ThemedText>
-      {subtitle && (
-        <ThemedText color={subtitleColor} font='navigationSubtitle'>
-          {subtitle}
-        </ThemedText>
-      )}
+      <HStack align='center' spacing={6}>
+        {canGoBack && (
+          <Pressable
+            style={(state) => [state.pressed && styles.pressed, styles.back]}
+            onPress={() => {
+              router.back();
+            }}
+          >
+            <Image
+              source={require('@/images/navigation/arrow-back.svg')}
+              contentFit='contain'
+              tintColor={backIconTintColor}
+              style={styles.backIcon}
+            />
+          </Pressable>
+        )}
+        {type === 'short' && titleLabel}
+      </HStack>
+      <VStack spacing={6} style={{ paddingHorizontal: 15 }}>
+        {type === 'full' && titleLabel}
+        {subtitle && type === 'full' && (
+          <ThemedText color={subtitleColor} font='navigationSubtitle'>
+            {subtitle}
+          </ThemedText>
+        )}
+      </VStack>
     </VStack>
   );
 };
@@ -79,7 +93,8 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     justifyContent: 'center',
-    alignSelf: 'flex-start',
+    alignItems: 'center',
+    paddingStart: 10,
   },
   backIcon: {
     width: 22,
