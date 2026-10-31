@@ -239,7 +239,6 @@ export const typography = StyleSheet.create({
     letterSpacing: 0.44,
     textTransform: 'uppercase',
   },
-  // Onest Black (900) is not bundled yet: add Onest-Black.ttf to assets/fonts and the expo-font plugin in app.json before using this style.
   counterValue: {
     fontFamily: family,
     fontSize: 28,
