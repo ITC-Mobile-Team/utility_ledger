@@ -7,14 +7,14 @@ export const typography = StyleSheet.create({
     fontFamily: family,
     fontSize: 32,
     fontWeight: '700',
-    lineHeight: 38.4,
+    lineHeight: 42,
     letterSpacing: -0.64,
   },
   title: {
     fontFamily: family,
     fontSize: 28,
     fontWeight: '700',
-    lineHeight: 32.2,
+    lineHeight: 36,
     letterSpacing: -0.56,
   },
   amount: {
@@ -40,7 +40,7 @@ export const typography = StyleSheet.create({
     fontFamily: family,
     fontSize: 16,
     fontWeight: '600',
-    lineHeight: 19.2,
+    lineHeight: 21,
   },
   body: { fontFamily: family, fontSize: 15, fontWeight: '400', lineHeight: 22 },
   overline: {
