@@ -17,6 +17,15 @@ type NavigationBarHeaderProps = {
   paddingBottom: number;
 };
 
+const getTitleFont = (
+  isTransparent: boolean,
+  type: NavigationBarVariant,
+): AppFont => {
+  if (isTransparent) return 'display';
+  if (type === 'full') return 'title';
+  return 'headline';
+};
+
 export const NavigationBarHeader = ({
   type,
   title,
@@ -38,11 +47,7 @@ export const NavigationBarHeader = ({
     isTransparent ? 'coral' : 'onPrimary',
   );
   const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
-  const titleFont: AppFont = isTransparent
-    ? 'display'
-    : type == 'full'
-      ? 'title'
-      : 'headline';
+  const titleFont = getTitleFont(isTransparent, type);
 
   const titleLabel = (
     <ThemedText color={titleColor} font={titleFont}>
