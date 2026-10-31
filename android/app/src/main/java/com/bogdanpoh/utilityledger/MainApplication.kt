@@ -30,8 +30,9 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
-    // @generated begin xml-fonts-init - expo prebuild (DO NOT MODIFY) sync-1695dbe927c45eadf4a02ae34855ae1e11e0f5aa
+    // @generated begin xml-fonts-init - expo prebuild (DO NOT MODIFY) sync-43511d1b2242f9319830706c1614758757697f21
     ReactFontManager.getInstance().addCustomFont(this, "Onest", R.font.xml_onest)
+    ReactFontManager.getInstance().addCustomFont(this, "JetBrains Mono", R.font.xml_jet_brains_mono)
     // @generated end xml-fonts-init
     DefaultNewArchitectureEntryPoint.releaseLevel = try {
       ReleaseLevel.valueOf(BuildConfig.REACT_NATIVE_RELEASE_LEVEL.uppercase())
