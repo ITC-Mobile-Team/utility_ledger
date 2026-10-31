@@ -4,16 +4,13 @@ import { ThemedText } from '../themed-text';
 import { HStack } from '../stack';
 import { AppColor } from '@/constants/colors';
 import { Image } from 'expo-image';
-import {
-  NavigationBarIcon,
-  navigationBarIcons,
-} from '@/constants/navigationBarIcons';
+import { AppIcon, appIcons } from '@/constants/app-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 
 export type NavigationBarButtonItem = {
   id: string;
   title: string;
-  icon: NavigationBarIcon;
+  icon: AppIcon;
   iconBackground: AppColor;
 };
 
@@ -27,7 +24,7 @@ export const NavigationBarButton = ({
   iconBackground,
   onPress,
 }: NavigationBarButtonProps) => {
-  const navigationBarIcon = navigationBarIcons[icon];
+  const navigationBarIcon = appIcons[icon];
   const onPrimary = useThemeColor('onPrimary');
   const { width: screenWidth } = useWindowDimensions();
   const horizontalPadding = 20;

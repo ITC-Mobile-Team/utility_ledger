@@ -5,7 +5,7 @@ import { NavigationBarButtonProps } from './navigation-bar-button';
 import { Image } from 'expo-image';
 import { ThemedText } from '../themed-text';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { navigationBarIcons } from '@/constants/navigationBarIcons';
+import { appIcons } from '@/constants/app-icons';
 
 export const ShortNavigationBarButton = ({
   title,
@@ -13,7 +13,7 @@ export const ShortNavigationBarButton = ({
   iconBackground,
   onPress,
 }: NavigationBarButtonProps) => {
-  const navigationBarIcon = navigationBarIcons[icon];
+  const navigationBarIcon = appIcons[icon];
   const onPrimary = useThemeColor('onPrimary');
   return (
     <Pressable onPress={onPress}>

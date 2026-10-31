@@ -9,15 +9,10 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
-
-type NavigationContentInsets = {
-  top?: number;
-  horizontal?: number;
-  bottom?: number;
-};
+import { toPadding, type ContentInsets } from './content-insets';
 
 type NavigationViewProps = ThemedNavigationBarProps & {
-  contentInsets?: NavigationContentInsets;
+  contentInsets?: ContentInsets;
 };
 
 export const NavigationView = ({
@@ -50,11 +45,7 @@ export const NavigationView = ({
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior='automatic'
         style={{ backgroundColor: bg }}
-        contentContainerStyle={{
-          paddingTop: contentInsets?.top ?? undefined,
-          paddingHorizontal: contentInsets?.horizontal ?? undefined,
-          paddingBottom: contentInsets?.bottom ?? undefined,
-        }}
+        contentContainerStyle={toPadding(contentInsets)}
         {...rest}
       />
     </VStack>

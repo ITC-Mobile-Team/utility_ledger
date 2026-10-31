@@ -1,4 +1,4 @@
-import { Text, TextProps, StyleSheet } from 'react-native';
+import { Text, TextProps, StyleSheet, TextStyle } from 'react-native';
 import { typography } from '@/constants/typography';
 import { AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -8,11 +8,13 @@ export type AppFont = keyof typeof typography;
 type ThemedTextProps = TextProps & {
   color?: AppColor;
   font?: AppFont;
+  align?: TextStyle['textAlign'];
 };
 
 export function ThemedText({
   color = 'ink',
   font = 'body',
+  align,
   style,
   ...rest
 }: ThemedTextProps) {
@@ -20,7 +22,13 @@ export function ThemedText({
   return (
     <Text
       textBreakStrategy='simple'
-      style={[{ color: themedColor }, typography[font], styles.text, style]}
+      style={[
+        { color: themedColor },
+        typography[font],
+        styles.text,
+        { textAlign: align },
+        style,
+      ]}
       {...rest}
     />
   );
