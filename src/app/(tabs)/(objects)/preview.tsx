@@ -54,6 +54,7 @@ export default function Preview() {
     <NavigationView
       type='blue'
       title='Preview'
+      subtitle='description and other text'
       contentInsets={{ horizontal: 20 }}
       navigationBarButtons={[testNavigationBarItem]}
     >
