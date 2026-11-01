@@ -1,16 +1,18 @@
 import {
   Pressable,
-  PressableProps,
+  type PressableProps,
   StyleSheet,
-  ViewStyle,
-  TextStyle,
+  type ViewStyle,
+  type TextStyle,
   useColorScheme,
 } from 'react-native';
-import { AppColor } from '@/constants/colors';
-import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
+import { type AppColor } from '@/constants/colors';
+import Animated, {
+  type CSSTransitionProperties,
+} from 'react-native-reanimated';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { typography } from '@/constants/typography';
-import { Image, ImageSource } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 
 type ButtonType = 'primary' | 'secondary' | 'outline' | 'google' | 'apple';
 

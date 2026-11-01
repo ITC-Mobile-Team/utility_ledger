@@ -1,8 +1,8 @@
 import Animated from 'react-native-reanimated';
 import { FULL_ROW_OFFSET, SHORT_ROW_OFFSET } from './constants';
-import { NavigationBarButtonItem } from './navigation-bar-button';
+import { type NavigationBarButtonItem } from './navigation-bar-button';
 import { NavigationBarButtonsRow } from './navigation-bar-buttons-row';
-import { NavigationBarCollapse } from './use-navigation-bar-collapse';
+import { type NavigationBarCollapse } from './use-navigation-bar-collapse';
 
 type NavigationBarButtonsProps = {
   buttons: NavigationBarButtonItem[];

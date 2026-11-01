@@ -3,9 +3,9 @@ import {
   StyleSheet,
   Pressable,
   View,
-  StyleProp,
-  ViewStyle,
-  LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+  type LayoutChangeEvent,
 } from 'react-native';
 import Animated, {
   Easing,

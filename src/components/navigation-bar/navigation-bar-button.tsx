@@ -2,9 +2,9 @@ import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { ThemedView } from '../themed-view';
 import { ThemedText } from '../themed-text';
 import { HStack } from '../stack';
-import { AppColor } from '@/constants/colors';
+import { type AppColor } from '@/constants/colors';
 import { Image } from 'expo-image';
-import { AppIcon, appIcons } from '@/constants/app-icons';
+import { type AppIcon, appIcons } from '@/constants/app-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 
 export type NavigationBarButtonItem = {
@@ -44,7 +44,7 @@ export const NavigationBarButton = ({
             />
           </ThemedView>
 
-          <ThemedText color='ink' font='rowTitle' style={styles.title}>
+          <ThemedText font='rowTitle' style={styles.title}>
             {title}
           </ThemedText>
         </HStack>

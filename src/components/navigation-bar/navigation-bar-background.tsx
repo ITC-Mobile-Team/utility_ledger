@@ -1,15 +1,15 @@
 import {
-  ColorSchemeName,
-  ColorValue,
-  StyleProp,
+  type ColorSchemeName,
+  type ColorValue,
+  type StyleProp,
   StyleSheet,
   useColorScheme,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
-import Animated, { AnimatedStyle } from 'react-native-reanimated';
+import Animated, { type AnimatedStyle } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { gradients, gradientLocations } from '@/constants/colors';
-import { NavigationBarType } from './types';
+import { type NavigationBarType } from './types';
 
 const getGradientColors = ({
   type,

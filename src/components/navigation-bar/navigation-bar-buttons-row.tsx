@@ -1,16 +1,21 @@
-import { ScrollView, StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import Animated, { AnimatedStyle } from 'react-native-reanimated';
+import {
+  ScrollView,
+  type StyleProp,
+  StyleSheet,
+  type ViewStyle,
+} from 'react-native';
+import Animated, { type AnimatedStyle } from 'react-native-reanimated';
 import { HStack } from '../stack';
 import { HORIZONTAL_PADDING } from './constants';
 import {
   NavigationBarButton,
-  NavigationBarButtonItem,
+  type NavigationBarButtonItem,
 } from './navigation-bar-button';
 import { ShortNavigationBarButton } from './short-navigation-bar-button';
-import { NavigationBarButtonVariant } from './types';
+import { type NavigationBarVariant } from './types';
 
 type NavigationBarButtonsRowProps = {
-  variant: NavigationBarButtonVariant;
+  variant: NavigationBarVariant;
   buttons: NavigationBarButtonItem[];
   onButtonPress: (id: string) => void;
   top: number;

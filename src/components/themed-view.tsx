@@ -1,6 +1,6 @@
-import { AppColor } from '@/constants/colors';
+import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { View, ViewProps } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 import { toSize, type Size } from './size';
 
 type ThemedViewProps = ViewProps & {

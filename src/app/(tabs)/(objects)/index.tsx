@@ -1,6 +1,6 @@
 import {
   ActionButton,
-  NavigationBarButtonItem,
+  type NavigationBarButtonItem,
   NavigationView,
   ThemedView,
   VStack,

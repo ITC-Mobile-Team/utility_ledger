@@ -3,14 +3,14 @@ import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppColor } from '@/constants/colors';
+import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { AppFont, ThemedText } from '../themed-text';
+import { type AppFont, ThemedText } from '../themed-text';
 import { HStack, VStack } from '../stack';
-import { NavigationBarVariant } from './types';
+import { type NavigationBarVariant } from './types';
 
 type NavigationBarHeaderProps = {
-  type: NavigationBarVariant;
+  type?: NavigationBarVariant;
   title: string;
   subtitle?: string;
   isTransparent: boolean;
@@ -27,7 +27,7 @@ const getTitleFont = (
 };
 
 export const NavigationBarHeader = ({
-  type,
+  type = 'full',
   title,
   subtitle,
   isTransparent,

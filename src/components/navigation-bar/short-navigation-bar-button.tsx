@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { ThemedView } from '../themed-view';
 import { HStack } from '../stack';
-import { NavigationBarButtonProps } from './navigation-bar-button';
+import { type NavigationBarButtonProps } from './navigation-bar-button';
 import { Image } from 'expo-image';
 import { ThemedText } from '../themed-text';
 import { useThemeColor } from '@/hooks/use-theme-colors';

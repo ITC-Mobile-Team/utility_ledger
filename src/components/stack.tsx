@@ -1,4 +1,4 @@
-import { View, ViewProps, ViewStyle } from 'react-native';
+import { View, type ViewProps, type ViewStyle } from 'react-native';
 
 type StackDirection = 'row' | 'column';
 

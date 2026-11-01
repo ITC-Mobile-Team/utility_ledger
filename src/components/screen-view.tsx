@@ -1,6 +1,6 @@
-import { AppColor } from '@/constants/colors';
-import { ScrollView, StyleSheet, ViewProps, View } from 'react-native';
-import { Edge, SafeAreaView } from 'react-native-safe-area-context';
+import { type AppColor } from '@/constants/colors';
+import { ScrollView, StyleSheet, type ViewProps, View } from 'react-native';
+import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
 import { type ContentInsets, toPadding } from './content-insets';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 
@@ -13,7 +13,7 @@ type ScrollViewProps = ViewProps & {
 
 export function ScreenView({
   scrollable = false,
-  edges,
+  edges = ['top', 'left', 'right', 'bottom'],
   backgroundColor,
   contentInsets,
   style,

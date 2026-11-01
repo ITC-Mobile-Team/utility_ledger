@@ -1,4 +1,4 @@
-import { KeyValueStorage } from './key-value-storage';
+import { type KeyValueStorage } from './key-value-storage';
 
 export class InMemoryStorage implements KeyValueStorage {
   private store = new Map<string, string>();

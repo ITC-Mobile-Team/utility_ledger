@@ -51,10 +51,10 @@ const Content = () => {
       <ContentCircle />
 
       <VStack spacing={12}>
-        <ThemedText color='ink' font='display' align='center'>
+        <ThemedText font='display' align='center'>
           Комунальні платежі без зайвих турбот
         </ThemedText>
-        <ThemedText color='muted' font='body' align='center'>
+        <ThemedText color='muted' align='center'>
           Додайте адресу, фіксуйте показники та зберігайте рахунки в одному
           місці.
         </ThemedText>

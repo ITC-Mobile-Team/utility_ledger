@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Extrapolation,
   interpolate,
-  SharedValue,
+  type SharedValue,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,

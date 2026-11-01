@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { type ScrollViewProps, StyleSheet } from 'react-native';
 import { VStack } from './stack';
 import {
   ThemedNavigationBar,
-  ThemedNavigationBarProps,
+  type ThemedNavigationBarProps,
   type NavigationBarVariant,
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -13,10 +13,11 @@ import Animated, {
 import { toPadding, type ContentInsets } from './content-insets';
 import { ThemedView } from './themed-view';
 
-type NavigationViewProps = Omit<ThemedNavigationBarProps, 'type'> & {
-  type?: NavigationBarVariant;
-  contentInsets?: ContentInsets;
-};
+type NavigationViewProps = Omit<ScrollViewProps, 'onScroll'> &
+  Omit<ThemedNavigationBarProps, 'type' | 'scrollY'> & {
+    type?: NavigationBarVariant;
+    contentInsets?: ContentInsets;
+  };
 
 export const NavigationView = ({
   type = 'full',

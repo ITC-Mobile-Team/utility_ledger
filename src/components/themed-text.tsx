@@ -1,6 +1,6 @@
-import { Text, TextProps, StyleSheet, TextStyle } from 'react-native';
+import { Text, type TextProps, StyleSheet, type TextStyle } from 'react-native';
 import { typography } from '@/constants/typography';
-import { AppColor } from '@/constants/colors';
+import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 
 export type AppFont = keyof typeof typography;

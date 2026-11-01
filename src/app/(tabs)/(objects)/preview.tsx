@@ -1,14 +1,14 @@
 import { StyleSheet } from 'react-native';
 import {
   ThemedText,
-  AppFont,
+  type AppFont,
   ThemedView,
   ActionButton,
   Segment,
   ThemedTextInput,
   ThemedBadge,
   RadioGroup,
-  NavigationBarButtonItem,
+  type NavigationBarButtonItem,
   VStack,
   HStack,
   NavigationView,
@@ -20,7 +20,7 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from 'react-native-reanimated';
-import { BillingMode, billingModes } from '@/constants/billing-mode';
+import { type BillingMode, billingModes } from '@/constants/billing-mode';
 
 const fonts = Object.keys(typography) as AppFont[];
 const weights = ['400', '500', '600', '700', '900'] as const;
@@ -144,22 +144,16 @@ export default function Preview() {
                 <ThemedText color='coral' font='headline'>
                   {`${font} ${fontSize}/${fontWeight} lh: ${lineHeight}`}
                 </ThemedText>
-                <ThemedText color='ink' font={font}>
-                  {previewText}
-                </ThemedText>
+                <ThemedText font={font}>{previewText}</ThemedText>
               </ThemedView>
             );
           })}
 
-          <ThemedText color='ink' font='section'>
-            Ваги
-          </ThemedText>
+          <ThemedText font='section'>Ваги</ThemedText>
           {weights.map((weight) => {
             return (
               <ThemedText
                 key={weight}
-                color='ink'
-                font='body'
                 style={{ fontWeight: weight }}
               >{`${weight} ${previewText}`}</ThemedText>
             );

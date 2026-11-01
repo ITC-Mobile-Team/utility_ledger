@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
-import Animated, { CSSTransitionProperties } from 'react-native-reanimated';
-import { AppColor } from '@/constants/colors';
+import Animated, {
+  type CSSTransitionProperties,
+} from 'react-native-reanimated';
+import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { ThemedText } from './themed-text';
 import { VStack } from './stack';
@@ -71,9 +73,7 @@ export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
       />
 
       <VStack spacing={2}>
-        <ThemedText color='ink' font='radioCardTitle'>
-          {title}
-        </ThemedText>
+        <ThemedText font='radioCardTitle'>{title}</ThemedText>
         <ThemedText color='muted' font='radioCardSubtitle'>
           {subtitle}
         </ThemedText>

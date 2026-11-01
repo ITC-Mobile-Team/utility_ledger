@@ -1,9 +1,8 @@
-import { View } from 'react-native';
 import { EMPTY_BOTTOM } from './constants';
 import { NavigationBarBackground } from './navigation-bar-background';
 import { NavigationBarButtons } from './navigation-bar-buttons';
 import { NavigationBarHeader } from './navigation-bar-header';
-import { ThemedNavigationBarProps } from './types';
+import { type ThemedNavigationBarProps } from './types';
 import { useNavigationBarCollapse } from './use-navigation-bar-collapse';
 import { ThemedView } from '../themed-view';
 
@@ -13,7 +12,7 @@ export function ThemedNavigationBar({
   title,
   subtitle,
   navigationBarButtons = [],
-  onNavigationButtonPress = (id) => {},
+  onNavigationButtonPress = () => {},
   scrollY,
   cornerRadius = 0,
 }: ThemedNavigationBarProps) {

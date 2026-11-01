@@ -1,7 +1,6 @@
-import { typography } from '@/constants/typography';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
-import { AppColor } from '@/constants/colors';
+import { type AppColor } from '@/constants/colors';
 import { StyleSheet } from 'react-native';
 
 type BadgeType = 'red' | 'green' | 'blue';

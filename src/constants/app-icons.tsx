@@ -1,4 +1,4 @@
-import { ImageSource } from 'expo-image';
+import { type ImageSource } from 'expo-image';
 
 export type AppIcon = 'plus' | 'house';
 
