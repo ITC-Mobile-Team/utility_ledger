@@ -66,7 +66,7 @@ export const NavigationView = ({
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior='automatic'
         style={{ backgroundColor: bg }}
-        contentContainerStyle={toPadding(contentInsets)}
+        contentContainerStyle={[{ flexGrow: 1 }, toPadding(contentInsets)]}
         {...rest}
       />
     </VStack>

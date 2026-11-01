@@ -17,7 +17,7 @@ const Onboarding = () => {
   return (
     <ScreenView backgroundColor='surface' contentInsets={{ horizontal: 24 }}>
       <VStack style={styles.fill}>
-        <Header />
+        <AppHeader />
         <Content />
         <ActionButton
           title='Увійти або зареєструватися'
@@ -28,7 +28,7 @@ const Onboarding = () => {
   );
 };
 
-const Header = () => {
+export const AppHeader = () => {
   return (
     <HStack align='center' spacing={10}>
       <ThemedView
