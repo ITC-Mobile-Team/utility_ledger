@@ -16,4 +16,5 @@ export type ThemedNavigationBarProps = ViewProps & {
   navigationBarButtons?: NavigationBarButtonItem[];
   onNavigationButtonPress?: (id: string) => void;
   scrollY?: SharedValue<number>;
+  cornerRadius?: number;
 };

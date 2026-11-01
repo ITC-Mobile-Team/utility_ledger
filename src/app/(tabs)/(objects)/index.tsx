@@ -25,7 +25,7 @@ export default function Index() {
   return (
     <NavigationView
       title='Обʼєкти'
-      type='blue'
+      barType='blue'
       contentInsets={{ top: 16, horizontal: 16, bottom: 16 }}
       navigationBarButtons={navigationButtons}
       onNavigationButtonPress={(id) => {

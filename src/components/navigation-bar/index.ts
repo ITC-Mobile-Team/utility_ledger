@@ -1,5 +1,9 @@
 export { ThemedNavigationBar } from './themed-navigation-bar';
-export type { ThemedNavigationBarProps, NavigationBarType } from './types';
+export type {
+  ThemedNavigationBarProps,
+  NavigationBarType,
+  NavigationBarVariant,
+} from './types';
 export { NavigationBarButton } from './navigation-bar-button';
 export type {
   NavigationBarButtonItem,

@@ -52,7 +52,7 @@ export default function Preview() {
   };
   return (
     <NavigationView
-      type='blue'
+      barType='blue'
       title='Preview'
       subtitle='description and other text'
       contentInsets={{ horizontal: 20 }}

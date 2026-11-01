@@ -1,16 +1,19 @@
-import { StyleSheet } from 'react-native';
-import React from 'react';
-import { NavigationView } from '@/components';
+import { NavigationView, ThemedText, ThemedView, VStack } from '@/components';
 
 export default function SignIn() {
   return (
     <NavigationView
-      title='Вхід і реєстрація'
-      subtitle='test'
       type='short'
+      title='Вхід і реєстрація'
       barType='blue'
-    ></NavigationView>
+      contentInsets={{ horizontal: 20 }}
+      cornerRadius={28}
+    >
+      <VStack>
+        <ThemedText>Test</ThemedText>
+
+        <ThemedView backgroundColor='blue' size={{ width: 1000 }} />
+      </VStack>
+    </NavigationView>
   );
 }
-
-const styles = StyleSheet.create({});

@@ -15,6 +15,7 @@ export function ThemedNavigationBar({
   navigationBarButtons = [],
   onNavigationButtonPress = (id) => {},
   scrollY,
+  cornerRadius = 0,
 }: ThemedNavigationBarProps) {
   const hasButtons = navigationBarButtons.length > 0;
   const collapse = useNavigationBarCollapse({ scrollY, hasButtons });
@@ -32,7 +33,7 @@ export function ThemedNavigationBar({
         title={title}
         subtitle={subtitle}
         isTransparent={barType === 'transparent'}
-        paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM}
+        paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM + cornerRadius}
       />
       {hasButtons && (
         <NavigationBarButtons
