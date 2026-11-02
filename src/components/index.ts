@@ -14,3 +14,4 @@ export { ScreenView } from './screen-view';
 export { AppImage } from './app-image';
 export { type Size, toSize } from './size';
 export { Spacer } from './spacer';
+export { LegalNotice } from './legal-notice';

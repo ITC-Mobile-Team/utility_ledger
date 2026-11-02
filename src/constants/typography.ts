@@ -289,4 +289,10 @@ export const typography = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 16,
   },
+  footnote: {
+    fontFamily: onestFamily,
+    fontSize: 13,
+    fontWeight: '400',
+    lineHeight: 18.85,
+  },
 });

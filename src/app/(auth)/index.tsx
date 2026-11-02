@@ -15,7 +15,10 @@ const Onboarding = () => {
     router.push('/sign-in');
   };
   return (
-    <ScreenView backgroundColor='surface' contentInsets={{ horizontal: 24 }}>
+    <ScreenView
+      backgroundColor='surface'
+      contentInsets={{ horizontal: 24, bottom: 34 }}
+    >
       <VStack style={styles.fill}>
         <AppHeader />
         <Content />

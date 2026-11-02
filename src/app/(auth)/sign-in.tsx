@@ -7,6 +7,7 @@ import {
   ThemedView,
   VStack,
   Spacer,
+  LegalNotice,
 } from '@/components';
 import { AppHeader } from '.';
 import { StyleSheet } from 'react-native';
@@ -51,9 +52,7 @@ export default function SignIn() {
 
         <Spacer />
 
-        <ThemedText align='center'>
-          Продовжуючи, ви приймаєте умови й політику приватності.
-        </ThemedText>
+        <LegalNotice style={styles.legalNotice} />
       </VStack>
     </NavigationView>
   );
@@ -63,22 +62,21 @@ const styles = StyleSheet.create({
   textStack: {
     marginTop: 24,
   },
-
   buttonStack: {
     marginTop: 32,
   },
-
   banner: {
     marginTop: 24,
     borderRadius: 16,
   },
-
   bannerContent: {
     paddingVertical: 14,
     paddingHorizontal: 16,
   },
-
   bannerText: {
     flexShrink: 1,
+  },
+  legalNotice: {
+    paddingHorizontal: 20,
   },
 });
