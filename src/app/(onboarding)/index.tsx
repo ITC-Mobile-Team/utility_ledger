@@ -27,7 +27,6 @@ export default function Onboarding() {
   const { height: screenHeight } = useWindowDimensions();
   const { top: safeAreaTopInset } = useSafeAreaInsets();
   const backgroundHeight = screenHeight * (500 / 874);
-  console.log(backgroundHeight);
   return (
     <ScreenView
       edges={['bottom']}

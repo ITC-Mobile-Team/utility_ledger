@@ -30,7 +30,7 @@ const buttonColors: Record<ButtonType, ButtonColor> = {
   apple: { bg: 'btnDarkBg', text: 'btnDarkInk' },
 };
 
-const googleIcon: ImageSource = require('@/images/socials/google.svg');
+const googleIcon: ImageSource = require('@/assets/images/icons/socials/google.svg');
 
 const buttonIcons: Record<
   'light' | 'dark',
@@ -38,11 +38,11 @@ const buttonIcons: Record<
 > = {
   light: {
     google: googleIcon,
-    apple: require('@/images/socials/apple-light.svg'),
+    apple: require('@/assets/images/icons/socials/apple-light.svg'),
   },
   dark: {
     google: googleIcon,
-    apple: require('@/images/socials/apple-dark.svg'),
+    apple: require('@/assets/images/icons/socials/apple-dark.svg'),
   },
 };
 

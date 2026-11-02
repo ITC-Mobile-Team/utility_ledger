@@ -71,6 +71,8 @@
 		<string>Onest-Medium.ttf</string>
 		<string>Onest-SemiBold.ttf</string>
 		<string>Onest-Bold.ttf</string>
+		<string>Onest-Black.ttf</string>
+		<string>JetBrainsMono-Regular.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

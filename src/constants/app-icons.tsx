@@ -1,12 +1,12 @@
 export const appIcons = {
-  plus: require('@/images/button/plus.svg'),
-  house: require('@/images/house.svg'),
-  lock: require('@/images/lock.svg'),
-  danger: require('@/images/danger.svg'),
-  apartment: require('@/images/services/apartment.svg'),
-  electricity: require('@/images/services/electricity.svg'),
-  water: require('@/images/services/water.svg'),
-  network: require('@/images/services/network.svg'),
+  plus: require('@/assets/images/icons/plus.svg'),
+  house: require('@/assets/images/icons/house.svg'),
+  lock: require('@/assets/images/icons/lock.svg'),
+  danger: require('@/assets/images/icons/danger.svg'),
+  apartment: require('@/assets/images/icons/services/apartment.svg'),
+  electricity: require('@/assets/images/icons/services/electricity.svg'),
+  water: require('@/assets/images/icons/services/water.svg'),
+  network: require('@/assets/images/icons/services/network.svg'),
 };
 
 export type AppIcon = keyof typeof appIcons;

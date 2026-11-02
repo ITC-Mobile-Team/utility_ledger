@@ -72,7 +72,7 @@ export const NavigationBarHeader = ({
             }}
           >
             <Image
-              source={require('@/images/navigation/arrow-back.svg')}
+              source={require('@/assets/images/icons/arrow-back.svg')}
               contentFit='contain'
               tintColor={backIconTintColor}
               style={styles.backIcon}
