@@ -275,7 +275,7 @@ export const typography = StyleSheet.create({
     fontSize: 34,
     fontWeight: '400',
     lineHeight: 40,
-    letterSpacing: 4.08,
+    // letterSpacing: 4.08,
   },
   codeToken: {
     fontFamily: jetbrainsMonoFamily,
