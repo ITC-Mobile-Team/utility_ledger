@@ -1,6 +1,6 @@
 import { StyleSheet, type TextProps } from 'react-native';
 import { openBrowserAsync } from 'expo-web-browser';
-import { ThemedText } from './themed-text';
+import { ThemedText } from '@/components';
 
 const TERMS_URL = 'https://google.com.ua';
 const PRIVACY_URL = 'https://google.com.ua';

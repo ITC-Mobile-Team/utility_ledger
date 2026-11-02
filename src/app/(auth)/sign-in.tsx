@@ -7,11 +7,10 @@ import {
   ThemedView,
   VStack,
   Spacer,
-  LegalNotice,
 } from '@/components';
 import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { AppHeader } from '@/views';
+import { AppHeader, LegalNotice } from '@/views';
 import { useAuth } from '@/providers/auth-provider';
 
 export default function SignIn() {
