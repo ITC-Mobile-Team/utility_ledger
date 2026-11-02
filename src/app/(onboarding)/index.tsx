@@ -9,6 +9,7 @@ import {
   TransparentActionButton,
   VStack,
 } from '@/components';
+import { ObjectCard } from '@/views';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -56,6 +57,7 @@ export default function Onboarding() {
               title='вул. Шевченка, 8'
               subtitle='Будинок батьків'
             />
+            <ObjectCard />
             <Spacer />
           </VStack>
         </View>

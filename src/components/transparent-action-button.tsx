@@ -3,10 +3,9 @@ import { type AppIcon } from '@/constants/app-icons';
 import type { AppColor } from '@/constants/colors';
 import { HStack, VStack } from './stack';
 import { ThemedText, type AppFont } from './themed-text';
-import { AppImage } from './app-image';
-import { ThemedView } from './themed-view';
+import { IconView } from './icon-view';
 
-type TransparentActionButtonProps = Omit<PressableProps, 'children'> & {
+type TransparentActionButtonProps = PressableProps & {
   icon?: AppIcon;
   iconBackground?: AppColor;
   title: string;
@@ -46,22 +45,7 @@ export function TransparentActionButton({
         }}
       >
         {isFull && (
-          <ThemedView
-            backgroundColor={iconBackground}
-            size={{ width: 40 }}
-            style={[
-              {
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 20,
-              },
-              !iconBackground && {
-                backgroundColor: 'rgba(255, 255, 255, 0.22)',
-              },
-            ]}
-          >
-            <AppImage icon={icon} tintColor='onPrimary' size={{ width: 18 }} />
-          </ThemedView>
+          <IconView icon={icon} iconSize={{ width: 18 }} size={{ width: 40 }} />
         )}
         <VStack>
           <ThemedText color='onPrimary' font={titleFont}>
