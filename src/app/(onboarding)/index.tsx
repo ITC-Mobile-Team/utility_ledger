@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@/components';
 import { ObjectCard } from '@/views';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // const itemsLength = 3;
@@ -24,7 +24,10 @@ const Indicator = ({ isActive }: { isActive: boolean }) => {
 
 export default function Onboarding() {
   // const [value, setValue] = useState('12660');
+  const { height: screenHeight } = useWindowDimensions();
   const { top: safeAreaTopInset } = useSafeAreaInsets();
+  const backgroundHeight = screenHeight * (500 / 874);
+  console.log(backgroundHeight);
   return (
     <ScreenView
       edges={['bottom']}
@@ -32,7 +35,7 @@ export default function Onboarding() {
       contentInsets={{ bottom: 8 }}
     >
       <VStack filled>
-        <View style={styles.navigation}>
+        <View style={[{ height: backgroundHeight }, styles.navigation]}>
           <NavigationBarBackground
             type='blue'
             style={[StyleSheet.absoluteFill]}
@@ -91,7 +94,6 @@ export default function Onboarding() {
 
 const styles = StyleSheet.create({
   navigation: {
-    height: 500,
     overflow: 'hidden',
     borderBottomRightRadius: 36,
     borderBottomLeftRadius: 36,
