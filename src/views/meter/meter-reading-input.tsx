@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@/components';
+import { HStack } from '@/components';
 import {
   Pressable,
   StyleSheet,
@@ -30,7 +30,6 @@ export function MeterReadingInput({
   const length = integerDigits + fractionDigits;
   const inputRef = useRef<TextInputInstance>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const activeIndex = Math.min(value.length, length - 1);
 
   return (
     <Pressable onPress={() => inputRef.current?.focus()}>
@@ -38,7 +37,6 @@ export function MeterReadingInput({
         {Array.from({ length }, (_, index) => {
           const digit = value[index] ?? '';
           const isFraction = index >= length - fractionDigits;
-          const isActive = isFocused && index === value.length;
           return (
             <MeterDigit
               key={index}

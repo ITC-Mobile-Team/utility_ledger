@@ -1,8 +1,5 @@
 import { ThemedText, ThemedView } from '@/components';
-import { typography } from '@/constants/typography';
-import { useThemeColor } from '@/hooks/use-theme-colors';
-import { useState } from 'react';
-import { StyleSheet, TextInput, type TextInputProps } from 'react-native';
+import { StyleSheet, type TextInputProps } from 'react-native';
 
 type MeterDigitType = 'integer' | 'fraction';
 

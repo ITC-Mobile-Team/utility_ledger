@@ -8,6 +8,7 @@ type StackProps = ViewProps & {
   direction?: StackDirection;
   align?: StackAlign;
   spacing?: number;
+  filled?: boolean;
 };
 
 const alignRecord: Record<StackAlign, ViewStyle['alignItems']> = {
@@ -21,13 +22,18 @@ function Stack({
   direction = 'column',
   spacing = 0,
   align = 'stretch',
+  filled = false,
   style,
   ...rest
 }: StackProps) {
   const alignItems = alignRecord[align];
   return (
     <View
-      style={[{ flexDirection: direction, gap: spacing, alignItems }, style]}
+      style={[
+        { flexDirection: direction, gap: spacing, alignItems },
+        filled && { flex: 1 },
+        style,
+      ]}
       {...rest}
     />
   );

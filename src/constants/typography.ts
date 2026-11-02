@@ -270,6 +270,12 @@ export const typography = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 34,
   },
+  footnote: {
+    fontFamily: onestFamily,
+    fontSize: 13,
+    fontWeight: '400',
+    lineHeight: 18.85,
+  },
   meterDigit: {
     fontFamily: jetbrainsMonoFamily,
     fontSize: 34,
@@ -288,11 +294,5 @@ export const typography = StyleSheet.create({
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 16,
-  },
-  footnote: {
-    fontFamily: onestFamily,
-    fontSize: 13,
-    fontWeight: '400',
-    lineHeight: 18.85,
   },
 });
