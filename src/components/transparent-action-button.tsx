@@ -18,6 +18,7 @@ export function TransparentActionButton({
   iconBackground,
   title,
   subtitle,
+  disabled,
   style,
   ...rest
 }: TransparentActionButtonProps) {
@@ -29,7 +30,7 @@ export function TransparentActionButton({
   return (
     <Pressable
       style={(state) => [
-        state.pressed && styles.pressed,
+        state.pressed && !disabled && styles.pressed,
         typeof style === 'function' ? style(state) : style,
         styles.button,
         { borderRadius: borderRadius },

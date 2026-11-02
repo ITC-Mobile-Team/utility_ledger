@@ -58,6 +58,7 @@ export default function Onboarding() {
               icon='house'
               title='вул. Шевченка, 8'
               subtitle='Будинок батьків'
+              disabled
             />
             <ObjectCard />
             <Spacer />
