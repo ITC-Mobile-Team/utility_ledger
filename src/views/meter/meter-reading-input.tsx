@@ -29,7 +29,7 @@ export function MeterReadingInput({
 
   const length = integerDigits + fractionDigits;
   const inputRef = useRef<TextInputInstance>(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [, setIsFocused] = useState(false);
 
   return (
     <Pressable onPress={() => inputRef.current?.focus()}>
