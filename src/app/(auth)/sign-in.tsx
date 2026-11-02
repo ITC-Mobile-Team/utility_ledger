@@ -12,10 +12,19 @@ import {
 import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { AppHeader } from '@/views';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function SignIn() {
+  const { signIn } = useAuth();
   const appleButtonPress = () => {
     router.push('/auth-error');
+  };
+  const googleButtonPress = async () => {
+    try {
+      await signIn('google');
+    } catch {
+      router.push('/auth-error');
+    }
   };
   return (
     <NavigationView
@@ -42,7 +51,11 @@ export default function SignIn() {
             title='Продовжити з Apple'
             onPress={appleButtonPress}
           />
-          <ActionButton type='google' title='Продовжити з Google' />
+          <ActionButton
+            type='google'
+            title='Продовжити з Google'
+            onPress={googleButtonPress}
+          />
         </VStack>
 
         <ThemedView backgroundColor='blueSoft' style={styles.banner}>

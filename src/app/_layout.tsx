@@ -1,3 +1,4 @@
+import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import {
   OnboardingProvider,
   useOnboarding,
@@ -5,16 +6,19 @@ import {
 import { Stack } from 'expo-router';
 
 function RootNavigator() {
+  const { isSignedIn } = useAuth();
   const { hasSeenOnboarding } = useOnboarding();
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!hasSeenOnboarding}>
+      <Stack.Protected guard={!isSignedIn}>
         <Stack.Screen name='(auth)' />
       </Stack.Protected>
-      <Stack.Protected guard={!hasSeenOnboarding}>
+
+      <Stack.Protected guard={isSignedIn && !hasSeenOnboarding}>
         <Stack.Screen name='(onboarding)' />
       </Stack.Protected>
-      <Stack.Protected guard={hasSeenOnboarding}>
+
+      <Stack.Protected guard={isSignedIn && hasSeenOnboarding}>
         <Stack.Screen name='(tabs)' />
       </Stack.Protected>
     </Stack>
@@ -23,8 +27,10 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <OnboardingProvider>
-      <RootNavigator />
-    </OnboardingProvider>
+    <AuthProvider>
+      <OnboardingProvider>
+        <RootNavigator />
+      </OnboardingProvider>
+    </AuthProvider>
   );
 }
