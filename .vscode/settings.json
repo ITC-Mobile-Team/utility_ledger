@@ -1,6 +1,7 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  },
-  "js/ts.tsserver.experimental.enableProjectDiagnostics": true
+  }
+  // ,
+  // "js/ts.tsserver.experimental.enableProjectDiagnostics": true
 }

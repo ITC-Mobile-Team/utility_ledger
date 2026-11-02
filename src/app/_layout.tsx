@@ -11,6 +11,9 @@ function RootNavigator() {
       <Stack.Protected guard={!hasSeenOnboarding}>
         <Stack.Screen name='(auth)' />
       </Stack.Protected>
+      <Stack.Protected guard={!hasSeenOnboarding}>
+        <Stack.Screen name='(onboarding)' />
+      </Stack.Protected>
       <Stack.Protected guard={hasSeenOnboarding}>
         <Stack.Screen name='(tabs)' />
       </Stack.Protected>

@@ -2,15 +2,15 @@ import { StyleSheet, useWindowDimensions } from 'react-native';
 import {
   ActionButton,
   AppImage,
-  HStack,
   ThemedText,
   ThemedView,
   VStack,
   ScreenView,
 } from '@/components';
 import { router } from 'expo-router';
+import { AppHeader } from '@/views';
 
-const Onboarding = () => {
+export default function Welcome() {
   const signInPress = () => {
     router.push('/sign-in');
   };
@@ -29,24 +29,7 @@ const Onboarding = () => {
       </VStack>
     </ScreenView>
   );
-};
-
-export const AppHeader = () => {
-  return (
-    <HStack align='center' spacing={10}>
-      <ThemedView
-        backgroundColor='blue'
-        size={{ width: 36, height: 36 }}
-        style={styles.logo}
-      >
-        <AppImage icon='house' size={{ width: 18 }} />
-      </ThemedView>
-      <ThemedText color='blueInk' font='onboardingAppName'>
-        Utility Ledger
-      </ThemedText>
-    </HStack>
-  );
-};
+}
 
 const Content = () => {
   return (
@@ -97,16 +80,9 @@ const ContentCircle = () => {
   );
 };
 
-export default Onboarding;
-
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-  },
-  logo: {
-    borderRadius: 11,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   contentContainer: {
     flex: 1,

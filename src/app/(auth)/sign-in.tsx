@@ -9,10 +9,14 @@ import {
   Spacer,
   LegalNotice,
 } from '@/components';
-import { AppHeader } from '.';
 import { StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { AppHeader } from '@/views';
 
 export default function SignIn() {
+  const appleButtonPress = () => {
+    router.push('/auth-error');
+  };
   return (
     <NavigationView
       type='short'
@@ -33,7 +37,11 @@ export default function SignIn() {
         </VStack>
 
         <VStack spacing={12} style={styles.buttonStack}>
-          <ActionButton type='apple' title='Продовжити з Apple' />
+          <ActionButton
+            type='apple'
+            title='Продовжити з Apple'
+            onPress={appleButtonPress}
+          />
           <ActionButton type='google' title='Продовжити з Google' />
         </VStack>
 
