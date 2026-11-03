@@ -15,7 +15,12 @@ export const serviceIconSections: readonly ServiceIconSection[] = [
   {
     title: 'Вода й тепло',
     background: 'waterSoft',
-    icons: ['💧', '🚿', '🛁', '🚰', '🔥', '♨️', '🌡️', '❄️'],
+    icons: ['💧', '🚿', '🛁', '🚰', '🫧', '♨️', '🌡️', '❄️'],
+  },
+  {
+    title: 'Газ',
+    background: 'gasSoft',
+    icons: ['🔥', '⛽', '🛢️', '🍳', '🫕', '🧯', '🏭', '💨'],
   },
   {
     title: 'Дім',
