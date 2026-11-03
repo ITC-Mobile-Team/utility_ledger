@@ -20,7 +20,8 @@ export type LedgerObject = {
 };
 
 // 'water' — лічильник води з водовідведенням (стоками) та абонплатами
-export type MeterZones = 'single' | 'dayNight' | 'water';
+// 'gas' — лічильник газу, рахується як однозонний: спожито × ціна за 1 м³
+export type MeterZones = 'single' | 'dayNight' | 'water' | 'gas';
 
 export type LedgerService = {
   id: string;

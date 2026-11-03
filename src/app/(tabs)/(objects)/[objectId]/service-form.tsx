@@ -35,7 +35,11 @@ const zoneItems = [
   { value: 'single', label: 'Однозонний' },
   { value: 'dayNight', label: 'День / Ніч' },
   { value: 'water', label: 'Вода' },
+  { value: 'gas', label: 'Газ' },
 ] as const;
+
+// Вода й газ рахуються в м³
+const cubicMeterZones: MeterZones[] = ['water', 'gas'];
 
 const optionalMoneyInput = (kopecks: number | undefined) =>
   kopecks !== undefined ? formatMoneyInput(kopecks) : '';
@@ -101,6 +105,7 @@ export default function ServiceForm() {
 
   const isDayNight = mode === 'meter' && zones === 'dayNight';
   const isWater = mode === 'meter' && zones === 'water';
+  const isGas = mode === 'meter' && zones === 'gas';
   const tariffValue = parseMoney(tariff);
   const nightTariffValue = parseMoney(nightTariff);
   const sewageTariffValue = parseMoney(sewageTariff);
@@ -121,11 +126,12 @@ export default function ServiceForm() {
 
   const canSave = name.trim().length > 0 && hasTariff;
 
-  // Вода рахується в м³, тож підставляємо одиницю, якщо її не змінювали
+  // Підставляємо одиницю під тип лічильника, якщо її не змінювали
   const changeZones = (value: MeterZones) => {
     setZones(value);
-    if (value === 'water' && unit === 'кВт·год') setUnit('м³');
-    if (value !== 'water' && unit === 'м³') setUnit('кВт·год');
+    const isCubic = cubicMeterZones.includes(value);
+    if (isCubic && unit === 'кВт·год') setUnit('м³');
+    if (!isCubic && unit === 'м³') setUnit('кВт·год');
   };
 
   const save = async () => {
@@ -370,7 +376,11 @@ export default function ServiceForm() {
             </>
           ) : (
             <ThemedTextInput
-              title={tariffTitles[mode]}
+              title={
+                isGas
+                  ? `Ціна за 1 ${unit.trim() || 'м³'}, ₴`
+                  : tariffTitles[mode]
+              }
               value={tariff}
               onChangeText={setTariff}
               placeholder='0,00'
@@ -388,7 +398,9 @@ export default function ServiceForm() {
               ? 'Вкажіть денний і нічний тарифи, щоб рахувати суму'
               : isWater
                 ? 'Вкажіть тарифи на воду і стоки, щоб рахувати суму'
-                : 'Вкажіть тариф, щоб рахувати суму'
+                : isGas
+                  ? 'Вкажіть ціну за 1 м³, щоб рахувати суму'
+                  : 'Вкажіть тариф, щоб рахувати суму'
         }
       >
         <ActionButton

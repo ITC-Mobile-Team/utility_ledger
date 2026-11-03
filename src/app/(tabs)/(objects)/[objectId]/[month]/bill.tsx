@@ -61,6 +61,16 @@ const describe = (item: ServiceBill, month: MonthKey): BillLine => {
             : `${service.unit} × (вода + стоки) + абонплата`,
         };
       }
+      if (item.service.zones === 'gas') {
+        return {
+          tag: 'Газ',
+          details:
+            item.current === undefined
+              ? 'Показник ще не внесено'
+              : `${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · спожито ${formatNumber(item.consumption ?? 0)} ${service.unit}`,
+          formula: `${formatNumber(item.consumption ?? 0)} ${service.unit} × ціна за 1 ${service.unit}`,
+        };
+      }
       return {
         tag: 'Показник',
         details:
