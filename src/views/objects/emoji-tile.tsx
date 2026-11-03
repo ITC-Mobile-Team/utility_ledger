@@ -1,6 +1,6 @@
-import { ThemedText, ThemedView } from '@/components';
+import { ThemedView } from '@/components';
 import type { AppColor } from '@/constants/colors';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 type EmojiTileProps = {
   emoji: string;
@@ -21,9 +21,14 @@ export function EmojiTile({
       size={{ width: size }}
       style={[styles.tile, { borderRadius: rounded ? size / 2 : size * 0.3 }]}
     >
-      <ThemedText style={{ fontSize: size * 0.5, lineHeight: size * 0.62 }}>
+      {/* Звичайний Text без шрифту Onest: його метрики зсувають емодзі
+          з центру плитки */}
+      <Text
+        allowFontScaling={false}
+        style={[styles.emoji, { fontSize: size * 0.5 }]}
+      >
         {emoji}
-      </ThemedText>
+      </Text>
     </ThemedView>
   );
 }
@@ -33,5 +38,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderCurve: 'continuous',
+  },
+  emoji: {
+    textAlign: 'center',
+    includeFontPadding: false,
   },
 });
