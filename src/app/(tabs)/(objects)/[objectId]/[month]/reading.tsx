@@ -15,8 +15,10 @@ import {
   formatMonthTitle,
   formatNumber,
   formatTariff,
+  getPreviousNightReading,
   getPreviousReading,
   getReading,
+  isDayNight,
   isMonthKey,
 } from '@/services/ledger';
 import {
@@ -47,27 +49,43 @@ export default function Reading() {
     service && validMonth
       ? getReading(state, service.id, validMonth)
       : undefined;
-  const [value, setValue] = useState(saved !== undefined ? String(saved) : '');
+  const [value, setValue] = useState(
+    saved !== undefined ? String(saved.value) : '',
+  );
+  const [nightValue, setNightValue] = useState(
+    saved?.night !== undefined ? String(saved.night) : '',
+  );
   const [isSaving, setSaving] = useState(false);
   const keyboardInsets = useFormFooterKeyboardInsets();
 
   if (!service || !validMonth) return null;
 
+  const dayNight = isDayNight(service);
   const isEditing = saved !== undefined;
-  const previous = getPreviousReading(state, service, validMonth);
-  const current = value.length > 0 ? Number(value) : undefined;
-  const consumption = current !== undefined ? current - previous : undefined;
-  const isTooSmall = consumption !== undefined && consumption < 0;
-  const canSave = current !== undefined && !isTooSmall && current !== saved;
+  const day = toZone(value, getPreviousReading(state, service, validMonth));
+  const night = toZone(
+    nightValue,
+    getPreviousNightReading(state, service, validMonth),
+  );
+  const isValid = (zone: Zone) =>
+    zone.current !== undefined && !zone.isTooSmall;
+  const isChanged =
+    day.current !== saved?.value ||
+    (dayNight && night.current !== saved?.night);
+  const canSave = isValid(day) && (!dayNight || isValid(night)) && isChanged;
 
   const save = async () => {
-    if (current === undefined) return;
+    if (day.current === undefined) return;
     setSaving(true);
     try {
       await ledger.setReading({
         serviceId: service.id,
         month: validMonth,
-        value: current,
+        value: day.current,
+        ...(dayNight &&
+          night.current !== undefined && {
+            night: night.current,
+          }),
       });
       router.back();
     } finally {
@@ -97,45 +115,32 @@ export default function Reading() {
             </HStack>
           </ThemedView>
 
-          <VStack spacing={10}>
-            <HStack>
-              <ThemedText color='muted' font='overline'>
-                ПОКАЗНИК ЛІЧИЛЬНИКА
-              </ThemedText>
-              <Spacer />
-              <ThemedText color='muted' font='caption'>
-                {service.unit}
-              </ThemedText>
-            </HStack>
-            <MeterReadingInput
+          {dayNight ? (
+            <>
+              <ZoneSection
+                title='☀️ ДЕНЬ'
+                unit={service.unit}
+                value={value}
+                onChangeValue={setValue}
+                zone={day}
+              />
+              <ZoneSection
+                title='🌙 НІЧ'
+                unit={service.unit}
+                value={nightValue}
+                onChangeValue={setNightValue}
+                zone={night}
+              />
+            </>
+          ) : (
+            <ZoneSection
+              title='ПОКАЗНИК ЛІЧИЛЬНИКА'
+              unit={service.unit}
               value={value}
-              onChangeValue={(text) => setValue(text.replace(/\D/g, ''))}
-              integerDigits={METER_LENGTH - 1}
-              fractionDigits={1}
+              onChangeValue={setValue}
+              zone={day}
             />
-            <ThemedText
-              color={isTooSmall ? 'coral' : 'muted'}
-              font='caption'
-              align='center'
-            >
-              {isTooSmall
-                ? 'Показник не може бути меншим за попередній'
-                : `Введіть цифри як на лічильнику — до ${METER_LENGTH} знаків`}
-            </ThemedText>
-          </VStack>
-
-          <HStack spacing={10}>
-            <StatTile title='Попередній' value={formatNumber(previous)} />
-            <StatTile
-              title='Спожито'
-              value={
-                consumption !== undefined && !isTooSmall
-                  ? `+${formatNumber(consumption)} ${service.unit}`
-                  : '—'
-              }
-              highlighted={consumption !== undefined && !isTooSmall}
-            />
-          </HStack>
+          )}
 
           <ThemedText color='muted' font='caption'>
             {isEditing
@@ -154,6 +159,79 @@ export default function Reading() {
         />
       </FormFooter>
     </KeyboardDismissView>
+  );
+}
+
+type Zone = {
+  previous: number;
+  current?: number;
+  consumption?: number;
+  isTooSmall: boolean;
+};
+
+const toZone = (value: string, previous: number): Zone => {
+  if (value.length === 0) return { previous, isTooSmall: false };
+  const current = Number(value);
+  const consumption = current - previous;
+  return { previous, current, consumption, isTooSmall: consumption < 0 };
+};
+
+type ZoneSectionProps = {
+  title: string;
+  unit: string;
+  value: string;
+  onChangeValue: (value: string) => void;
+  zone: Zone;
+};
+
+// Барабан лічильника з попереднім показником і споживанням для однієї зони
+function ZoneSection({
+  title,
+  unit,
+  value,
+  onChangeValue,
+  zone,
+}: ZoneSectionProps) {
+  const hasConsumption = zone.consumption !== undefined && !zone.isTooSmall;
+  return (
+    <VStack spacing={10}>
+      <HStack>
+        <ThemedText color='muted' font='overline'>
+          {title}
+        </ThemedText>
+        <Spacer />
+        <ThemedText color='muted' font='caption'>
+          {unit}
+        </ThemedText>
+      </HStack>
+      <MeterReadingInput
+        value={value}
+        onChangeValue={(text) => onChangeValue(text.replace(/\D/g, ''))}
+        integerDigits={METER_LENGTH - 1}
+        fractionDigits={1}
+      />
+      <ThemedText
+        color={zone.isTooSmall ? 'coral' : 'muted'}
+        font='caption'
+        align='center'
+      >
+        {zone.isTooSmall
+          ? 'Показник не може бути меншим за попередній'
+          : `Введіть цифри як на лічильнику — до ${METER_LENGTH} знаків`}
+      </ThemedText>
+      <HStack spacing={10}>
+        <StatTile title='Попередній' value={formatNumber(zone.previous)} />
+        <StatTile
+          title='Спожито'
+          value={
+            hasConsumption
+              ? `+${formatNumber(zone.consumption ?? 0)} ${unit}`
+              : '—'
+          }
+          highlighted={hasConsumption}
+        />
+      </HStack>
+    </VStack>
   );
 }
 

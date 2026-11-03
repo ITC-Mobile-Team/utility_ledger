@@ -117,11 +117,19 @@ export const tariffSuffix = (mode: BillingMode, unit: string) => {
   }
 };
 
-// «4,32 ₴ / кВт·год»
+// «4,32 ₴ / кВт·год»; двозонний — «☀️ 4,32 · 🌙 2,16 ₴ / кВт·год»
 export const formatTariff = (
-  service: Pick<LedgerService, 'mode' | 'unit' | 'tariff'>,
-) =>
-  `${formatMoney(service.tariff)} / ${tariffSuffix(service.mode, service.unit)}`;
+  service: Pick<
+    LedgerService,
+    'mode' | 'unit' | 'tariff' | 'zones' | 'nightTariff'
+  >,
+) => {
+  const suffix = tariffSuffix(service.mode, service.unit);
+  if (service.mode === 'meter' && service.zones === 'dayNight') {
+    return `☀️ ${formatMoney(service.tariff, false)} · 🌙 ${formatMoney(service.nightTariff ?? 0)} / ${suffix}`;
+  }
+  return `${formatMoney(service.tariff)} / ${suffix}`;
+};
 
 export const billingModeShortTitle: Record<BillingMode, string> = {
   meter: 'Показник',

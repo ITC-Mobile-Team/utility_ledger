@@ -30,9 +30,13 @@ export type LedgerService = {
   mode: BillingMode;
   // Одиниця виміру для показника ('кВт·год', 'м³')
   unit: string;
-  // Тариф у копійках: за одиницю, за місяць або за день залежно від mode
+  // Тариф у копійках: за одиницю, за місяць або за день залежно від mode.
+  // Для двозонного лічильника — денний тариф
   tariff: number;
+  // Нічний тариф у копійках, лише для zones === 'dayNight'
+  nightTariff?: number;
   initialReading?: number;
+  initialNightReading?: number;
   zones: MeterZones;
   createdAt: number;
 };
@@ -40,7 +44,10 @@ export type LedgerService = {
 export type MeterReading = {
   serviceId: string;
   month: MonthKey;
+  // Показник однозонного лічильника або денна зона двозонного
   value: number;
+  // Нічна зона двозонного лічильника
+  night?: number;
 };
 
 export type DayCount = {

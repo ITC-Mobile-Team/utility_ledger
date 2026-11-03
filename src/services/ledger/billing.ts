@@ -1,5 +1,16 @@
 import { getDaysInMonth, toMonthKey } from './format';
-import type { LedgerService, LedgerState, MonthKey } from './types';
+import type {
+  LedgerService,
+  LedgerState,
+  MeterReading,
+  MonthKey,
+} from './types';
+
+export type ZoneBill = {
+  previous: number;
+  current?: number;
+  consumption?: number;
+};
 
 export type ServiceBill = {
   service: LedgerService;
@@ -8,6 +19,8 @@ export type ServiceBill = {
   previous?: number;
   current?: number;
   consumption?: number;
+  // Нічна зона, лише для двозонного лічильника; поля вище тоді — денна зона
+  night?: ZoneBill;
   days?: number;
 };
 
@@ -63,13 +76,30 @@ export const getObjectMonths = (
   return months;
 };
 
+export const isDayNight = (service: Pick<LedgerService, 'mode' | 'zones'>) =>
+  service.mode === 'meter' && service.zones === 'dayNight';
+
 export const getReading = (
   state: LedgerState,
   serviceId: string,
   month: MonthKey,
-) =>
-  state.readings.find((r) => r.serviceId === serviceId && r.month === month)
-    ?.value;
+): MeterReading | undefined =>
+  state.readings.find((r) => r.serviceId === serviceId && r.month === month);
+
+// Двозонному лічильнику потрібні обидві зони; показник, внесений до
+// перемикання на «День / Ніч», вважається невнесеним
+const isReadingComplete = (
+  service: LedgerService,
+  reading: MeterReading | undefined,
+): reading is MeterReading =>
+  reading !== undefined &&
+  (!isDayNight(service) || reading.night !== undefined);
+
+export const hasReading = (
+  state: LedgerState,
+  service: LedgerService,
+  month: MonthKey,
+) => isReadingComplete(service, getReading(state, service.id, month));
 
 // Останній показник до цього місяця або початковий показник послуги
 export const getPreviousReading = (
@@ -83,6 +113,23 @@ export const getPreviousReading = (
     )
     .sort((a, b) => compareMonths(b.month, a.month))[0];
   return previous?.value ?? service.initialReading ?? 0;
+};
+
+// Останній нічний показник до цього місяця або початковий нічний показник
+export const getPreviousNightReading = (
+  state: LedgerState,
+  service: LedgerService,
+  month: MonthKey,
+) => {
+  const previous = state.readings
+    .filter(
+      (r) =>
+        r.serviceId === service.id &&
+        r.night !== undefined &&
+        compareMonths(r.month, month) < 0,
+    )
+    .sort((a, b) => compareMonths(b.month, a.month))[0];
+  return previous?.night ?? service.initialNightReading ?? 0;
 };
 
 export const getDayCount = (
@@ -101,15 +148,43 @@ export const calculateService = (
   switch (service.mode) {
     case 'meter': {
       const previous = getPreviousReading(state, service, month);
-      const current = getReading(state, service.id, month);
-      if (current === undefined) return { service, amount: null, previous };
-      const consumption = current - previous;
+      const reading = getReading(state, service.id, month);
+      const nightPrevious = isDayNight(service)
+        ? getPreviousNightReading(state, service, month)
+        : undefined;
+      if (!isReadingComplete(service, reading)) {
+        return {
+          service,
+          amount: null,
+          previous,
+          ...(nightPrevious !== undefined && {
+            night: { previous: nightPrevious },
+          }),
+        };
+      }
+      const consumption = reading.value - previous;
+      const dayAmount = consumption * service.tariff;
+      if (nightPrevious === undefined || reading.night === undefined) {
+        return {
+          service,
+          amount: dayAmount,
+          previous,
+          current: reading.value,
+          consumption,
+        };
+      }
+      const nightConsumption = reading.night - nightPrevious;
       return {
         service,
-        amount: consumption * service.tariff,
+        amount: dayAmount + nightConsumption * (service.nightTariff ?? 0),
         previous,
-        current,
+        current: reading.value,
         consumption,
+        night: {
+          previous: nightPrevious,
+          current: reading.night,
+          consumption: nightConsumption,
+        },
       };
     }
     case 'fixed':
@@ -144,9 +219,7 @@ export const getMonthStatus = (
   month: MonthKey,
 ): MonthStatus => {
   const missing = getMonthServices(state, objectId, month).some(
-    (service) =>
-      service.mode === 'meter' &&
-      getReading(state, service.id, month) === undefined,
+    (service) => service.mode === 'meter' && !hasReading(state, service, month),
   );
   return missing ? 'new' : 'filled';
 };

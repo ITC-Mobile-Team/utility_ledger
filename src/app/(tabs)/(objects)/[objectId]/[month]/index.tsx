@@ -49,10 +49,17 @@ const meterSubtitle = ({
   previous = 0,
   current,
   consumption,
-}: ServiceBill) =>
-  current === undefined
+  night,
+}: ServiceBill) => {
+  if (night) {
+    return current === undefined
+      ? `Попередній: ☀️ ${formatNumber(previous)} · 🌙 ${formatNumber(night.previous)} ${service.unit}`
+      : `☀️ +${formatNumber(consumption ?? 0)} · 🌙 +${formatNumber(night.consumption ?? 0)} ${service.unit}`;
+  }
+  return current === undefined
     ? `Попередній: ${formatNumber(previous)} ${service.unit}`
     : `${formatNumber(previous)} → ${formatNumber(current)} · +${formatNumber(consumption ?? 0)} ${service.unit}`;
+};
 
 export default function MonthServices() {
   const { objectId, month } = useLocalSearchParams<{

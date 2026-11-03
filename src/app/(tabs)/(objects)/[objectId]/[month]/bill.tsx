@@ -37,6 +37,17 @@ const describe = (item: ServiceBill, month: MonthKey): BillLine => {
   const { service } = item;
   switch (service.mode) {
     case 'meter':
+      if (item.night) {
+        const { night } = item;
+        return {
+          tag: 'День / Ніч',
+          details:
+            item.current === undefined
+              ? 'Показник ще не внесено'
+              : `☀️ ${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · 🌙 ${formatNumber(night.previous)} → ${formatNumber(night.current ?? 0)}`,
+          formula: `☀️ ${formatNumber(item.consumption ?? 0)} + 🌙 ${formatNumber(night.consumption ?? 0)} ${service.unit} × тариф`,
+        };
+      }
       return {
         tag: 'Показник',
         details:

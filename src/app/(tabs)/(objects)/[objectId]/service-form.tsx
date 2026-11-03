@@ -70,13 +70,28 @@ export default function ServiceForm() {
       ? String(existing.initialReading)
       : '',
   );
+  const [initialNightReading, setInitialNightReading] = useState(
+    existing?.initialNightReading !== undefined
+      ? String(existing.initialNightReading)
+      : '',
+  );
   const [tariff, setTariff] = useState(
     existing ? formatMoneyInput(existing.tariff) : '',
   );
+  const [nightTariff, setNightTariff] = useState(
+    existing?.nightTariff !== undefined
+      ? formatMoneyInput(existing.nightTariff)
+      : '',
+  );
   const [isSaving, setSaving] = useState(false);
 
+  const isDayNight = mode === 'meter' && zones === 'dayNight';
   const tariffValue = parseMoney(tariff);
-  const hasTariff = tariffValue !== null && tariffValue > 0;
+  const nightTariffValue = parseMoney(nightTariff);
+  const hasTariff =
+    tariffValue !== null &&
+    tariffValue > 0 &&
+    (!isDayNight || (nightTariffValue !== null && nightTariffValue > 0));
   const keyboardInsets = useFormFooterKeyboardInsets(!hasTariff);
 
   if (!object) return null;
@@ -96,6 +111,10 @@ export default function ServiceForm() {
       initialReading:
         mode === 'meter' ? Number(initialReading) || 0 : undefined,
       zones,
+      nightTariff: isDayNight ? (nightTariffValue ?? 0) : undefined,
+      initialNightReading: isDayNight
+        ? Number(initialNightReading) || 0
+        : undefined,
     };
     setSaving(true);
     try {
@@ -192,31 +211,105 @@ export default function ServiceForm() {
                 ЗОНИ ЛІЧИЛЬНИКА
               </ThemedText>
               <Segment items={zoneItems} value={zones} onChange={setZones} />
-              <ThemedTextInput
-                title='Початковий показник'
-                value={initialReading}
-                onChangeText={(text) =>
-                  setInitialReading(text.replace(/\D/g, ''))
-                }
-                placeholder='0'
-                keyboardType='number-pad'
-                maxLength={5}
-              />
+              {!isDayNight && (
+                <ThemedTextInput
+                  title='Початковий показник'
+                  value={initialReading}
+                  onChangeText={(text) =>
+                    setInitialReading(text.replace(/\D/g, ''))
+                  }
+                  placeholder='0'
+                  keyboardType='number-pad'
+                  maxLength={5}
+                />
+              )}
             </VStack>
           )}
 
-          <ThemedTextInput
-            title={tariffTitles[mode]}
-            value={tariff}
-            onChangeText={setTariff}
-            placeholder='0,00'
-            keyboardType='decimal-pad'
-          />
+          {isDayNight ? (
+            <>
+              <VStack spacing={10}>
+                <ThemedText color='muted' font='overline'>
+                  ПОЧАТКОВИЙ ПОКАЗНИК
+                </ThemedText>
+                <HStack spacing={10}>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='☀️ День'
+                      value={initialReading}
+                      onChangeText={(text) =>
+                        setInitialReading(text.replace(/\D/g, ''))
+                      }
+                      placeholder='0'
+                      keyboardType='number-pad'
+                      maxLength={5}
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='🌙 Ніч'
+                      value={initialNightReading}
+                      onChangeText={(text) =>
+                        setInitialNightReading(text.replace(/\D/g, ''))
+                      }
+                      placeholder='0'
+                      keyboardType='number-pad'
+                      maxLength={5}
+                    />
+                  </View>
+                </HStack>
+              </VStack>
+
+              <VStack spacing={10}>
+                <ThemedText color='muted' font='overline'>
+                  {`ТАРИФ ЗА ${(unit.trim() || 'одиницю').toLocaleUpperCase('uk')}`}
+                </ThemedText>
+                <HStack spacing={10}>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='☀️ День, ₴'
+                      value={tariff}
+                      onChangeText={setTariff}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='🌙 Ніч, ₴'
+                      value={nightTariff}
+                      onChangeText={setNightTariff}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                </HStack>
+                <ThemedText color='muted' font='caption'>
+                  Сума = спожито вдень × денний тариф + спожито вночі × нічний
+                  тариф.
+                </ThemedText>
+              </VStack>
+            </>
+          ) : (
+            <ThemedTextInput
+              title={tariffTitles[mode]}
+              value={tariff}
+              onChangeText={setTariff}
+              placeholder='0,00'
+              keyboardType='decimal-pad'
+            />
+          )}
         </VStack>
       </NavigationView>
 
       <FormFooter
-        hint={hasTariff ? undefined : 'Вкажіть тариф, щоб рахувати суму'}
+        hint={
+          hasTariff
+            ? undefined
+            : isDayNight
+              ? 'Вкажіть денний і нічний тарифи, щоб рахувати суму'
+              : 'Вкажіть тариф, щоб рахувати суму'
+        }
       >
         <ActionButton
           title='Зберегти послугу'
