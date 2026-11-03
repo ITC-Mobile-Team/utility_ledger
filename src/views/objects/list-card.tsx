@@ -34,6 +34,8 @@ type ListRowProps = {
   children: ReactNode;
   trailing?: ReactNode;
   showsChevron?: boolean;
+  // false — рядок не тьмяніє при натисканні (стан показує сам контент)
+  highlightsOnPress?: boolean;
   onPress?: () => void;
 };
 
@@ -42,13 +44,14 @@ export function ListRow({
   children,
   trailing,
   showsChevron = true,
+  highlightsOnPress = true,
   onPress,
 }: ListRowProps) {
   return (
     <Pressable
       disabled={!onPress}
       onPress={onPress}
-      style={(state) => state.pressed && styles.pressed}
+      style={(state) => highlightsOnPress && state.pressed && styles.pressed}
     >
       <HStack align='center' spacing={12} style={styles.row}>
         {leading}

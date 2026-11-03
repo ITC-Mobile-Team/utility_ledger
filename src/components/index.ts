@@ -5,6 +5,7 @@ export { ActionButton } from './action-button';
 export { Segment } from './segment';
 export { ThemedTextInput } from './themed-text-input';
 export { ThemedBadge } from './themed-badge';
+export { RadioCircle } from './radio-circle';
 export { RadioGroup } from './radio-group';
 export { VStack, HStack } from './stack';
 export * from './navigation-bar';

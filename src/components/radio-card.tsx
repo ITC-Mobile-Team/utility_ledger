@@ -1,17 +1,10 @@
 import { StyleSheet } from 'react-native';
-import Animated, {
-  type CSSTransitionProperties,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { ThemedText } from './themed-text';
 import { VStack } from './stack';
-
-const colorTransition: CSSTransitionProperties = {
-  transitionProperty: ['backgroundColor', 'borderColor', 'borderWidth'],
-  transitionDuration: 200,
-  transitionTimingFunction: 'ease-out',
-};
+import { RadioCircle, radioColorTransition } from './radio-circle';
 
 type RadioCardState = 'normal' | 'selected';
 
@@ -25,17 +18,6 @@ const radioCardStates: Record<RadioCardState, RadioCardColor> = {
   selected: { bg: 'blueSoft', borderColor: 'blue' },
 };
 
-type RadioCircle = {
-  bg: AppColor;
-  lineColor: AppColor;
-  lineWidth: number;
-};
-
-const radioCircles: Record<RadioCardState, RadioCircle> = {
-  normal: { bg: 'surface', lineColor: 'faint', lineWidth: 2 },
-  selected: { bg: 'blueSoft', lineColor: 'blue', lineWidth: 7 },
-};
-
 type RadioCardProps = {
   title: string;
   subtitle: string;
@@ -44,11 +26,8 @@ type RadioCardProps = {
 
 export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
   const state = isSelected ? radioCardStates.selected : radioCardStates.normal;
-  const circle = isSelected ? radioCircles.selected : radioCircles.normal;
   const cardBg = useThemeColor(state.bg);
   const cardBorder = useThemeColor(state.borderColor);
-  const circleBg = useThemeColor(circle.bg);
-  const circleBorder = useThemeColor(circle.lineColor);
 
   // Reanimated CSS transitions: при зміні isSelected кольори й товщина рамки
   // плавно інтерполюються до нових значень
@@ -57,20 +36,10 @@ export function RadioCard({ title, subtitle, isSelected }: RadioCardProps) {
       style={[
         styles.container,
         { backgroundColor: cardBg, borderColor: cardBorder },
-        colorTransition,
+        radioColorTransition,
       ]}
     >
-      <Animated.View
-        style={[
-          styles.circle,
-          {
-            backgroundColor: circleBg,
-            borderColor: circleBorder,
-            borderWidth: circle.lineWidth,
-          },
-          colorTransition,
-        ]}
-      />
+      <RadioCircle isSelected={isSelected} />
 
       <VStack spacing={2}>
         <ThemedText font='radioCardTitle'>{title}</ThemedText>
@@ -92,10 +61,5 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     gap: 12,
     alignItems: 'center',
-  },
-  circle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
   },
 });

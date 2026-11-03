@@ -2,6 +2,7 @@ import {
   ActionButton,
   AppImage,
   NavigationView,
+  RadioCircle,
   ThemedText,
   ThemedView,
   VStack,
@@ -125,18 +126,11 @@ export default function AddMonths() {
                           />
                         </ThemedView>
                       ) : (
-                        // Кружечок як у RadioCard: тонка сіра рамка → товста синя
-                        <ThemedView
-                          backgroundColor={isSelected ? 'blueSoft' : 'surface'}
-                          borderColor={isSelected ? 'blue' : 'faint'}
-                          style={[
-                            styles.circle,
-                            isSelected && styles.circleSelected,
-                          ]}
-                        />
+                        <RadioCircle isSelected={isSelected} />
                       )
                     }
                     showsChevron={false}
+                    highlightsOnPress={false}
                     onPress={isAdded ? undefined : () => toggle(month)}
                   >
                     <ThemedText font='rowTitle'>
@@ -181,14 +175,5 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  circle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-  },
-  circleSelected: {
-    borderWidth: 7,
   },
 });
