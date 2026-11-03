@@ -11,10 +11,11 @@ export const ShortNavigationBarButton = ({
   title,
   icon,
   iconBackground,
+  iconColor = 'onPrimary',
   onPress,
 }: NavigationBarButtonProps) => {
   const navigationBarIcon = appIcons[icon];
-  const onPrimary = useThemeColor('onPrimary');
+  const iconTint = useThemeColor(iconColor);
   return (
     <Pressable onPress={onPress}>
       <View style={styles.container}>
@@ -22,7 +23,7 @@ export const ShortNavigationBarButton = ({
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
             <Image
               source={navigationBarIcon}
-              tintColor={onPrimary}
+              tintColor={iconTint}
               style={styles.icon}
             />
           </ThemedView>

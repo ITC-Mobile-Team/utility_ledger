@@ -1,0 +1,152 @@
+import { getDaysInMonth, toMonthKey } from './format';
+import type { LedgerService, LedgerState, MonthKey } from './types';
+
+export type ServiceBill = {
+  service: LedgerService;
+  // null — суму ще неможливо порахувати (немає показника)
+  amount: number | null;
+  previous?: number;
+  current?: number;
+  consumption?: number;
+  days?: number;
+};
+
+export type MonthBill = {
+  items: ServiceBill[];
+  total: number;
+  calculatedCount: number;
+};
+
+export type MonthStatus = 'new' | 'filled';
+
+const compareMonths = (a: MonthKey, b: MonthKey) => a.localeCompare(b);
+
+const shiftMonth = (month: MonthKey, delta: number): MonthKey => {
+  const [year = 0, monthNumber = 1] = month.split('-').map(Number);
+  return toMonthKey(new Date(year, monthNumber - 1 + delta, 1));
+};
+
+export const getCurrentMonth = () => toMonthKey(new Date());
+
+export const getObjectServices = (state: LedgerState, objectId: string) =>
+  state.services.filter((service) => service.objectId === objectId);
+
+// Послуги, що вже існували в цьому місяці
+export const getMonthServices = (
+  state: LedgerState,
+  objectId: string,
+  month: MonthKey,
+) =>
+  getObjectServices(state, objectId).filter(
+    (service) =>
+      compareMonths(toMonthKey(new Date(service.createdAt)), month) <= 0,
+  );
+
+// Місяці від першої послуги до поточного, найновіший першим
+export const getObjectMonths = (
+  state: LedgerState,
+  objectId: string,
+  currentMonth: MonthKey = getCurrentMonth(),
+): MonthKey[] => {
+  const services = getObjectServices(state, objectId);
+  if (services.length === 0) return [];
+  const firstCreatedAt = Math.min(...services.map((s) => s.createdAt));
+  const first = toMonthKey(new Date(firstCreatedAt));
+  const months: MonthKey[] = [];
+  for (
+    let month = currentMonth;
+    compareMonths(month, first) >= 0;
+    month = shiftMonth(month, -1)
+  ) {
+    months.push(month);
+  }
+  return months;
+};
+
+export const getReading = (
+  state: LedgerState,
+  serviceId: string,
+  month: MonthKey,
+) =>
+  state.readings.find((r) => r.serviceId === serviceId && r.month === month)
+    ?.value;
+
+// Останній показник до цього місяця або початковий показник послуги
+export const getPreviousReading = (
+  state: LedgerState,
+  service: LedgerService,
+  month: MonthKey,
+) => {
+  const previous = state.readings
+    .filter(
+      (r) => r.serviceId === service.id && compareMonths(r.month, month) < 0,
+    )
+    .sort((a, b) => compareMonths(b.month, a.month))[0];
+  return previous?.value ?? service.initialReading ?? 0;
+};
+
+export const getDayCount = (
+  state: LedgerState,
+  serviceId: string,
+  month: MonthKey,
+) =>
+  state.dayCounts.find((d) => d.serviceId === serviceId && d.month === month)
+    ?.days ?? getDaysInMonth(month);
+
+export const calculateService = (
+  state: LedgerState,
+  service: LedgerService,
+  month: MonthKey,
+): ServiceBill => {
+  switch (service.mode) {
+    case 'meter': {
+      const previous = getPreviousReading(state, service, month);
+      const current = getReading(state, service.id, month);
+      if (current === undefined) return { service, amount: null, previous };
+      const consumption = current - previous;
+      return {
+        service,
+        amount: consumption * service.tariff,
+        previous,
+        current,
+        consumption,
+      };
+    }
+    case 'fixed':
+      return { service, amount: service.tariff };
+    case 'day': {
+      const days = getDayCount(state, service.id, month);
+      return { service, amount: days * service.tariff, days };
+    }
+  }
+};
+
+export const calculateMonth = (
+  state: LedgerState,
+  objectId: string,
+  month: MonthKey,
+): MonthBill => {
+  const items = getMonthServices(state, objectId, month).map((service) =>
+    calculateService(state, service, month),
+  );
+  const calculated = items.filter((item) => item.amount !== null);
+  return {
+    items,
+    total: calculated.reduce((sum, item) => sum + (item.amount ?? 0), 0),
+    calculatedCount: calculated.length,
+  };
+};
+
+// «Новий», поки хоча б один лічильник місяця без показника
+export const getMonthStatus = (
+  state: LedgerState,
+  objectId: string,
+  month: MonthKey,
+): MonthStatus => {
+  const missing = getMonthServices(state, objectId, month).some(
+    (service) =>
+      service.mode === 'meter' &&
+      getReading(state, service.id, month) === undefined,
+  );
+  return missing ? 'new' : 'filled';
+};

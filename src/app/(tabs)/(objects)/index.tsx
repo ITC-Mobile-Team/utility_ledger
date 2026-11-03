@@ -1,13 +1,20 @@
 import {
-  ActionButton,
   type NavigationBarButtonItem,
   NavigationView,
-  ThemedView,
   VStack,
 } from '@/components';
+import { useLedgerState } from '@/providers/ledger-provider';
+import {
+  formatMonthTitle,
+  getCurrentMonth,
+  getMonthStatus,
+  getObjectServices,
+  pluralForms,
+  pluralize,
+} from '@/services/ledger';
+import { EmptyStateView, ObjectCard, SectionHeader } from '@/views';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 
 const objectsNavigationButtons: NavigationBarButtonItem[] = [
   {
@@ -16,57 +23,69 @@ const objectsNavigationButtons: NavigationBarButtonItem[] = [
     icon: 'plus',
     iconBackground: 'coral',
   },
+  {
+    id: 'archive',
+    title: 'Архів',
+    icon: 'archive',
+    iconBackground: 'inkTile',
+  },
 ];
 
+const addObject = () => router.push('/object-form');
+
 export default function Index() {
-  const [navigationButtons, setNavigationButtons] = useState<
-    NavigationBarButtonItem[]
-  >(objectsNavigationButtons);
+  const state = useLedgerState();
+  const month = getCurrentMonth();
+  const count = state.objects.length;
+  const isEmpty = count === 0;
+
+  const subtitle = isEmpty
+    ? 'Ще немає жодної адреси'
+    : `${count} ${pluralize(count, pluralForms.address)} · ${formatMonthTitle(month).toLocaleLowerCase('uk')}`;
+
   return (
     <NavigationView
       title='Обʼєкти'
+      subtitle={subtitle}
       barType='blue'
-      contentInsets={{ top: 16, horizontal: 16, bottom: 16 }}
-      navigationBarButtons={navigationButtons}
+      cornerRadius={isEmpty ? 28 : 0}
+      contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      navigationBarButtons={isEmpty ? [] : objectsNavigationButtons}
       onNavigationButtonPress={(id) => {
-        console.log('tap on button with id: ', id);
+        if (id === 'add') addObject();
+        if (id === 'archive') {
+          Alert.alert('Архів', 'Архів адрес зʼявиться згодом.');
+        }
       }}
     >
-      <VStack spacing={20}>
-        <ActionButton
-          title='Превʼю'
-          onPress={() => {
-            router.push('/preview');
-          }}
+      {isEmpty ? (
+        <EmptyStateView
+          icon='house'
+          title='Додайте першу адресу'
+          message='Квартира, будинок чи офіс — після цього можна додати послуги та вносити показники щомісяця.'
+          actionTitle='Додати адресу'
+          onAction={addObject}
         />
-
-        <ActionButton
-          title='Add new navigation button'
-          onPress={() => {
-            const newButton: NavigationBarButtonItem = {
-              id: `button-${Date.now()}`,
-              title: `Button ${navigationButtons.length + 1}`,
-              icon: 'plus',
-              iconBackground: 'amber',
-            };
-            setNavigationButtons((prev) => [...prev, newButton]);
-          }}
-        />
-
-        <ThemedView backgroundColor='ink' style={styles.rectangle} />
-        <ThemedView backgroundColor='muted' style={styles.rectangle} />
-        <ThemedView backgroundColor='coral' style={styles.rectangle} />
-        <ThemedView backgroundColor='coral' style={styles.rectangle} />
-        <ThemedView backgroundColor='coral' style={styles.rectangle} />
-        <ThemedView backgroundColor='coral' style={styles.rectangle} />
-      </VStack>
+      ) : (
+        <VStack spacing={12}>
+          <SectionHeader title='Ваші адреси' />
+          {state.objects.map((object) => (
+            <ObjectCard
+              key={object.id}
+              object={object}
+              services={getObjectServices(state, object.id)}
+              month={month}
+              status={getMonthStatus(state, object.id, month)}
+              onPress={() =>
+                router.push({
+                  pathname: '/[objectId]',
+                  params: { objectId: object.id },
+                })
+              }
+            />
+          ))}
+        </VStack>
+      )}
     </NavigationView>
   );
 }
-
-const styles = StyleSheet.create({
-  rectangle: {
-    width: '100%',
-    height: 100,
-  },
-});

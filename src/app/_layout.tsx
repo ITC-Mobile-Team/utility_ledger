@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
+import { LedgerProvider } from '@/providers/ledger-provider';
 import {
   OnboardingProvider,
   useOnboarding,
@@ -31,7 +32,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <OnboardingProvider>
-          <RootNavigator />
+          <LedgerProvider>
+            <RootNavigator />
+          </LedgerProvider>
         </OnboardingProvider>
       </AuthProvider>
     </GestureHandlerRootView>

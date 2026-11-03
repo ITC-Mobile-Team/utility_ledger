@@ -1,4 +1,5 @@
 import {
+  AppImage,
   HStack,
   IconView,
   Spacer,
@@ -7,62 +8,102 @@ import {
   ThemedView,
   VStack,
 } from '@/components';
-import { Pressable, StyleSheet, type PressableProps } from 'react-native';
+import { getServiceIconBackground } from '@/constants/service-icons';
+import {
+  formatAddress,
+  formatObjectSubtitle,
+  getMonthName,
+  type LedgerObject,
+  type LedgerService,
+  type MonthKey,
+  type MonthStatus,
+} from '@/services/ledger';
+import { Pressable, StyleSheet } from 'react-native';
+import { EmojiTile } from './objects/emoji-tile';
 
-type ObjectCardProps = PressableProps & {};
+type ObjectCardProps = {
+  object: LedgerObject;
+  services?: LedgerService[];
+  // Статус поточного місяця; без нього нижня частина картки не показується
+  month?: MonthKey;
+  status?: MonthStatus;
+  onPress?: () => void;
+};
 
-export function ObjectCard({}: ObjectCardProps) {
+export function ObjectCard({
+  object,
+  services = [],
+  month,
+  status,
+  onPress,
+}: ObjectCardProps) {
+  const subtitle = formatObjectSubtitle(object);
+  const showsFooter = services.length > 0 && month && status;
   return (
-    <Pressable>
+    <Pressable
+      disabled={!onPress}
+      onPress={onPress}
+      style={(state) => state.pressed && styles.pressed}
+    >
       <ThemedView backgroundColor='surface' style={styles.container}>
         <VStack spacing={12} style={styles.content}>
           <HStack align='center' spacing={12}>
             <IconView
-              icon='apartment'
-              background='blue'
+              icon={object.apartment ? 'apartment' : 'house'}
+              background={object.apartment ? 'blue' : 'inkTile'}
               iconSize={{ width: 18 }}
               size={{ width: 42 }}
             />
 
-            <VStack spacing={2}>
-              <ThemedText font='rowTitle'>
-                вул. Соборності, 24, кв. 12
-              </ThemedText>
-              <ThemedText>м. Полтава · Квартира</ThemedText>
+            <VStack spacing={2} style={styles.title}>
+              <ThemedText font='rowTitle'>{formatAddress(object)}</ThemedText>
+              {subtitle.length > 0 && (
+                <ThemedText color='muted' font='caption'>
+                  {subtitle}
+                </ThemedText>
+              )}
             </VStack>
+
+            {onPress && (
+              <AppImage
+                icon='chevronRight'
+                tintColor='chev'
+                size={{ width: 18 }}
+              />
+            )}
           </HStack>
 
-          <ThemedView backgroundColor='line' style={{ height: 1 }}></ThemedView>
+          {showsFooter && (
+            <>
+              <ThemedView backgroundColor='line' style={styles.divider} />
 
-          <HStack spacing={6}>
-            <IconView
-              icon={'electricity'}
-              background='amberSoft'
-              iconColor='amber'
-              iconSize={{ width: 15 }}
-              size={{ width: 28 }}
-            />
+              <HStack spacing={6} align='center'>
+                {services.slice(0, 5).map((service) => (
+                  <EmojiTile
+                    key={service.id}
+                    emoji={service.icon}
+                    background={getServiceIconBackground(service.icon)}
+                    size={28}
+                    rounded
+                  />
+                ))}
 
-            <IconView
-              icon={'water'}
-              background='waterSoft'
-              iconColor='water'
-              iconSize={{ width: 15 }}
-              size={{ width: 28 }}
-            />
+                <Spacer />
 
-            <IconView
-              icon={'network'}
-              background='blueSoft'
-              iconColor='blue'
-              iconSize={{ width: 15 }}
-              size={{ width: 28 }}
-            />
-
-            <Spacer />
-
-            <ThemedBadge text='4 послуги' type='green' />
-          </HStack>
+                {status === 'new' ? (
+                  <ThemedBadge
+                    text={`${getMonthName(month)} · внести показники`}
+                    type='red'
+                  />
+                ) : (
+                  <ThemedBadge
+                    text={`${getMonthName(month)} заповнено`}
+                    type='green'
+                  />
+                )}
+              </HStack>
+            </>
+          )}
         </VStack>
       </ThemedView>
     </Pressable>
@@ -72,8 +113,18 @@ export function ObjectCard({}: ObjectCardProps) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 22,
+    borderCurve: 'continuous',
   },
   content: {
     padding: 16,
+  },
+  title: {
+    flex: 1,
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });

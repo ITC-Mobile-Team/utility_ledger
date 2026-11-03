@@ -12,6 +12,7 @@ export type NavigationBarButtonItem = {
   title: string;
   icon: AppIcon;
   iconBackground: AppColor;
+  iconColor?: AppColor;
 };
 
 export type NavigationBarButtonProps = NavigationBarButtonItem & {
@@ -22,10 +23,11 @@ export const NavigationBarButton = ({
   title,
   icon,
   iconBackground,
+  iconColor = 'onPrimary',
   onPress,
 }: NavigationBarButtonProps) => {
   const navigationBarIcon = appIcons[icon];
-  const onPrimary = useThemeColor('onPrimary');
+  const iconTint = useThemeColor(iconColor);
   const { width: screenWidth } = useWindowDimensions();
   const horizontalPadding = 20;
   const gap = 12;
@@ -39,7 +41,7 @@ export const NavigationBarButton = ({
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
             <Image
               source={navigationBarIcon}
-              tintColor={onPrimary}
+              tintColor={iconTint}
               style={styles.icon}
             />
           </ThemedView>

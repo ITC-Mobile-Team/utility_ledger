@@ -1,6 +1,40 @@
 import { HStack, IconView, ThemedText, VStack } from '@/components';
 import { ObjectCard } from '@/views/object-card';
+import {
+  getCurrentMonth,
+  type LedgerObject,
+  type LedgerService,
+} from '@/services/ledger';
 import { StyleSheet, View } from 'react-native';
+
+const demoObject: LedgerObject = {
+  id: 'demo',
+  name: 'Квартира',
+  city: { name: 'Полтава', region: 'Полтавська обл.' },
+  street: 'Соборності',
+  house: '24',
+  apartment: '12',
+  createdAt: 0,
+};
+
+const demoService = (id: string, icon: string): LedgerService => ({
+  id,
+  objectId: demoObject.id,
+  icon,
+  name: id,
+  kind: id,
+  mode: 'fixed',
+  unit: '',
+  tariff: 0,
+  zones: 'single',
+  createdAt: 0,
+});
+
+const demoServices = [
+  demoService('electricity', '⚡'),
+  demoService('water', '💧'),
+  demoService('internet', '🌐'),
+];
 
 export function AddressesIllustration() {
   return (
@@ -19,7 +53,12 @@ export function AddressesIllustration() {
 
       <View>
         <View style={styles.cardShadow}>
-          <ObjectCard />
+          <ObjectCard
+            object={demoObject}
+            services={demoServices}
+            month={getCurrentMonth()}
+            status='filled'
+          />
         </View>
         <View style={styles.addButton}>
           <IconView

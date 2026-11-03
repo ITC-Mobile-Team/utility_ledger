@@ -41,26 +41,34 @@ export const NavigationBarButtonsRow = ({
       onLayout={(e) => onHeightChange(e.nativeEvent.layout.height)}
       style={[styles.container, { top }, style]}
     >
-      <ScrollView
-        horizontal
-        contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
-        showsHorizontalScrollIndicator={false}
-      >
-        <HStack spacing={12} style={{ flex: 1 }}>
-          {buttons.map((button) => {
-            return (
+      {variant === 'full' ? (
+        // Великі кнопки переносяться в сітку по дві в ряд
+        <HStack spacing={12} style={styles.grid}>
+          {buttons.map((button) => (
+            <Button
+              key={button.id}
+              {...button}
+              onPress={() => onButtonPress(button.id)}
+            />
+          ))}
+        </HStack>
+      ) : (
+        <ScrollView
+          horizontal
+          contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
+          showsHorizontalScrollIndicator={false}
+        >
+          <HStack spacing={12} style={{ flex: 1 }}>
+            {buttons.map((button) => (
               <Button
                 key={button.id}
-                id={button.id}
-                title={button.title}
-                icon={button.icon}
-                iconBackground={button.iconBackground}
+                {...button}
                 onPress={() => onButtonPress(button.id)}
               />
-            );
-          })}
-        </HStack>
-      </ScrollView>
+            ))}
+          </HStack>
+        </ScrollView>
+      )}
     </Animated.View>
   );
 };
@@ -70,5 +78,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+  },
+  grid: {
+    flexWrap: 'wrap',
+    paddingHorizontal: HORIZONTAL_PADDING,
   },
 });
