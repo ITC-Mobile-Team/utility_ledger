@@ -19,7 +19,8 @@ export type LedgerObject = {
   createdAt: number;
 };
 
-export type MeterZones = 'single' | 'dayNight';
+// 'water' — лічильник води з водовідведенням (стоками) та абонплатами
+export type MeterZones = 'single' | 'dayNight' | 'water';
 
 export type LedgerService = {
   id: string;
@@ -31,10 +32,15 @@ export type LedgerService = {
   // Одиниця виміру для показника ('кВт·год', 'м³')
   unit: string;
   // Тариф у копійках: за одиницю, за місяць або за день залежно від mode.
-  // Для двозонного лічильника — денний тариф
+  // Для двозонного лічильника — денний тариф, для води — водопостачання
   tariff: number;
   // Нічний тариф у копійках, лише для zones === 'dayNight'
   nightTariff?: number;
+  // Лише для zones === 'water', у копійках: стоки за одиницю
+  // та щомісячні абонплати за воду й стоки
+  sewageTariff?: number;
+  waterFee?: number;
+  sewageFee?: number;
   initialReading?: number;
   initialNightReading?: number;
   zones: MeterZones;

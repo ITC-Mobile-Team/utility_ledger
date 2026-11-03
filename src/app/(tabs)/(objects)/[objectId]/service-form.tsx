@@ -34,7 +34,15 @@ import { Pressable, StyleSheet, View } from 'react-native';
 const zoneItems = [
   { value: 'single', label: 'Однозонний' },
   { value: 'dayNight', label: 'День / Ніч' },
+  { value: 'water', label: 'Вода' },
 ] as const;
+
+const optionalMoneyInput = (kopecks: number | undefined) =>
+  kopecks !== undefined ? formatMoneyInput(kopecks) : '';
+
+// Порожнє поле абонплати — 0 ₴
+const parseOptionalMoney = (text: string) =>
+  text.trim().length === 0 ? 0 : parseMoney(text);
 
 const tariffTitles: Record<BillingMode, string> = {
   meter: 'Тариф, ₴ за одиницю',
@@ -79,24 +87,47 @@ export default function ServiceForm() {
     existing ? formatMoneyInput(existing.tariff) : '',
   );
   const [nightTariff, setNightTariff] = useState(
-    existing?.nightTariff !== undefined
-      ? formatMoneyInput(existing.nightTariff)
-      : '',
+    optionalMoneyInput(existing?.nightTariff),
+  );
+  const [sewageTariff, setSewageTariff] = useState(
+    optionalMoneyInput(existing?.sewageTariff),
+  );
+  const [waterFee, setWaterFee] = useState(
+    optionalMoneyInput(existing?.waterFee),
+  );
+  const [sewageFee, setSewageFee] = useState(
+    optionalMoneyInput(existing?.sewageFee),
   );
   const [isSaving, setSaving] = useState(false);
 
   const isDayNight = mode === 'meter' && zones === 'dayNight';
+  const isWater = mode === 'meter' && zones === 'water';
   const tariffValue = parseMoney(tariff);
   const nightTariffValue = parseMoney(nightTariff);
+  const sewageTariffValue = parseMoney(sewageTariff);
+  const waterFeeValue = parseOptionalMoney(waterFee);
+  const sewageFeeValue = parseOptionalMoney(sewageFee);
   const hasTariff =
     tariffValue !== null &&
     tariffValue > 0 &&
-    (!isDayNight || (nightTariffValue !== null && nightTariffValue > 0));
+    (!isDayNight || (nightTariffValue !== null && nightTariffValue > 0)) &&
+    (!isWater ||
+      (sewageTariffValue !== null &&
+        sewageTariffValue > 0 &&
+        waterFeeValue !== null &&
+        sewageFeeValue !== null));
   const keyboardInsets = useFormFooterKeyboardInsets(!hasTariff);
 
   if (!object) return null;
 
   const canSave = name.trim().length > 0 && hasTariff;
+
+  // Вода рахується в м³, тож підставляємо одиницю, якщо її не змінювали
+  const changeZones = (value: MeterZones) => {
+    setZones(value);
+    if (value === 'water' && unit === 'кВт·год') setUnit('м³');
+    if (value !== 'water' && unit === 'м³') setUnit('кВт·год');
+  };
 
   const save = async () => {
     if (tariffValue === null) return;
@@ -115,6 +146,9 @@ export default function ServiceForm() {
       initialNightReading: isDayNight
         ? Number(initialNightReading) || 0
         : undefined,
+      sewageTariff: isWater ? (sewageTariffValue ?? 0) : undefined,
+      waterFee: isWater ? (waterFeeValue ?? 0) : undefined,
+      sewageFee: isWater ? (sewageFeeValue ?? 0) : undefined,
     };
     setSaving(true);
     try {
@@ -208,9 +242,9 @@ export default function ServiceForm() {
           {mode === 'meter' && (
             <VStack spacing={10}>
               <ThemedText color='muted' font='overline'>
-                ЗОНИ ЛІЧИЛЬНИКА
+                ТИП ЛІЧИЛЬНИКА
               </ThemedText>
-              <Segment items={zoneItems} value={zones} onChange={setZones} />
+              <Segment items={zoneItems} value={zones} onChange={changeZones} />
               {!isDayNight && (
                 <ThemedTextInput
                   title='Початковий показник'
@@ -290,6 +324,64 @@ export default function ServiceForm() {
                 </ThemedText>
               </VStack>
             </>
+          ) : isWater ? (
+            <>
+              <VStack spacing={10}>
+                <ThemedText color='muted' font='overline'>
+                  {`ТАРИФ ЗА ${(unit.trim() || 'одиницю').toLocaleUpperCase('uk')}`}
+                </ThemedText>
+                <HStack spacing={10}>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='💧 Водопостач., ₴'
+                      value={tariff}
+                      onChangeText={setTariff}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='🚽 Стоки, ₴'
+                      value={sewageTariff}
+                      onChangeText={setSewageTariff}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                </HStack>
+              </VStack>
+
+              <VStack spacing={10}>
+                <ThemedText color='muted' font='overline'>
+                  АБОНПЛАТА НА МІСЯЦЬ
+                </ThemedText>
+                <HStack spacing={10}>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='💧 Вода, ₴'
+                      value={waterFee}
+                      onChangeText={setWaterFee}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ThemedTextInput
+                      title='🚽 Стоки, ₴'
+                      value={sewageFee}
+                      onChangeText={setSewageFee}
+                      placeholder='0,00'
+                      keyboardType='decimal-pad'
+                    />
+                  </View>
+                </HStack>
+                <ThemedText color='muted' font='caption'>
+                  Сума = спожито × водопостачання + спожито × стоки + абонплата
+                  за воду + абонплата за стоки.
+                </ThemedText>
+              </VStack>
+            </>
           ) : (
             <ThemedTextInput
               title={tariffTitles[mode]}
@@ -308,7 +400,9 @@ export default function ServiceForm() {
             ? undefined
             : isDayNight
               ? 'Вкажіть денний і нічний тарифи, щоб рахувати суму'
-              : 'Вкажіть тариф, щоб рахувати суму'
+              : isWater
+                ? 'Вкажіть тарифи на воду і стоки, щоб рахувати суму'
+                : 'Вкажіть тариф, щоб рахувати суму'
         }
       >
         <ActionButton

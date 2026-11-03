@@ -49,6 +49,18 @@ const describe = (item: ServiceBill, month: MonthKey): BillLine => {
           formula: `☀️ ${formatNumber(item.consumption ?? 0)} + 🌙 ${formatNumber(night.consumption ?? 0)} ${service.unit} × тариф`,
         };
       }
+      if (item.service.zones === 'water') {
+        return {
+          tag: 'Вода + стоки',
+          details:
+            item.current === undefined
+              ? 'Показник ще не внесено'
+              : `${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · спожито ${formatNumber(item.consumption ?? 0)} ${service.unit}`,
+          formula: item.water
+            ? `💧 ${formatMoney(item.water.supply)} + 🚽 ${formatMoney(item.water.sewage)} + абонплата ${formatMoney(item.water.fees)}`
+            : `${service.unit} × (вода + стоки) + абонплата`,
+        };
+      }
       return {
         tag: 'Показник',
         details:

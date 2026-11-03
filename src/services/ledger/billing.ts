@@ -12,6 +12,12 @@ export type ZoneBill = {
   consumption?: number;
 };
 
+export type WaterBill = {
+  supply: number;
+  sewage: number;
+  fees: number;
+};
+
 export type ServiceBill = {
   service: LedgerService;
   // null — суму ще неможливо порахувати (немає показника)
@@ -21,6 +27,8 @@ export type ServiceBill = {
   consumption?: number;
   // Нічна зона, лише для двозонного лічильника; поля вище тоді — денна зона
   night?: ZoneBill;
+  // Лише для лічильника води
+  water?: WaterBill;
   days?: number;
 };
 
@@ -78,6 +86,22 @@ export const getObjectMonths = (
 
 export const isDayNight = (service: Pick<LedgerService, 'mode' | 'zones'>) =>
   service.mode === 'meter' && service.zones === 'dayNight';
+
+export const isWater = (service: Pick<LedgerService, 'mode' | 'zones'>) =>
+  service.mode === 'meter' && service.zones === 'water';
+
+// Сума = спожито × водопостачання + спожито × стоки + абонплати
+export const calculateWater = (
+  service: Pick<
+    LedgerService,
+    'tariff' | 'sewageTariff' | 'waterFee' | 'sewageFee'
+  >,
+  consumption: number,
+): WaterBill => ({
+  supply: consumption * service.tariff,
+  sewage: consumption * (service.sewageTariff ?? 0),
+  fees: (service.waterFee ?? 0) + (service.sewageFee ?? 0),
+});
 
 export const getReading = (
   state: LedgerState,
@@ -163,6 +187,17 @@ export const calculateService = (
         };
       }
       const consumption = reading.value - previous;
+      if (isWater(service)) {
+        const water = calculateWater(service, consumption);
+        return {
+          service,
+          amount: water.supply + water.sewage + water.fees,
+          previous,
+          current: reading.value,
+          consumption,
+          water,
+        };
+      }
       const dayAmount = consumption * service.tariff;
       if (nightPrevious === undefined || reading.night === undefined) {
         return {

@@ -117,16 +117,29 @@ export const tariffSuffix = (mode: BillingMode, unit: string) => {
   }
 };
 
-// «4,32 ₴ / кВт·год»; двозонний — «☀️ 4,32 · 🌙 2,16 ₴ / кВт·год»
+// «4,32 ₴ / кВт·год»; двозонний — «☀️ 4,32 · 🌙 2,16 ₴ / кВт·год»;
+// вода — «💧 46,80 · 🚽 36,91 ₴ / м³ + 36,00 ₴ / міс.»
 export const formatTariff = (
   service: Pick<
     LedgerService,
-    'mode' | 'unit' | 'tariff' | 'zones' | 'nightTariff'
+    | 'mode'
+    | 'unit'
+    | 'tariff'
+    | 'zones'
+    | 'nightTariff'
+    | 'sewageTariff'
+    | 'waterFee'
+    | 'sewageFee'
   >,
 ) => {
   const suffix = tariffSuffix(service.mode, service.unit);
   if (service.mode === 'meter' && service.zones === 'dayNight') {
     return `☀️ ${formatMoney(service.tariff, false)} · 🌙 ${formatMoney(service.nightTariff ?? 0)} / ${suffix}`;
+  }
+  if (service.mode === 'meter' && service.zones === 'water') {
+    const fees = (service.waterFee ?? 0) + (service.sewageFee ?? 0);
+    const rates = `💧 ${formatMoney(service.tariff, false)} · 🚽 ${formatMoney(service.sewageTariff ?? 0)} / ${suffix}`;
+    return fees > 0 ? `${rates} + ${formatMoney(fees)} / міс.` : rates;
   }
   return `${formatMoney(service.tariff)} / ${suffix}`;
 };
