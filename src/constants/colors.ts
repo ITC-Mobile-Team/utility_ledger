@@ -57,6 +57,9 @@ const light = {
   meterBg: '#0F1B2D',
   meterDigit: '#1E2D44',
   monthDim: 'transparent',
+  // Кругла плашка з іконкою поверх фону (бейджі послуг на вітальному екрані)
+  chipBg: '#FFFFFF',
+  chipRim: 'rgba(15,27,45,0.06)',
 
   // liquid glass
   glassBg: 'rgba(255,255,255,0.58)',
@@ -122,6 +125,8 @@ const dark: Record<AppColor, string> = {
   meterBg: '#05080D',
   meterDigit: '#1E2D44',
   monthDim: 'rgba(17,18,20,0.62)',
+  chipBg: '#33353B',
+  chipRim: 'rgba(255,255,255,0.12)',
 
   glassBg: 'rgba(40,41,46,0.55)',
   glassRim: 'rgba(255,255,255,0.14)',

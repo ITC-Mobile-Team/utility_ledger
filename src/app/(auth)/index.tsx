@@ -131,7 +131,8 @@ const ServiceBadge = ({
 }) => {
   return (
     <ThemedView
-      backgroundColor='surface'
+      backgroundColor='chipBg'
+      borderColor='chipRim'
       size={{ width: badgeSize }}
       style={[styles.circleContainer, styles.circle, styles.badge, style]}
     >
