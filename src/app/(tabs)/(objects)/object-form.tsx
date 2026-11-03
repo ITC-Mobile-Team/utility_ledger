@@ -14,7 +14,7 @@ import type { City, ObjectInput } from '@/services/ledger';
 import { CityPickerSheet, FormFooter } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -70,7 +70,12 @@ export default function ObjectForm() {
   };
 
   return (
-    <View style={styles.screen}>
+    // Тап поза полями й кнопками закриває клавіатуру
+    <Pressable
+      style={styles.screen}
+      onPress={Keyboard.dismiss}
+      accessible={false}
+    >
       <NavigationView
         title={isEditing ? 'Редагувати адресу' : 'Додати нову адресу'}
         subtitle={
@@ -80,7 +85,6 @@ export default function ObjectForm() {
         }
         contentInsets={{ top: 0, horizontal: 20, bottom: 24 }}
         keyboardShouldPersistTaps='handled'
-        keyboardDismissMode='interactive'
         bottomOffset={FOOTER_ABOVE_KEYBOARD + 16}
         // футер перекриває контент, а його safe area ховається під клавіатуру
         extraKeyboardSpace={-Math.max(bottom - KEYBOARD_GAP, 0)}
@@ -105,7 +109,10 @@ export default function ObjectForm() {
             </ThemedText>
 
             <Pressable
-              onPress={() => setCityPickerVisible(true)}
+              onPress={() => {
+                Keyboard.dismiss();
+                setCityPickerVisible(true);
+              }}
               style={(state) => state.pressed && styles.pressed}
             >
               <ThemedView backgroundColor='surface' style={styles.field}>
@@ -193,7 +200,7 @@ export default function ObjectForm() {
           setCityPickerVisible(false);
         }}
       />
-    </View>
+    </Pressable>
   );
 }
 

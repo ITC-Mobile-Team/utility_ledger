@@ -1,9 +1,14 @@
-import { StyleSheet, TextInput, type TextInputProps } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  type TextInputProps,
+} from 'react-native';
 import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { typography } from '@/constants/typography';
-import { useState } from 'react';
+import { type ComponentRef, useRef, useState } from 'react';
 
 type ThemedTextinputProps = TextInputProps & {
   title: string;
@@ -13,35 +18,42 @@ export function ThemedTextInput({
   title,
   onFocus,
   onBlur,
+  returnKeyType = 'done',
   ...rest
 }: ThemedTextinputProps) {
+  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
   const [isFocused, setFocus] = useState(false);
   const borderColor = useThemeColor('blue');
   const textColor = useThemeColor('ink');
   return (
-    <ThemedView
-      backgroundColor='surface'
-      style={[
-        styles.container,
-        { borderColor: isFocused ? borderColor : 'transparent' },
-      ]}
-    >
-      <ThemedText color='muted' font='label'>
-        {title}
-      </ThemedText>
-      <TextInput
-        {...rest}
-        style={[{ color: textColor }, typography.textInput, styles.input]}
-        onFocus={(e) => {
-          setFocus(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setFocus(false);
-          onBlur?.(e);
-        }}
-      />
-    </ThemedView>
+    // Тап по будь-якій частині поля (заголовок, відступи) ставить фокус в інпут
+    <Pressable onPress={() => inputRef.current?.focus()} accessible={false}>
+      <ThemedView
+        backgroundColor='surface'
+        style={[
+          styles.container,
+          { borderColor: isFocused ? borderColor : 'transparent' },
+        ]}
+      >
+        <ThemedText color='muted' font='label'>
+          {title}
+        </ThemedText>
+        <TextInput
+          ref={inputRef}
+          {...rest}
+          returnKeyType={returnKeyType}
+          style={[{ color: textColor }, typography.textInput, styles.input]}
+          onFocus={(e) => {
+            setFocus(true);
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocus(false);
+            onBlur?.(e);
+          }}
+        />
+      </ThemedView>
+    </Pressable>
   );
 }
 
