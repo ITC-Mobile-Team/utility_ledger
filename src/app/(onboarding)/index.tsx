@@ -12,8 +12,29 @@ import {
 import { ObjectCard } from '@/views';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  Carousel,
+  Pagination,
+  type CarouselRef,
+} from 'react-native-reanimated-carousel';
+import { useSharedValue } from 'react-native-reanimated';
+import { useRef } from 'react';
 
 // const itemsLength = 3;
+
+type TextBlockItem = {
+  title: string;
+  subtitle: string;
+};
+
+const TextBlock = ({ item }: { item: TextBlockItem }) => {
+  return (
+    <VStack spacing={12}>
+      <ThemedText font='onboardingTitle'>{item.title}</ThemedText>
+      <ThemedText color='muted'>{item.subtitle}</ThemedText>
+    </VStack>
+  );
+};
 
 const Indicator = ({ isActive }: { isActive: boolean }) => {
   const style = isActive ? styles.activeIndicator : styles.indicator;
@@ -24,9 +45,18 @@ const Indicator = ({ isActive }: { isActive: boolean }) => {
 
 export default function Onboarding() {
   // const [value, setValue] = useState('12660');
-  const { height: screenHeight } = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const { top: safeAreaTopInset } = useSafeAreaInsets();
   const backgroundHeight = screenHeight * (500 / 874);
+  const ref = useRef<CarouselRef>(null);
+  const progress = useSharedValue(0);
+
+  const array = [0, 1, 2];
+  const textItems: TextBlockItem[] = [
+    { title: '0', subtitle: '1' },
+    { title: '2', subtitle: '3' },
+    { title: '4', subtitle: '5' },
+  ];
   return (
     <ScreenView
       edges={['bottom']}
@@ -52,7 +82,11 @@ export default function Onboarding() {
             <Spacer />
             <TransparentActionButton title='Пропустити' />
           </HStack>
-          <VStack filled spacing={12} style={{ marginHorizontal: 51 }}>
+          <VStack
+            filled
+            spacing={12}
+            // style={{ marginHorizontal: 51 }}
+          >
             <Spacer />
             <TransparentActionButton
               icon='house'
@@ -60,7 +94,16 @@ export default function Onboarding() {
               subtitle='Будинок батьків'
               disabled
             />
-            <ObjectCard />
+
+            <Carousel
+              ref={ref}
+              data={array}
+              progress={progress}
+              // style={{ height: 200 }}
+              renderItem={() => <ObjectCard />}
+            />
+
+            {/* <ObjectCard /> */}
             <Spacer />
           </VStack>
         </View>
@@ -72,15 +115,12 @@ export default function Onboarding() {
             <Indicator isActive={false} />
           </HStack>
 
-          <VStack spacing={12}>
-            <ThemedText font='onboardingTitle'>
-              Усі адреси в одному місці
-            </ThemedText>
-            <ThemedText color='muted'>
-              Квартира, будинок батьків чи офіс — додайте кожну адресу та її
-              послуги: світло, воду, газ та інші послуги.
-            </ThemedText>
-          </VStack>
+          <Carousel
+            ref={ref}
+            data={textItems}
+            progress={progress}
+            renderItem={({ item }) => <TextBlock item={item} />}
+          />
         </VStack>
 
         <VStack style={{ marginHorizontal: 20 }}>
