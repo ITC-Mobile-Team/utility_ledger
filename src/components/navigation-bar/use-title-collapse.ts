@@ -16,6 +16,7 @@ export const useTitleCollapse = ({
   maxScrollY,
   shrink,
   collapseScroll,
+  collapseDistance,
   hasBackButton,
 }: {
   scrollY: SharedValue<number>;
@@ -24,6 +25,8 @@ export const useTitleCollapse = ({
   shrink: SharedValue<number>;
   // Scroll range (with the header expanded) the content needs to collapse fully
   collapseScroll: SharedValue<number>;
+  // Scroll over which the large title collapses, for snapping in NavigationView
+  collapseDistance: SharedValue<number>;
   hasBackButton: boolean;
 }) => {
   const largeHeight = useSharedValue(0);
@@ -35,6 +38,11 @@ export const useTitleCollapse = ({
       ? interpolate(scrollY.value, [0, distance], [0, 1], Extrapolation.CLAMP)
       : 0;
   });
+
+  useAnimatedReaction(
+    () => largeHeight.value,
+    (value) => collapseDistance.set(value),
+  );
 
   const fullShrink = useDerivedValue(
     () => largeHeight.value - (hasBackButton ? 0 : SHORT_TITLE_ROW_HEIGHT),

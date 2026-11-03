@@ -16,5 +16,7 @@ export type ThemedNavigationBarProps = {
   maxScrollY?: SharedValue<number>;
   titleShrink?: SharedValue<number>;
   collapseScroll?: SharedValue<number>;
+  // Скрол, за який згортається великий заголовок (0, якщо його немає)
+  titleCollapseDistance?: SharedValue<number>;
   cornerRadius?: number;
 };
