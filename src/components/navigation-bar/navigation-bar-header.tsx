@@ -20,6 +20,7 @@ type NavigationBarHeaderProps = {
   scrollY: SharedValue<number>;
   maxScrollY: SharedValue<number>;
   titleShrink: SharedValue<number>;
+  collapseScroll: SharedValue<number>;
 };
 
 const getTitleFont = (
@@ -39,6 +40,7 @@ export const NavigationBarHeader = ({
   scrollY,
   maxScrollY,
   titleShrink,
+  collapseScroll,
 }: NavigationBarHeaderProps) => {
   const router = useRouter();
   const route = useRoute();
@@ -58,6 +60,7 @@ export const NavigationBarHeader = ({
     scrollY,
     maxScrollY,
     shrink: titleShrink,
+    collapseScroll,
     hasBackButton: canGoBack,
   });
   const isFull = type === 'full';

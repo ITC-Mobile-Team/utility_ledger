@@ -392,7 +392,7 @@ export default function ServiceForm() {
         }
       >
         <ActionButton
-          title='Зберегти послугу'
+          title='Зберегти'
           disabled={!canSave}
           loading={isSaving}
           onPress={save}

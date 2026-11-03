@@ -15,12 +15,15 @@ export const useTitleCollapse = ({
   scrollY,
   maxScrollY,
   shrink,
+  collapseScroll,
   hasBackButton,
 }: {
   scrollY: SharedValue<number>;
   maxScrollY: SharedValue<number>;
   // How much the header is currently shorter than expanded
   shrink: SharedValue<number>;
+  // Scroll range (with the header expanded) the content needs to collapse fully
+  collapseScroll: SharedValue<number>;
   hasBackButton: boolean;
 }) => {
   const largeHeight = useSharedValue(0);
@@ -33,11 +36,19 @@ export const useTitleCollapse = ({
       : 0;
   });
 
+  const fullShrink = useDerivedValue(
+    () => largeHeight.value - (hasBackButton ? 0 : SHORT_TITLE_ROW_HEIGHT),
+  );
+
   useAnimatedReaction(
-    () =>
-      progress.value *
-      (largeHeight.value - (hasBackButton ? 0 : SHORT_TITLE_ROW_HEIGHT)),
+    () => progress.value * fullShrink.value,
     (value) => shrink.set(value),
+  );
+
+  // Collapsing takes largeHeight of scroll, and the header shrinks by fullShrink
+  useAnimatedReaction(
+    () => largeHeight.value + fullShrink.value,
+    (value) => collapseScroll.set(value),
   );
 
   // Without a back button the top row is empty until the short title appears

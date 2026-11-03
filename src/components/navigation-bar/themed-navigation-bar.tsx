@@ -17,12 +17,14 @@ export function ThemedNavigationBar({
   scrollY,
   maxScrollY,
   titleShrink,
+  collapseScroll,
   cornerRadius = 0,
 }: ThemedNavigationBarProps) {
   const hasButtons = navigationBarButtons.length > 0;
   const collapse = useNavigationBarCollapse({ scrollY, hasButtons });
   const fallbackMaxScrollY = useSharedValue(Number.MAX_VALUE);
   const fallbackTitleShrink = useSharedValue(0);
+  const fallbackCollapseScroll = useSharedValue(0);
 
   return (
     <ThemedView>
@@ -41,6 +43,7 @@ export function ThemedNavigationBar({
         scrollY={collapse.scrollY}
         maxScrollY={maxScrollY ?? fallbackMaxScrollY}
         titleShrink={titleShrink ?? fallbackTitleShrink}
+        collapseScroll={collapseScroll ?? fallbackCollapseScroll}
       />
       {hasButtons && (
         <NavigationBarButtons

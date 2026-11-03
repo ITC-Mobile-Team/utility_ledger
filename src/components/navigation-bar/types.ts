@@ -15,5 +15,6 @@ export type ThemedNavigationBarProps = {
   scrollY?: SharedValue<number>;
   maxScrollY?: SharedValue<number>;
   titleShrink?: SharedValue<number>;
+  collapseScroll?: SharedValue<number>;
   cornerRadius?: number;
 };

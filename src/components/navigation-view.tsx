@@ -13,6 +13,7 @@ import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
 import { toPadding, type ContentInsets } from './content-insets';
@@ -21,7 +22,7 @@ import { ThemedView } from './themed-view';
 type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
   Omit<
     ThemedNavigationBarProps,
-    'type' | 'scrollY' | 'maxScrollY' | 'titleShrink'
+    'type' | 'scrollY' | 'maxScrollY' | 'titleShrink' | 'collapseScroll'
   > & {
     type?: NavigationBarVariant;
     contentInsets?: ContentInsets;
@@ -44,17 +45,29 @@ export const NavigationView = ({
   const scrollY = useSharedValue(0);
   const maxScrollY = useSharedValue(Number.MAX_VALUE);
   const titleShrink = useSharedValue(0);
+  const collapseScroll = useSharedValue(0);
+  // Scroll range without the spacer, with the header expanded
+  const naturalScroll = useSharedValue(Number.MAX_VALUE);
+  // The scroll area grows as the header shrinks; the spacer keeps enough scroll
+  // range for the large title to collapse completely. Long content needs none,
+  // so it doesn't leave an empty gap at the bottom
+  const spacerHeight = useDerivedValue(() =>
+    Math.min(
+      titleShrink.value,
+      Math.max(collapseScroll.value - naturalScroll.value, 0),
+    ),
+  );
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollY.value = e.contentOffset.y;
     maxScrollY.value =
       e.contentSize.height +
       (e.contentInset?.bottom ?? 0) -
       e.layoutMeasurement.height;
+    naturalScroll.value =
+      maxScrollY.value - spacerHeight.value + titleShrink.value;
   });
-  // The scroll area grows as the header shrinks; this keeps the scroll range
-  // stable so the large title can collapse completely
   const shrinkSpacerStyle = useAnimatedStyle(() => ({
-    height: titleShrink.value,
+    height: spacerHeight.value,
   }));
 
   return (
@@ -69,6 +82,7 @@ export const NavigationView = ({
         scrollY={scrollY}
         maxScrollY={maxScrollY}
         titleShrink={titleShrink}
+        collapseScroll={collapseScroll}
         cornerRadius={cornerRadius}
       />
       {cornerRadius > 0 && (
