@@ -4,11 +4,13 @@ import {
   type NativeSyntheticEvent,
   StyleSheet,
   useWindowDimensions,
+  View,
 } from 'react-native';
 import {
   KeyboardAwareScrollView,
   type KeyboardAwareScrollViewProps,
   type KeyboardAwareScrollViewRef,
+  useKeyboardState,
 } from 'react-native-keyboard-controller';
 import { VStack } from './stack';
 import {
@@ -61,6 +63,16 @@ export const NavigationView = ({
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
   const [bottomInset, setBottomInset] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  // Де закінчується контент (без розпірки та нижнього відступу)
+  const [contentEnd, setContentEnd] = useState(0);
+  const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
+  // Короткий контент не скролиться: він і так видно повністю над таб-баром.
+  // З клавіатурою скрол лишається, щоб догорнути до поля над нею
+  const contentFits =
+    viewportHeight > 0 &&
+    contentEnd + (contentInsets?.bottom ?? 0) <= viewportHeight - bottomInset;
+  const isScrollEnabled = !contentFits || isKeyboardVisible;
   const buttonsCollapseDistance = navigationBarButtons?.length
     ? COLLAPSE_DISTANCE
     : 0;
@@ -153,13 +165,15 @@ export const NavigationView = ({
         // contentInsetAdjustmentBehavior: автоматичний відступ не потрапляє в
         // події скролу, і без нього maxScrollY хибний. Лише та частина safe
         // area, яку скрол перекриває: над футером форми відступ не потрібен
-        onLayout={() =>
+        onLayout={(e) => {
+          setViewportHeight(e.nativeEvent.layout.height);
           scrollRef.current?.measureInWindow((_x, y, _width, height) =>
             setBottomInset(
               Math.max(safeAreaBottom - (windowHeight - (y + height)), 0),
             ),
-          )
-        }
+          );
+        }}
+        scrollEnabled={isScrollEnabled}
         contentInset={{ bottom: bottomInset }}
         scrollIndicatorInsets={{ bottom: bottomInset }}
         contentInsetAdjustmentBehavior='never'
@@ -171,6 +185,7 @@ export const NavigationView = ({
         {...rest}
       >
         {children}
+        <View onLayout={(e) => setContentEnd(e.nativeEvent.layout.y)} />
         <Animated.View style={shrinkSpacerStyle} />
       </KeyboardAwareScrollView>
     </VStack>
