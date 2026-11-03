@@ -22,7 +22,6 @@ const demoService = (id: string, icon: string): LedgerService => ({
   objectId: demoObject.id,
   icon,
   name: id,
-  kind: id,
   mode: 'fixed',
   unit: '',
   tariff: 0,

@@ -27,7 +27,6 @@ export type LedgerService = {
   objectId: string;
   icon: string;
   name: string;
-  kind: string;
   mode: BillingMode;
   // Одиниця виміру для показника ('кВт·год', 'м³')
   unit: string;

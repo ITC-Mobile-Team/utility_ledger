@@ -70,7 +70,6 @@ export default function ServiceForm() {
   const icon = pickedIcon ?? existing?.icon ?? defaultServiceIcon;
   const [mode, setMode] = useState<BillingMode>(existing?.mode ?? 'meter');
   const [name, setName] = useState(existing?.name ?? '');
-  const [kind, setKind] = useState(existing?.kind ?? '');
   const [unit, setUnit] = useState(existing?.unit ?? 'кВт·год');
   const [zones, setZones] = useState<MeterZones>(existing?.zones ?? 'single');
   const [initialReading, setInitialReading] = useState(
@@ -135,7 +134,6 @@ export default function ServiceForm() {
       objectId: object.id,
       icon,
       name: name.trim(),
-      kind: kind.trim() || name.trim(),
       mode,
       unit: mode === 'meter' ? unit.trim() : '',
       tariff: tariffValue,
@@ -218,26 +216,14 @@ export default function ServiceForm() {
             placeholder='Світло'
           />
 
-          <HStack spacing={10}>
-            <View style={styles.flex}>
-              <ThemedTextInput
-                title='Вид послуги'
-                value={kind}
-                onChangeText={setKind}
-                placeholder='Електроенергія'
-              />
-            </View>
-            {mode === 'meter' && (
-              <View style={styles.flex}>
-                <ThemedTextInput
-                  title='Одиниця'
-                  value={unit}
-                  onChangeText={setUnit}
-                  placeholder='кВт·год'
-                />
-              </View>
-            )}
-          </HStack>
+          {mode === 'meter' && (
+            <ThemedTextInput
+              title='Одиниця'
+              value={unit}
+              onChangeText={setUnit}
+              placeholder='кВт·год'
+            />
+          )}
 
           {mode === 'meter' && (
             <VStack spacing={10}>
