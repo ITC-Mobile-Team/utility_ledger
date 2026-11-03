@@ -1,3 +1,4 @@
+import { useSharedValue } from 'react-native-reanimated';
 import { EMPTY_BOTTOM } from './constants';
 import { NavigationBarBackground } from './navigation-bar-background';
 import { NavigationBarButtons } from './navigation-bar-buttons';
@@ -14,10 +15,14 @@ export function ThemedNavigationBar({
   navigationBarButtons = [],
   onNavigationButtonPress = () => {},
   scrollY,
+  maxScrollY,
+  titleShrink,
   cornerRadius = 0,
 }: ThemedNavigationBarProps) {
   const hasButtons = navigationBarButtons.length > 0;
   const collapse = useNavigationBarCollapse({ scrollY, hasButtons });
+  const fallbackMaxScrollY = useSharedValue(Number.MAX_VALUE);
+  const fallbackTitleShrink = useSharedValue(0);
 
   return (
     <ThemedView>
@@ -33,6 +38,9 @@ export function ThemedNavigationBar({
         subtitle={subtitle}
         isTransparent={barType === 'transparent'}
         paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM + cornerRadius}
+        scrollY={collapse.scrollY}
+        maxScrollY={maxScrollY ?? fallbackMaxScrollY}
+        titleShrink={titleShrink ?? fallbackTitleShrink}
       />
       {hasButtons && (
         <NavigationBarButtons

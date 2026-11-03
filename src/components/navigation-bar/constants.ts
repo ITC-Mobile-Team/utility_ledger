@@ -10,3 +10,5 @@ export const EMPTY_BOTTOM = 24;
 export const HORIZONTAL_PADDING = 20;
 // Full buttons are 50% of the screen width and scroll horizontally in one row
 export const FULL_BUTTON_WIDTH_RATIO = 0.5;
+// Height of the top row (back button / short title) of the navigation bar
+export const SHORT_TITLE_ROW_HEIGHT = 44;

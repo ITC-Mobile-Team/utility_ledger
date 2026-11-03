@@ -13,5 +13,7 @@ export type ThemedNavigationBarProps = {
   navigationBarButtons?: NavigationBarButtonItem[];
   onNavigationButtonPress?: (id: string) => void;
   scrollY?: SharedValue<number>;
+  maxScrollY?: SharedValue<number>;
+  titleShrink?: SharedValue<number>;
   cornerRadius?: number;
 };

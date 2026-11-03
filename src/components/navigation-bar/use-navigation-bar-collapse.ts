@@ -81,6 +81,7 @@ export const useNavigationBarCollapse = ({
   }));
 
   return {
+    scrollY: scroll,
     isCollapsed,
     gradientStyle,
     buttonsAreaStyle,

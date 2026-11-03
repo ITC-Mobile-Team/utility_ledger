@@ -3,11 +3,13 @@ import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { type SharedValue } from 'react-native-reanimated';
 import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type AppFont, ThemedText } from '../themed-text';
-import { HStack, VStack } from '../stack';
+import { VStack } from '../stack';
 import { type NavigationBarVariant } from './types';
+import { useTitleCollapse } from './use-title-collapse';
 
 type NavigationBarHeaderProps = {
   type?: NavigationBarVariant;
@@ -15,15 +17,17 @@ type NavigationBarHeaderProps = {
   subtitle?: string;
   isTransparent: boolean;
   paddingBottom: number;
+  scrollY: SharedValue<number>;
+  maxScrollY: SharedValue<number>;
+  titleShrink: SharedValue<number>;
 };
 
 const getTitleFont = (
   isTransparent: boolean,
   type: NavigationBarVariant,
 ): AppFont => {
-  if (isTransparent) return 'display';
-  if (type === 'full') return 'title';
-  return 'headline';
+  if (type === 'short') return 'headline';
+  return isTransparent ? 'display' : 'title';
 };
 
 export const NavigationBarHeader = ({
@@ -32,6 +36,9 @@ export const NavigationBarHeader = ({
   subtitle,
   isTransparent,
   paddingBottom,
+  scrollY,
+  maxScrollY,
+  titleShrink,
 }: NavigationBarHeaderProps) => {
   const router = useRouter();
   const route = useRoute();
@@ -47,23 +54,36 @@ export const NavigationBarHeader = ({
     isTransparent ? 'coral' : 'onPrimary',
   );
   const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
-  const titleFont = getTitleFont(isTransparent, type);
+  const collapse = useTitleCollapse({
+    scrollY,
+    maxScrollY,
+    shrink: titleShrink,
+    hasBackButton: canGoBack,
+  });
+  const isFull = type === 'full';
 
-  const titleLabel = (
-    <ThemedText color={titleColor} font={titleFont}>
+  const shortTitleLabel = (
+    <ThemedText
+      color={titleColor}
+      font={getTitleFont(isTransparent, 'short')}
+      numberOfLines={1}
+      style={[
+        styles.shortTitle,
+        canGoBack ? styles.afterBack : isFull && styles.inset,
+      ]}
+    >
       {title}
     </ThemedText>
   );
 
   return (
     <VStack
-      spacing={6}
       style={{
         paddingTop: safeAreaTop,
         paddingBottom,
       }}
     >
-      <HStack align='center' spacing={6}>
+      <Animated.View style={[styles.row, isFull && collapse.rowStyle]}>
         {canGoBack && (
           <Pressable
             style={(state) => [state.pressed && styles.pressed, styles.back]}
@@ -79,21 +99,69 @@ export const NavigationBarHeader = ({
             />
           </Pressable>
         )}
-        {type === 'short' && titleLabel}
-      </HStack>
-      <VStack spacing={6} style={{ paddingHorizontal: 15 }}>
-        {type === 'full' && titleLabel}
-        {subtitle && type === 'full' && (
-          <ThemedText color={subtitleColor} font='navigationSubtitle'>
-            {subtitle}
-          </ThemedText>
+        {isFull ? (
+          <Animated.View
+            style={[styles.shortTitleWrap, collapse.shortTitleStyle]}
+          >
+            {shortTitleLabel}
+          </Animated.View>
+        ) : (
+          shortTitleLabel
         )}
-      </VStack>
+      </Animated.View>
+      {isFull && (
+        <Animated.View style={[styles.largeArea, collapse.largeAreaStyle]}>
+          <Animated.View
+            style={collapse.largeContentStyle}
+            onLayout={(e) =>
+              collapse.onLargeHeightChange(e.nativeEvent.layout.height)
+            }
+          >
+            <VStack spacing={6} style={styles.largeContent}>
+              <ThemedText
+                color={titleColor}
+                font={getTitleFont(isTransparent, 'full')}
+              >
+                {title}
+              </ThemedText>
+              {subtitle && (
+                <ThemedText color={subtitleColor} font='navigationSubtitle'>
+                  {subtitle}
+                </ThemedText>
+              )}
+            </VStack>
+          </Animated.View>
+        </Animated.View>
+      )}
     </VStack>
   );
 };
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  shortTitleWrap: {
+    flexShrink: 1,
+  },
+  shortTitle: {
+    flexShrink: 1,
+  },
+  afterBack: {
+    marginStart: 6,
+  },
+  inset: {
+    marginStart: 15,
+  },
+  largeArea: {
+    overflow: 'hidden',
+  },
+  largeContent: {
+    paddingTop: 6,
+    paddingHorizontal: 15,
+  },
   back: {
     width: 44,
     height: 44,
