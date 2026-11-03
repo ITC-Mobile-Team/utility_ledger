@@ -2,6 +2,12 @@ import { ThemedView } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import {
+  GestureDetector,
+  GestureHandlerRootView,
+  type PanGestureConfig,
+  usePanGesture,
+} from 'react-native-gesture-handler';
+import {
   Modal,
   Pressable,
   StyleSheet,
@@ -14,6 +20,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,6 +29,8 @@ import { scheduleOnRN } from 'react-native-worklets';
 type BottomSheetProps = PropsWithChildren<{
   visible: boolean;
   onClose: () => void;
+  // Тягнути можна лише за грабер — щоб свайп не конфліктував зі скролом списку
+  dragByGrabberOnly?: boolean;
   style?: ViewStyle;
 }>;
 
@@ -29,12 +38,16 @@ const AnimatedThemedView = Animated.createAnimatedComponent(ThemedView);
 
 const SCRIM_DURATION = 200;
 const SHEET_DELAY = 150;
+// Частка висоти шторки або швидкість свайпу, після яких вона закривається
+const CLOSE_DISTANCE_RATIO = 0.3;
+const CLOSE_VELOCITY = 800;
 
 // Шторка знизу поверх затемнення; спершу темніє фон, потім виїжджає шторка.
-// Закривається тапом по фону
+// Закривається тапом по фону, свайпом униз або кнопкою «Назад» — завжди з анімацією
 export function BottomSheet({
   visible,
   onClose,
+  dragByGrabberOnly = false,
   style,
   children,
 }: BottomSheetProps) {
@@ -44,6 +57,7 @@ export function BottomSheet({
   const [isMounted, setMounted] = useState(visible);
   const scrimOpacity = useSharedValue(0);
   const translateY = useSharedValue(screenHeight);
+  const sheetHeight = useSharedValue(screenHeight);
 
   // Монтуємо Modal одразу, а прибираємо лише після анімації закриття
   if (visible && !isMounted) setMounted(true);
@@ -69,6 +83,32 @@ export function BottomSheet({
     }
   }, [visible, screenHeight, scrimOpacity, translateY]);
 
+  const panConfig = {
+    activeOffsetY: 8,
+    failOffsetX: [-20, 20] as [number, number],
+    onUpdate: (event) => {
+      const offset = Math.max(event.translationY, 0);
+      translateY.set(offset);
+      scrimOpacity.set(1 - offset / sheetHeight.get());
+    },
+    onDeactivate: (event) => {
+      const shouldClose =
+        event.translationY > sheetHeight.get() * CLOSE_DISTANCE_RATIO ||
+        event.velocityY > CLOSE_VELOCITY;
+      if (shouldClose) {
+        scheduleOnRN(onClose);
+        return;
+      }
+      translateY.set(withSpring(0, { damping: 24, stiffness: 260 }));
+      scrimOpacity.set(withTiming(1, { duration: SCRIM_DURATION }));
+    },
+  } satisfies PanGestureConfig;
+  const sheetPan = usePanGesture({ ...panConfig, enabled: !dragByGrabberOnly });
+  const grabberPan = usePanGesture({
+    ...panConfig,
+    enabled: dragByGrabberOnly,
+  });
+
   const scrimStyle = useAnimatedStyle(() => ({
     opacity: scrimOpacity.value,
   }));
@@ -83,7 +123,8 @@ export function BottomSheet({
       animationType='none'
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
+      {/* Modal рендериться поза кореневим GestureHandlerRootView */}
+      <GestureHandlerRootView style={styles.container}>
         <Animated.View
           style={[
             StyleSheet.absoluteFill,
@@ -97,19 +138,28 @@ export function BottomSheet({
             accessibilityLabel='Закрити'
           />
         </Animated.View>
-        <AnimatedThemedView
-          backgroundColor='surface'
-          style={[
-            styles.sheet,
-            { paddingBottom: bottom + 16 },
-            style,
-            sheetStyle,
-          ]}
-        >
-          <ThemedView backgroundColor='line' style={styles.grabber} />
-          {children}
-        </AnimatedThemedView>
-      </View>
+        <GestureDetector gesture={sheetPan}>
+          <AnimatedThemedView
+            backgroundColor='surface'
+            onLayout={(event) => {
+              sheetHeight.set(event.nativeEvent.layout.height);
+            }}
+            style={[
+              styles.sheet,
+              { paddingBottom: bottom + 16 },
+              style,
+              sheetStyle,
+            ]}
+          >
+            <GestureDetector gesture={grabberPan}>
+              <View style={styles.grabberArea}>
+                <ThemedView backgroundColor='line' style={styles.grabber} />
+              </View>
+            </GestureDetector>
+            {children}
+          </AnimatedThemedView>
+        </GestureDetector>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -126,6 +176,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     gap: 16,
+  },
+  grabberArea: {
+    alignSelf: 'stretch',
+    paddingVertical: 8,
+    marginVertical: -8,
   },
   grabber: {
     alignSelf: 'center',

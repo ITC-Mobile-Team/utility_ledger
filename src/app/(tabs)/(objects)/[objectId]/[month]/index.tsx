@@ -69,7 +69,10 @@ export default function MonthServices() {
   const ledger = useLedger();
   const state = useLedgerState();
   const object = useLedgerObject(objectId);
+  // Послуга лишається вибраною під час анімації закриття шторки
   const [daysServiceId, setDaysServiceId] = useState<string>();
+  const [isDaysSheetVisible, setDaysSheetVisible] = useState(false);
+  const [daysSheetKey, setDaysSheetKey] = useState(0);
 
   if (!object || !isMonthKey(month)) return null;
 
@@ -186,7 +189,11 @@ export default function MonthServices() {
                           />
                         </VStack>
                       }
-                      onPress={() => setDaysServiceId(item.service.id)}
+                      onPress={() => {
+                        setDaysServiceId(item.service.id);
+                        setDaysSheetKey((key) => key + 1);
+                        setDaysSheetVisible(true);
+                      }}
                     >
                       <ThemedText font='rowTitle'>
                         {item.service.name}
@@ -229,12 +236,13 @@ export default function MonthServices() {
       )}
 
       <DaysSheet
-        // key скидає локальний стан шторки для кожної послуги
-        key={daysServiceId}
+        // key скидає локальний стан шторки при кожному відкритті
+        key={daysSheetKey}
+        visible={isDaysSheetVisible}
         service={daysItem?.service}
         month={month}
         days={daysItem?.days ?? getDaysInMonth(month)}
-        onClose={() => setDaysServiceId(undefined)}
+        onClose={() => setDaysSheetVisible(false)}
         onSave={async (days) => {
           if (daysItem) {
             await ledger.setDayCount({
@@ -243,7 +251,7 @@ export default function MonthServices() {
               days,
             });
           }
-          setDaysServiceId(undefined);
+          setDaysSheetVisible(false);
         }}
       />
     </NavigationView>

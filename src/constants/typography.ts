@@ -178,7 +178,8 @@ export const typography = StyleSheet.create({
     fontFamily: onestFamily,
     fontSize: 44,
     fontWeight: '700',
-    lineHeight: 44,
+    // Менший за ~1.2 × fontSize обрізає верх цифр Onest
+    lineHeight: 54,
     letterSpacing: -1.32,
   },
   docTitle: {

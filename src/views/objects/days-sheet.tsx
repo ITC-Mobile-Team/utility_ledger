@@ -21,6 +21,7 @@ import { BottomSheet } from './bottom-sheet';
 import { ServiceIcon } from './service-icon';
 
 type DaysSheetProps = {
+  visible: boolean;
   service: LedgerService | undefined;
   month: MonthKey;
   days: number;
@@ -31,6 +32,7 @@ type DaysSheetProps = {
 const quickDays = [21, 14, 7];
 
 export function DaysSheet({
+  visible,
   service,
   month,
   days,
@@ -42,11 +44,11 @@ export function DaysSheet({
 
   if (!service) return <BottomSheet visible={false} onClose={onClose} />;
 
-  const change = (next: number) =>
-    setValue(Math.min(Math.max(next, 1), daysInMonth));
+  // Кількість днів не обмежена місяцем — можна виставити і 56
+  const change = (next: number) => setValue(Math.max(next, 1));
 
   return (
-    <BottomSheet visible onClose={onClose}>
+    <BottomSheet visible={visible} onClose={onClose}>
       <HStack spacing={12} align='center'>
         <ServiceIcon icon={service.icon} />
         <VStack spacing={2} style={styles.flex}>
@@ -71,11 +73,7 @@ export function DaysSheet({
             {pluralize(value, pluralForms.day)}
           </ThemedText>
         </VStack>
-        <StepperButton
-          icon='plus'
-          disabled={value >= daysInMonth}
-          onPress={() => change(value + 1)}
-        />
+        <StepperButton icon='plus' onPress={() => change(value + 1)} />
       </ThemedView>
 
       <HStack spacing={8}>
@@ -120,11 +118,15 @@ export function DaysSheet({
 
 type StepperButtonProps = {
   icon: 'plus' | 'minus';
-  disabled: boolean;
+  disabled?: boolean;
   onPress: () => void;
 };
 
-function StepperButton({ icon, disabled, onPress }: StepperButtonProps) {
+function StepperButton({
+  icon,
+  disabled = false,
+  onPress,
+}: StepperButtonProps) {
   return (
     <Pressable
       disabled={disabled}

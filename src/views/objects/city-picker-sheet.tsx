@@ -31,7 +31,12 @@ export function CityPickerSheet({
   );
 
   return (
-    <BottomSheet visible={visible} onClose={onClose} style={styles.sheet}>
+    <BottomSheet
+      visible={visible}
+      onClose={onClose}
+      dragByGrabberOnly
+      style={styles.sheet}
+    >
       <VStack spacing={2}>
         <ThemedText font='dialogTitle'>Населений пункт</ThemedText>
         <ThemedText color='muted' font='caption'>
