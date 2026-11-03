@@ -4,7 +4,7 @@ import { type PropsWithChildren, useEffect, useState } from 'react';
 import {
   GestureDetector,
   GestureHandlerRootView,
-  type PanGestureConfig,
+  type PanGestureActiveEvent,
   usePanGesture,
 } from 'react-native-gesture-handler';
 import {
@@ -83,30 +83,38 @@ export function BottomSheet({
     }
   }, [visible, screenHeight, scrimOpacity, translateY]);
 
-  const panConfig = {
+  const onPanUpdate = (event: PanGestureActiveEvent) => {
+    'worklet';
+    const offset = Math.max(event.translationY, 0);
+    translateY.set(offset);
+    scrimOpacity.set(1 - offset / sheetHeight.get());
+  };
+  const onPanEnd = (event: PanGestureActiveEvent) => {
+    'worklet';
+    const shouldClose =
+      event.translationY > sheetHeight.get() * CLOSE_DISTANCE_RATIO ||
+      event.velocityY > CLOSE_VELOCITY;
+    if (shouldClose) {
+      scheduleOnRN(onClose);
+      return;
+    }
+    translateY.set(withSpring(0, { damping: 24, stiffness: 260 }));
+    scrimOpacity.set(withTiming(1, { duration: SCRIM_DURATION }));
+  };
+  // Worklets-плагін приймає лише літерал обʼєкта, тож конфіг без spread
+  const sheetPan = usePanGesture({
+    enabled: !dragByGrabberOnly,
     activeOffsetY: 8,
-    failOffsetX: [-20, 20] as [number, number],
-    onUpdate: (event) => {
-      const offset = Math.max(event.translationY, 0);
-      translateY.set(offset);
-      scrimOpacity.set(1 - offset / sheetHeight.get());
-    },
-    onDeactivate: (event) => {
-      const shouldClose =
-        event.translationY > sheetHeight.get() * CLOSE_DISTANCE_RATIO ||
-        event.velocityY > CLOSE_VELOCITY;
-      if (shouldClose) {
-        scheduleOnRN(onClose);
-        return;
-      }
-      translateY.set(withSpring(0, { damping: 24, stiffness: 260 }));
-      scrimOpacity.set(withTiming(1, { duration: SCRIM_DURATION }));
-    },
-  } satisfies PanGestureConfig;
-  const sheetPan = usePanGesture({ ...panConfig, enabled: !dragByGrabberOnly });
+    failOffsetX: [-20, 20],
+    onUpdate: onPanUpdate,
+    onDeactivate: onPanEnd,
+  });
   const grabberPan = usePanGesture({
-    ...panConfig,
     enabled: dragByGrabberOnly,
+    activeOffsetY: 8,
+    failOffsetX: [-20, 20],
+    onUpdate: onPanUpdate,
+    onDeactivate: onPanEnd,
   });
 
   const scrimStyle = useAnimatedStyle(() => ({
