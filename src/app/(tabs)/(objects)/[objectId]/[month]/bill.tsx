@@ -25,7 +25,8 @@ import {
 } from '@/services/ledger';
 import { ServiceIcon } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 type BillLine = {
   tag: string;
@@ -99,6 +100,8 @@ export default function Bill() {
     >
       <VStack spacing={20}>
         <ThemedView backgroundColor='surface' style={styles.receipt}>
+          <ZigzagEdge edge='top' />
+          <ZigzagEdge edge='bottom' />
           <VStack spacing={8} align='center'>
             <ThemedView backgroundColor='blueSoft' style={styles.receiptIcon}>
               <AppImage icon='document' tintColor='blue' size={{ width: 18 }} />
@@ -211,6 +214,40 @@ export default function Bill() {
   );
 }
 
+const TOOTH_WIDTH = 10;
+
+function ZigzagEdge({ edge }: { edge: 'top' | 'bottom' }) {
+  const [width, setWidth] = useState(0);
+  const count = Math.max(1, Math.round(width / TOOTH_WIDTH));
+  const step = width / count;
+  const side = step / Math.SQRT2;
+
+  return (
+    <View
+      pointerEvents='none'
+      onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+      style={[styles.zigzag, { [edge]: 0 }]}
+    >
+      {width > 0 &&
+        Array.from({ length: count }, (_, index) => (
+          <ThemedView
+            key={index}
+            backgroundColor='surface'
+            style={[
+              styles.tooth,
+              {
+                width: side,
+                height: side,
+                left: index * step + (step - side) / 2,
+                [edge]: -side / 2,
+              },
+            ]}
+          />
+        ))}
+    </View>
+  );
+}
+
 function Dashed() {
   return (
     <ThemedView
@@ -227,8 +264,8 @@ const styles = StyleSheet.create({
   },
   receipt: {
     padding: 20,
+    marginVertical: TOOTH_WIDTH / 2,
     gap: 18,
-    borderRadius: 4,
     boxShadow: '0 8px 24px rgba(15, 27, 45, 0.08)',
   },
   receiptIcon: {
@@ -237,6 +274,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  zigzag: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+  },
+  tooth: {
+    position: 'absolute',
+    transform: [{ rotate: '45deg' }],
   },
   dashed: {
     borderWidth: 0,
