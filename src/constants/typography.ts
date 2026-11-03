@@ -256,7 +256,7 @@ export const typography = StyleSheet.create({
     fontFamily: onestFamily,
     fontSize: 26,
     fontWeight: '400',
-    lineHeight: 26,
+    lineHeight: 34,
   },
   emojiXL: {
     fontFamily: onestFamily,

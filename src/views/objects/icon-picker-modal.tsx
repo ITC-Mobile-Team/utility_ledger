@@ -52,6 +52,7 @@ export function IconPickerModal({
         >
           <Image
             source={require('@/assets/images/icons/arrow-back.svg')}
+            contentFit='contain'
             tintColor={coral}
             style={styles.backIcon}
           />
@@ -98,10 +99,7 @@ export function IconPickerModal({
         </ScrollView>
 
         <FormFooter>
-          <ActionButton
-            title={`Обрати ${selected}`}
-            onPress={() => onSelect(selected)}
-          />
+          <ActionButton title='Обрати' onPress={() => onSelect(selected)} />
         </FormFooter>
       </ThemedView>
     </Modal>
@@ -116,6 +114,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingStart: 10,
   },
   backIcon: {
