@@ -35,6 +35,8 @@ export const NavigationBarButtonsRow = ({
 }: NavigationBarButtonsRowProps) => {
   const Button =
     variant === 'full' ? NavigationBarButton : ShortNavigationBarButton;
+  // Одна-дві великі кнопки займають по половині ширини, більше — діляться порівну
+  const columns = Math.max(buttons.length, 2);
   return (
     <Animated.View
       pointerEvents={isInteractive ? 'auto' : 'none'}
@@ -42,12 +44,13 @@ export const NavigationBarButtonsRow = ({
       style={[styles.container, { top }, style]}
     >
       {variant === 'full' ? (
-        // Великі кнопки переносяться в сітку по дві в ряд
+        // Великі кнопки завжди в один ряд
         <HStack spacing={12} style={styles.grid}>
           {buttons.map((button) => (
-            <Button
+            <NavigationBarButton
               key={button.id}
               {...button}
+              columns={columns}
               onPress={() => onButtonPress(button.id)}
             />
           ))}
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
   grid: {
-    flexWrap: 'wrap',
     paddingHorizontal: HORIZONTAL_PADDING,
   },
 });
