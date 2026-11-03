@@ -1,9 +1,12 @@
+import type { KeyValueStorage } from '@/storage';
 import type {
   LedgerRepository,
   LedgerState,
   MeterReading,
   DayCount,
 } from './types';
+
+const KEY = 'ledgerState';
 
 const emptyState: LedgerState = {
   objects: [],
@@ -20,19 +23,31 @@ const isSameEntry = (
   b: Pick<MeterReading | DayCount, 'serviceId' | 'month'>,
 ) => a.serviceId === b.serviceId && a.month === b.month;
 
-export function createInMemoryLedgerRepository(
-  initial: LedgerState = emptyState,
+export function createLocalLedgerRepository(
+  storage: KeyValueStorage,
 ): LedgerRepository {
   // Стан незмінний: кожна мутація створює новий обʼєкт, щоб useSyncExternalStore бачив зміни
-  let state = initial;
+  let state = emptyState;
+  let loading: Promise<void> | null = null;
   const listeners = new Set<() => void>();
 
-  const update = (next: LedgerState) => {
+  const update = async (next: LedgerState) => {
     state = next;
     listeners.forEach((listener) => listener());
+    await storage.setItem(KEY, JSON.stringify(next));
   };
 
   return {
+    load() {
+      loading ??= storage
+        .getItem(KEY)
+        .then((value) => {
+          if (value) state = { ...emptyState, ...JSON.parse(value) };
+        })
+        .catch(() => {})
+        .then(() => listeners.forEach((listener) => listener()));
+      return loading;
+    },
     getSnapshot: () => state,
     subscribe(listener) {
       listeners.add(listener);
@@ -40,11 +55,11 @@ export function createInMemoryLedgerRepository(
     },
     async addObject(input) {
       const object = { ...input, id: createId(), createdAt: Date.now() };
-      update({ ...state, objects: [...state.objects, object] });
+      await update({ ...state, objects: [...state.objects, object] });
       return object;
     },
     async updateObject(id, input) {
-      update({
+      await update({
         ...state,
         objects: state.objects.map((object) =>
           object.id === id ? { ...object, ...input } : object,
@@ -55,7 +70,7 @@ export function createInMemoryLedgerRepository(
       const serviceIds = new Set(
         state.services.filter((s) => s.objectId === id).map((s) => s.id),
       );
-      update({
+      await update({
         objects: state.objects.filter((object) => object.id !== id),
         services: state.services.filter((s) => !serviceIds.has(s.id)),
         readings: state.readings.filter((r) => !serviceIds.has(r.serviceId)),
@@ -64,11 +79,11 @@ export function createInMemoryLedgerRepository(
     },
     async addService(input) {
       const service = { ...input, id: createId(), createdAt: Date.now() };
-      update({ ...state, services: [...state.services, service] });
+      await update({ ...state, services: [...state.services, service] });
       return service;
     },
     async updateService(id, input) {
-      update({
+      await update({
         ...state,
         services: state.services.map((service) =>
           service.id === id ? { ...service, ...input } : service,
@@ -76,7 +91,7 @@ export function createInMemoryLedgerRepository(
       });
     },
     async deleteService(id) {
-      update({
+      await update({
         ...state,
         services: state.services.filter((s) => s.id !== id),
         readings: state.readings.filter((r) => r.serviceId !== id),
@@ -84,7 +99,7 @@ export function createInMemoryLedgerRepository(
       });
     },
     async setReading(reading) {
-      update({
+      await update({
         ...state,
         readings: [
           ...state.readings.filter((r) => !isSameEntry(r, reading)),
@@ -93,7 +108,7 @@ export function createInMemoryLedgerRepository(
       });
     },
     async setDayCount(dayCount) {
-      update({
+      await update({
         ...state,
         dayCounts: [
           ...state.dayCounts.filter((d) => !isSameEntry(d, dayCount)),

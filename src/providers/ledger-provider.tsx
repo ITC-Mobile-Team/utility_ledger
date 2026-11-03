@@ -6,6 +6,8 @@ import {
 import {
   createContext,
   use,
+  useEffect,
+  useState,
   useSyncExternalStore,
   type PropsWithChildren,
 } from 'react';
@@ -18,6 +20,15 @@ export function LedgerProvider({
   repository = ledgerRepository,
   children,
 }: Props) {
+  const [loaded, setLoaded] = useState<LedgerRepository | null>(null);
+
+  useEffect(() => {
+    repository.load().then(() => setLoaded(repository));
+  }, [repository]);
+
+  // Поки дані читаються зі сховища, не показуємо порожній стан
+  if (loaded !== repository) return null;
+
   return <LedgerContext value={repository}>{children}</LedgerContext>;
 }
 

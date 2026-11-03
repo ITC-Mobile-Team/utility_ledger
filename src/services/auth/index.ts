@@ -1,4 +1,5 @@
-import { createInMemoryAuthService } from './in-memory-auth-service';
+import { storage } from '@/storage';
+import { createLocalAuthService } from './local-auth-service';
 export * from './types';
 
-export const authService = createInMemoryAuthService();
+export const authService = createLocalAuthService(storage);
