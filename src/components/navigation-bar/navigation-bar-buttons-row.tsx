@@ -35,43 +35,28 @@ export const NavigationBarButtonsRow = ({
 }: NavigationBarButtonsRowProps) => {
   const Button =
     variant === 'full' ? NavigationBarButton : ShortNavigationBarButton;
-  // Одна-дві великі кнопки займають по половині ширини, більше — діляться порівну
-  const columns = Math.max(buttons.length, 2);
   return (
     <Animated.View
       pointerEvents={isInteractive ? 'auto' : 'none'}
       onLayout={(e) => onHeightChange(e.nativeEvent.layout.height)}
       style={[styles.container, { top }, style]}
     >
-      {variant === 'full' ? (
-        // Великі кнопки завжди в один ряд
-        <HStack spacing={12} style={styles.grid}>
+      {/* Кнопки завжди в один ряд і гортаються горизонтально */}
+      <ScrollView
+        horizontal
+        contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
+        showsHorizontalScrollIndicator={false}
+      >
+        <HStack spacing={12} style={{ flex: 1 }}>
           {buttons.map((button) => (
-            <NavigationBarButton
+            <Button
               key={button.id}
               {...button}
-              columns={columns}
               onPress={() => onButtonPress(button.id)}
             />
           ))}
         </HStack>
-      ) : (
-        <ScrollView
-          horizontal
-          contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <HStack spacing={12} style={{ flex: 1 }}>
-            {buttons.map((button) => (
-              <Button
-                key={button.id}
-                {...button}
-                onPress={() => onButtonPress(button.id)}
-              />
-            ))}
-          </HStack>
-        </ScrollView>
-      )}
+      </ScrollView>
     </Animated.View>
   );
 };
@@ -81,8 +66,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-  },
-  grid: {
-    paddingHorizontal: HORIZONTAL_PADDING,
   },
 });
