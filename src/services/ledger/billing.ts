@@ -47,17 +47,6 @@ export const getCurrentMonth = () => toMonthKey(new Date());
 export const getObjectServices = (state: LedgerState, objectId: string) =>
   state.services.filter((service) => service.objectId === objectId);
 
-// Послуги, що вже існували в цьому місяці
-export const getMonthServices = (
-  state: LedgerState,
-  objectId: string,
-  month: MonthKey,
-) =>
-  getObjectServices(state, objectId).filter(
-    (service) =>
-      compareMonths(toMonthKey(new Date(service.createdAt)), month) <= 0,
-  );
-
 // Додані місяці обʼєкта, найновіший першим
 export const getObjectMonths = (
   state: LedgerState,
@@ -67,16 +56,6 @@ export const getObjectMonths = (
     .filter((m) => m.objectId === objectId)
     .map((m) => m.month)
     .sort((a, b) => compareMonths(b, a));
-
-// Перший місяць, у якому в обʼєкта вже була послуга
-export const getFirstServiceMonth = (
-  state: LedgerState,
-  objectId: string,
-): MonthKey | undefined => {
-  const services = getObjectServices(state, objectId);
-  if (services.length === 0) return undefined;
-  return toMonthKey(new Date(Math.min(...services.map((s) => s.createdAt))));
-};
 
 export const isDayNight = (service: Pick<LedgerService, 'mode' | 'zones'>) =>
   service.mode === 'meter' && service.zones === 'dayNight';
@@ -230,7 +209,7 @@ export const calculateMonth = (
   objectId: string,
   month: MonthKey,
 ): MonthBill => {
-  const items = getMonthServices(state, objectId, month).map((service) =>
+  const items = getObjectServices(state, objectId).map((service) =>
     calculateService(state, service, month),
   );
   const calculated = items.filter((item) => item.amount !== null);
@@ -247,7 +226,7 @@ export const getMonthStatus = (
   objectId: string,
   month: MonthKey,
 ): MonthStatus => {
-  const missing = getMonthServices(state, objectId, month).some(
+  const missing = getObjectServices(state, objectId).some(
     (service) => service.mode === 'meter' && !hasReading(state, service, month),
   );
   return missing ? 'new' : 'filled';

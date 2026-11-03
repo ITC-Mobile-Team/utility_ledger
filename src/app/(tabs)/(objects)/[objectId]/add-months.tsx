@@ -16,7 +16,6 @@ import {
 import {
   formatAddress,
   getCurrentMonth,
-  getFirstServiceMonth,
   getMonthName,
   getObjectMonths,
   type MonthKey,
@@ -36,16 +35,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-type MonthAvailability = 'available' | 'added' | 'future' | 'beforeServices';
-
-const unavailableCaption: Record<
-  Exclude<MonthAvailability, 'available'>,
-  string
-> = {
-  added: 'Вже додано',
-  future: 'Місяць ще не настав',
-  beforeServices: 'Тоді ще не було послуг',
-};
+// Найраніший рік у барабані
+const FIRST_YEAR = 1900;
 
 const toKey = (year: number, monthIndex: number): MonthKey =>
   `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
@@ -59,8 +50,6 @@ export default function AddMonths() {
   const currentMonth = getCurrentMonth();
   const currentYear = parseMonthKey(currentMonth).year;
   const added = new Set(object ? getObjectMonths(state, object.id) : []);
-  const firstMonth =
-    (object && getFirstServiceMonth(state, object.id)) ?? currentMonth;
   const [year, setYear] = useState(currentYear);
   // Поточний місяць одразу обраний, якщо його ще не додано
   const [selected, setSelected] = useState<Set<MonthKey>>(() =>
@@ -70,18 +59,10 @@ export default function AddMonths() {
 
   if (!object) return null;
 
-  const firstYear = parseMonthKey(firstMonth).year;
   const years = Array.from(
-    { length: currentYear - firstYear + 1 },
-    (_, index) => firstYear + index,
+    { length: currentYear - FIRST_YEAR + 1 },
+    (_, index) => FIRST_YEAR + index,
   );
-
-  const availability = (month: MonthKey): MonthAvailability => {
-    if (added.has(month)) return 'added';
-    if (month > currentMonth) return 'future';
-    if (month < firstMonth) return 'beforeServices';
-    return 'available';
-  };
 
   const toggle = (month: MonthKey) =>
     setSelected((previous) => {
@@ -120,66 +101,53 @@ export default function AddMonths() {
             <ListCard>
               {monthAppearance.map((appearance, monthIndex) => {
                 const month = toKey(year, monthIndex);
-                const status = availability(month);
+                const isAdded = added.has(month);
                 const isSelected = selected.has(month);
                 return (
-                  <View
+                  <ListRow
                     key={month}
-                    style={
-                      (status === 'future' || status === 'beforeServices') &&
-                      styles.unavailable
+                    leading={
+                      <EmojiTile
+                        emoji={appearance.emoji}
+                        background={appearance.background}
+                      />
                     }
-                  >
-                    <ListRow
-                      leading={
-                        <EmojiTile
-                          emoji={appearance.emoji}
-                          background={appearance.background}
+                    trailing={
+                      isAdded ? (
+                        <ThemedView
+                          backgroundColor='greenSoft'
+                          style={styles.mark}
+                        >
+                          <AppImage
+                            icon='check'
+                            tintColor='green'
+                            size={{ width: 16 }}
+                          />
+                        </ThemedView>
+                      ) : (
+                        // Кружечок як у RadioCard: тонка сіра рамка → товста синя
+                        <ThemedView
+                          backgroundColor={isSelected ? 'blueSoft' : 'surface'}
+                          borderColor={isSelected ? 'blue' : 'faint'}
+                          style={[
+                            styles.circle,
+                            isSelected && styles.circleSelected,
+                          ]}
                         />
-                      }
-                      trailing={
-                        status === 'added' ? (
-                          <ThemedView
-                            backgroundColor='greenSoft'
-                            style={styles.mark}
-                          >
-                            <AppImage
-                              icon='check'
-                              tintColor='green'
-                              size={{ width: 16 }}
-                            />
-                          </ThemedView>
-                        ) : status === 'available' ? (
-                          <ThemedView
-                            backgroundColor={isSelected ? 'blue' : 'surface'}
-                            borderColor={isSelected ? 'blue' : 'line'}
-                            style={[styles.mark, styles.checkbox]}
-                          >
-                            {isSelected && (
-                              <AppImage
-                                icon='check'
-                                tintColor='onPrimary'
-                                size={{ width: 16 }}
-                              />
-                            )}
-                          </ThemedView>
-                        ) : undefined
-                      }
-                      showsChevron={false}
-                      onPress={
-                        status === 'available' ? () => toggle(month) : undefined
-                      }
-                    >
-                      <ThemedText font='rowTitle'>
-                        {getMonthName(month)}
+                      )
+                    }
+                    showsChevron={false}
+                    onPress={isAdded ? undefined : () => toggle(month)}
+                  >
+                    <ThemedText font='rowTitle'>
+                      {getMonthName(month)}
+                    </ThemedText>
+                    {isAdded && (
+                      <ThemedText color='muted' font='caption'>
+                        Вже додано
                       </ThemedText>
-                      {status !== 'available' && (
-                        <ThemedText color='muted' font='caption'>
-                          {unavailableCaption[status]}
-                        </ThemedText>
-                      )}
-                    </ListRow>
-                  </View>
+                    )}
+                  </ListRow>
                 );
               })}
             </ListCard>
@@ -207,9 +175,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  unavailable: {
-    opacity: 0.45,
-  },
   mark: {
     width: 28,
     height: 28,
@@ -217,7 +182,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkbox: {
+  circle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 2,
+  },
+  circleSelected: {
+    borderWidth: 7,
   },
 });
