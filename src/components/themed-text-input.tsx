@@ -15,13 +15,25 @@ type ThemedTextinputProps = TextInputProps & {
   title: string;
 };
 
+// У цифрових клавіатур iOS немає Enter: з returnKeyType RN додає над ними
+// панель з кнопкою «Done», тож для них returnKeyType не передаємо
+const numericKeyboards = new Set<TextInputProps['keyboardType']>([
+  'number-pad',
+  'decimal-pad',
+  'numeric',
+  'phone-pad',
+  'ascii-capable-number-pad',
+]);
+
 export function ThemedTextInput({
   title,
   onFocus,
   onBlur,
+  keyboardType,
   returnKeyType = 'done',
   ...rest
 }: ThemedTextinputProps) {
+  const isNumeric = numericKeyboards.has(keyboardType);
   const inputRef = useRef<TextInputInstance>(null);
   const [isFocused, setFocus] = useState(false);
   const borderColor = useThemeColor('blue');
@@ -42,7 +54,8 @@ export function ThemedTextInput({
         <TextInput
           ref={inputRef}
           {...rest}
-          returnKeyType={returnKeyType}
+          keyboardType={keyboardType}
+          returnKeyType={isNumeric ? undefined : returnKeyType}
           style={[{ color: textColor }, typography.textInput, styles.input]}
           onFocus={(e) => {
             setFocus(true);
