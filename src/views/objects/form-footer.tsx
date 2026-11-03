@@ -12,7 +12,7 @@ export function FormFooter({ hint, children }: FormFooterProps) {
     <ThemedView
       backgroundColor='bg'
       borderColor='line'
-      style={[styles.container, { paddingBottom: bottom + 12 }]}
+      style={[styles.container, { paddingBottom: Math.max(bottom, 12) }]}
     >
       {children}
       {hint && (
@@ -27,7 +27,7 @@ export function FormFooter({ hint, children }: FormFooterProps) {
 const styles = StyleSheet.create({
   container: {
     gap: 10,
-    paddingTop: 12,
+    paddingTop: 13,
     paddingHorizontal: 20,
     borderWidth: 0,
     borderTopWidth: StyleSheet.hairlineWidth,

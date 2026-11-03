@@ -1,4 +1,8 @@
-import { type ScrollViewProps, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import {
+  KeyboardAwareScrollView,
+  type KeyboardAwareScrollViewProps,
+} from 'react-native-keyboard-controller';
 import { VStack } from './stack';
 import {
   ThemedNavigationBar,
@@ -6,14 +10,14 @@ import {
   type NavigationBarVariant,
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import Animated, {
+import {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
 import { toPadding, type ContentInsets } from './content-insets';
 import { ThemedView } from './themed-view';
 
-type NavigationViewProps = Omit<ScrollViewProps, 'onScroll'> &
+type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
   Omit<ThemedNavigationBarProps, 'type' | 'scrollY'> & {
     type?: NavigationBarVariant;
     contentInsets?: ContentInsets;
@@ -60,7 +64,8 @@ export const NavigationView = ({
           ]}
         />
       )}
-      <Animated.ScrollView
+      {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
+      <KeyboardAwareScrollView
         onScroll={onScroll}
         alwaysBounceVertical={false}
         scrollEventThrottle={16}

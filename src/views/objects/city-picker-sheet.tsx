@@ -1,10 +1,12 @@
 import { AppImage, HStack, ThemedText, ThemedView, VStack } from '@/components';
 import { cities } from '@/constants/cities';
 import { typography } from '@/constants/typography';
+import { useKeyboardHeight } from '@/hooks/use-keyboard-height';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import type { City } from '@/services/ledger';
 import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheet } from './bottom-sheet';
 
 type CityPickerSheetProps = {
@@ -21,6 +23,8 @@ export function CityPickerSheet({
   const [query, setQuery] = useState('');
   const ink = useThemeColor('ink');
   const placeholder = useThemeColor('placeholder');
+  const { bottom } = useSafeAreaInsets();
+  const keyboardHeight = useKeyboardHeight();
   const normalized = query.trim().toLocaleLowerCase('uk');
   const filtered = cities.filter((city) =>
     city.name.toLocaleLowerCase('uk').includes(normalized),
@@ -54,6 +58,12 @@ export function CityPickerSheet({
           data={filtered}
           keyExtractor={(city) => `${city.name}-${city.region}`}
           keyboardShouldPersistTaps='handled'
+          keyboardDismissMode='on-drag'
+          // список доходить до низу шторки, а останній рядок
+          // прокручується до safe area або до верху клавіатури
+          contentContainerStyle={{
+            paddingBottom: keyboardHeight > 0 ? keyboardHeight : bottom,
+          }}
           ItemSeparatorComponent={() => (
             <ThemedView backgroundColor='line' style={styles.divider} />
           )}
@@ -85,6 +95,7 @@ export function CityPickerSheet({
 const styles = StyleSheet.create({
   sheet: {
     height: '75%',
+    paddingBottom: 0,
   },
   search: {
     borderRadius: 14,
@@ -98,7 +109,8 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    borderRadius: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
     borderCurve: 'continuous',
     overflow: 'hidden',
   },

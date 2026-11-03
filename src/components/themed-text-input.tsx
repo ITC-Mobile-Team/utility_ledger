@@ -47,9 +47,9 @@ export function ThemedTextInput({
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 9,
+    paddingVertical: 10, // разом з бордером — висота поля 63pt як у дизайні
     paddingHorizontal: 16,
-    gap: 2,
+    gap: 3,
     borderRadius: 16,
     borderCurve: 'continuous',
     borderWidth: 1,

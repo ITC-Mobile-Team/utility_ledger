@@ -15,6 +15,12 @@ import { CityPickerSheet, FormFooter } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// Видима висота футера над клавіатурою: paddingTop 13 + кнопка 54 + 12
+const FOOTER_ABOVE_KEYBOARD = 79;
+const KEYBOARD_GAP = 12;
 
 const optional = (value: string) => value.trim() || undefined;
 
@@ -24,6 +30,7 @@ export default function ObjectForm() {
   const ledger = useLedger();
   const existing = useLedgerObject(objectId);
   const isEditing = Boolean(existing);
+  const { bottom } = useSafeAreaInsets();
 
   const [name, setName] = useState(existing?.name ?? '');
   const [city, setCity] = useState<City | undefined>(existing?.city);
@@ -71,18 +78,20 @@ export default function ObjectForm() {
             ? 'Змініть назву або адресу обʼєкта.'
             : 'Щоб вести комунальні платежі для ще одного обʼєкта.'
         }
-        contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
+        contentInsets={{ top: 0, horizontal: 20, bottom: 24 }}
         keyboardShouldPersistTaps='handled'
         keyboardDismissMode='interactive'
+        bottomOffset={FOOTER_ABOVE_KEYBOARD + 16}
+        // футер перекриває контент, а його safe area ховається під клавіатуру
+        extraKeyboardSpace={-Math.max(bottom - KEYBOARD_GAP, 0)}
       >
         <VStack spacing={24}>
-          <VStack spacing={8}>
+          <VStack spacing={10}>
             <ThemedTextInput
               title='Назва *'
               value={name}
               onChangeText={setName}
               placeholder='Квартира в Полтаві'
-              autoFocus={!isEditing}
               returnKeyType='done'
             />
             <ThemedText color='muted' font='caption'>
@@ -90,7 +99,7 @@ export default function ObjectForm() {
             </ThemedText>
           </VStack>
 
-          <VStack spacing={10}>
+          <VStack spacing={12}>
             <ThemedText color='muted' font='overline'>
               АДРЕСА · НЕОБОВʼЯЗКОВО
             </ThemedText>
@@ -162,14 +171,19 @@ export default function ObjectForm() {
         </VStack>
       </NavigationView>
 
-      <FormFooter>
-        <ActionButton
-          title={isEditing ? 'Зберегти' : 'Далі'}
-          disabled={!canSave}
-          loading={isSaving}
-          onPress={save}
-        />
-      </FormFooter>
+      {/* Над клавіатурою кнопка стоїть з відступом 12, safe area ховається під клавіатуру */}
+      <KeyboardStickyView
+        offset={{ closed: 0, opened: Math.max(bottom - KEYBOARD_GAP, 0) }}
+      >
+        <FormFooter>
+          <ActionButton
+            title={isEditing ? 'Зберегти' : 'Далі'}
+            disabled={!canSave}
+            loading={isSaving}
+            onPress={save}
+          />
+        </FormFooter>
+      </KeyboardStickyView>
 
       <CityPickerSheet
         visible={isCityPickerVisible}
@@ -191,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   field: {
-    paddingVertical: 9,
+    paddingVertical: 11.5, // висота як у ThemedTextInput (63pt)
     paddingHorizontal: 16,
     borderRadius: 16,
     borderCurve: 'continuous',
