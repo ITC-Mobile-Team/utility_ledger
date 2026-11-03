@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Pressable,
   type PressableProps,
   StyleSheet,
@@ -54,12 +55,15 @@ const disabledButtonColors: ButtonColor = {
 type ActionButtonProps = Omit<PressableProps, 'children'> & {
   title: string;
   type?: ButtonType;
+  // Показує індикатор замість іконки й блокує натискання, не змінюючи кольорів
+  loading?: boolean;
 };
 
 export function ActionButton({
   title,
   type = 'primary',
   disabled,
+  loading = false,
   style,
   ...rest
 }: ActionButtonProps) {
@@ -73,7 +77,8 @@ export function ActionButton({
   return (
     <Pressable
       accessibilityRole='button'
-      disabled={disabled}
+      accessibilityState={{ disabled: !!disabled, busy: loading }}
+      disabled={disabled || loading}
       style={(state) => [
         state.pressed && styles.pressed,
         typeof style === 'function' ? style(state) : style,
@@ -88,7 +93,11 @@ export function ActionButton({
           viewTransition,
         ]}
       >
-        {icon && <Image source={icon} style={styles.icon} />}
+        {loading ? (
+          <ActivityIndicator color={text} style={styles.icon} />
+        ) : (
+          icon && <Image source={icon} style={styles.icon} />
+        )}
         <Animated.Text
           style={[typography.button, { color: text }, textTransition]}
         >

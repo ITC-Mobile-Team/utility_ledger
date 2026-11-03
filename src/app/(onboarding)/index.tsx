@@ -2,61 +2,103 @@ import {
   ActionButton,
   HStack,
   NavigationBarBackground,
+  type NavigationBarType,
   ScreenView,
   Spacer,
   ThemedText,
-  ThemedView,
   TransparentActionButton,
   VStack,
 } from '@/components';
-import { ObjectCard } from '@/views';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useOnboarding } from '@/providers/onboarding-provider';
 import {
-  Carousel,
-  Pagination,
-  type CarouselRef,
-} from 'react-native-reanimated-carousel';
+  AddressesIllustration,
+  AnalyticsIllustration,
+  PageIndicator,
+  ReadingsIllustration,
+} from '@/views/onboarding';
+import { type ReactElement, useRef, useState } from 'react';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
-import { useRef } from 'react';
+import { Carousel, type CarouselRef } from 'react-native-reanimated-carousel';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// const itemsLength = 3;
-
-type TextBlockItem = {
+type OnboardingPage = {
   title: string;
   subtitle: string;
+  background: Exclude<NavigationBarType, 'transparent'>;
+  illustration: ReactElement;
 };
 
-const TextBlock = ({ item }: { item: TextBlockItem }) => {
+const pages: OnboardingPage[] = [
+  {
+    title: 'Усі адреси в одному місці',
+    subtitle:
+      'Квартира, будинок батьків чи офіс — додайте кожну адресу та її послуги: світло, воду, газ чи інтернет.',
+    background: 'blue',
+    illustration: <AddressesIllustration />,
+  },
+  {
+    title: 'Показники — за хвилину',
+    subtitle:
+      'Внесіть показник лічильника, а застосунок сам порахує споживання та суму за вашим тарифом.',
+    background: 'blue',
+    illustration: <ReadingsIllustration />,
+  },
+  {
+    title: 'Бачте, куди йдуть гроші',
+    subtitle:
+      'Аналітика за будь-який період: які послуги коштують найбільше і як змінюються витрати з місяця в місяць.',
+    background: 'green',
+    illustration: <AnalyticsIllustration />,
+  },
+];
+
+// Пропорції шапки з макета: 500 з 874
+const headerRatio = 500 / 874;
+
+const PageView = ({
+  page,
+  headerHeight,
+}: {
+  page: OnboardingPage;
+  headerHeight: number;
+}) => {
   return (
-    <VStack spacing={12}>
-      <ThemedText font='onboardingTitle'>{item.title}</ThemedText>
-      <ThemedText color='muted'>{item.subtitle}</ThemedText>
+    <VStack filled>
+      <View style={[styles.header, { height: headerHeight }]}>
+        <NavigationBarBackground
+          type={page.background}
+          style={StyleSheet.absoluteFill}
+        />
+        {page.illustration}
+      </View>
+
+      <VStack spacing={12} style={styles.text}>
+        <ThemedText font='onboardingTitle'>{page.title}</ThemedText>
+        <ThemedText color='muted'>{page.subtitle}</ThemedText>
+      </VStack>
     </VStack>
   );
 };
 
-const Indicator = ({ isActive }: { isActive: boolean }) => {
-  const style = isActive ? styles.activeIndicator : styles.indicator;
-  return (
-    <ThemedView backgroundColor={isActive ? 'coral' : 'track'} style={style} />
-  );
-};
-
 export default function Onboarding() {
-  // const [value, setValue] = useState('12660');
-  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const { height: screenHeight } = useWindowDimensions();
   const { top: safeAreaTopInset } = useSafeAreaInsets();
-  const backgroundHeight = screenHeight * (500 / 874);
+  const { completeOnboarding } = useOnboarding();
+  const headerHeight = screenHeight * headerRatio;
   const ref = useRef<CarouselRef>(null);
   const progress = useSharedValue(0);
+  const [index, setIndex] = useState(0);
+  const isLast = index === pages.length - 1;
 
-  const array = [0, 1, 2];
-  const textItems: TextBlockItem[] = [
-    { title: '0', subtitle: '1' },
-    { title: '2', subtitle: '3' },
-    { title: '4', subtitle: '5' },
-  ];
+  const onNext = () => {
+    if (isLast) {
+      completeOnboarding();
+    } else {
+      ref.current?.next();
+    }
+  };
+
   return (
     <ScreenView
       edges={['bottom']}
@@ -64,95 +106,79 @@ export default function Onboarding() {
       contentInsets={{ bottom: 8 }}
     >
       <VStack filled>
-        <View style={[{ height: backgroundHeight }, styles.navigation]}>
-          <NavigationBarBackground
-            type='blue'
-            style={[StyleSheet.absoluteFill]}
-          />
-          <HStack
-            align='center'
-            style={[
-              { marginTop: safeAreaTopInset },
-              styles.navigationIndicator,
-            ]}
-          >
-            <ThemedText color='onPrimary' font='segment'>
-              1 з 3
-            </ThemedText>
-            <Spacer />
-            <TransparentActionButton title='Пропустити' />
-          </HStack>
-          <VStack
-            filled
-            spacing={12}
-            // style={{ marginHorizontal: 51 }}
-          >
-            <Spacer />
-            <TransparentActionButton
-              icon='house'
-              title='вул. Шевченка, 8'
-              subtitle='Будинок батьків'
-              disabled
-            />
+        <Carousel
+          ref={ref}
+          data={pages}
+          loop={false}
+          progress={progress}
+          onSnapToItem={setIndex}
+          style={styles.carousel}
+          renderItem={({ item }) => (
+            <PageView page={item} headerHeight={headerHeight} />
+          )}
+        />
 
-            <Carousel
-              ref={ref}
-              data={array}
-              progress={progress}
-              // style={{ height: 200 }}
-              renderItem={() => <ObjectCard />}
-            />
-
-            {/* <ObjectCard /> */}
-            <Spacer />
-          </VStack>
+        <View style={styles.footer}>
+          <ActionButton title={isLast ? 'Почати' : 'Далі'} onPress={onNext} />
         </View>
 
-        <VStack filled spacing={20} style={styles.content}>
-          <HStack spacing={6}>
-            <Indicator isActive={true} />
-            <Indicator isActive={false} />
-            <Indicator isActive={false} />
-          </HStack>
-
-          <Carousel
-            ref={ref}
-            data={textItems}
-            progress={progress}
-            renderItem={({ item }) => <TextBlock item={item} />}
-          />
-        </VStack>
-
-        <VStack style={{ marginHorizontal: 20 }}>
+        <HStack
+          align='center'
+          pointerEvents='box-none'
+          style={[styles.topBar, { top: safeAreaTopInset }]}
+        >
+          <ThemedText color='onPrimary' font='segment' style={styles.counter}>
+            {index + 1} з {pages.length}
+          </ThemedText>
           <Spacer />
-          <ActionButton title='Далі' />
-        </VStack>
+          <TransparentActionButton
+            title='Пропустити'
+            onPress={completeOnboarding}
+          />
+        </HStack>
+
+        <View
+          pointerEvents='none'
+          style={[styles.indicator, { top: headerHeight + 28 }]}
+        >
+          <PageIndicator count={pages.length} progress={progress} />
+        </View>
       </VStack>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
-  navigation: {
+  carousel: {
+    flex: 1,
+  },
+  header: {
     overflow: 'hidden',
-    borderBottomRightRadius: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 40,
     borderBottomLeftRadius: 36,
+    borderBottomRightRadius: 36,
   },
-  navigationIndicator: {
-    marginHorizontal: 20,
-  },
-  content: {
-    paddingTop: 36,
+  text: {
+    // 28 відступ + 24 індикатор + 12 проміжок до заголовка
+    paddingTop: 64,
     paddingHorizontal: 24,
   },
-  indicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  footer: {
+    paddingTop: 12,
+    paddingHorizontal: 20,
   },
-  activeIndicator: {
-    width: 28,
-    height: 8,
-    borderRadius: 4,
+  topBar: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+  },
+  counter: {
+    opacity: 0.85,
+  },
+  indicator: {
+    position: 'absolute',
+    left: 24,
   },
 });

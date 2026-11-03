@@ -1,4 +1,12 @@
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import {
+  type StyleProp,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  type ViewStyle,
+} from 'react-native';
+import type { AppIcon } from '@/constants/app-icons';
+import type { AppColor } from '@/constants/colors';
 import {
   ActionButton,
   AppImage,
@@ -55,8 +63,9 @@ const ContentCircle = () => {
   const secondCircleWidth = firstCircleWidth - 60;
   const thirdCircleWidth = secondCircleWidth - 56;
   const iconWidth = thirdCircleWidth - 56;
+  const orbitRadius = firstCircleWidth / 2;
   return (
-    <ThemedView backgroundColor='surface'>
+    <View style={{ width: firstCircleWidth, height: firstCircleWidth }}>
       <ThemedView
         backgroundColor='blueSoft'
         size={{ width: firstCircleWidth }}
@@ -76,6 +85,61 @@ const ContentCircle = () => {
           </ThemedView>
         </ThemedView>
       </ThemedView>
+
+      {services.map((service, index) => {
+        // Бейджі рівномірно розкладені по зовнішньому колу, перший — справа зверху, як у макеті
+        const angle =
+          ((firstServiceAngle + (360 / services.length) * index) * Math.PI) /
+          180;
+        return (
+          <ServiceBadge
+            key={service.icon}
+            service={service}
+            style={{
+              left: orbitRadius + orbitRadius * Math.cos(angle) - badgeSize / 2,
+              top: orbitRadius + orbitRadius * Math.sin(angle) - badgeSize / 2,
+            }}
+          />
+        );
+      })}
+    </View>
+  );
+};
+
+type Service = {
+  icon: AppIcon;
+  color: AppColor;
+};
+
+const services: Service[] = [
+  { icon: 'electricity', color: 'amber' },
+  { icon: 'gas', color: 'gas' },
+  { icon: 'water', color: 'water' },
+  { icon: 'heating', color: 'heat' },
+  { icon: 'network', color: 'blue' },
+];
+
+const badgeSize = 44;
+const firstServiceAngle = -40;
+
+const ServiceBadge = ({
+  service,
+  style,
+}: {
+  service: Service;
+  style: StyleProp<ViewStyle>;
+}) => {
+  return (
+    <ThemedView
+      backgroundColor='surface'
+      size={{ width: badgeSize }}
+      style={[styles.circleContainer, styles.circle, styles.badge, style]}
+    >
+      <AppImage
+        icon={service.icon}
+        tintColor={service.color}
+        size={{ width: 16 }}
+      />
     </ThemedView>
   );
 };
@@ -96,5 +160,9 @@ const styles = StyleSheet.create({
   },
   circle: {
     borderRadius: 999,
+  },
+  badge: {
+    position: 'absolute',
+    boxShadow: '0 6px 16px rgba(15, 27, 45, 0.12)',
   },
 });

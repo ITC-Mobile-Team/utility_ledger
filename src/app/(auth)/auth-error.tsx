@@ -1,4 +1,5 @@
 import {
+  ActionButton,
   AppImage,
   NavigationView,
   Spacer,
@@ -6,9 +7,36 @@ import {
   ThemedView,
   VStack,
 } from '@/components';
+import { useAuth } from '@/providers/auth-provider';
+import type { SignInMethod } from '@/services/auth';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+const providerNames: Record<SignInMethod, string> = {
+  apple: 'Apple',
+  google: 'Google',
+};
+
 export default function AuthError() {
+  const { method = 'apple' } = useLocalSearchParams<{
+    method?: SignInMethod;
+  }>();
+  const { signIn } = useAuth();
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  // Після успішного входу Stack.Protected сам переведе на наступний екран
+  const retry = async () => {
+    setIsRetrying(true);
+    try {
+      await signIn(method);
+    } catch {
+      // Лишаємося на цьому екрані, щоб користувач спробував ще раз
+    } finally {
+      setIsRetrying(false);
+    }
+  };
+
   return (
     <NavigationView
       type='short'
@@ -30,12 +58,26 @@ export default function AuthError() {
         <VStack align='center' spacing={10}>
           <ThemedText font='title'>Не вдалося увійти</ThemedText>
           <ThemedText color='muted' align='center'>
-            Вхід через Apple було скасовано або сталася помилка. Спробуйте ще
-            раз або виберіть інший спосіб входу.
+            Вхід через {providerNames[method]} було скасовано або сталася
+            помилка. Спробуйте ще раз або виберіть інший спосіб входу.
           </ThemedText>
         </VStack>
       </VStack>
       <Spacer />
+
+      <VStack spacing={12}>
+        <ActionButton
+          title='Спробувати ще раз'
+          loading={isRetrying}
+          onPress={retry}
+        />
+        <ActionButton
+          type='secondary'
+          title='Інший спосіб входу'
+          disabled={isRetrying}
+          onPress={() => router.back()}
+        />
+      </VStack>
     </NavigationView>
   );
 }
