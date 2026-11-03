@@ -75,6 +75,7 @@ export const pluralize = (
 export const pluralForms = {
   address: ['адреса', 'адреси', 'адрес'],
   day: ['день', 'дні', 'днів'],
+  month: ['місяць', 'місяці', 'місяців'],
 } as const;
 
 const groupThousands = (value: string) =>

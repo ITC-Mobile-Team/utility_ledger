@@ -42,11 +42,6 @@ export type MonthStatus = 'new' | 'filled';
 
 const compareMonths = (a: MonthKey, b: MonthKey) => a.localeCompare(b);
 
-const shiftMonth = (month: MonthKey, delta: number): MonthKey => {
-  const [year = 0, monthNumber = 1] = month.split('-').map(Number);
-  return toMonthKey(new Date(year, monthNumber - 1 + delta, 1));
-};
-
 export const getCurrentMonth = () => toMonthKey(new Date());
 
 export const getObjectServices = (state: LedgerState, objectId: string) =>
@@ -63,25 +58,24 @@ export const getMonthServices = (
       compareMonths(toMonthKey(new Date(service.createdAt)), month) <= 0,
   );
 
-// Місяці від першої послуги до поточного, найновіший першим
+// Додані місяці обʼєкта, найновіший першим
 export const getObjectMonths = (
   state: LedgerState,
   objectId: string,
-  currentMonth: MonthKey = getCurrentMonth(),
-): MonthKey[] => {
+): MonthKey[] =>
+  state.months
+    .filter((m) => m.objectId === objectId)
+    .map((m) => m.month)
+    .sort((a, b) => compareMonths(b, a));
+
+// Перший місяць, у якому в обʼєкта вже була послуга
+export const getFirstServiceMonth = (
+  state: LedgerState,
+  objectId: string,
+): MonthKey | undefined => {
   const services = getObjectServices(state, objectId);
-  if (services.length === 0) return [];
-  const firstCreatedAt = Math.min(...services.map((s) => s.createdAt));
-  const first = toMonthKey(new Date(firstCreatedAt));
-  const months: MonthKey[] = [];
-  for (
-    let month = currentMonth;
-    compareMonths(month, first) >= 0;
-    month = shiftMonth(month, -1)
-  ) {
-    months.push(month);
-  }
-  return months;
+  if (services.length === 0) return undefined;
+  return toMonthKey(new Date(Math.min(...services.map((s) => s.createdAt))));
 };
 
 export const isDayNight = (service: Pick<LedgerService, 'mode' | 'zones'>) =>

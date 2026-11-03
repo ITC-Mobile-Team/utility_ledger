@@ -1,9 +1,11 @@
 import type { KeyValueStorage } from '@/storage';
+import { toMonthKey } from './format';
 import type {
   LedgerRepository,
   LedgerState,
   MeterReading,
   DayCount,
+  ObjectMonth,
 } from './types';
 
 const KEY = 'ledgerState';
@@ -11,6 +13,7 @@ const KEY = 'ledgerState';
 const emptyState: LedgerState = {
   objects: [],
   services: [],
+  months: [],
   readings: [],
   dayCounts: [],
 };
@@ -22,6 +25,27 @@ const isSameEntry = (
   a: Pick<MeterReading | DayCount, 'serviceId' | 'month'>,
   b: Pick<MeterReading | DayCount, 'serviceId' | 'month'>,
 ) => a.serviceId === b.serviceId && a.month === b.month;
+
+// Раніше місяці не зберігались, а показувались від першої послуги до поточного.
+// Для старих даних відтворюємо цей список, щоб місяці не зникли
+const legacyMonths = (state: LedgerState): ObjectMonth[] => {
+  const now = new Date();
+  return state.objects.flatMap((object) => {
+    const createdAt = state.services
+      .filter((service) => service.objectId === object.id)
+      .map((service) => service.createdAt);
+    if (createdAt.length === 0) return [];
+    const months: ObjectMonth[] = [];
+    for (
+      let date = new Date(Math.min(...createdAt));
+      date <= now;
+      date = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+    ) {
+      months.push({ objectId: object.id, month: toMonthKey(date) });
+    }
+    return months;
+  });
+};
 
 export function createLocalLedgerRepository(
   storage: KeyValueStorage,
@@ -42,7 +66,10 @@ export function createLocalLedgerRepository(
       loading ??= storage
         .getItem(KEY)
         .then((value) => {
-          if (value) state = { ...emptyState, ...JSON.parse(value) };
+          if (!value) return;
+          const stored: Partial<LedgerState> = JSON.parse(value);
+          state = { ...emptyState, ...stored };
+          if (!stored.months) state = { ...state, months: legacyMonths(state) };
         })
         .catch(() => {})
         .then(() => listeners.forEach((listener) => listener()));
@@ -73,6 +100,7 @@ export function createLocalLedgerRepository(
       await update({
         objects: state.objects.filter((object) => object.id !== id),
         services: state.services.filter((s) => !serviceIds.has(s.id)),
+        months: state.months.filter((m) => m.objectId !== id),
         readings: state.readings.filter((r) => !serviceIds.has(r.serviceId)),
         dayCounts: state.dayCounts.filter((d) => !serviceIds.has(d.serviceId)),
       });
@@ -97,6 +125,16 @@ export function createLocalLedgerRepository(
         readings: state.readings.filter((r) => r.serviceId !== id),
         dayCounts: state.dayCounts.filter((d) => d.serviceId !== id),
       });
+    },
+    async addMonths(objectId, months) {
+      const existing = new Set(
+        state.months.filter((m) => m.objectId === objectId).map((m) => m.month),
+      );
+      const added = [...new Set(months)]
+        .filter((month) => !existing.has(month))
+        .map((month) => ({ objectId, month }));
+      if (added.length === 0) return;
+      await update({ ...state, months: [...state.months, ...added] });
     },
     async setReading(reading) {
       await update({

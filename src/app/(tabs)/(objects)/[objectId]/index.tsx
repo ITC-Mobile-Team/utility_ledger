@@ -18,6 +18,7 @@ import {
   getMonthName,
   getMonthStatus,
   getObjectMonths,
+  getObjectServices,
   type MonthKey,
   parseMonthKey,
 } from '@/services/ledger';
@@ -30,6 +31,13 @@ import {
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, StyleSheet } from 'react-native';
+
+const addMonthButton: NavigationBarButtonItem = {
+  id: 'add-month',
+  title: 'Додати місяць',
+  icon: 'calendar',
+  iconBackground: 'green',
+};
 
 const addServiceButton: NavigationBarButtonItem = {
   id: 'add-service',
@@ -46,6 +54,7 @@ const servicesButton: NavigationBarButtonItem = {
 };
 
 const objectButtons: NavigationBarButtonItem[] = [
+  addMonthButton,
   addServiceButton,
   servicesButton,
   { id: 'edit', title: 'Редагувати', icon: 'pencil', iconBackground: 'blue' },
@@ -77,11 +86,17 @@ export default function ObjectMonths() {
   if (!object) return null;
 
   const months = getObjectMonths(state, object.id);
-  const isEmpty = months.length === 0;
+  const hasServices = getObjectServices(state, object.id).length > 0;
 
   const addService = () =>
     router.push({
       pathname: '/[objectId]/service-form',
+      params: { objectId: object.id },
+    });
+
+  const addMonth = () =>
+    router.push({
+      pathname: '/[objectId]/add-months',
       params: { objectId: object.id },
     });
 
@@ -104,6 +119,9 @@ export default function ObjectMonths() {
 
   const onButtonPress = (id: string) => {
     switch (id) {
+      case 'add-month':
+        addMonth();
+        break;
       case 'add-service':
         addService();
         break;
@@ -132,17 +150,25 @@ export default function ObjectMonths() {
       barType='blue'
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
       navigationBarButtons={
-        isEmpty ? [addServiceButton, servicesButton] : objectButtons
+        hasServices ? objectButtons : [addServiceButton, servicesButton]
       }
       onNavigationButtonPress={onButtonPress}
     >
-      {isEmpty ? (
+      {!hasServices ? (
         <EmptyStateView
           icon='calendar'
           title='Ще немає місяців'
-          message='Додайте першу послугу — світло, воду чи інтернет. Після цього тут зʼявляться місяці для показників і розрахунків.'
+          message='Додайте першу послугу — світло, воду чи інтернет. Після цього можна буде додавати місяці для показників і розрахунків.'
           actionTitle='Додати послугу'
           onAction={addService}
+        />
+      ) : months.length === 0 ? (
+        <EmptyStateView
+          icon='calendar'
+          title='Ще немає місяців'
+          message='Додайте місяць, щоб вносити показники й рахувати суму.'
+          actionTitle='Додати місяць'
+          onAction={addMonth}
         />
       ) : (
         <VStack spacing={24}>

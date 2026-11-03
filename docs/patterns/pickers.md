@@ -10,3 +10,7 @@
 - Екран викликає `useHideTabBar()`, щоб таб-бар не з'являвся під час переходу.
 
 Короткі списки поверх форми (місто, дні) лишаються шторками — див. [keyboard.md](keyboard.md).
+
+## Вибір року
+
+Рік обираємо нативним iOS-барабаном — `YearPicker` (`src/views/objects/year-picker.ios.tsx`, SwiftUI `Picker` зі стилем `wheel` з `@expo/ui/swift-ui`) у білій картці. На інших платформах той самий компонент показує роки рядком «пігулок» (`year-picker.tsx`). Приклад — екран `[objectId]/add-months.tsx`.

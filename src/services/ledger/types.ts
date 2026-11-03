@@ -62,9 +62,16 @@ export type DayCount = {
   days: number;
 };
 
+// Місяць, який користувач додав до обʼєкта
+export type ObjectMonth = {
+  objectId: string;
+  month: MonthKey;
+};
+
 export type LedgerState = {
   objects: LedgerObject[];
   services: LedgerService[];
+  months: ObjectMonth[];
   readings: MeterReading[];
   dayCounts: DayCount[];
 };
@@ -80,11 +87,13 @@ export interface LedgerRepository {
   subscribe(listener: () => void): () => void;
   addObject(input: ObjectInput): Promise<LedgerObject>;
   updateObject(id: string, input: ObjectInput): Promise<void>;
-  // Видаляє обʼєкт разом з послугами, показниками й днями
+  // Видаляє обʼєкт разом з послугами, місяцями, показниками й днями
   deleteObject(id: string): Promise<void>;
   addService(input: ServiceInput): Promise<LedgerService>;
   updateService(id: string, input: ServiceInput): Promise<void>;
   deleteService(id: string): Promise<void>;
+  // Додає місяці обʼєкта; вже додані пропускає
+  addMonths(objectId: string, months: MonthKey[]): Promise<void>;
   setReading(reading: MeterReading): Promise<void>;
   setDayCount(dayCount: DayCount): Promise<void>;
 }
