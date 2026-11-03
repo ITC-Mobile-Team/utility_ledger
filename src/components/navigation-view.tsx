@@ -102,7 +102,9 @@ export const NavigationView = ({
         onScroll={onScroll}
         alwaysBounceVertical={false}
         scrollEventThrottle={16}
-        contentInsetAdjustmentBehavior='automatic'
+        // 'automatic' додає відступ під таб-бар лише коли контент уже довший
+        // за екран; коротший контент ховався під таб-баром і не скролився
+        contentInsetAdjustmentBehavior='always'
         style={{ backgroundColor: bg }}
         contentContainerStyle={[{ flexGrow: 1 }, toPadding(contentInsets)]}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
