@@ -9,6 +9,7 @@ export default function ObjectsLayout() {
       <Stack.Screen name='[objectId]/index' />
       <Stack.Screen name='[objectId]/services' />
       <Stack.Screen name='[objectId]/service-form' />
+      <Stack.Screen name='[objectId]/icon-picker' />
       <Stack.Screen name='[objectId]/[month]/index' />
       <Stack.Screen name='[objectId]/[month]/reading' />
       <Stack.Screen name='[objectId]/[month]/bill' />

@@ -26,12 +26,7 @@ import {
   parseMoney,
   type ServiceInput,
 } from '@/services/ledger';
-import {
-  FormFooter,
-  useFormFooterKeyboardInsets,
-  IconPickerModal,
-  ServiceIcon,
-} from '@/views';
+import { FormFooter, useFormFooterKeyboardInsets, ServiceIcon } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -49,16 +44,22 @@ const tariffTitles: Record<BillingMode, string> = {
 
 export default function ServiceForm() {
   useHideTabBar();
-  const { objectId, serviceId } = useLocalSearchParams<{
+  const {
+    objectId,
+    serviceId,
+    icon: pickedIcon,
+  } = useLocalSearchParams<{
     objectId: string;
     serviceId?: string;
+    // Приходить з екрана вибору іконки
+    icon?: string;
   }>();
   const ledger = useLedger();
   const state = useLedgerState();
   const object = useLedgerObject(objectId);
   const existing = state.services.find((service) => service.id === serviceId);
 
-  const [icon, setIcon] = useState(existing?.icon ?? defaultServiceIcon);
+  const icon = pickedIcon ?? existing?.icon ?? defaultServiceIcon;
   const [mode, setMode] = useState<BillingMode>(existing?.mode ?? 'meter');
   const [name, setName] = useState(existing?.name ?? '');
   const [kind, setKind] = useState(existing?.kind ?? '');
@@ -72,7 +73,6 @@ export default function ServiceForm() {
   const [tariff, setTariff] = useState(
     existing ? formatMoneyInput(existing.tariff) : '',
   );
-  const [isIconPickerVisible, setIconPickerVisible] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
   const tariffValue = parseMoney(tariff);
@@ -120,7 +120,17 @@ export default function ServiceForm() {
       >
         <VStack spacing={20}>
           <Pressable
-            onPress={() => setIconPickerVisible(true)}
+            onPress={() =>
+              router.push({
+                pathname: '/[objectId]/icon-picker',
+                params: {
+                  objectId: object.id,
+                  ...(serviceId && { serviceId }),
+                  icon,
+                  serviceName: name,
+                },
+              })
+            }
             style={(state) => state.pressed && styles.pressed}
           >
             <ThemedView backgroundColor='surface' style={styles.iconRow}>
@@ -215,17 +225,6 @@ export default function ServiceForm() {
           onPress={save}
         />
       </FormFooter>
-
-      <IconPickerModal
-        visible={isIconPickerVisible}
-        value={icon}
-        serviceName={name}
-        onClose={() => setIconPickerVisible(false)}
-        onSelect={(selected) => {
-          setIcon(selected);
-          setIconPickerVisible(false);
-        }}
-      />
     </KeyboardDismissView>
   );
 }
