@@ -2,7 +2,7 @@ export { BottomSheet } from './bottom-sheet';
 export { CityPickerSheet } from './city-picker-sheet';
 export { EmojiTile } from './emoji-tile';
 export { EmptyStateView } from './empty-state-view';
-export { FormFooter } from './form-footer';
+export { FormFooter, useFormFooterKeyboardInsets } from './form-footer';
 export { ListCard, ListRow } from './list-card';
 export { ProgressBar } from './progress-bar';
 export { SectionHeader } from './section-header';

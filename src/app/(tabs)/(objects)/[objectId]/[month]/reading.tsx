@@ -2,6 +2,7 @@ import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   ActionButton,
   HStack,
+  KeyboardDismissView,
   NavigationView,
   Spacer,
   ThemedBadge,
@@ -18,11 +19,16 @@ import {
   getReading,
   isMonthKey,
 } from '@/services/ledger';
-import { FormFooter, ServiceIcon, StatTile } from '@/views';
+import {
+  FormFooter,
+  useFormFooterKeyboardInsets,
+  ServiceIcon,
+  StatTile,
+} from '@/views';
 import { MeterReadingInput } from '@/views/meter/meter-reading-input';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const METER_LENGTH = 5;
 
@@ -43,6 +49,7 @@ export default function Reading() {
       : undefined;
   const [value, setValue] = useState(saved !== undefined ? String(saved) : '');
   const [isSaving, setSaving] = useState(false);
+  const keyboardInsets = useFormFooterKeyboardInsets();
 
   if (!service || !validMonth) return null;
 
@@ -69,12 +76,12 @@ export default function Reading() {
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardDismissView>
       <NavigationView
         title={isEditing ? 'Змінити показник' : 'Додати показник'}
         subtitle={`${formatMonthTitle(validMonth)} · ${service.name}`}
         contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
-        keyboardShouldPersistTaps='handled'
+        {...keyboardInsets}
       >
         <VStack spacing={20}>
           <ThemedView backgroundColor='surface' style={styles.serviceCard}>
@@ -146,14 +153,11 @@ export default function Reading() {
           onPress={save}
         />
       </FormFooter>
-    </View>
+    </KeyboardDismissView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   flex: {
     flex: 1,
   },

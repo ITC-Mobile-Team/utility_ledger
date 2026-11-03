@@ -32,6 +32,7 @@ export const NavigationView = ({
   onNavigationButtonPress,
   contentInsets,
   cornerRadius = 0,
+  keyboardShouldPersistTaps = 'handled',
   ...rest
 }: NavigationViewProps) => {
   const bg = useThemeColor('bg');
@@ -72,6 +73,7 @@ export const NavigationView = ({
         contentInsetAdjustmentBehavior='automatic'
         style={{ backgroundColor: bg }}
         contentContainerStyle={[{ flexGrow: 1 }, toPadding(contentInsets)]}
+        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         {...rest}
       />
     </VStack>

@@ -3,6 +3,7 @@ import {
   ActionButton,
   AppImage,
   HStack,
+  KeyboardDismissView,
   NavigationView,
   RadioGroup,
   Segment,
@@ -25,7 +26,12 @@ import {
   parseMoney,
   type ServiceInput,
 } from '@/services/ledger';
-import { FormFooter, IconPickerModal, ServiceIcon } from '@/views';
+import {
+  FormFooter,
+  useFormFooterKeyboardInsets,
+  IconPickerModal,
+  ServiceIcon,
+} from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -69,10 +75,12 @@ export default function ServiceForm() {
   const [isIconPickerVisible, setIconPickerVisible] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
-  if (!object) return null;
-
   const tariffValue = parseMoney(tariff);
   const hasTariff = tariffValue !== null && tariffValue > 0;
+  const keyboardInsets = useFormFooterKeyboardInsets(!hasTariff);
+
+  if (!object) return null;
+
   const canSave = name.trim().length > 0 && hasTariff;
 
   const save = async () => {
@@ -103,13 +111,12 @@ export default function ServiceForm() {
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardDismissView>
       <NavigationView
         title={existing ? 'Редагувати послугу' : 'Додати послугу'}
         subtitle={`Для обʼєкта: ${formatAddress(object)}`}
         contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
-        keyboardShouldPersistTaps='handled'
-        keyboardDismissMode='interactive'
+        {...keyboardInsets}
       >
         <VStack spacing={20}>
           <Pressable
@@ -219,14 +226,11 @@ export default function ServiceForm() {
           setIconPickerVisible(false);
         }}
       />
-    </View>
+    </KeyboardDismissView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   flex: {
     flex: 1,
   },

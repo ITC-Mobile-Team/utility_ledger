@@ -3,6 +3,7 @@ import {
   AppImage,
   ActionButton,
   HStack,
+  KeyboardDismissView,
   NavigationView,
   ThemedText,
   ThemedTextInput,
@@ -11,16 +12,14 @@ import {
 } from '@/components';
 import { useLedger, useLedgerObject } from '@/providers/ledger-provider';
 import type { City, ObjectInput } from '@/services/ledger';
-import { CityPickerSheet, FormFooter } from '@/views';
+import {
+  CityPickerSheet,
+  FormFooter,
+  useFormFooterKeyboardInsets,
+} from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-// Видима висота футера над клавіатурою: paddingTop 13 + кнопка 54 + 12
-const FOOTER_ABOVE_KEYBOARD = 79;
-const KEYBOARD_GAP = 12;
 
 const optional = (value: string) => value.trim() || undefined;
 
@@ -30,7 +29,7 @@ export default function ObjectForm() {
   const ledger = useLedger();
   const existing = useLedgerObject(objectId);
   const isEditing = Boolean(existing);
-  const { bottom } = useSafeAreaInsets();
+  const keyboardInsets = useFormFooterKeyboardInsets();
 
   const [name, setName] = useState(existing?.name ?? '');
   const [city, setCity] = useState<City | undefined>(existing?.city);
@@ -70,12 +69,7 @@ export default function ObjectForm() {
   };
 
   return (
-    // Тап поза полями й кнопками закриває клавіатуру
-    <Pressable
-      style={styles.screen}
-      onPress={Keyboard.dismiss}
-      accessible={false}
-    >
+    <KeyboardDismissView>
       <NavigationView
         title={isEditing ? 'Редагувати адресу' : 'Додати нову адресу'}
         subtitle={
@@ -84,10 +78,7 @@ export default function ObjectForm() {
             : 'Щоб вести комунальні платежі для ще одного обʼєкта.'
         }
         contentInsets={{ top: 0, horizontal: 20, bottom: 24 }}
-        keyboardShouldPersistTaps='handled'
-        bottomOffset={FOOTER_ABOVE_KEYBOARD + 16}
-        // футер перекриває контент, а його safe area ховається під клавіатуру
-        extraKeyboardSpace={-Math.max(bottom - KEYBOARD_GAP, 0)}
+        {...keyboardInsets}
       >
         <VStack spacing={24}>
           <VStack spacing={10}>
@@ -178,19 +169,14 @@ export default function ObjectForm() {
         </VStack>
       </NavigationView>
 
-      {/* Над клавіатурою кнопка стоїть з відступом 12, safe area ховається під клавіатуру */}
-      <KeyboardStickyView
-        offset={{ closed: 0, opened: Math.max(bottom - KEYBOARD_GAP, 0) }}
-      >
-        <FormFooter>
-          <ActionButton
-            title={isEditing ? 'Зберегти' : 'Далі'}
-            disabled={!canSave}
-            loading={isSaving}
-            onPress={save}
-          />
-        </FormFooter>
-      </KeyboardStickyView>
+      <FormFooter>
+        <ActionButton
+          title='Зберегти'
+          disabled={!canSave}
+          loading={isSaving}
+          onPress={save}
+        />
+      </FormFooter>
 
       <CityPickerSheet
         visible={isCityPickerVisible}
@@ -200,14 +186,11 @@ export default function ObjectForm() {
           setCityPickerVisible(false);
         }}
       />
-    </Pressable>
+    </KeyboardDismissView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   flex: {
     flex: 1,
   },

@@ -2,13 +2,14 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  type TextInputInstance,
   type TextInputProps,
 } from 'react-native';
 import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { typography } from '@/constants/typography';
-import { type ComponentRef, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 type ThemedTextinputProps = TextInputProps & {
   title: string;
@@ -21,7 +22,7 @@ export function ThemedTextInput({
   returnKeyType = 'done',
   ...rest
 }: ThemedTextinputProps) {
-  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const inputRef = useRef<TextInputInstance>(null);
   const [isFocused, setFocus] = useState(false);
   const borderColor = useThemeColor('blue');
   const textColor = useThemeColor('ink');
