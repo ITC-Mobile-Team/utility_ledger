@@ -20,12 +20,14 @@ import {
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
+  useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 import { toPadding, type ContentInsets } from './content-insets';
 import { COLLAPSE_DISTANCE } from './navigation-bar/constants';
 import { ThemedView } from './themed-view';
@@ -67,9 +69,19 @@ export const NavigationView = ({
   // Де закінчується контент (без розпірки та нижнього відступу)
   const [contentEnd, setContentEnd] = useState(0);
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
+  const [isAtTop, setAtTop] = useState(true);
+  useAnimatedReaction(
+    () => scrollY.value <= 0,
+    (atTop, previous) => {
+      if (atTop !== previous) scheduleOnRN(setAtTop, atTop);
+    },
+  );
   // Короткий контент не скролиться: він і так видно повністю над таб-баром.
-  // З клавіатурою скрол лишається, щоб догорнути до поля над нею
+  // Перевіряємо лише нагорі: згорнутий навбар нижчий, і там контент може
+  // вміститись, але скрол потрібен, щоб повернутись. З клавіатурою скрол
+  // лишається, щоб догорнути до поля над нею
   const contentFits =
+    isAtTop &&
     viewportHeight > 0 &&
     contentEnd + (contentInsets?.bottom ?? 0) <= viewportHeight - bottomInset;
   const isScrollEnabled = !contentFits || isKeyboardVisible;
