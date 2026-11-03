@@ -19,7 +19,7 @@ export default function TabsLayout() {
       >
         <NativeTabs.Trigger name='(objects)'>
           <NativeTabs.Trigger.Label selectedStyle={{ color: objectsColor }}>
-            Objects
+            Обʼєкти
           </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf='building'
@@ -29,7 +29,7 @@ export default function TabsLayout() {
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name='analytics'>
           <NativeTabs.Trigger.Label selectedStyle={{ color: analyticsColor }}>
-            Analytics
+            Аналітика
           </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf='chart.xyaxis.line'
@@ -39,7 +39,7 @@ export default function TabsLayout() {
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name='more'>
           <NativeTabs.Trigger.Label selectedStyle={{ color: moreColor }}>
-            More
+            Ще
           </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf='ellipsis'
