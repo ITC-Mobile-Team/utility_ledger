@@ -36,31 +36,26 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
-const addMonthButton: NavigationBarButtonItem = {
-  id: 'add-month',
-  title: 'Додати місяць',
-  icon: 'calendar',
-  iconBackground: 'green',
-};
-
-const addServiceButton: NavigationBarButtonItem = {
-  id: 'add-service',
-  title: 'Додати послугу',
-  icon: 'plus',
-  iconBackground: 'coral',
-};
-
-const servicesButton: NavigationBarButtonItem = {
-  id: 'services',
-  title: 'Послуги',
-  icon: 'gauge',
-  iconBackground: 'inkTile',
-};
-
+// Набір кнопок однаковий для нового й заповненого обʼєкта
 const objectButtons: NavigationBarButtonItem[] = [
-  addMonthButton,
-  addServiceButton,
-  servicesButton,
+  {
+    id: 'add-month',
+    title: 'Додати місяць',
+    icon: 'calendar',
+    iconBackground: 'green',
+  },
+  {
+    id: 'add-service',
+    title: 'Додати послугу',
+    icon: 'plus',
+    iconBackground: 'coral',
+  },
+  {
+    id: 'services',
+    title: 'Послуги',
+    icon: 'gauge',
+    iconBackground: 'inkTile',
+  },
   { id: 'edit', title: 'Редагувати', icon: 'pencil', iconBackground: 'blue' },
   {
     id: 'delete',
@@ -169,9 +164,7 @@ export default function ObjectMonths() {
       title={formatShortAddress(object)}
       barType='blue'
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
-      navigationBarButtons={
-        hasServices ? objectButtons : [addServiceButton, servicesButton]
-      }
+      navigationBarButtons={objectButtons}
       onNavigationButtonPress={onButtonPress}
     >
       {!hasServices ? (
