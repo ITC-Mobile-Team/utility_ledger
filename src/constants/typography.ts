@@ -33,6 +33,19 @@ export const typography = StyleSheet.create({
     letterSpacing: -1.68,
     fontVariant: ['tabular-nums'],
   },
+  bodySmall: {
+    fontFamily: onestFamily,
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 19,
+  },
+  bodySmallStrong: {
+    fontFamily: onestFamily,
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 19,
+    fontVariant: ['tabular-nums'],
+  },
   headline: {
     fontFamily: onestFamily,
     fontSize: 22,

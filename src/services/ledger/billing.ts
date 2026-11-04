@@ -146,6 +146,19 @@ export const getAmount = (
   state.amounts.find((a) => a.serviceId === serviceId && a.month === month)
     ?.amount;
 
+// Остання внесена сума з рахунку до цього місяця (не обовʼязково за попередній)
+export const getLastAmountBefore = (
+  state: LedgerState,
+  serviceId: string,
+  month: MonthKey,
+) =>
+  state.amounts
+    .filter((a) => a.serviceId === serviceId && a.month < month)
+    .reduce<(typeof state.amounts)[number] | undefined>(
+      (last, a) => (!last || a.month > last.month ? a : last),
+      undefined,
+    );
+
 export const calculateService = (
   state: LedgerState,
   service: LedgerService,

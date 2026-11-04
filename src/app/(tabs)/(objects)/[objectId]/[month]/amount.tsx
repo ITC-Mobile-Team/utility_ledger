@@ -14,16 +14,19 @@ import {
   formatMoneyInput,
   formatMonthTitle,
   getAmount,
+  getLastAmountBefore,
+  getMonthLocative,
   getMonthName,
   getPreviousMonth,
   isMonthKey,
+  type MonthKey,
   parseMoney,
 } from '@/services/ledger';
-import { confirmResetEntry } from '@/views';
+import { ServiceIcon } from '@/views';
 import { AmountInput } from '@/views/amount/amount-input';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Alert, Pressable, StyleSheet } from 'react-native';
 import {
   KeyboardAvoidingView,
   useKeyboardState,
@@ -58,14 +61,16 @@ export default function Amount() {
   if (!service || !validMonth) return null;
 
   const isEditing = saved !== undefined;
-  const previous = getAmount(state, service.id, getPreviousMonth(validMonth));
+  const monthName = getMonthName(validMonth).toLocaleLowerCase('uk');
+  const last = getLastAmountBefore(state, service.id, validMonth);
+  const reference = last && toReference(last.month, validMonth);
   const amount = parseMoney(value);
   const hasAmount = amount !== null && amount > 0;
   const canSave = hasAmount && amount !== saved;
   const hint = hintFor(
     hasAmount ? amount : null,
-    previous,
-    getMonthName(validMonth).toLocaleLowerCase('uk'),
+    last && reference ? { amount: last.amount, ...reference } : undefined,
+    monthName,
   );
 
   const save = async () => {
@@ -83,35 +88,66 @@ export default function Amount() {
     }
   };
 
+  const confirmReset = () =>
+    Alert.alert(
+      `Скинути суму за ${monthName}?`,
+      'Послуга знову стане «Внести», а розрахунок місяця перерахується.',
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Скинути',
+          style: 'destructive',
+          onPress: () => {
+            // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
+            router.back();
+            ledger.resetEntry(service.id, validMonth);
+          },
+        },
+      ],
+    );
+
   return (
     <ThemedView backgroundColor='bg' style={styles.flex}>
-      <ThemedNavigationBar
-        type='full'
-        title={service.name}
-        subtitle={`${formatMonthTitle(validMonth)} · сума з рахунку`}
-      />
+      {/* Лише кнопка «назад»: назва з іконкою послуги — окремим рядком нижче */}
+      <ThemedNavigationBar type='short' title='' />
+      <HStack spacing={14} align='center' style={styles.header}>
+        <ServiceIcon icon={service.icon} size={48} />
+        <VStack spacing={2} style={styles.flex}>
+          <ThemedText font='titleSmall' numberOfLines={2}>
+            {service.name}
+          </ThemedText>
+          <ThemedText color='muted' font='bodySmall'>
+            {`${formatMonthTitle(validMonth)} · сума з рахунку`}
+          </ThemedText>
+        </VStack>
+      </HStack>
+
       {/* Клавіатура відкрита весь час: центр з сумою стискається над нею */}
       <KeyboardAvoidingView behavior='padding' style={styles.flex}>
         <VStack style={styles.center} spacing={12}>
-          {previous !== undefined && (
+          {last && reference && (
             <Pressable
               accessibilityRole='button'
-              accessibilityLabel={`Підставити суму минулого місяця, ${formatMoney(previous)}`}
-              onPress={() => setValue(formatMoneyInput(previous))}
+              accessibilityLabel={`Підставити суму: ${reference.label}, ${formatMoney(last.amount)}`}
+              onPress={() => setValue(formatMoneyInput(last.amount))}
               style={({ pressed }) => pressed && styles.pressed}
             >
-              <ThemedView backgroundColor='surface' style={styles.chip}>
+              <ThemedView
+                backgroundColor='surface'
+                borderColor='line'
+                style={styles.chip}
+              >
                 <HStack spacing={6} align='center'>
                   <AppImage
                     icon='reset'
                     tintColor='muted'
                     size={{ width: 16 }}
                   />
-                  <ThemedText color='muted' font='body'>
-                    Минулого місяця
+                  <ThemedText color='muted' font='bodySmall'>
+                    {reference.label}
                   </ThemedText>
-                  <ThemedText font='rowTitleCompact'>
-                    {formatMoney(previous)}
+                  <ThemedText font='bodySmallStrong'>
+                    {formatMoney(last.amount)}
                   </ThemedText>
                 </HStack>
               </ThemedView>
@@ -155,13 +191,7 @@ export default function Amount() {
             <TextButton
               title='Скинути суму'
               disabled={isSaving}
-              onPress={() =>
-                confirmResetEntry(service, validMonth, () => {
-                  // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
-                  router.back();
-                  ledger.resetEntry(service.id, validMonth);
-                })
-              }
+              onPress={confirmReset}
             />
           )}
         </VStack>
@@ -170,41 +200,73 @@ export default function Amount() {
   );
 }
 
-// Підказка під сумою: порожньо — що вводити, інакше різниця з минулим місяцем
+type Reference = {
+  // Підпис чипа: «Минулого місяця» або «Вересень 2026»
+  label: string;
+  // «до минулого місяця» / «до суми за вересень»
+  diffSuffix: string;
+  // «Як минулого місяця» / «Як у вересні»
+  sameText: string;
+};
+
+// З чим порівнюємо: з попереднім місяцем, а якщо за нього суми немає —
+// з останньою внесеною раніше
+const toReference = (lastMonth: MonthKey, month: MonthKey): Reference => {
+  if (lastMonth === getPreviousMonth(month)) {
+    return {
+      label: 'Минулого місяця',
+      diffSuffix: 'до минулого місяця',
+      sameText: 'Як минулого місяця',
+    };
+  }
+  const sameYear = lastMonth.slice(0, 4) === month.slice(0, 4);
+  const name = getMonthName(lastMonth).toLocaleLowerCase('uk');
+  const year = sameYear ? '' : ` ${lastMonth.slice(0, 4)}`;
+  return {
+    label: formatMonthTitle(lastMonth),
+    diffSuffix: `до суми за ${name}${year}`,
+    sameText: `Як у ${getMonthLocative(lastMonth)}${year}`,
+  };
+};
+
+// Підказка під сумою: порожньо — що вводити, інакше різниця з попередньою сумою
 const hintFor = (
   amount: number | null,
-  previous: number | undefined,
+  last: (Reference & { amount: number }) | undefined,
   monthName: string,
 ) => {
   if (amount === null) {
     return {
       text: `Введіть суму з платіжки за ${monthName}`,
       color: 'muted',
-      font: 'caption',
+      font: 'bodySmall',
     } as const;
   }
-  if (previous === undefined) {
-    return { text: ' ', color: 'muted', font: 'caption' } as const;
-  }
-  const diff = amount - previous;
-  if (diff === 0) {
+  if (!last) {
     return {
-      text: 'Як минулого місяця',
+      text: `Сума з платіжки за ${monthName}`,
       color: 'muted',
-      font: 'caption',
+      font: 'bodySmall',
     } as const;
+  }
+  const diff = amount - last.amount;
+  if (diff === 0) {
+    return { text: last.sameText, color: 'muted', font: 'bodySmall' } as const;
   }
   return {
-    text: `${diff > 0 ? '+' : '−'}${formatMoney(Math.abs(diff))} до минулого місяця`,
+    text: `${diff > 0 ? '+' : '−'}${formatMoney(Math.abs(diff))} ${last.diffSuffix}`,
     // Більше — червоним, менше — зеленим
     color: diff > 0 ? 'coralInk' : 'greenInk',
-    font: 'status',
+    font: 'bodySmallStrong',
   } as const;
 };
 
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+  },
+  header: {
+    paddingHorizontal: 20,
   },
   center: {
     flex: 1,
