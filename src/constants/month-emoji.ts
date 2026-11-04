@@ -7,7 +7,7 @@ type MonthAppearance = {
 
 // Індекс — номер місяця з нуля
 export const monthAppearance: readonly MonthAppearance[] = [
-  { emoji: '☃️', background: 'blueSoft' },
+  { emoji: '❄️', background: 'blueSoft' },
   { emoji: '⛄', background: 'blueSoft' },
   { emoji: '🌱', background: 'greenSoft' },
   { emoji: '🌷', background: 'coralSoft' },
