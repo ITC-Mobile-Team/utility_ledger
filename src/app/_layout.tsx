@@ -4,7 +4,11 @@ import {
   OnboardingProvider,
   useOnboarding,
 } from '@/providers/onboarding-provider';
-import { Stack } from 'expo-router';
+import { colors } from '@/constants/colors';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import * as SystemUI from 'expo-system-ui';
+import { useEffect, useMemo } from 'react';
+import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
@@ -28,18 +32,47 @@ function RootNavigator() {
   );
 }
 
+// Фон навігаторів і кореневого вікна береться з токена `bg`, інакше під час
+// переходів між екранами з-під заокруглених кутів проступає білий фон
+// стандартної теми
+function useNavigationTheme() {
+  const scheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const palette = colors[scheme];
+
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(palette.bg);
+  }, [palette.bg]);
+
+  return useMemo(() => {
+    const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: palette.bg,
+        card: palette.surface,
+        text: palette.ink,
+        border: palette.line,
+      },
+    };
+  }, [scheme, palette]);
+}
+
 export default function RootLayout() {
+  const theme = useNavigationTheme();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardProvider>
-        <AuthProvider>
-          <OnboardingProvider>
-            <LedgerProvider>
-              <RootNavigator />
-            </LedgerProvider>
-          </OnboardingProvider>
-        </AuthProvider>
-      </KeyboardProvider>
+      <ThemeProvider value={theme}>
+        <KeyboardProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <LedgerProvider>
+                <RootNavigator />
+              </LedgerProvider>
+            </OnboardingProvider>
+          </AuthProvider>
+        </KeyboardProvider>
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }
