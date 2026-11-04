@@ -15,7 +15,6 @@ import {
   formatNumber,
   formatShortAddress,
   formatTariff,
-  getMonthLocative,
   getMonthName,
   isMonthKey,
   type MonthKey,
@@ -26,82 +25,139 @@ import {
 import { ServiceIcon } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  type CSSTransitionProperties,
+} from 'react-native-reanimated';
 
-type BillLine = {
-  tag: string;
-  details: string;
-  formula: string;
+// Рядок у розгорнутих деталях послуги; 'divider' — тонка лінія між блоками
+type DetailLine = { label: string; value: string } | 'divider';
+
+type BillRow = {
+  subtitle: string;
+  lines: DetailLine[];
 };
 
-const describe = (item: ServiceBill, month: MonthKey): BillLine => {
+const range = (previous: number, current: number) =>
+  `${formatNumber(previous)} → ${formatNumber(current)}`;
+
+const describe = (item: ServiceBill, month: MonthKey): BillRow => {
   const { service } = item;
+  const unit = service.unit;
   switch (service.mode) {
-    case 'meter':
+    case 'meter': {
+      const previous = item.previous ?? 0;
+      if (item.current === undefined) {
+        return {
+          subtitle: 'Показник ще не внесено',
+          lines: [
+            item.night
+              ? { label: '☀️ День, попередній', value: formatNumber(previous) }
+              : { label: 'Попередній показник', value: formatNumber(previous) },
+            ...(item.night
+              ? [
+                  {
+                    label: '🌙 Ніч, попередній',
+                    value: formatNumber(item.night.previous),
+                  },
+                ]
+              : []),
+            'divider',
+            { label: 'Тариф', value: formatTariff(service) },
+          ],
+        };
+      }
+      const consumption = item.consumption ?? 0;
       if (item.night) {
-        const { night } = item;
+        const night = item.night;
+        const nightConsumption = night.consumption ?? 0;
+        const nightTariff = service.nightTariff ?? 0;
         return {
-          tag: 'День / Ніч',
-          details:
-            item.current === undefined
-              ? 'Показник ще не внесено'
-              : `☀️ ${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · 🌙 ${formatNumber(night.previous)} → ${formatNumber(night.current ?? 0)}`,
-          formula: `☀️ ${formatNumber(item.consumption ?? 0)} + 🌙 ${formatNumber(night.consumption ?? 0)} ${service.unit} × тариф`,
+          subtitle: `${formatNumber(consumption + nightConsumption)} ${unit} · день / ніч`,
+          lines: [
+            { label: '☀️ День', value: range(previous, item.current) },
+            {
+              label: '🌙 Ніч',
+              value: range(night.previous, night.current ?? night.previous),
+            },
+            'divider',
+            {
+              label: `${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+              value: formatMoney(consumption * service.tariff),
+            },
+            {
+              label: `${formatNumber(nightConsumption)} ${unit} × ${formatMoney(nightTariff)}`,
+              value: formatMoney(nightConsumption * nightTariff),
+            },
+          ],
         };
       }
-      if (item.service.zones === 'water') {
+      if (item.water) {
+        const { water } = item;
         return {
-          tag: 'Вода + стоки',
-          details:
-            item.current === undefined
-              ? 'Показник ще не внесено'
-              : `${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · спожито ${formatNumber(item.consumption ?? 0)} ${service.unit}`,
-          formula: item.water
-            ? `💧 ${formatMoney(item.water.supply)} + 🚽 ${formatMoney(item.water.sewage)} + абонплата ${formatMoney(item.water.fees)}`
-            : `${service.unit} × (вода + стоки) + абонплата`,
-        };
-      }
-      if (item.service.zones === 'gas') {
-        return {
-          tag: 'Газ',
-          details:
-            item.current === undefined
-              ? 'Показник ще не внесено'
-              : `${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · спожито ${formatNumber(item.consumption ?? 0)} ${service.unit}`,
-          formula: `${formatNumber(item.consumption ?? 0)} ${service.unit} × ціна за 1 ${service.unit}`,
+          subtitle: `${formatNumber(consumption)} ${unit} · вода і стоки`,
+          lines: [
+            { label: 'Показники', value: range(previous, item.current) },
+            'divider',
+            {
+              label: `Вода · ${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+              value: formatMoney(water.supply),
+            },
+            {
+              label: `Стоки · ${formatNumber(consumption)} ${unit} × ${formatMoney(service.sewageTariff ?? 0)}`,
+              value: formatMoney(water.sewage),
+            },
+            ...(water.fees > 0
+              ? [{ label: 'Абонплата', value: formatMoney(water.fees) }]
+              : []),
+          ],
         };
       }
       return {
-        tag: 'Показник',
-        details:
-          item.current === undefined
-            ? 'Показник ще не внесено'
-            : `${formatNumber(item.previous ?? 0)} → ${formatNumber(item.current)} · спожито ${formatNumber(item.consumption ?? 0)} ${service.unit}`,
-        formula: `${formatNumber(item.consumption ?? 0)} ${service.unit} × тариф`,
+        subtitle: `${formatNumber(consumption)} ${unit} спожито`,
+        lines: [
+          { label: 'Показники', value: range(previous, item.current) },
+          'divider',
+          {
+            label: `${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+            value: formatMoney(item.amount ?? 0),
+          },
+        ],
       };
+    }
     case 'fixed':
       return {
-        tag: 'Фіксована',
-        details: 'Однакова сума щомісяця',
-        formula: 'Фіксований тариф',
+        subtitle: 'Фіксована сума',
+        lines: [{ label: 'Щомісяця', value: formatMoney(service.tariff) }],
       };
     case 'day': {
       const days = item.days ?? 0;
       return {
-        tag: 'За днями',
-        details: `${days} ${pluralize(days, pluralForms.day)} у ${getMonthLocative(month)}`,
-        formula: `${days} ${pluralize(days, pluralForms.day)} × ставка`,
+        subtitle: `${days} ${pluralize(days, pluralForms.day)}`,
+        lines: [
+          {
+            label: `${days} ${pluralize(days, pluralForms.day)} × ${formatMoney(service.tariff)}`,
+            value: formatMoney(item.amount ?? 0),
+          },
+        ],
       };
     }
-    case 'invoice':
+    case 'invoice': {
+      // «за листопад» — знахідний відмінок збігається з називним
+      const monthName = getMonthName(month).toLocaleLowerCase('uk');
       return {
-        tag: 'З рахунку',
-        details:
+        subtitle:
+          item.amount === null ? 'Суму ще не внесено' : 'Сума з рахунку',
+        lines: [
           item.amount === null
-            ? 'Суму ще не внесено'
-            : 'Сума з рахунку за місяць',
-        formula: 'Вноситься щомісяця вручну',
+            ? { label: `Суму за ${monthName} ще не внесено`, value: '—' }
+            : {
+                label: `Внесено вручну за ${monthName}`,
+                value: formatMoney(item.amount),
+              },
+        ],
       };
+    }
   }
 };
 
@@ -112,6 +168,7 @@ export default function Bill() {
   }>();
   const state = useLedgerState();
   const object = useLedgerObject(objectId);
+  const [openIds, setOpenIds] = useState<string[]>([]);
 
   if (!object || !isMonthKey(month)) return null;
 
@@ -120,6 +177,28 @@ export default function Bill() {
     object.id,
     month,
   );
+
+  const groups = [
+    {
+      title: 'За лічильниками',
+      items: items.filter((item) => item.service.mode === 'meter'),
+    },
+    {
+      title: 'Щомісячні платежі',
+      items: items.filter((item) => item.service.mode !== 'meter'),
+    },
+  ].filter((group) => group.items.length > 0);
+
+  const serviceCount = `${items.length} ${pluralize(items.length, pluralForms.service)}`;
+  const summary =
+    calculatedCount === items.length
+      ? `до сплати · ${serviceCount}`
+      : `до сплати · розраховано ${calculatedCount} з ${serviceCount}`;
+
+  const toggle = (id: string) =>
+    setOpenIds((ids) =>
+      ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
+    );
 
   return (
     <NavigationView
@@ -133,100 +212,86 @@ export default function Bill() {
         <ThemedView backgroundColor='surface' style={styles.receipt}>
           <ZigzagEdge edge='top' />
           <ZigzagEdge edge='bottom' />
-          <VStack spacing={8} align='center'>
-            <ThemedView backgroundColor='blueSoft' style={styles.receiptIcon}>
-              <AppImage icon='document' tintColor='blue' size={{ width: 18 }} />
-            </ThemedView>
-            <ThemedText font='dialogTitle'>Розрахунок за місяць</ThemedText>
-            <ThemedText color='muted' font='caption' align='center'>
-              {`${formatMonthTitle(month)} · ${formatShortAddress(object)}`}
+
+          <VStack spacing={4} align='center' style={styles.head}>
+            <ThemedText color='muted' font='overline' align='center'>
+              {formatMonthTitle(month).toLocaleUpperCase('uk')}
             </ThemedText>
-          </VStack>
-
-          <Dashed />
-
-          {items.length === 0 ? (
-            <VStack spacing={10} align='center' style={styles.empty}>
-              <ThemedView backgroundColor='surface2' style={styles.emptyIcon}>
-                <AppImage icon='gauge' tintColor='muted' size={{ width: 22 }} />
-              </ThemedView>
-              <ThemedText font='heading'>Ще нічого рахувати</ThemedText>
-              <ThemedText color='muted' font='caption' align='center'>
-                {`Додайте послуги обʼєкта з тарифами та внесіть показники за ${getMonthName(month).toLocaleLowerCase('uk')} — тут зʼявиться чек.`}
-              </ThemedText>
-            </VStack>
-          ) : (
-            items.map((item) => {
-              const line = describe(item, month);
-              return (
-                <VStack key={item.service.id} spacing={8} style={styles.line}>
-                  <HStack align='center' spacing={8}>
-                    <ServiceIcon icon={item.service.icon} size={24} />
-                    <ThemedText font='rowTitle' style={styles.flex}>
-                      {item.service.name}
-                    </ThemedText>
-                    <ThemedText
-                      font='rowTitle'
-                      color={item.amount === null ? 'muted' : 'ink'}
-                    >
-                      {item.amount === null ? '—' : formatMoney(item.amount)}
-                    </ThemedText>
-                  </HStack>
-                  <HStack align='center' spacing={8}>
-                    <ThemedView backgroundColor='surface2' style={styles.tag}>
-                      <ThemedText color='muted' font='serviceTag'>
-                        {line.tag}
-                      </ThemedText>
-                    </ThemedView>
-                    <ThemedText
-                      color='muted'
-                      font='caption'
-                      style={styles.flex}
-                    >
-                      {line.details}
-                    </ThemedText>
-                  </HStack>
-                  <HStack align='center' spacing={8}>
-                    <ThemedText
-                      color='muted'
-                      font='caption'
-                      style={styles.flex}
-                    >
-                      {line.formula}
-                    </ThemedText>
-                    <ThemedView
-                      backgroundColor='surface2'
-                      style={styles.tariff}
-                    >
-                      <ThemedText font='labelStrong'>
-                        {formatTariff(item.service)}
-                      </ThemedText>
-                    </ThemedView>
-                  </HStack>
-                </VStack>
-              );
-            })
-          )}
-
-          <Dashed />
-
-          <HStack align='center'>
-            <ThemedText font='heading' style={styles.flex}>
-              Разом до сплати
+            <ThemedText color='muted' font='caption' align='center'>
+              {formatShortAddress(object)}
             </ThemedText>
             <ThemedText
-              font='counterValue'
+              font='receiptTotal'
               color={total === 0 ? 'muted' : 'ink'}
+              style={[styles.headTotal, styles.tabular]}
             >
               {formatMoney(total)}
             </ThemedText>
-          </HStack>
+            {items.length > 0 && (
+              <ThemedText color='muted' font='caption' align='center'>
+                {summary}
+              </ThemedText>
+            )}
+          </VStack>
 
-          {items.length > 0 && (
-            <ThemedText color='muted' font='caption'>
-              {`Розраховано послуг: ${calculatedCount} з ${items.length}. Тарифи задані в налаштуваннях послуг. Це розрахунок, а не підтвердження оплати.`}
-            </ThemedText>
+          {items.length === 0 ? (
+            <>
+              <Dashed />
+              <VStack spacing={10} align='center' style={styles.empty}>
+                <ThemedView backgroundColor='surface2' style={styles.emptyIcon}>
+                  <AppImage
+                    icon='gauge'
+                    tintColor='muted'
+                    size={{ width: 22 }}
+                  />
+                </ThemedView>
+                <ThemedText font='heading'>Ще нічого рахувати</ThemedText>
+                <ThemedText color='muted' font='caption' align='center'>
+                  {`Додайте послуги обʼєкта з тарифами та внесіть показники за ${getMonthName(month).toLocaleLowerCase('uk')} — тут зʼявиться чек.`}
+                </ThemedText>
+              </VStack>
+            </>
+          ) : (
+            groups.map((group) => (
+              <View key={group.title}>
+                <Dashed />
+                <ThemedText color='muted' font='overline' style={styles.group}>
+                  {group.title.toLocaleUpperCase('uk')}
+                </ThemedText>
+                {group.items.map((item) => (
+                  <BillItem
+                    key={item.service.id}
+                    item={item}
+                    row={describe(item, month)}
+                    open={openIds.includes(item.service.id)}
+                    onToggle={() => toggle(item.service.id)}
+                  />
+                ))}
+              </View>
+            ))
           )}
+
+          <View style={styles.footer}>
+            <Dashed />
+            <HStack align='center' style={styles.totalRow}>
+              <ThemedText font='rowTitle' style={styles.flex}>
+                Разом
+              </ThemedText>
+              <ThemedText
+                font='totalValue'
+                color={total === 0 ? 'muted' : 'ink'}
+                style={styles.tabular}
+              >
+                {formatMoney(total)}
+              </ThemedText>
+            </HStack>
+            {items.length > 0 && (
+              <ThemedText color='muted' font='caption' style={styles.help}>
+                Торкніться послуги, щоб побачити показники й тариф. Це
+                розрахунок, а не підтвердження оплати.
+              </ThemedText>
+            )}
+          </View>
         </ThemedView>
 
         {items.length === 0 && (
@@ -242,6 +307,80 @@ export default function Bill() {
         )}
       </VStack>
     </NavigationView>
+  );
+}
+
+const chevronTransition: CSSTransitionProperties = {
+  transitionProperty: 'transform',
+  transitionDuration: 200,
+  transitionTimingFunction: 'ease-out',
+};
+
+type BillItemProps = {
+  item: ServiceBill;
+  row: BillRow;
+  open: boolean;
+  onToggle: () => void;
+};
+
+function BillItem({ item, row, open, onToggle }: BillItemProps) {
+  const isZero = item.amount === null || item.amount === 0;
+  return (
+    <View>
+      <Pressable
+        accessibilityRole='button'
+        accessibilityState={{ expanded: open }}
+        onPress={onToggle}
+        style={(state) => [styles.itemRow, state.pressed && styles.pressed]}
+      >
+        <ServiceIcon icon={item.service.icon} size={36} />
+        <VStack spacing={2} style={styles.flex}>
+          <ThemedText font='rowTitleCompact'>{item.service.name}</ThemedText>
+          <ThemedText color='muted' font='caption'>
+            {row.subtitle}
+          </ThemedText>
+        </VStack>
+        <ThemedText
+          font='rowTitleCompact'
+          color={isZero ? 'muted' : 'ink'}
+          style={styles.tabular}
+        >
+          {item.amount === null ? '—' : formatMoney(item.amount)}
+        </ThemedText>
+        {/* chevronRight, повернутий донизу; відкритий — догори */}
+        <Animated.View
+          style={[
+            { transform: [{ rotate: open ? '-90deg' : '90deg' }] },
+            chevronTransition,
+          ]}
+        >
+          <AppImage icon='chevronRight' tintColor='chev' size={{ width: 18 }} />
+        </Animated.View>
+      </Pressable>
+
+      {open && (
+        <ThemedView backgroundColor='surface2' style={styles.details}>
+          {row.lines.map((line, index) =>
+            line === 'divider' ? (
+              <ThemedView
+                key={index}
+                borderColor='line'
+                style={styles.detailsDivider}
+              />
+            ) : (
+              <HStack key={index} spacing={12} style={styles.detailsRow}>
+                <ThemedText color='muted' font='caption' style={styles.flex}>
+                  {line.label}
+                </ThemedText>
+                <ThemedText font='status' align='right' style={styles.tabular}>
+                  {line.value}
+                </ThemedText>
+              </HStack>
+            ),
+          )}
+        </ThemedView>
+      )}
+    </View>
   );
 }
 
@@ -279,13 +418,15 @@ function ZigzagEdge({ edge }: { edge: 'top' | 'bottom' }) {
   );
 }
 
+const DASH_WIDTH = 1.5;
+
+// iOS не малює пунктир лише на одній стороні рамки, тож беремо рамку з усіх
+// боків і показуємо тільки верхню через обрізання
 function Dashed() {
   return (
-    <ThemedView
-      backgroundColor='surface'
-      borderColor='line'
-      style={styles.dashed}
-    />
+    <View style={styles.dashedClip}>
+      <ThemedView borderColor='line' style={styles.dashed} />
+    </View>
   );
 }
 
@@ -293,18 +434,58 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  receipt: {
-    padding: 20,
-    marginVertical: TOOTH_WIDTH / 2,
-    gap: 18,
-    boxShadow: '0 8px 24px rgba(15, 27, 45, 0.08)',
+  tabular: {
+    fontVariant: ['tabular-nums'],
   },
-  receiptIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  receipt: {
+    paddingTop: 30,
+    paddingHorizontal: 20,
+    paddingBottom: 26,
+    marginVertical: TOOTH_WIDTH / 2,
+    boxShadow: '0 6px 14px rgba(16, 32, 64, 0.10)',
+  },
+  head: {
+    paddingBottom: 22,
+  },
+  headTotal: {
+    marginTop: 10,
+  },
+  group: {
+    paddingTop: 18,
+    paddingBottom: 4,
+  },
+  itemRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 12,
+    paddingVertical: 10,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  details: {
+    marginTop: 2,
+    marginBottom: 10,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    gap: 8,
+  },
+  detailsRow: {
+    justifyContent: 'space-between',
+  },
+  detailsDivider: {
+    borderTopWidth: StyleSheet.hairlineWidth * 2,
+  },
+  footer: {
+    marginTop: 8,
+  },
+  totalRow: {
+    paddingTop: 18,
+  },
+  help: {
+    paddingTop: 10,
   },
   zigzag: {
     position: 'absolute',
@@ -315,9 +496,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     transform: [{ rotate: '45deg' }],
   },
+  dashedClip: {
+    height: DASH_WIDTH,
+    overflow: 'hidden',
+  },
   dashed: {
-    borderWidth: 0,
-    borderTopWidth: 1,
+    height: DASH_WIDTH * 4,
+    borderWidth: DASH_WIDTH,
     borderStyle: 'dashed',
   },
   empty: {
@@ -329,18 +514,5 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  line: {
-    paddingBottom: 4,
-  },
-  tag: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  tariff: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
   },
 });

@@ -37,6 +37,25 @@ export const typography = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
   },
+  receiptTotal: {
+    fontFamily: onestFamily,
+    fontSize: 40,
+    fontWeight: '700',
+    lineHeight: 48,
+    letterSpacing: -1.2,
+  },
+  totalValue: {
+    fontFamily: onestFamily,
+    fontSize: 22,
+    fontWeight: '700',
+    lineHeight: 28,
+  },
+  rowTitleCompact: {
+    fontFamily: onestFamily,
+    fontSize: 15,
+    fontWeight: '600',
+    lineHeight: 19.5,
+  },
   rowTitle: {
     fontFamily: onestFamily,
     fontSize: 16,
