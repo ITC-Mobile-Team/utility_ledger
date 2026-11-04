@@ -221,7 +221,8 @@ export default function Bill() {
       cornerRadius={28}
       contentInsets={{ horizontal: 20, bottom: 32 }}
     >
-      <VStack spacing={20}>
+      {/* У макеті між чеком і кнопкою 14 px; зубці вже займають TOOTH_HEIGHT */}
+      <VStack spacing={14 - TOOTH_HEIGHT}>
         <ThemedView backgroundColor='surface' style={styles.receipt}>
           <ZigzagEdge edge='top' />
           <ZigzagEdge edge='bottom' />
@@ -286,8 +287,8 @@ export default function Bill() {
 
           <View style={styles.footer}>
             <Dashed />
-            <HStack align='center' style={styles.totalRow}>
-              <ThemedText font='rowTitle' style={styles.flex}>
+            <View style={styles.totalRow}>
+              <ThemedText font='rowTitle' style={[styles.flex, styles.bold]}>
                 Разом
               </ThemedText>
               <ThemedText
@@ -297,7 +298,7 @@ export default function Bill() {
               >
                 {formatMoney(total)}
               </ThemedText>
-            </HStack>
+            </View>
             {items.length > 0 && (
               <ThemedText color='muted' font='caption' style={styles.help}>
                 Торкніться послуги, щоб побачити показники й тариф. Це
@@ -307,7 +308,12 @@ export default function Bill() {
           </View>
         </ThemedView>
 
-        {items.length === 0 && (
+        {items.length > 0 ? (
+          <ActionButton
+            title='Зберегти розрахунок'
+            onPress={() => router.back()}
+          />
+        ) : (
           <ActionButton
             title='+  Додати послугу'
             onPress={() =>
@@ -398,7 +404,9 @@ function BillItem({ item, row, open, onToggle }: BillItemProps) {
   );
 }
 
-const TOOTH_WIDTH = 10;
+// Зубці як у макеті: 14 px завширшки, 7 px заввишки
+const TOOTH_WIDTH = 14;
+const TOOTH_HEIGHT = TOOTH_WIDTH / 2;
 
 function ZigzagEdge({ edge }: { edge: 'top' | 'bottom' }) {
   const [width, setWidth] = useState(0);
@@ -452,10 +460,12 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   receipt: {
-    paddingTop: 30,
+    // У макеті відступи 30/26 рахуються від вершин зубців, а тут зубці
+    // малюються поза блоком — віднімаємо їхню висоту
+    paddingTop: 30 - TOOTH_HEIGHT,
     paddingHorizontal: 20,
-    paddingBottom: 26,
-    marginVertical: TOOTH_WIDTH / 2,
+    paddingBottom: 26 - TOOTH_HEIGHT,
+    marginVertical: TOOTH_HEIGHT,
     boxShadow: '0 6px 14px rgba(16, 32, 64, 0.10)',
   },
   head: {
@@ -496,7 +506,12 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   totalRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
     paddingTop: 18,
+  },
+  bold: {
+    fontWeight: '700',
   },
   help: {
     paddingTop: 10,

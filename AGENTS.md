@@ -40,6 +40,10 @@ Docs: https://docs.expo.dev/eas/index.md
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
 
+## Design
+
+The screen designs live in a Claude Design canvas — link and how to read it in `docs/design.md`. Compare against it when building or reviewing a screen.
+
 ## App patterns
 
 `docs/patterns/` holds the agreed patterns for this app (keyboard handling, forms, sheets, …), indexed in `docs/patterns/README.md`. Before building or changing a screen, read the matching pattern file and follow it. When a new pattern is agreed or an existing one changes, update or add the file in the same commit.
