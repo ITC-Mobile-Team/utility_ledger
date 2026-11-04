@@ -12,8 +12,13 @@ import {
   type MonthKey,
   parseMonthKey,
 } from '@/services/ledger';
+import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  css,
+  type CSSTransitionProperties,
+} from 'react-native-reanimated';
 import { BottomSheet } from './bottom-sheet';
 
 const toKey = (year: number, monthIndex: number): MonthKey =>
@@ -77,48 +82,15 @@ export function MonthPickerSheet({
           const isSelected = month === selected;
           // Свій місяць при редагуванні лишається доступним
           const isAdded = added.has(month) && month !== editingMonth;
-          const disabled = isAdded;
           return (
-            <Pressable
+            <MonthCell
               key={month}
-              accessibilityRole='radio'
-              accessibilityState={{ checked: isSelected, disabled }}
-              accessibilityHint={isAdded ? 'Вже додано' : undefined}
-              disabled={disabled}
+              emoji={appearance.emoji}
+              name={getMonthName(month)}
+              isSelected={isSelected}
+              isAdded={isAdded}
               onPress={() => setSelected(month)}
-              style={styles.cell}
-            >
-              {(state) => (
-                <ThemedView
-                  backgroundColor={isSelected ? 'blueSoft' : 'surface2'}
-                  borderColor={isSelected ? 'blue' : undefined}
-                  style={[
-                    styles.cellBody,
-                    !isSelected && styles.cellBorderless,
-                    disabled && styles.disabled,
-                    state.pressed && styles.pressed,
-                  ]}
-                >
-                  {/* Звичайний Text: метрики Onest зсувають емодзі */}
-                  <Text allowFontScaling={false} style={styles.emoji}>
-                    {appearance.emoji}
-                  </Text>
-                  <ThemedText font='segment'>{getMonthName(month)}</ThemedText>
-                  {isAdded && (
-                    <ThemedView
-                      backgroundColor='greenSoft'
-                      style={styles.addedMark}
-                    >
-                      <AppImage
-                        icon='check'
-                        tintColor='green'
-                        size={{ width: 10 }}
-                      />
-                    </ThemedView>
-                  )}
-                </ThemedView>
-              )}
-            </Pressable>
+            />
           );
         })}
       </View>
@@ -129,6 +101,89 @@ export function MonthPickerSheet({
         onPress={() => selected && onSave(selected)}
       />
     </BottomSheet>
+  );
+}
+
+// Колір і рамка перетікають, натиснута клітинка трохи стискається
+const cellTransition: CSSTransitionProperties = {
+  transitionProperty: ['backgroundColor', 'borderColor', 'transform'],
+  transitionDuration: 200,
+  transitionTimingFunction: 'ease-out',
+};
+
+// Щойно обрана клітинка «підстрибує», а емодзі в ній погойдується
+const cellPop = css.keyframes({
+  from: { transform: [{ scale: 0.94 }] },
+  '55%': { transform: [{ scale: 1.04 }] },
+  to: { transform: [{ scale: 1 }] },
+});
+
+const emojiWiggle = css.keyframes({
+  from: { transform: [{ scale: 1 }, { rotate: '0deg' }] },
+  '35%': { transform: [{ scale: 1.25 }, { rotate: '-10deg' }] },
+  '70%': { transform: [{ scale: 1.1 }, { rotate: '6deg' }] },
+  to: { transform: [{ scale: 1 }, { rotate: '0deg' }] },
+});
+
+type MonthCellProps = {
+  emoji: string;
+  name: string;
+  isSelected: boolean;
+  isAdded: boolean;
+  onPress: () => void;
+};
+
+function MonthCell({
+  emoji,
+  name,
+  isSelected,
+  isAdded,
+  onPress,
+}: MonthCellProps) {
+  const [isPressed, setPressed] = useState(false);
+  const selectedBg = useThemeColor('blueSoft');
+  const idleBg = useThemeColor('surface2');
+  const blue = useThemeColor('blue');
+  // Без вибору рамка кольору фону: інакше перехід з transparent темнить її
+  const background = isSelected ? selectedBg : idleBg;
+  const border = isSelected ? blue : idleBg;
+
+  return (
+    <Pressable
+      accessibilityRole='radio'
+      accessibilityState={{ checked: isSelected, disabled: isAdded }}
+      accessibilityHint={isAdded ? 'Вже додано' : undefined}
+      disabled={isAdded}
+      onPress={onPress}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      style={styles.cell}
+    >
+      <Animated.View
+        style={[
+          styles.cellBody,
+          { backgroundColor: background, borderColor: border },
+          { transform: [{ scale: isPressed ? 0.95 : 1 }] },
+          cellTransition,
+          isSelected && !isPressed && styles.cellPop,
+          isAdded && styles.disabled,
+        ]}
+      >
+        {/* Звичайний Text: метрики Onest зсувають емодзі */}
+        <Animated.Text
+          allowFontScaling={false}
+          style={[styles.emoji, isSelected && styles.emojiWiggle]}
+        >
+          {emoji}
+        </Animated.Text>
+        <ThemedText font='segment'>{name}</ThemedText>
+        {isAdded && (
+          <ThemedView backgroundColor='greenSoft' style={styles.addedMark}>
+            <AppImage icon='check' tintColor='green' size={{ width: 10 }} />
+          </ThemedView>
+        )}
+      </Animated.View>
+    </Pressable>
   );
 }
 
@@ -203,8 +258,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
   },
-  cellBorderless: {
-    borderColor: 'transparent',
+  cellPop: {
+    animationName: cellPop,
+    animationDuration: 320,
+    animationTimingFunction: 'ease-out',
+  },
+  emojiWiggle: {
+    animationName: emojiWiggle,
+    animationDuration: 420,
+    animationTimingFunction: 'ease-out',
   },
   emoji: {
     fontSize: 22,
