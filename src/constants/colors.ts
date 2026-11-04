@@ -42,6 +42,8 @@ const light = {
   powerOnSoft: '#FFF4D1',
   powerOnInk: '#7A5200',
   powerOnText: '#3E2A06',
+  // Підпис на білому чипі в шапці «Світла» (однаковий в обох темах)
+  powerOnInkOnLight: '#6B4708',
   powerOff: '#24324A',
   powerOffInk: '#FFFFFF',
   // Перемикання після вимкнення: світла може не бути
@@ -123,6 +125,7 @@ const dark: Record<AppColor, string> = {
   powerOnSoft: 'rgba(242,184,30,0.16)',
   powerOnInk: '#F5CC5C',
   powerOnText: '#3E2A06',
+  powerOnInkOnLight: '#6B4708',
   powerOff: '#3A4252',
   powerOffInk: '#FFFFFF',
   powerSwitch: '#6E7787',

@@ -13,6 +13,7 @@ export function ThemedNavigationBar({
   title,
   subtitle,
   headerAccessory,
+  headerContent,
   navigationBarButtons = [],
   onNavigationButtonPress = () => {},
   scrollY,
@@ -46,6 +47,7 @@ export function ThemedNavigationBar({
         title={title}
         subtitle={subtitle}
         accessory={headerAccessory}
+        content={headerContent}
         isTransparent={barType === 'transparent'}
         heroSubtitleColor={barType === 'power' ? 'heroSubPower' : 'heroSub'}
         paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM + cornerRadius}

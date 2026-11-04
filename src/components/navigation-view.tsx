@@ -51,6 +51,7 @@ export const NavigationView = ({
   title,
   subtitle,
   headerAccessory,
+  headerContent,
   navigationBarButtons,
   onNavigationButtonPress,
   contentInsets,
@@ -211,6 +212,7 @@ export const NavigationView = ({
         title={title}
         subtitle={subtitle}
         headerAccessory={headerAccessory}
+        headerContent={headerContent}
         navigationBarButtons={navigationBarButtons}
         onNavigationButtonPress={onNavigationButtonPress}
         scrollY={headerScrollY}

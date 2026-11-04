@@ -43,6 +43,14 @@ return (
 | `useFormFooterKeyboardInsets` | `src/views/objects/form-footer.tsx`        | `bottomOffset` і `extraKeyboardSpace` для `NavigationView` під висоту футера                                          |
 | `ThemedTextInput`             | `src/components/themed-text-input.tsx`     | Тап по всьому полю фокусує інпут, `returnKeyType='done'` за замовчуванням                                             |
 
+## Поле всередині вищого рядка
+
+`KeyboardAwareScrollView` догортає над футером низ **курсора** в полі (`selection.end.y`), а не низ поля чи рядка. У `ThemedTextInput` поле завищки з текст, тож різниці не видно. Якщо `TextInput` стоїть у вищому рядку (як назви черг у `outage-settings.tsx`):
+
+- не ставимо `padding` / `height` на сам `TextInput` — висоту дає рядок навколо;
+- до `bottomOffset` з `useFormFooterKeyboardInsets` додаємо частину рядка під текстом (`(висота рядка − lineHeight) / 2`), інакше низ рядка лишається під футером;
+- тап по всьому рядку ставить фокус в інпут (`Pressable` з `guarded={false}` і `ref.focus()`), як у `ThemedTextInput`.
+
 ## Не робити
 
 - `keyboardDismissMode='interactive'` / `'on-drag'` на скролі форми.

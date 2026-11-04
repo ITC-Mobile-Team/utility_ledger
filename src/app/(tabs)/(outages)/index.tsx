@@ -126,6 +126,14 @@ function ScheduleScreen({
       barType='power'
       cornerRadius={28}
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      headerContent={
+        <QueueChips
+          queues={queues}
+          selected={queue}
+          onSelect={setSelectedQueue}
+          onAdd={openSettings}
+        />
+      }
       refreshControl={
         <RefreshControl
           refreshing={isRefreshing}
@@ -135,12 +143,6 @@ function ScheduleScreen({
       }
     >
       <VStack spacing={14}>
-        <QueueChips
-          queues={queues}
-          selected={queue}
-          onSelect={setSelectedQueue}
-          onAdd={openSettings}
-        />
         <Segment<Day>
           items={[
             { value: 'today', label: `Сьогодні, ${formatShortDate(now.date)}` },

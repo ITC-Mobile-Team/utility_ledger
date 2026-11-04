@@ -27,10 +27,22 @@ import {
 } from '@/views';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { useState } from 'react';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  Keyboard,
+  StyleSheet,
+  TextInput,
+  type TextInputInstance,
+  View,
+} from 'react-native';
 
 const GRID_COLUMNS = 4;
+const NAME_ROW_HEIGHT = 58;
+// KeyboardAwareScrollView догортає над футером низ курсора, а не рядка.
+// Під текстом поля назви лишається ще пів рядка — додаємо їх до відступу,
+// щоб рядок у фокусі був видний повністю
+const NAME_ROW_BELOW_TEXT =
+  (NAME_ROW_HEIGHT - typography.rowTitle.lineHeight) / 2;
 
 export default function OutageSettingsScreen() {
   const repository = useOutageRepository();
@@ -100,6 +112,7 @@ export default function OutageSettingsScreen() {
         title='Графік відключень'
         contentInsets={{ top: 20, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
+        bottomOffset={keyboardInsets.bottomOffset + NAME_ROW_BELOW_TEXT}
       >
         <VStack spacing={20}>
           <VStack spacing={8}>
@@ -299,24 +312,33 @@ function QueueNameRow({
 }) {
   const ink = useThemeColor('ink');
   const placeholder = useThemeColor('placeholder');
+  const inputRef = useRef<TextInputInstance>(null);
   return (
-    <HStack align='center' spacing={12} style={styles.nameRow}>
-      <ThemedView backgroundColor='powerOff' style={styles.queueBadge}>
-        <ThemedText font='rowTitleCompact' color='powerOffInk'>
-          {id}
-        </ThemedText>
-      </ThemedView>
-      <TextInput
-        value={value}
-        onChangeText={onChange}
-        placeholder='Додати назву'
-        placeholderTextColor={placeholder}
-        returnKeyType='done'
-        maxLength={24}
-        accessibilityLabel={`Назва черги ${id}`}
-        style={[typography.rowTitle, styles.nameInput, { color: ink }]}
-      />
-    </HStack>
+    // Тап по всьому рядку (номер черги, відступи) ставить фокус в інпут
+    <Pressable
+      guarded={false}
+      accessible={false}
+      onPress={() => inputRef.current?.focus()}
+    >
+      <HStack align='center' spacing={12} style={styles.nameRow}>
+        <ThemedView backgroundColor='powerOff' style={styles.queueBadge}>
+          <ThemedText font='rowTitleCompact' color='powerOffInk'>
+            {id}
+          </ThemedText>
+        </ThemedView>
+        <TextInput
+          ref={inputRef}
+          value={value}
+          onChangeText={onChange}
+          placeholder='Додати назву'
+          placeholderTextColor={placeholder}
+          returnKeyType='done'
+          maxLength={24}
+          accessibilityLabel={`Назва черги ${id}`}
+          style={[typography.rowTitle, styles.nameInput, { color: ink }]}
+        />
+      </HStack>
+    </Pressable>
   );
 }
 
@@ -372,7 +394,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   nameRow: {
-    minHeight: 58,
+    minHeight: NAME_ROW_HEIGHT,
     paddingHorizontal: 16,
   },
   queueBadge: {
@@ -386,7 +408,8 @@ const styles = StyleSheet.create({
   },
   nameInput: {
     flex: 1,
-    paddingVertical: 16,
+    padding: 0, // прибирає дефолтні відступи Android
+    includeFontPadding: false,
   },
   help: {
     paddingHorizontal: 4,

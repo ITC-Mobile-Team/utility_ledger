@@ -1,5 +1,4 @@
 import { AppImage, HStack, Pressable, ThemedText } from '@/components';
-import { useThemeColor } from '@/hooks/use-theme-colors';
 import type { QueueSettings } from '@/services/outages';
 import { ScrollView, StyleSheet } from 'react-native';
 
@@ -10,16 +9,14 @@ type QueueChipsProps = {
   onAdd: () => void;
 };
 
-// Перемикач між обраними чергами; «+» відкриває налаштування черг
+// Перемикач між обраними чергами в шапці навбару «Світла»: скляні чипи на
+// градієнті, обраний — білий. «+» відкриває налаштування черг
 export function QueueChips({
   queues,
   selected,
   onSelect,
   onAdd,
 }: QueueChipsProps) {
-  const surface = useThemeColor('surface');
-  const line = useThemeColor('line');
-  const powerOn = useThemeColor('powerOn');
   return (
     <ScrollView
       horizontal
@@ -40,24 +37,21 @@ export function QueueChips({
             onPress={() => onSelect(queue.id)}
             style={(state) => [
               styles.chip,
-              {
-                backgroundColor: isSelected ? powerOn : surface,
-                borderColor: isSelected ? powerOn : line,
-              },
+              isSelected && styles.selected,
               state.pressed && styles.pressed,
             ]}
           >
             <HStack align='center' spacing={6}>
               <ThemedText
                 font='rowTitleCompact'
-                color={isSelected ? 'powerOnText' : 'ink'}
+                color={isSelected ? 'powerOnText' : 'onPrimary'}
               >
                 {queue.id}
               </ThemedText>
               {queue.name && (
                 <ThemedText
                   font='labelMedium'
-                  color={isSelected ? 'powerOnText' : 'muted'}
+                  color={isSelected ? 'powerOnInkOnLight' : 'heroSubPower'}
                 >
                   {queue.name}
                 </ThemedText>
@@ -73,11 +67,10 @@ export function QueueChips({
         style={(state) => [
           styles.chip,
           styles.add,
-          { backgroundColor: surface, borderColor: line },
           state.pressed && styles.pressed,
         ]}
       >
-        <AppImage icon='plus' tintColor='ink' size={{ width: 18 }} />
+        <AppImage icon='plus' tintColor='onPrimary' size={{ width: 18 }} />
       </Pressable>
     </ScrollView>
   );
@@ -96,8 +89,15 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 14,
     borderRadius: 999,
-    borderWidth: 1.5,
     justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+  },
+  selected: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.18)',
   },
   add: {
     width: 40,
