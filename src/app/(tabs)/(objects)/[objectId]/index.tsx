@@ -14,6 +14,7 @@ import {
   useLedgerState,
 } from '@/providers/ledger-provider';
 import {
+  formatMonthTitle,
   formatShortAddress,
   getMonthName,
   getMonthStatus,
@@ -28,6 +29,7 @@ import {
   ListCard,
   ListRow,
   SectionHeader,
+  SwipeableRow,
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, StyleSheet } from 'react-native';
@@ -117,6 +119,20 @@ export default function ObjectMonths() {
       ],
     );
 
+  const confirmDeleteMonth = (month: MonthKey) =>
+    Alert.alert(
+      `Видалити «${formatMonthTitle(month)}»?`,
+      'Показники та розрахунки за цей місяць буде видалено.',
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Видалити',
+          style: 'destructive',
+          onPress: () => ledger.deleteMonth(object.id, month),
+        },
+      ],
+    );
+
   const onButtonPress = (id: string) => {
     switch (id) {
       case 'add-month':
@@ -184,47 +200,58 @@ export default function ObjectMonths() {
                   monthAppearance[parseMonthKey(month).monthIndex];
                 return (
                   <ListCard key={month}>
-                    <ListRow
-                      leading={
-                        appearance && (
-                          <EmojiTile
-                            emoji={appearance.emoji}
-                            background={appearance.background}
-                          />
-                        )
-                      }
-                      trailing={
-                        status === 'new' ? (
-                          <ThemedBadge text='Новий' type='red' />
-                        ) : (
-                          <ThemedView
-                            backgroundColor='greenSoft'
-                            style={styles.check}
-                          >
-                            <AppImage
-                              icon='check'
-                              tintColor='green'
-                              size={{ width: 16 }}
-                            />
-                          </ThemedView>
-                        )
-                      }
-                      onPress={() =>
-                        router.push({
-                          pathname: '/[objectId]/[month]',
-                          params: { objectId: object.id, month },
-                        })
-                      }
+                    <SwipeableRow
+                      actions={[
+                        {
+                          title: 'Видалити',
+                          icon: 'trash',
+                          background: 'coral',
+                          onPress: () => confirmDeleteMonth(month),
+                        },
+                      ]}
                     >
-                      <ThemedText font='rowTitle'>
-                        {getMonthName(month)}
-                      </ThemedText>
-                      <ThemedText color='muted' font='caption'>
-                        {status === 'new'
-                          ? 'Потрібно внести показники'
-                          : 'Заповнено'}
-                      </ThemedText>
-                    </ListRow>
+                      <ListRow
+                        leading={
+                          appearance && (
+                            <EmojiTile
+                              emoji={appearance.emoji}
+                              background={appearance.background}
+                            />
+                          )
+                        }
+                        trailing={
+                          status === 'new' ? (
+                            <ThemedBadge text='Новий' type='red' />
+                          ) : (
+                            <ThemedView
+                              backgroundColor='greenSoft'
+                              style={styles.check}
+                            >
+                              <AppImage
+                                icon='check'
+                                tintColor='green'
+                                size={{ width: 16 }}
+                              />
+                            </ThemedView>
+                          )
+                        }
+                        onPress={() =>
+                          router.push({
+                            pathname: '/[objectId]/[month]',
+                            params: { objectId: object.id, month },
+                          })
+                        }
+                      >
+                        <ThemedText font='rowTitle'>
+                          {getMonthName(month)}
+                        </ThemedText>
+                        <ThemedText color='muted' font='caption'>
+                          {status === 'new'
+                            ? 'Потрібно внести показники'
+                            : 'Заповнено'}
+                        </ThemedText>
+                      </ListRow>
+                    </SwipeableRow>
                   </ListCard>
                 );
               })}

@@ -5,6 +5,7 @@ import type {
   LedgerState,
   MeterReading,
   DayCount,
+  MonthKey,
   ObjectMonth,
 } from './types';
 
@@ -135,6 +136,21 @@ export function createLocalLedgerRepository(
         .map((month) => ({ objectId, month }));
       if (added.length === 0) return;
       await update({ ...state, months: [...state.months, ...added] });
+    },
+    async deleteMonth(objectId, month) {
+      const serviceIds = new Set(
+        state.services.filter((s) => s.objectId === objectId).map((s) => s.id),
+      );
+      const belongs = (entry: { serviceId: string; month: MonthKey }) =>
+        entry.month === month && serviceIds.has(entry.serviceId);
+      await update({
+        ...state,
+        months: state.months.filter(
+          (m) => !(m.objectId === objectId && m.month === month),
+        ),
+        readings: state.readings.filter((r) => !belongs(r)),
+        dayCounts: state.dayCounts.filter((d) => !belongs(d)),
+      });
     },
     async setReading(reading) {
       await update({

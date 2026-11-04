@@ -94,6 +94,8 @@ export interface LedgerRepository {
   deleteService(id: string): Promise<void>;
   // Додає місяці обʼєкта; вже додані пропускає
   addMonths(objectId: string, months: MonthKey[]): Promise<void>;
+  // Видаляє місяць обʼєкта разом з його показниками й днями
+  deleteMonth(objectId: string, month: MonthKey): Promise<void>;
   setReading(reading: MeterReading): Promise<void>;
   setDayCount(dayCount: DayCount): Promise<void>;
 }
