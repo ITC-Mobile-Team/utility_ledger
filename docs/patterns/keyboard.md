@@ -11,6 +11,7 @@
 - Над цифровими клавіатурами (`number-pad`, `decimal-pad`…) немає панелі з кнопкою «Done». `ThemedTextInput` для них не передає `returnKeyType`; клавіатура закривається тапом поза полями.
 - Кнопка у футері при відкритій клавіатурі стоїть на 12pt над нею, а при закритій — як у дизайні (safe area знизу).
 - Поле у фокусі автоматично прокручується над футером; контент можна догорнути до кінця.
+- Це працює і на коротких екранах, де без клавіатури скрол вимкнений: `NavigationView` вмикає скрол уже при фокусі інпута (`useReanimatedFocusedInput`), ще до анімації клавіатури. Окремо на екранах нічого не робимо.
 - Тап по полю-вибору, що відкриває шторку (наприклад, «Населений пункт»), спершу викликає `Keyboard.dismiss()`.
 
 ## Як зібрати екран
@@ -37,7 +38,7 @@ return (
 | --- | --- | --- |
 | `KeyboardProvider` | `src/app/_layout.tsx` | Потрібен для `react-native-keyboard-controller` |
 | `KeyboardDismissView` | `src/components/keyboard-dismiss-view.tsx` | Корінь екрана; тап поза полями закриває клавіатуру |
-| `NavigationView` | `src/components/navigation-view.tsx` | `KeyboardAwareScrollView`, `keyboardShouldPersistTaps='handled'` за замовчуванням |
+| `NavigationView` | `src/components/navigation-view.tsx` | `KeyboardAwareScrollView`, `keyboardShouldPersistTaps='handled'` за замовчуванням; скрол вмикається при фокусі інпута |
 | `FormFooter` | `src/views/objects/form-footer.tsx` | `KeyboardStickyView` з відступом 12 над клавіатурою |
 | `useFormFooterKeyboardInsets` | `src/views/objects/form-footer.tsx` | `bottomOffset` і `extraKeyboardSpace` для `NavigationView` під висоту футера |
 | `ThemedTextInput` | `src/components/themed-text-input.tsx` | Тап по всьому полю фокусує інпут, `returnKeyType='done'` за замовчуванням |

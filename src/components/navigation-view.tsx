@@ -11,6 +11,7 @@ import {
   type KeyboardAwareScrollViewProps,
   type KeyboardAwareScrollViewRef,
   useKeyboardState,
+  useReanimatedFocusedInput,
 } from 'react-native-keyboard-controller';
 import { VStack } from './stack';
 import {
@@ -69,6 +70,16 @@ export const NavigationView = ({
   // Де закінчується контент (без розпірки та нижнього відступу)
   const [contentEnd, setContentEnd] = useState(0);
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
+  // Фокус в інпуті приходить раніше за клавіатуру: скрол має бути ввімкнений
+  // ще до її анімації, інакше KeyboardAwareScrollView не підніме поле над нею
+  const { input: focusedInput } = useReanimatedFocusedInput();
+  const [hasFocusedInput, setHasFocusedInput] = useState(false);
+  useAnimatedReaction(
+    () => focusedInput.value !== null,
+    (isFocused, previous) => {
+      if (isFocused !== previous) scheduleOnRN(setHasFocusedInput, isFocused);
+    },
+  );
   const [isAtTop, setAtTop] = useState(true);
   useAnimatedReaction(
     () => scrollY.value <= 0,
@@ -79,12 +90,12 @@ export const NavigationView = ({
   // Короткий контент не скролиться: він і так видно повністю над таб-баром.
   // Перевіряємо лише нагорі: згорнутий навбар нижчий, і там контент може
   // вміститись, але скрол потрібен, щоб повернутись. З клавіатурою скрол
-  // лишається, щоб догорнути до поля над нею
+  // лишається, щоб догорнути до поля над нею, і вмикається вже при фокусі
   const contentFits =
     isAtTop &&
     viewportHeight > 0 &&
     contentEnd + (contentInsets?.bottom ?? 0) <= viewportHeight - bottomInset;
-  const isScrollEnabled = !contentFits || isKeyboardVisible;
+  const isScrollEnabled = !contentFits || isKeyboardVisible || hasFocusedInput;
   const buttonsCollapseDistance = navigationBarButtons?.length
     ? COLLAPSE_DISTANCE
     : 0;
