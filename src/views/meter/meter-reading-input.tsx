@@ -67,6 +67,11 @@ export function MeterReadingInput({
               state={stateAt(index)}
               isLast={index === length - 1}
               isError={isError}
+              // Усі цифри введено й клавіатура відкрита — підсвічуємо останню
+              // клітинку: саме її прибере наступне натискання «стерти»
+              isDeletable={
+                isFocused && value.length === length && index === length - 1
+              }
             />
           ))}
         </HStack>

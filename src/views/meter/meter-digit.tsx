@@ -20,6 +20,8 @@ type MeterDigitProps = {
   // Остання (дробова) цифра лічильника — червона
   isLast: boolean;
   isError?: boolean;
+  // Заповнена клітинка, яку прибере наступне «стерти» (усі цифри введено)
+  isDeletable?: boolean;
 };
 
 const ENTRY = {
@@ -39,6 +41,7 @@ export function MeterDigit({
   state,
   isLast,
   isError = false,
+  isDeletable = false,
 }: MeterDigitProps) {
   if (state === 'display') {
     return (
@@ -61,6 +64,13 @@ export function MeterDigit({
           styles.entryCell,
           !isLast && { backgroundColor: ENTRY.filled },
           isError && styles.errorCell,
+          isDeletable &&
+            (isError
+              ? styles.deletableError
+              : isLast
+                ? styles.activeLast
+                : styles.activeDefault),
+          isDeletable && styles.deletableCell,
         ]}
       >
         <ThemedText color='onPrimary' font='meterDigit'>
@@ -137,6 +147,13 @@ const styles = StyleSheet.create({
   errorCell: {
     borderWidth: 2,
     borderColor: ENTRY.error,
+  },
+  deletableCell: {
+    borderWidth: 2,
+  },
+  deletableError: {
+    borderColor: ENTRY.error,
+    boxShadow: `0 0 0 4px ${ENTRY.focusGlowLast}`,
   },
   activeCell: {
     backgroundColor: ENTRY.active,
