@@ -93,11 +93,6 @@ export default function AddMonths() {
       >
         <VStack spacing={24}>
           <VStack spacing={12}>
-            <SectionHeader title='Рік' />
-            <YearPicker years={years} selection={year} onChange={setYear} />
-          </VStack>
-
-          <VStack spacing={12}>
             <SectionHeader title='Місяці' trailing='Оберіть один або кілька' />
             <ListCard>
               {monthAppearance.map((appearance, monthIndex) => {
@@ -145,6 +140,11 @@ export default function AddMonths() {
                 );
               })}
             </ListCard>
+          </VStack>
+
+          <VStack spacing={12}>
+            <SectionHeader title='Рік' />
+            <YearPicker years={years} selection={year} onChange={setYear} />
           </VStack>
         </VStack>
       </NavigationView>
