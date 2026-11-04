@@ -265,7 +265,7 @@ export default function ObjectMonths() {
       )}
 
       <MonthPickerSheet
-        key={monthSheetKey}
+        key={`month-${monthSheetKey}`}
         visible={isMonthSheetVisible}
         addedMonths={months}
         saveTitle='Додати місяць'

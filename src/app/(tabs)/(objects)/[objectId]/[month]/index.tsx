@@ -414,7 +414,7 @@ export default function MonthServices() {
 
         <DaysSheet
           // key скидає локальний стан шторки при кожному відкритті
-          key={daysSheetKey}
+          key={`days-${daysSheetKey}`}
           visible={isDaysSheetVisible}
           service={daysItem?.service}
           month={month}
@@ -439,7 +439,7 @@ export default function MonthServices() {
           }
         />
         <MonthPickerSheet
-          key={monthSheetKey}
+          key={`month-${monthSheetKey}`}
           visible={isMonthSheetVisible}
           addedMonths={getObjectMonths(state, object.id)}
           editingMonth={month}
