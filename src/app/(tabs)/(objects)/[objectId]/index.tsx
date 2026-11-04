@@ -167,11 +167,11 @@ export default function ObjectMonths() {
       navigationBarButtons={objectButtons}
       onNavigationButtonPress={onButtonPress}
     >
-      {!hasServices ? (
+      {months.length === 0 && !hasServices ? (
         <EmptyStateView
           icon='calendar'
           title='Ще немає місяців'
-          message='Додайте першу послугу — світло, воду чи інтернет. Після цього можна буде додавати місяці для показників і розрахунків.'
+          message='Додайте послугу — світло, воду чи інтернет, — щоб вносити показники й рахувати суму. Місяць можна додати й одразу.'
           actionTitle='Додати послугу'
           onAction={addService}
         />
