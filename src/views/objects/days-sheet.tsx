@@ -6,6 +6,7 @@ import {
   ThemedText,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import {
   formatMoney,
@@ -17,7 +18,7 @@ import {
   pluralize,
 } from '@/services/ledger';
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { BottomSheet } from './bottom-sheet';
 import { ServiceIcon } from './service-icon';
 
@@ -85,6 +86,7 @@ export function DaysSheet({
           const isSelected = option === value;
           return (
             <Pressable
+              guarded={false}
               key={index}
               style={styles.flex}
               onPress={() => setValue(option)}
@@ -140,6 +142,7 @@ function StepperButton({
 }: StepperButtonProps) {
   return (
     <Pressable
+      guarded={false}
       disabled={disabled}
       onPress={onPress}
       accessibilityLabel={icon === 'plus' ? 'Додати день' : 'Відняти день'}

@@ -1,12 +1,11 @@
 import {
   ActivityIndicator,
-  Pressable,
-  type PressableProps,
   StyleSheet,
   type ViewStyle,
   type TextStyle,
   useColorScheme,
 } from 'react-native';
+import { Pressable, type PressableProps } from './pressable';
 import { type AppColor } from '@/constants/colors';
 import Animated, {
   type CSSTransitionProperties,

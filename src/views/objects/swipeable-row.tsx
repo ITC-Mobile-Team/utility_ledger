@@ -1,8 +1,8 @@
-import { AppImage, ThemedText, ThemedView } from '@/components';
+import { AppImage, ThemedText, ThemedView, Pressable } from '@/components';
 import type { AppColor } from '@/constants/colors';
 import type { AppIcon } from '@/constants/app-icons';
 import type { PropsWithChildren } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 export type SwipeAction = {

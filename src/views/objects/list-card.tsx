@@ -1,8 +1,12 @@
-import { AppImage, HStack, ThemedView, VStack } from '@/components';
+import {
+  AppImage,
+  GesturePressable,
+  HStack,
+  ThemedView,
+  VStack,
+} from '@/components';
 import { Children, type PropsWithChildren, type ReactNode } from 'react';
 import { StyleSheet, type ViewProps } from 'react-native';
-// Pressable з gesture-handler скасовує натискання, коли рядок свайпають
-import { Pressable } from 'react-native-gesture-handler';
 
 // Біла картка-група з тонкими роздільниками між рядками
 export function ListCard({
@@ -51,7 +55,8 @@ export function ListRow({
   onPress,
 }: ListRowProps) {
   return (
-    <Pressable
+    // Pressable з gesture-handler скасовує натискання, коли рядок свайпають
+    <GesturePressable
       disabled={!onPress}
       onPress={onPress}
       style={(state) => highlightsOnPress && state.pressed && styles.pressed}
@@ -70,7 +75,7 @@ export function ListRow({
           <AppImage icon='chevronRight' tintColor='chev' size={{ width: 18 }} />
         )}
       </HStack>
-    </Pressable>
+    </GesturePressable>
   );
 }
 

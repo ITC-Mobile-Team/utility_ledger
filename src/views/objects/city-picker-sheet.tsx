@@ -1,11 +1,18 @@
-import { AppImage, HStack, ThemedText, ThemedView, VStack } from '@/components';
+import {
+  AppImage,
+  HStack,
+  ThemedText,
+  ThemedView,
+  VStack,
+  Pressable,
+} from '@/components';
 import { cities } from '@/constants/cities';
 import { typography } from '@/constants/typography';
 import { useKeyboardHeight } from '@/hooks/use-keyboard-height';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import type { City } from '@/services/ledger';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
+import { FlatList, StyleSheet, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheet } from './bottom-sheet';
 

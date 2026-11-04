@@ -1,6 +1,6 @@
 import { StyleSheet, type TextProps } from 'react-native';
 import { openBrowserAsync } from 'expo-web-browser';
-import { ThemedText } from '@/components';
+import { guardPress, ThemedText } from '@/components';
 
 const TERMS_URL = 'https://google.com.ua';
 const PRIVACY_URL = 'https://google.com.ua';
@@ -22,7 +22,7 @@ function TextLink({ url, children }: { url: string; children: string }) {
       style={styles.link}
       accessibilityRole='link'
       suppressHighlighting
-      onPress={() => openBrowserAsync(url)}
+      onPress={guardPress(() => openBrowserAsync(url))}
     >
       {children}
     </ThemedText>

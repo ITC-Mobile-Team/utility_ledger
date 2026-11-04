@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, type PressableProps } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Pressable, type PressableProps } from './pressable';
 import { type AppIcon } from '@/constants/app-icons';
 import type { AppColor } from '@/constants/colors';
 import { HStack, VStack } from './stack';

@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from 'react';
-import { Keyboard, Pressable, StyleSheet, type ViewStyle } from 'react-native';
+import { Keyboard, StyleSheet, type ViewStyle } from 'react-native';
+import { Pressable } from './pressable';
 
 type KeyboardDismissViewProps = PropsWithChildren<{ style?: ViewStyle }>;
 
@@ -11,6 +12,7 @@ export function KeyboardDismissView({
 }: KeyboardDismissViewProps) {
   return (
     <Pressable
+      guarded={false}
       style={[styles.container, style]}
       onPress={Keyboard.dismiss}
       accessible={false}

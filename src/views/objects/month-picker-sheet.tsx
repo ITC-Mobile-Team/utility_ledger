@@ -4,6 +4,7 @@ import {
   HStack,
   ThemedText,
   ThemedView,
+  Pressable,
 } from '@/components';
 import { monthAppearance } from '@/constants/month-emoji';
 import {
@@ -14,7 +15,7 @@ import {
 } from '@/services/ledger';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   css,
   type CSSTransitionProperties,
@@ -144,6 +145,7 @@ function MonthCell({
 
   return (
     <Pressable
+      guarded={false}
       accessibilityRole='radio'
       accessibilityState={{ checked: isSelected, disabled: isAdded }}
       accessibilityHint={isAdded ? 'Вже додано' : undefined}
@@ -186,6 +188,7 @@ type YearButtonProps = {
 function YearButton({ direction, onPress }: YearButtonProps) {
   return (
     <Pressable
+      guarded={false}
       accessibilityRole='button'
       accessibilityLabel={
         direction === 'previous' ? 'Попередній рік' : 'Наступний рік'

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Pressable } from '../pressable';
 import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';

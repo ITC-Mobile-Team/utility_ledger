@@ -10,6 +10,7 @@ import {
   ThemedTextInput,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { type BillingMode, billingModes } from '@/constants/billing-mode';
 import { defaultServiceIcon } from '@/constants/service-icons';
@@ -33,7 +34,7 @@ import {
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 const zoneItems = [
   { value: 'single', label: 'Однозонний' },

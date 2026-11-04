@@ -1,7 +1,8 @@
 import { type AppIcon, appIcons } from '@/constants/app-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { Image } from 'expo-image';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Pressable } from '../pressable';
 import { ThemedText } from '../themed-text';
 
 type NavigationBarChipProps = {

@@ -1,10 +1,5 @@
-import { HStack, VStack } from '@/components';
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  type TextInputInstance,
-} from 'react-native';
+import { HStack, VStack, Pressable } from '@/components';
+import { StyleSheet, TextInput, type TextInputInstance } from 'react-native';
 import { MeterDigit, type MeterDigitState } from './meter-digit';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type ReactNode, useRef, useState } from 'react';
@@ -47,6 +42,7 @@ export function MeterReadingInput({
 
   return (
     <Pressable
+      guarded={false}
       disabled={readOnly}
       onPress={() => inputRef.current?.focus()}
       accessible={false}

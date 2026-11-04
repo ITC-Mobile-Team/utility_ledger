@@ -7,6 +7,7 @@ import {
   ThemedText,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { useLedger, useLedgerState } from '@/providers/ledger-provider';
 import {
@@ -26,7 +27,7 @@ import { ServiceIcon } from '@/views';
 import { AmountInput } from '@/views/amount/amount-input';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import {
   KeyboardAvoidingView,
   useKeyboardState,
@@ -127,6 +128,7 @@ export default function Amount() {
         <VStack style={styles.center} spacing={12}>
           {last && reference && (
             <Pressable
+              guarded={false}
               accessibilityRole='button'
               accessibilityLabel={`Підставити суму: ${reference.label}, ${formatMoney(last.amount)}`}
               onPress={() => setValue(formatMoneyInput(last.amount))}

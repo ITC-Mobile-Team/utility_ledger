@@ -1,5 +1,6 @@
 import { type AppColor } from '@/constants/colors';
-import { Pressable, type PressableProps, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Pressable, type PressableProps } from './pressable';
 import { ThemedText } from './themed-text';
 
 type TextButtonProps = Omit<PressableProps, 'children'> & {

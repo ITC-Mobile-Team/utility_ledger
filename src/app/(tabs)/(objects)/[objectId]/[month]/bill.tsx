@@ -6,6 +6,7 @@ import {
   ThemedText,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { useLedgerObject, useLedgerState } from '@/providers/ledger-provider';
 import {
@@ -25,7 +26,7 @@ import {
 import { ServiceIcon } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   type CSSTransitionProperties,
 } from 'react-native-reanimated';
@@ -340,6 +341,7 @@ function BillItem({ item, row, open, onToggle }: BillItemProps) {
   return (
     <View>
       <Pressable
+        guarded={false}
         accessibilityRole='button'
         accessibilityState={{ expanded: open }}
         onPress={onToggle}

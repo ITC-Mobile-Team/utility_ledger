@@ -19,3 +19,11 @@ export { Spacer } from './spacer';
 export { TransparentActionButton } from './transparent-action-button';
 export { IconView } from './icon-view';
 export { TextButton, TEXT_BUTTON_HEIGHT } from './text-button';
+export {
+  Pressable,
+  GesturePressable,
+  guardPress,
+  acquirePressLock,
+  PRESS_LOCK_MS,
+} from './pressable';
+export type { PressableProps, GesturePressableProps } from './pressable';

@@ -5,6 +5,7 @@ import {
   ThemedText,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { getServiceIconBackground } from '@/constants/service-icons';
 import {
@@ -16,7 +17,7 @@ import {
   type MonthKey,
   type MonthStatus,
 } from '@/services/ledger';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { EmojiTile } from './objects/emoji-tile';
 import { StatusLine } from './status-line';
 

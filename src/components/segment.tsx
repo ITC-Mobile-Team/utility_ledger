@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import {
   StyleSheet,
-  Pressable,
   View,
   type StyleProp,
   type ViewStyle,
   type LayoutChangeEvent,
 } from 'react-native';
+import { Pressable } from './pressable';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -87,6 +87,7 @@ export function Segment<T extends string>({
         const selected = item.value === value;
         return (
           <Pressable
+            guarded={false}
             key={item.value}
             accessibilityRole='tab'
             accessibilityState={{ selected }}

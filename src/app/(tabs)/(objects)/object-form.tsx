@@ -8,6 +8,7 @@ import {
   ThemedTextInput,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { useLedger, useLedgerObject } from '@/providers/ledger-provider';
 import type { City, ObjectInput } from '@/services/ledger';
@@ -18,7 +19,7 @@ import {
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 
 const optional = (value: string) => value.trim() || undefined;
 

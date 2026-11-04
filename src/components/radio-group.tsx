@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { Pressable } from './pressable';
 import { RadioCard } from './radio-card';
 import { VStack } from './stack';
 
@@ -24,6 +24,7 @@ export function RadioGroup<T extends string>({
       {items.map((item) => {
         return (
           <Pressable
+            guarded={false}
             key={item.value}
             onPress={() => {
               onChange(item.value);

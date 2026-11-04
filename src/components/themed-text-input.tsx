@@ -1,10 +1,10 @@
 import {
-  Pressable,
   StyleSheet,
   TextInput,
   type TextInputInstance,
   type TextInputProps,
 } from 'react-native';
+import { Pressable } from './pressable';
 import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -40,7 +40,11 @@ export function ThemedTextInput({
   const textColor = useThemeColor('ink');
   return (
     // Тап по будь-якій частині поля (заголовок, відступи) ставить фокус в інпут
-    <Pressable onPress={() => inputRef.current?.focus()} accessible={false}>
+    <Pressable
+      guarded={false}
+      onPress={() => inputRef.current?.focus()}
+      accessible={false}
+    >
       <ThemedView
         backgroundColor='surface'
         style={[

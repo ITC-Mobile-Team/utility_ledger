@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Pressable } from '../pressable';
 import { ThemedView } from '../themed-view';
 import { HStack } from '../stack';
 import { type NavigationBarButtonProps } from './navigation-bar-button';

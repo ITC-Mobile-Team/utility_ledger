@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable } from '../pressable';
 import { ThemedView } from '../themed-view';
 import { ThemedText } from '../themed-text';
 import { HStack } from '../stack';

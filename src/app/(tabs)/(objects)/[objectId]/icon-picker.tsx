@@ -4,6 +4,7 @@ import {
   ThemedText,
   ThemedView,
   VStack,
+  Pressable,
 } from '@/components';
 import { serviceIconSections } from '@/constants/service-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -11,7 +12,7 @@ import { FormFooter, ServiceIcon } from '@/views';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function IconPicker() {
@@ -73,6 +74,7 @@ export default function IconPicker() {
                 const isSelected = icon === selected;
                 return (
                   <Pressable
+                    guarded={false}
                     key={icon}
                     onPress={() => setSelected(icon)}
                     accessibilityState={{ selected: isSelected }}

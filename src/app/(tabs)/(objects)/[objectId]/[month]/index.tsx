@@ -45,7 +45,8 @@ import {
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { type ReactNode, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Pressable } from '@/components';
 
 const monthButtons: NavigationBarButtonItem[] = [
   { id: 'bill', title: 'Розрахунок', icon: 'document', iconBackground: 'blue' },

@@ -1,4 +1,4 @@
-import { ThemedView } from '@/components';
+import { ThemedView, Pressable } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import {
@@ -9,7 +9,6 @@ import {
 } from 'react-native-gesture-handler';
 import {
   Modal,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
   View,

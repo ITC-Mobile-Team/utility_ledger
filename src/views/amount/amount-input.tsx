@@ -1,12 +1,7 @@
-import { HStack, ThemedText } from '@/components';
+import { HStack, ThemedText, Pressable } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  type TextInputInstance,
-} from 'react-native';
+import { StyleSheet, TextInput, type TextInputInstance } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -45,6 +40,7 @@ export function AmountInput({
 
   return (
     <Pressable
+      guarded={false}
       onPress={() => inputRef.current?.focus()}
       accessible={false}
       style={styles.container}
