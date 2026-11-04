@@ -178,18 +178,20 @@ export const NavigationView = ({
     if (end <= 0 || y <= 0 || y >= end) return;
     scrollRef.current?.scrollTo({ y: y >= end / 2 ? end : 0, animated: true });
   }, [buttonsCollapseDistance, maxScrollY, scrollY, titleCollapseDistance]);
+  // У воркетах лише get()/set(): React Compiler робить `.value` залежністю
+  // мемоізації й читає його під час рендеру
   useKeyboardHandler(
     {
       onStart: (e) => {
         'worklet';
-        if (!isScreenFocused.value) return;
-        keyboardCollapse.value = withTiming(e.height > 0 ? 1 : 0, {
-          duration: e.duration,
-        });
+        if (!isScreenFocused.get()) return;
+        keyboardCollapse.set(
+          withTiming(e.height > 0 ? 1 : 0, { duration: e.duration }),
+        );
       },
       onEnd: (e) => {
         'worklet';
-        if (isScreenFocused.value && e.height === 0) {
+        if (isScreenFocused.get() && e.height === 0) {
           scheduleOnRN(onKeyboardHidden);
         }
       },
