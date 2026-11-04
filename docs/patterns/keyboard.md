@@ -1,6 +1,6 @@
 # Клавіатура на екранах з полями
 
-Еталон — `src/app/(tabs)/(objects)/object-form.tsx`. Так само зроблені `service-form.tsx`, `reading.tsx` і `amount.tsx`.
+Еталон — `src/app/(tabs)/(objects)/object-form.tsx`. Так само зроблені `service-form.tsx` і `reading.tsx`. Виняток — екран суми з рахунку `amount.tsx`, див. [amount-input.md](amount-input.md).
 
 ## Поведінка
 

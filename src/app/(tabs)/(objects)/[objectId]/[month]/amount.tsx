@@ -1,34 +1,39 @@
 import {
   ActionButton,
+  AppImage,
   HStack,
-  KeyboardDismissView,
-  NavigationView,
   TextButton,
-  ThemedBadge,
+  ThemedNavigationBar,
   ThemedText,
-  ThemedTextInput,
   ThemedView,
   VStack,
 } from '@/components';
 import { useLedger, useLedgerState } from '@/providers/ledger-provider';
 import {
+  formatMoney,
   formatMoneyInput,
   formatMonthTitle,
   getAmount,
+  getMonthName,
+  getPreviousMonth,
   isMonthKey,
   parseMoney,
 } from '@/services/ledger';
-import {
-  confirmResetEntry,
-  FormFooter,
-  ServiceIcon,
-  useFormFooterKeyboardInsets,
-} from '@/views';
+import { confirmResetEntry } from '@/views';
+import { AmountInput } from '@/views/amount/amount-input';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  useKeyboardState,
+} from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Сума з рахунку за місяць для послуги з режимом 'invoice'
+// Відступ кнопки від клавіатури, коли вона відкрита
+const KEYBOARD_GAP = 12;
+
+// Сума з рахунку за місяць для послуги з режимом 'invoice' (макети 10e, 10f, 10g)
 export default function Amount() {
   const { month, serviceId } = useLocalSearchParams<{
     objectId: string;
@@ -37,6 +42,8 @@ export default function Amount() {
   }>();
   const ledger = useLedger();
   const state = useLedgerState();
+  const { bottom } = useSafeAreaInsets();
+  const isKeyboardVisible = useKeyboardState((s) => s.isVisible);
   const service = state.services.find((s) => s.id === serviceId);
   const validMonth = isMonthKey(month) ? month : undefined;
   const saved =
@@ -47,20 +54,22 @@ export default function Amount() {
     saved !== undefined ? formatMoneyInput(saved) : '',
   );
   const [isSaving, setSaving] = useState(false);
-  const keyboardInsets = useFormFooterKeyboardInsets(
-    false,
-    saved !== undefined,
-  );
 
   if (!service || !validMonth) return null;
 
   const isEditing = saved !== undefined;
+  const previous = getAmount(state, service.id, getPreviousMonth(validMonth));
   const amount = parseMoney(value);
-  const isInvalid = value.trim().length > 0 && amount === null;
-  const canSave = amount !== null && amount !== saved;
+  const hasAmount = amount !== null && amount > 0;
+  const canSave = hasAmount && amount !== saved;
+  const hint = hintFor(
+    hasAmount ? amount : null,
+    previous,
+    getMonthName(validMonth).toLocaleLowerCase('uk'),
+  );
 
   const save = async () => {
-    if (amount === null) return;
+    if (!hasAmount) return;
     setSaving(true);
     try {
       await ledger.setAmount({
@@ -75,78 +84,146 @@ export default function Amount() {
   };
 
   return (
-    <KeyboardDismissView>
-      <NavigationView
-        title={isEditing ? 'Змінити суму' : 'Внести суму'}
-        subtitle={`${formatMonthTitle(validMonth)} · ${service.name}`}
-        contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
-        {...keyboardInsets}
-      >
-        <VStack spacing={20}>
-          <ThemedView backgroundColor='surface' style={styles.serviceCard}>
-            <HStack spacing={12} align='center'>
-              <ServiceIcon icon={service.icon} />
-              <VStack spacing={2} style={styles.flex}>
-                <ThemedText font='rowTitle'>{service.name}</ThemedText>
-                <ThemedText color='muted' font='caption'>
-                  Сума з рахунку · щомісяця нова
-                </ThemedText>
-              </VStack>
-              {isEditing && <ThemedBadge text='Внесено' type='green' />}
-            </HStack>
-          </ThemedView>
-
-          <VStack spacing={10}>
-            <ThemedTextInput
-              title='Сума до сплати, ₴'
-              value={value}
-              onChangeText={setValue}
-              placeholder='0,00'
-              keyboardType='decimal-pad'
-            />
-            <ThemedText color={isInvalid ? 'coral' : 'muted'} font='caption'>
-              {isInvalid
-                ? 'Введіть суму, наприклад 245,50'
-                : isEditing
-                  ? 'Розрахунок місяця оновиться з новою сумою.'
-                  : 'Сума збережеться лише для цієї послуги та місяця.'}
+    <ThemedView backgroundColor='bg' style={styles.flex}>
+      <ThemedNavigationBar
+        type='short'
+        title={service.name}
+        subtitle={`${formatMonthTitle(validMonth)} · сума з рахунку`}
+      />
+      {/* Клавіатура відкрита весь час: центр з сумою стискається над нею */}
+      <KeyboardAvoidingView behavior='padding' style={styles.flex}>
+        <VStack style={styles.center} spacing={12}>
+          {previous !== undefined && (
+            <Pressable
+              accessibilityRole='button'
+              accessibilityLabel={`Підставити суму минулого місяця, ${formatMoney(previous)}`}
+              onPress={() => setValue(formatMoneyInput(previous))}
+              style={({ pressed }) => pressed && styles.pressed}
+            >
+              <ThemedView backgroundColor='surface' style={styles.chip}>
+                <HStack spacing={6} align='center'>
+                  <AppImage
+                    icon='reset'
+                    tintColor='muted'
+                    size={{ width: 16 }}
+                  />
+                  <ThemedText color='muted' font='body'>
+                    Минулого місяця
+                  </ThemedText>
+                  <ThemedText font='rowTitleCompact'>
+                    {formatMoney(previous)}
+                  </ThemedText>
+                </HStack>
+              </ThemedView>
+            </Pressable>
+          )}
+          <AmountInput
+            value={value}
+            onChangeValue={setValue}
+            autoFocus
+            accessibilityLabel='Сума з рахунку, гривень'
+          >
+            <ThemedText
+              color={hint.color}
+              font={hint.font}
+              align='center'
+              accessibilityLiveRegion='polite'
+            >
+              {hint.text}
             </ThemedText>
-          </VStack>
+          </AmountInput>
         </VStack>
-      </NavigationView>
 
-      <FormFooter>
-        <ActionButton
-          title={isEditing ? 'Зберегти зміни' : 'Записати суму'}
-          disabled={!canSave}
-          loading={isSaving}
-          onPress={save}
-        />
-        {isEditing && (
-          <TextButton
-            title='Скинути суму'
-            disabled={isSaving}
-            onPress={() =>
-              confirmResetEntry(service, validMonth, () => {
-                // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
-                router.back();
-                ledger.resetEntry(service.id, validMonth);
-              })
-            }
+        <VStack
+          spacing={4}
+          style={[
+            styles.footer,
+            {
+              paddingBottom: isKeyboardVisible
+                ? KEYBOARD_GAP
+                : Math.max(bottom, KEYBOARD_GAP),
+            },
+          ]}
+        >
+          <ActionButton
+            title={isEditing ? 'Зберегти зміни' : 'Зберегти суму'}
+            disabled={!canSave}
+            loading={isSaving}
+            onPress={save}
           />
-        )}
-      </FormFooter>
-    </KeyboardDismissView>
+          {isEditing && (
+            <TextButton
+              title='Скинути суму'
+              disabled={isSaving}
+              onPress={() =>
+                confirmResetEntry(service, validMonth, () => {
+                  // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
+                  router.back();
+                  ledger.resetEntry(service.id, validMonth);
+                })
+              }
+            />
+          )}
+        </VStack>
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
+
+// Підказка під сумою: порожньо — що вводити, інакше різниця з минулим місяцем
+const hintFor = (
+  amount: number | null,
+  previous: number | undefined,
+  monthName: string,
+) => {
+  if (amount === null) {
+    return {
+      text: `Введіть суму з платіжки за ${monthName}`,
+      color: 'muted',
+      font: 'caption',
+    } as const;
+  }
+  if (previous === undefined) {
+    return { text: ' ', color: 'muted', font: 'caption' } as const;
+  }
+  const diff = amount - previous;
+  if (diff === 0) {
+    return {
+      text: 'Як минулого місяця',
+      color: 'muted',
+      font: 'caption',
+    } as const;
+  }
+  return {
+    text: `${diff > 0 ? '+' : '−'}${formatMoney(Math.abs(diff))} до минулого місяця`,
+    // Більше — червоним, менше — зеленим
+    color: diff > 0 ? 'coralInk' : 'greenInk',
+    font: 'status',
+  } as const;
+};
 
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  serviceCard: {
-    padding: 14,
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  chip: {
+    height: 36,
+    paddingLeft: 10,
+    paddingRight: 14,
     borderRadius: 18,
-    borderCurve: 'continuous',
+    justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  footer: {
+    paddingTop: 12,
+    paddingHorizontal: 20,
   },
 });

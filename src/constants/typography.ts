@@ -24,6 +24,15 @@ export const typography = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 50,
   },
+  // Велика сума на екрані введення суми з рахунку
+  amountInput: {
+    fontFamily: onestFamily,
+    fontSize: 56,
+    fontWeight: '700',
+    lineHeight: 64,
+    letterSpacing: -1.68,
+    fontVariant: ['tabular-nums'],
+  },
   headline: {
     fontFamily: onestFamily,
     fontSize: 22,
