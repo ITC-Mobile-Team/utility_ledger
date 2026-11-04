@@ -1,5 +1,6 @@
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { LedgerProvider } from '@/providers/ledger-provider';
+import { OutageProvider } from '@/providers/outage-provider';
 import {
   OnboardingProvider,
   useOnboarding,
@@ -67,7 +68,9 @@ export default function RootLayout() {
           <AuthProvider>
             <OnboardingProvider>
               <LedgerProvider>
-                <RootNavigator />
+                <OutageProvider>
+                  <RootNavigator />
+                </OutageProvider>
               </LedgerProvider>
             </OnboardingProvider>
           </AuthProvider>

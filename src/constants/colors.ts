@@ -37,6 +37,16 @@ const light = {
   purpleSoft: '#EFE8F8',
   purpleInk: '#5A2E88',
 
+  // power outages
+  powerOn: '#F5B301',
+  powerOnSoft: '#FFF4D1',
+  powerOnInk: '#7A5200',
+  powerOnText: '#3E2A06',
+  powerOff: '#24324A',
+  powerOffInk: '#FFFFFF',
+  // Перемикання після вимкнення: світла може не бути
+  powerSwitch: '#959CA8',
+
   // services
   water: '#1F6FE0',
   waterSoft: '#E5EFFD',
@@ -50,6 +60,7 @@ const light = {
   heroSub: '#D4E3F8',
   heroSubGreen: '#D2EBDA',
   heroSubPurple: '#E3D6F5',
+  heroSubPower: '#F3DFB8',
 
   // components
   btnDarkBg: '#0F1B2D',
@@ -108,6 +119,14 @@ const dark: Record<AppColor, string> = {
   purpleSoft: 'rgba(160,120,220,0.18)',
   purpleInk: '#C3A2EE',
 
+  powerOn: '#F2B81E',
+  powerOnSoft: 'rgba(242,184,30,0.16)',
+  powerOnInk: '#F5CC5C',
+  powerOnText: '#3E2A06',
+  powerOff: '#3A4252',
+  powerOffInk: '#FFFFFF',
+  powerSwitch: '#6E7787',
+
   water: '#6FA5F5',
   waterSoft: 'rgba(80,140,240,0.2)',
   gas: '#F59362',
@@ -119,6 +138,7 @@ const dark: Record<AppColor, string> = {
   heroSub: '#B9CDEB',
   heroSubGreen: '#B8D9C4',
   heroSubPurple: '#D2C2EC',
+  heroSubPower: '#E2CFA6',
 
   btnDarkBg: '#FFFFFF',
   btnDarkInk: '#0F1B2D',
@@ -142,11 +162,13 @@ export const gradients = {
     heroBlue: ['#0A45A3', '#1567C4', '#1E7BD0'],
     heroGreen: ['#1D4E33', '#2B6B42', '#3C8753'],
     heroPurple: ['#24103F', '#3D1F66', '#5B2E88'],
+    heroPower: ['#3E2A06', '#6B4708', '#8C5D0C'],
   },
   dark: {
     heroBlue: ['#07326F', '#0B4F9E', '#1262B4'],
     heroGreen: ['#123222', '#1E4E31', '#2B6B42'],
     heroPurple: ['#170A2A', '#2A1548', '#422264'],
+    heroPower: ['#221703', '#3B2805', '#523808'],
   },
 } as const;
 

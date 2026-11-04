@@ -20,6 +20,8 @@ type NavigationBarHeaderProps = {
   subtitle?: string;
   accessory?: ReactNode;
   isTransparent: boolean;
+  // Колір підзаголовка на кольоровому навбарі
+  heroSubtitleColor?: AppColor;
   paddingBottom: number;
   scrollY: SharedValue<number>;
   maxScrollY: SharedValue<number>;
@@ -45,6 +47,7 @@ export const NavigationBarHeader = ({
   subtitle,
   accessory,
   isTransparent,
+  heroSubtitleColor = 'heroSub',
   paddingBottom,
   scrollY,
   maxScrollY,
@@ -61,7 +64,7 @@ export const NavigationBarHeader = ({
     );
   });
   const { top: safeAreaTop } = useSafeAreaInsets();
-  const subtitleColor: AppColor = isTransparent ? 'muted' : 'heroSub';
+  const subtitleColor: AppColor = isTransparent ? 'muted' : heroSubtitleColor;
   const backIconTintColor = useThemeColor(
     isTransparent ? 'coral' : 'onPrimary',
   );

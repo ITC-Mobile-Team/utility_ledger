@@ -2,7 +2,8 @@ import { type ReactNode } from 'react';
 import { type SharedValue } from 'react-native-reanimated';
 import { type NavigationBarButtonItem } from './navigation-bar-button';
 
-export type NavigationBarType = 'blue' | 'green' | 'purple' | 'transparent';
+export type NavigationBarType =
+  'blue' | 'green' | 'purple' | 'power' | 'transparent';
 
 export type NavigationBarVariant = 'full' | 'short';
 

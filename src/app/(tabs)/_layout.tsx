@@ -5,10 +5,13 @@ import { useThemeColor } from '@/hooks/use-theme-colors';
 export default function TabsLayout() {
   const segments = useSegments();
   // Таб-бар видно лише на кореневих екранах табів: усе, що відкрито
-  // всередині «Обʼєктів», показується без нього
-  const isTabBarHidden = segments[1] === '(objects)' && segments.length > 2;
+  // всередині «Обʼєктів» і «Світла», показується без нього
+  const isTabBarHidden =
+    (segments[1] === '(objects)' || segments[1] === '(outages)') &&
+    segments.length > 2;
   const tabInk = useThemeColor('tabInk');
   const objectsColor = useThemeColor('blue');
+  const outagesColor = useThemeColor('powerOnInk');
   const analyticsColor = useThemeColor('greenInk');
   const moreColor = useThemeColor('purpleInk');
 
@@ -26,6 +29,16 @@ export default function TabsLayout() {
           sf='building'
           md='apartment'
           selectedColor={objectsColor}
+        />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name='(outages)'>
+        <NativeTabs.Trigger.Label selectedStyle={{ color: outagesColor }}>
+          Світло
+        </NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf='lightbulb'
+          md='lightbulb'
+          selectedColor={outagesColor}
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name='analytics'>

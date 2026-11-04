@@ -25,6 +25,8 @@ const getGradientColors = ({
       return gradients[scheme].heroGreen;
     case 'purple':
       return gradients[scheme].heroPurple;
+    case 'power':
+      return gradients[scheme].heroPower;
   }
 };
 
