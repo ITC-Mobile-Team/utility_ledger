@@ -8,6 +8,7 @@ import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type AppFont, ThemedText } from '../themed-text';
 import { VStack } from '../stack';
+import { HORIZONTAL_PADDING } from './constants';
 import { type NavigationBarVariant } from './types';
 import { useTitleCollapse } from './use-title-collapse';
 
@@ -166,7 +167,8 @@ const styles = StyleSheet.create({
   },
   largeContent: {
     paddingTop: 6,
-    paddingHorizontal: 15,
+    // Same inset as the navbar buttons and screen content
+    paddingHorizontal: HORIZONTAL_PADDING,
   },
   back: {
     width: 44,
