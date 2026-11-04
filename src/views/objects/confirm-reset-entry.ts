@@ -7,15 +7,12 @@ import { Alert } from 'react-native';
 
 // Підтвердження скидання внесеного за місяць значення послуги
 export function confirmResetEntry(
-  service: Pick<LedgerService, 'name' | 'mode'>,
+  service: Pick<LedgerService, 'name'>,
   month: MonthKey,
   onReset: () => void,
 ) {
   const monthName = getMonthName(month).toLocaleLowerCase('uk');
-  const message =
-    service.mode === 'day'
-      ? `Кількість днів за ${monthName} повернеться до всього місяця. Тариф і налаштування послуги не зміняться.`
-      : `Внесене значення за ${monthName} буде видалено, а послуга знову стане «Внести». Тариф і налаштування послуги не зміняться.`;
+  const message = `Внесене значення за ${monthName} буде видалено, а послуга знову стане «Внести». Тариф і налаштування послуги не зміняться.`;
   Alert.alert(`Скинути «${service.name}»?`, message, [
     { text: 'Скасувати', style: 'cancel' },
     { text: 'Скинути', style: 'destructive', onPress: onReset },

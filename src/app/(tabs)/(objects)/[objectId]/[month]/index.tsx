@@ -78,8 +78,7 @@ const meterSubtitle = (
     : `Попередній: ${formatNumber(previous)} ${service.unit}`;
 };
 
-// Чи внесено за місяць значення, яке можна скинути. Дні без ручного
-// значення рахуються як весь місяць, тож скидати там нічого
+// Чи внесено за місяць значення, яке можна скинути
 const hasEntry = (state: LedgerState, serviceId: string, month: MonthKey) =>
   getReading(state, serviceId, month) !== undefined ||
   state.dayCounts.some((d) => d.serviceId === serviceId && d.month === month) ||
@@ -91,15 +90,17 @@ type ResetUndo = {
   restore: () => Promise<void>;
 };
 
-// «Залишилось внести 1 показник і 2 суми» або «Усе внесено»
-const missingText = (readings: number, sums: number) => {
+// «Залишилось внести 1 показник, 2 суми і дні для 1 послуги» або «Усе внесено»
+const missingText = (readings: number, sums: number, days: number) => {
   const parts = [
     readings > 0 && `${readings} ${pluralize(readings, pluralForms.reading)}`,
     sums > 0 && `${sums} ${pluralize(sums, pluralForms.sum)}`,
-  ].filter(Boolean);
-  return parts.length > 0
-    ? `Залишилось внести ${parts.join(' і ')}`
-    : 'Усе внесено';
+    days > 0 &&
+      `дні для ${days} ${pluralize(days, pluralForms.serviceGenitive)}`,
+  ].filter((part): part is string => Boolean(part));
+  if (parts.length === 0) return 'Усе внесено';
+  const last = parts.pop();
+  return `Залишилось внести ${parts.length > 0 ? `${parts.join(', ')} і ${last}` : last}`;
 };
 
 export default function MonthServices() {
@@ -127,6 +128,7 @@ export default function MonthServices() {
     (item) => item.current === undefined,
   ).length;
   const missingSums = invoices.filter((item) => item.amount === null).length;
+  const missingDays = byDays.filter((item) => item.amount === null).length;
   const daysItem = byDays.find((item) => item.service.id === daysServiceId);
   const daysInMonth = getDaysInMonth(month);
 
@@ -244,9 +246,15 @@ export default function MonthServices() {
                   </VStack>
                   <StatusLine
                     tone={
-                      missingReadings + missingSums > 0 ? 'attention' : 'done'
+                      missingReadings + missingSums + missingDays > 0
+                        ? 'attention'
+                        : 'done'
                     }
-                    text={missingText(missingReadings, missingSums)}
+                    text={missingText(
+                      missingReadings,
+                      missingSums,
+                      missingDays,
+                    )}
                   />
                 </VStack>
               </ListCard>
@@ -314,7 +322,7 @@ export default function MonthServices() {
               <Section title='За днями'>
                 <ListCard>
                   {byDays.map((item) => {
-                    const days = item.days ?? 0;
+                    const days = item.days;
                     return resettable(
                       item.service,
                       <ListRow
@@ -324,7 +332,7 @@ export default function MonthServices() {
                             size={rowIconSize}
                           />
                         }
-                        trailing={<RowValue amount={item.amount ?? 0} />}
+                        trailing={<RowValue amount={item.amount} />}
                         onPress={() => {
                           setDaysServiceId(item.service.id);
                           setDaysSheetKey((key) => key + 1);
@@ -335,9 +343,11 @@ export default function MonthServices() {
                           {item.service.name}
                         </ThemedText>
                         <ThemedText color='muted' font='caption'>
-                          {days === daysInMonth
-                            ? `Весь місяць · ${days} ${pluralize(days, pluralForms.day)}`
-                            : `${days} з ${daysInMonth} ${pluralize(daysInMonth, pluralForms.day)}`}
+                          {days === undefined
+                            ? `Ставка ${formatMoney(item.service.tariff)} / день`
+                            : days === daysInMonth
+                              ? `Весь місяць · ${days} ${pluralize(days, pluralForms.day)}`
+                              : `${days} з ${daysInMonth} ${pluralize(daysInMonth, pluralForms.day)}`}
                         </ThemedText>
                       </ListRow>,
                     );

@@ -131,7 +131,19 @@ const describe = (item: ServiceBill, month: MonthKey): BillRow => {
         lines: [{ label: 'Щомісяця', value: formatMoney(service.tariff) }],
       };
     case 'day': {
-      const days = item.days ?? 0;
+      const days = item.days;
+      if (days === undefined) {
+        const monthName = getMonthName(month).toLocaleLowerCase('uk');
+        return {
+          subtitle: 'Дні ще не внесено',
+          lines: [
+            {
+              label: `Кількість днів за ${monthName} ще не внесено`,
+              value: '—',
+            },
+          ],
+        };
+      }
       return {
         subtitle: `${days} ${pluralize(days, pluralForms.day)}`,
         lines: [

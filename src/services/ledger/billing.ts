@@ -1,4 +1,4 @@
-import { getDaysInMonth, toMonthKey } from './format';
+import { toMonthKey } from './format';
 import type {
   LedgerService,
   LedgerState,
@@ -129,13 +129,14 @@ export const getPreviousNightReading = (
   return previous?.night ?? service.initialNightReading ?? 0;
 };
 
+// Кількість днів вносить користувач щомісяця; без запису — не внесено
 export const getDayCount = (
   state: LedgerState,
   serviceId: string,
   month: MonthKey,
 ) =>
   state.dayCounts.find((d) => d.serviceId === serviceId && d.month === month)
-    ?.days ?? getDaysInMonth(month);
+    ?.days;
 
 export const getAmount = (
   state: LedgerState,
@@ -207,7 +208,9 @@ export const calculateService = (
       return { service, amount: service.tariff };
     case 'day': {
       const days = getDayCount(state, service.id, month);
-      return { service, amount: days * service.tariff, days };
+      return days === undefined
+        ? { service, amount: null }
+        : { service, amount: days * service.tariff, days };
     }
     case 'invoice':
       return { service, amount: getAmount(state, service.id, month) ?? null };
@@ -239,10 +242,12 @@ const isMissing = (
   if (service.mode === 'meter') return !hasReading(state, service, month);
   if (service.mode === 'invoice')
     return getAmount(state, service.id, month) === undefined;
+  if (service.mode === 'day')
+    return getDayCount(state, service.id, month) === undefined;
   return false;
 };
 
-// «Новий», поки хоча б один лічильник без показника або сума з рахунку не внесена
+// «Новий», поки хоча б один лічильник без показника, сума з рахунку чи кількість днів не внесені
 export const getMonthStatus = (
   state: LedgerState,
   objectId: string,

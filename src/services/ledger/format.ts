@@ -85,6 +85,8 @@ export const pluralForms = {
   reading: ['показник', 'показники', 'показників'],
   sum: ['суму', 'суми', 'сум'],
   service: ['послуга', 'послуги', 'послуг'],
+  // «дні для 1 послуги», «для 2 послуг»
+  serviceGenitive: ['послуги', 'послуг', 'послуг'],
 } as const;
 
 const groupThousands = (value: string) =>
