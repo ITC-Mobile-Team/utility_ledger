@@ -16,9 +16,6 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BottomSheet } from './bottom-sheet';
 
-// Найраніший рік, до якого можна погортати
-const FIRST_YEAR = 1900;
-
 const toKey = (year: number, monthIndex: number): MonthKey =>
   `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
 
@@ -33,8 +30,8 @@ type MonthPickerSheetProps = {
   onSave: (month: MonthKey) => void;
 };
 
-// Шторка «Оберіть місяць»: рік перемикачем, місяці сіткою 3×4.
-// Майбутні місяці недоступні, вже додані позначені галочкою
+// Шторка «Оберіть місяць»: рік перемикачем без меж в обидва боки, місяці
+// сіткою 3×4. Можна обрати будь-який місяць, крім уже доданих (з галочкою)
 export function MonthPickerSheet({
   visible,
   addedMonths,
@@ -54,10 +51,6 @@ export function MonthPickerSheet({
     editingMonth ? parseMonthKey(editingMonth).year : current.year,
   );
 
-  const isFuture = (monthIndex: number) =>
-    year > current.year ||
-    (year === current.year && monthIndex > current.monthIndex);
-
   const canSave = selected !== undefined && selected !== editingMonth;
 
   return (
@@ -65,11 +58,7 @@ export function MonthPickerSheet({
       <HStack align='center' style={styles.header}>
         <ThemedText font='titleSmall'>Оберіть місяць</ThemedText>
         <ThemedView backgroundColor='surface2' style={styles.yearSwitch}>
-          <YearButton
-            direction='previous'
-            disabled={year <= FIRST_YEAR}
-            onPress={() => setYear(year - 1)}
-          />
+          <YearButton direction='previous' onPress={() => setYear(year - 1)} />
           <ThemedText
             font='rowTitle'
             align='center'
@@ -78,11 +67,7 @@ export function MonthPickerSheet({
           >
             {year}
           </ThemedText>
-          <YearButton
-            direction='next'
-            disabled={year >= current.year}
-            onPress={() => setYear(year + 1)}
-          />
+          <YearButton direction='next' onPress={() => setYear(year + 1)} />
         </ThemedView>
       </HStack>
 
@@ -92,7 +77,7 @@ export function MonthPickerSheet({
           const isSelected = month === selected;
           // Свій місяць при редагуванні лишається доступним
           const isAdded = added.has(month) && month !== editingMonth;
-          const disabled = isFuture(monthIndex) || isAdded;
+          const disabled = isAdded;
           return (
             <Pressable
               key={month}
@@ -138,15 +123,6 @@ export function MonthPickerSheet({
         })}
       </View>
 
-      <ThemedText
-        color='muted'
-        font='caption'
-        align='center'
-        style={styles.hint}
-      >
-        Майбутні місяці стануть доступні з їх початком.
-      </ThemedText>
-
       <ActionButton
         title={saveTitle}
         disabled={!canSave}
@@ -158,33 +134,22 @@ export function MonthPickerSheet({
 
 type YearButtonProps = {
   direction: 'previous' | 'next';
-  disabled: boolean;
   onPress: () => void;
 };
 
-function YearButton({ direction, disabled, onPress }: YearButtonProps) {
+function YearButton({ direction, onPress }: YearButtonProps) {
   return (
     <Pressable
       accessibilityRole='button'
       accessibilityLabel={
         direction === 'previous' ? 'Попередній рік' : 'Наступний рік'
       }
-      accessibilityState={{ disabled }}
-      disabled={disabled}
       onPress={onPress}
       style={(state) => state.pressed && styles.pressed}
     >
-      {/* Недоступна кнопка без підкладки, як у дизайні */}
-      <ThemedView
-        backgroundColor='surface'
-        style={[styles.yearButton, disabled && styles.yearButtonFlat]}
-      >
+      <ThemedView backgroundColor='surface' style={styles.yearButton}>
         <View style={direction === 'previous' && styles.flipped}>
-          <AppImage
-            icon='chevronRight'
-            tintColor={disabled ? 'faint' : 'ink'}
-            size={{ width: 18 }}
-          />
+          <AppImage icon='chevronRight' tintColor='ink' size={{ width: 18 }} />
         </View>
       </ThemedView>
     </Pressable>
@@ -215,10 +180,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-  },
-  yearButtonFlat: {
-    backgroundColor: 'transparent',
-    boxShadow: [],
   },
   flipped: {
     transform: [{ scaleX: -1 }],
@@ -260,9 +221,6 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  hint: {
-    marginTop: -4,
   },
   disabled: {
     opacity: 0.35,
