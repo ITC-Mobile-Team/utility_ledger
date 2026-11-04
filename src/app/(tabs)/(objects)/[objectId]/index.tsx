@@ -28,10 +28,12 @@ import {
   EmptyStateView,
   ListCard,
   ListRow,
+  MonthPickerSheet,
   SectionHeader,
   SwipeableRow,
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
 const addMonthButton: NavigationBarButtonItem = {
@@ -84,6 +86,8 @@ export default function ObjectMonths() {
   const ledger = useLedger();
   const state = useLedgerState();
   const object = useLedgerObject(objectId);
+  const [isMonthSheetVisible, setMonthSheetVisible] = useState(false);
+  const [monthSheetKey, setMonthSheetKey] = useState(0);
 
   if (!object) return null;
 
@@ -96,11 +100,11 @@ export default function ObjectMonths() {
       params: { objectId: object.id },
     });
 
-  const addMonth = () =>
-    router.push({
-      pathname: '/[objectId]/add-months',
-      params: { objectId: object.id },
-    });
+  const addMonth = () => {
+    // key скидає вибір шторки при кожному відкритті
+    setMonthSheetKey((key) => key + 1);
+    setMonthSheetVisible(true);
+  };
 
   const confirmDelete = () =>
     Alert.alert(
@@ -259,6 +263,18 @@ export default function ObjectMonths() {
           ))}
         </VStack>
       )}
+
+      <MonthPickerSheet
+        key={monthSheetKey}
+        visible={isMonthSheetVisible}
+        addedMonths={months}
+        saveTitle='Додати місяць'
+        onClose={() => setMonthSheetVisible(false)}
+        onSave={async (month) => {
+          setMonthSheetVisible(false);
+          await ledger.addMonths(object.id, [month]);
+        }}
+      />
     </NavigationView>
   );
 }

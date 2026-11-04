@@ -157,6 +157,30 @@ export function createLocalLedgerRepository(
         amounts: state.amounts.filter((a) => !belongs(a)),
       });
     },
+    async moveMonth(objectId, from, to) {
+      const isAdded = (month: MonthKey) =>
+        state.months.some((m) => m.objectId === objectId && m.month === month);
+      // Цільовий місяць уже має свої дані — не перезаписуємо їх
+      if (from === to || !isAdded(from) || isAdded(to)) return;
+      const serviceIds = new Set(
+        state.services.filter((s) => s.objectId === objectId).map((s) => s.id),
+      );
+      const move = <T extends { serviceId: string; month: MonthKey }>(
+        entry: T,
+      ): T =>
+        entry.month === from && serviceIds.has(entry.serviceId)
+          ? { ...entry, month: to }
+          : entry;
+      await update({
+        ...state,
+        months: state.months.map((m) =>
+          m.objectId === objectId && m.month === from ? { ...m, month: to } : m,
+        ),
+        readings: state.readings.map(move),
+        dayCounts: state.dayCounts.map(move),
+        amounts: state.amounts.map(move),
+      });
+    },
     async setReading(reading) {
       await update({
         ...state,

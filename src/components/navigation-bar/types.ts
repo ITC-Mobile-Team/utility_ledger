@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { type SharedValue } from 'react-native-reanimated';
 import { type NavigationBarButtonItem } from './navigation-bar-button';
 
@@ -10,6 +11,8 @@ export type ThemedNavigationBarProps = {
   barType?: NavigationBarType;
   title: string;
   subtitle?: string;
+  // Елемент праворуч у рядку з кнопкою «Назад», напр. NavigationBarChip
+  headerAccessory?: ReactNode;
   navigationBarButtons?: NavigationBarButtonItem[];
   onNavigationButtonPress?: (id: string) => void;
   scrollY?: SharedValue<number>;

@@ -12,6 +12,7 @@ export function ThemedNavigationBar({
   barType = 'transparent',
   title,
   subtitle,
+  headerAccessory,
   navigationBarButtons = [],
   onNavigationButtonPress = () => {},
   scrollY,
@@ -44,6 +45,7 @@ export function ThemedNavigationBar({
         type={type}
         title={title}
         subtitle={subtitle}
+        accessory={headerAccessory}
         isTransparent={barType === 'transparent'}
         paddingBottom={hasButtons ? 0 : EMPTY_BOTTOM + cornerRadius}
         scrollY={collapse.scrollY}

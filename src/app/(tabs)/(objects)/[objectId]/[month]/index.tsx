@@ -1,5 +1,6 @@
 import {
   type NavigationBarButtonItem,
+  NavigationBarChip,
   NavigationView,
   ThemedText,
   VStack,
@@ -18,6 +19,7 @@ import {
   formatShortAddress,
   getDaysInMonth,
   getMonthName,
+  getObjectMonths,
   getPreviousMonth,
   getReading,
   isMonthKey,
@@ -34,6 +36,7 @@ import {
   EmptyStateView,
   ListCard,
   ListRow,
+  MonthPickerSheet,
   SectionHeader,
   ServiceIcon,
   StatusLine,
@@ -115,6 +118,8 @@ export default function MonthServices() {
   const [isDaysSheetVisible, setDaysSheetVisible] = useState(false);
   const [daysSheetKey, setDaysSheetKey] = useState(0);
   const [undo, setUndo] = useState<ResetUndo>();
+  const [isMonthSheetVisible, setMonthSheetVisible] = useState(false);
+  const [monthSheetKey, setMonthSheetKey] = useState(0);
 
   if (!object || !isMonthKey(month)) return null;
 
@@ -206,6 +211,17 @@ export default function MonthServices() {
       <NavigationView
         title={formatMonthTitle(month)}
         subtitle={formatShortAddress(object)}
+        headerAccessory={
+          <NavigationBarChip
+            title='Місяць'
+            icon='calendar'
+            accessibilityLabel='Змінити місяць'
+            onPress={() => {
+              setMonthSheetKey((key) => key + 1);
+              setMonthSheetVisible(true);
+            }}
+          />
+        }
         barType='blue'
         contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
         navigationBarButtons={monthButtons}
@@ -421,6 +437,21 @@ export default function MonthServices() {
                   resetEntry(daysItem.service, () => setDaysSheetVisible(false))
               : undefined
           }
+        />
+        <MonthPickerSheet
+          key={monthSheetKey}
+          visible={isMonthSheetVisible}
+          addedMonths={getObjectMonths(state, object.id)}
+          editingMonth={month}
+          saveTitle='Зберегти'
+          onClose={() => setMonthSheetVisible(false)}
+          onSave={async (next) => {
+            setMonthSheetVisible(false);
+            await ledger.moveMonth(object.id, month, next);
+            // Скидання стосувалось старого місяця
+            setUndo(undefined);
+            router.setParams({ month: next });
+          }}
         />
       </NavigationView>
 

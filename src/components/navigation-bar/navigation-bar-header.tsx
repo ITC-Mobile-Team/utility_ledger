@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { type ReactNode } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
@@ -16,6 +17,7 @@ type NavigationBarHeaderProps = {
   type?: NavigationBarVariant;
   title: string;
   subtitle?: string;
+  accessory?: ReactNode;
   isTransparent: boolean;
   paddingBottom: number;
   scrollY: SharedValue<number>;
@@ -40,6 +42,7 @@ export const NavigationBarHeader = ({
   type = 'full',
   title,
   subtitle,
+  accessory,
   isTransparent,
   paddingBottom,
   scrollY,
@@ -118,6 +121,7 @@ export const NavigationBarHeader = ({
         ) : (
           shortTitleLabel
         )}
+        {accessory && <View style={styles.accessory}>{accessory}</View>}
       </Animated.View>
       {isFull && (
         <Animated.View style={[styles.largeArea, collapse.largeAreaStyle]}>
@@ -152,6 +156,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'hidden',
+  },
+  accessory: {
+    flex: 1,
+    alignItems: 'flex-end',
+    paddingStart: 12,
+    paddingEnd: HORIZONTAL_PADDING,
   },
   shortTitleWrap: {
     flexShrink: 1,

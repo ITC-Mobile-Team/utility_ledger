@@ -10,6 +10,6 @@ export { StatTile } from './stat-tile';
 export { ServiceIcon } from './service-icon';
 export { SwipeableRow, type SwipeAction } from './swipeable-row';
 export { DaysSheet } from './days-sheet';
-export { YearPicker } from './year-picker';
 export { UndoToast } from './undo-toast';
 export { confirmResetEntry } from './confirm-reset-entry';
+export { MonthPickerSheet } from './month-picker-sheet';
