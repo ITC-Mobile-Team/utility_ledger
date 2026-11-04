@@ -86,7 +86,7 @@ export default function Amount() {
   return (
     <ThemedView backgroundColor='bg' style={styles.flex}>
       <ThemedNavigationBar
-        type='short'
+        type='full'
         title={service.name}
         subtitle={`${formatMonthTitle(validMonth)} · сума з рахунку`}
       />

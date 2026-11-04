@@ -1,16 +1,13 @@
 import {
   ActionButton,
-  AppImage,
-  HStack,
   NavigationView,
   ThemedText,
-  ThemedView,
   VStack,
   Spacer,
 } from '@/components';
 import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { AppHeader, LegalNotice } from '@/views';
+import { AppHeader, InfoBanner, LegalNotice } from '@/views';
 import { useAuth } from '@/providers/auth-provider';
 import type { SignInMethod } from '@/services/auth';
 import { useState } from 'react';
@@ -66,18 +63,12 @@ export default function SignIn() {
           />
         </VStack>
 
-        <ThemedView backgroundColor='blueSoft' style={styles.banner}>
-          <HStack align='top' spacing={12} style={styles.bannerContent}>
-            <AppImage icon='lock' tintColor='blueInk' size={{ width: 18 }} />
-
-            <VStack spacing={2} style={styles.bannerText}>
-              <ThemedText font='hintTitle'>Без паролів</ThemedText>
-              <ThemedText color='blueInk' font='radioCardSubtitle'>
-                Ми отримуємо лише імʼя та email від провайдера входу.
-              </ThemedText>
-            </VStack>
-          </HStack>
-        </ThemedView>
+        <InfoBanner
+          icon='lock'
+          title='Без паролів'
+          text='Ми отримуємо лише імʼя та email від провайдера входу.'
+          style={styles.banner}
+        />
 
         <Spacer />
 
@@ -96,14 +87,6 @@ const styles = StyleSheet.create({
   },
   banner: {
     marginTop: 24,
-    borderRadius: 16,
-  },
-  bannerContent: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-  },
-  bannerText: {
-    flexShrink: 1,
   },
   legalNotice: {
     paddingHorizontal: 20,

@@ -25,7 +25,12 @@ import {
   parseMoney,
   type ServiceInput,
 } from '@/services/ledger';
-import { FormFooter, useFormFooterKeyboardInsets, ServiceIcon } from '@/views';
+import {
+  FormFooter,
+  InfoBanner,
+  useFormFooterKeyboardInsets,
+  ServiceIcon,
+} from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -377,10 +382,11 @@ export default function ServiceForm() {
               </VStack>
             </>
           ) : isInvoice ? (
-            <ThemedText color='muted' font='caption'>
-              Тариф не потрібен: щомісяця ви вносите суму з рахунку, і вона
-              входить у розрахунок місяця.
-            </ThemedText>
+            <InfoBanner
+              icon='receipt'
+              title='Тариф не потрібен'
+              text='Щомісяця ви вносите суму з платіжки — вона й піде в розрахунок місяця.'
+            />
           ) : (
             <ThemedTextInput
               title={
