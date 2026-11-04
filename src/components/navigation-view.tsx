@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
@@ -10,6 +10,7 @@ import {
   KeyboardAwareScrollView,
   type KeyboardAwareScrollViewProps,
   type KeyboardAwareScrollViewRef,
+  useKeyboardHandler,
   useKeyboardState,
   useReanimatedFocusedInput,
 } from 'react-native-keyboard-controller';
@@ -26,9 +27,11 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
+import { useIsFocused } from 'expo-router';
 import { toPadding, type ContentInsets } from './content-insets';
 import { COLLAPSE_DISTANCE } from './navigation-bar/constants';
 import { ThemedView } from './themed-view';
@@ -147,6 +150,52 @@ export const NavigationView = ({
     isSnappingToCollapsed.current = true;
     scrollTo(end);
   };
+  // Клавіатура сама прокручує контент до поля у фокусі й може зупинити його
+  // посеред згортання навбару, а прокрутку зверху KeyboardAwareScrollView
+  // перебиває. Тож поки клавіатура відкрита, навбар згорнутий повністю
+  // незалежно від скролу (місця й так мало), а після її закриття скрол
+  // доводиться до ближчого стану. Події клавіатури отримують усі екрани
+  // стеку, тож реагує лише видимий
+  const isFocused = useIsFocused();
+  const isScreenFocused = useSharedValue(isFocused);
+  useEffect(() => {
+    isScreenFocused.set(isFocused);
+  }, [isFocused, isScreenFocused]);
+  const keyboardCollapse = useSharedValue(0);
+  const headerScrollY = useDerivedValue(() =>
+    Math.max(
+      scrollY.value,
+      keyboardCollapse.value *
+        Math.max(titleCollapseDistance.value, buttonsCollapseDistance),
+    ),
+  );
+  const onKeyboardHidden = useCallback(() => {
+    const y = scrollY.get();
+    const end = Math.min(
+      Math.max(titleCollapseDistance.get(), buttonsCollapseDistance),
+      maxScrollY.get(),
+    );
+    if (end <= 0 || y <= 0 || y >= end) return;
+    scrollRef.current?.scrollTo({ y: y >= end / 2 ? end : 0, animated: true });
+  }, [buttonsCollapseDistance, maxScrollY, scrollY, titleCollapseDistance]);
+  useKeyboardHandler(
+    {
+      onStart: (e) => {
+        'worklet';
+        if (!isScreenFocused.value) return;
+        keyboardCollapse.value = withTiming(e.height > 0 ? 1 : 0, {
+          duration: e.duration,
+        });
+      },
+      onEnd: (e) => {
+        'worklet';
+        if (isScreenFocused.value && e.height === 0) {
+          scheduleOnRN(onKeyboardHidden);
+        }
+      },
+    },
+    [onKeyboardHidden],
+  );
   const shrinkSpacerStyle = useAnimatedStyle(() => ({
     height: spacerHeight.value,
   }));
@@ -160,7 +209,7 @@ export const NavigationView = ({
         subtitle={subtitle}
         navigationBarButtons={navigationBarButtons}
         onNavigationButtonPress={onNavigationButtonPress}
-        scrollY={scrollY}
+        scrollY={headerScrollY}
         maxScrollY={maxScrollY}
         titleShrink={titleShrink}
         collapseScroll={collapseScroll}
