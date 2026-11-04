@@ -55,7 +55,6 @@ const monthButtons: NavigationBarButtonItem[] = [
 ];
 
 const rowIconSize = 38;
-const compactIconSize = 32;
 
 // Внесений показник — спожите за місяць; невнесений — підказка з минулого місяця
 const meterSubtitle = (
@@ -369,22 +368,25 @@ export default function MonthServices() {
                   {fixed.map((item) => (
                     <ListRow
                       key={item.service.id}
-                      compact
                       leading={
                         <ServiceIcon
                           icon={item.service.icon}
-                          size={compactIconSize}
+                          size={rowIconSize}
                         />
                       }
                       trailing={
-                        <ThemedText color='muted' font='body'>
-                          {formatMoney(item.amount ?? 0)}
-                        </ThemedText>
+                        // Сума в одну колонку з сумами рядків зі стрілкою
+                        <View style={styles.chevronGap}>
+                          <RowValue amount={item.amount ?? 0} />
+                        </View>
                       }
                       showsChevron={false}
                     >
-                      <ThemedText font='rowTitleMedium'>
+                      <ThemedText font='rowTitle'>
                         {item.service.name}
+                      </ThemedText>
+                      <ThemedText color='muted' font='caption'>
+                        Фіксована сума
                       </ThemedText>
                     </ListRow>
                   ))}
@@ -462,6 +464,10 @@ function RowValue({ amount }: { amount: number | null }) {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+  },
+  // Ширина стрілки (18) + відступ рядка (12)
+  chevronGap: {
+    marginRight: 30,
   },
   resetHint: {
     marginTop: -14,
