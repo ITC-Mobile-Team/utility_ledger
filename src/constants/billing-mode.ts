@@ -1,6 +1,6 @@
 import type { RadioItem } from '@/components/radio-group';
 
-export type BillingMode = 'meter' | 'fixed' | 'day';
+export type BillingMode = 'meter' | 'fixed' | 'day' | 'invoice';
 
 export const billingModes = [
   {
@@ -17,5 +17,10 @@ export const billingModes = [
     value: 'day',
     title: 'За днями',
     subtitle: 'Ставка × кількість днів',
+  },
+  {
+    value: 'invoice',
+    title: 'Сума з рахунку',
+    subtitle: 'Нова сума щомісяця, вносите вручну',
   },
 ] as const satisfies readonly RadioItem<BillingMode>[];

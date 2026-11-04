@@ -115,6 +115,8 @@ export const tariffSuffix = (mode: BillingMode, unit: string) => {
       return 'міс.';
     case 'day':
       return 'день';
+    case 'invoice':
+      return 'міс.';
   }
 };
 
@@ -133,6 +135,7 @@ export const formatTariff = (
     | 'sewageFee'
   >,
 ) => {
+  if (service.mode === 'invoice') return 'Сума щомісяця';
   const suffix = tariffSuffix(service.mode, service.unit);
   if (service.mode === 'meter' && service.zones === 'dayNight') {
     return `☀️ ${formatMoney(service.tariff, false)} · 🌙 ${formatMoney(service.nightTariff ?? 0)} / ${suffix}`;
@@ -149,6 +152,7 @@ export const billingModeShortTitle: Record<BillingMode, string> = {
   meter: 'Показник',
   fixed: 'Фіксована',
   day: 'За днями',
+  invoice: 'З рахунку',
 };
 
 const hasAddress = (object: LedgerObject) =>

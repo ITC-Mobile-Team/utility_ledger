@@ -137,6 +137,14 @@ export const getDayCount = (
   state.dayCounts.find((d) => d.serviceId === serviceId && d.month === month)
     ?.days ?? getDaysInMonth(month);
 
+export const getAmount = (
+  state: LedgerState,
+  serviceId: string,
+  month: MonthKey,
+) =>
+  state.amounts.find((a) => a.serviceId === serviceId && a.month === month)
+    ?.amount;
+
 export const calculateService = (
   state: LedgerState,
   service: LedgerService,
@@ -201,6 +209,8 @@ export const calculateService = (
       const days = getDayCount(state, service.id, month);
       return { service, amount: days * service.tariff, days };
     }
+    case 'invoice':
+      return { service, amount: getAmount(state, service.id, month) ?? null };
   }
 };
 
@@ -220,14 +230,26 @@ export const calculateMonth = (
   };
 };
 
-// «Новий», поки хоча б один лічильник місяця без показника
+// Послуга, для якої щомісяця треба щось внести вручну
+const isMissing = (
+  state: LedgerState,
+  service: LedgerService,
+  month: MonthKey,
+) => {
+  if (service.mode === 'meter') return !hasReading(state, service, month);
+  if (service.mode === 'invoice')
+    return getAmount(state, service.id, month) === undefined;
+  return false;
+};
+
+// «Новий», поки хоча б один лічильник без показника або сума з рахунку не внесена
 export const getMonthStatus = (
   state: LedgerState,
   objectId: string,
   month: MonthKey,
 ): MonthStatus => {
-  const missing = getObjectServices(state, objectId).some(
-    (service) => service.mode === 'meter' && !hasReading(state, service, month),
+  const missing = getObjectServices(state, objectId).some((service) =>
+    isMissing(state, service, month),
   );
   return missing ? 'new' : 'filled';
 };

@@ -93,6 +93,15 @@ const describe = (item: ServiceBill, month: MonthKey): BillLine => {
         formula: `${days} ${pluralize(days, pluralForms.day)} × ставка`,
       };
     }
+    case 'invoice':
+      return {
+        tag: 'З рахунку',
+        details:
+          item.amount === null
+            ? 'Суму ще не внесено'
+            : 'Сума з рахунку за місяць',
+        formula: 'Вноситься щомісяця вручну',
+      };
   }
 };
 

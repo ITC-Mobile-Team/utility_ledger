@@ -80,6 +80,8 @@ export default function MonthServices() {
   const meters = items.filter((item) => item.service.mode === 'meter');
   const byDays = items.filter((item) => item.service.mode === 'day');
   const fixed = items.filter((item) => item.service.mode === 'fixed');
+  const invoices = items.filter((item) => item.service.mode === 'invoice');
+  const filledInvoices = invoices.filter((item) => item.amount !== null).length;
   const filledMeters = meters.filter(
     (item) => item.current !== undefined,
   ).length;
@@ -94,6 +96,12 @@ export default function MonthServices() {
   const openReading = (serviceId: string) =>
     router.push({
       pathname: '/[objectId]/[month]/reading',
+      params: { objectId: object.id, month, serviceId },
+    });
+
+  const openAmount = (serviceId: string) =>
+    router.push({
+      pathname: '/[objectId]/[month]/amount',
       params: { objectId: object.id, month, serviceId },
     });
 
@@ -153,6 +161,40 @@ export default function MonthServices() {
                     <ThemedText font='rowTitle'>{item.service.name}</ThemedText>
                     <ThemedText color='muted' font='caption'>
                       {meterSubtitle(item)}
+                    </ThemedText>
+                  </ListRow>
+                ))}
+              </ListCard>
+            </VStack>
+          )}
+
+          {invoices.length > 0 && (
+            <VStack spacing={12}>
+              <SectionHeader
+                title='Суми з рахунків'
+                trailing={`${filledInvoices} з ${invoices.length} внесено`}
+              />
+              <ListCard>
+                {invoices.map((item) => (
+                  <ListRow
+                    key={item.service.id}
+                    leading={<ServiceIcon icon={item.service.icon} />}
+                    trailing={
+                      item.amount === null ? (
+                        <ThemedBadge text='Не внесено' type='red' />
+                      ) : (
+                        <ThemedText font='rowTitle'>
+                          {formatMoney(item.amount)}
+                        </ThemedText>
+                      )
+                    }
+                    onPress={() => openAmount(item.service.id)}
+                  >
+                    <ThemedText font='rowTitle'>{item.service.name}</ThemedText>
+                    <ThemedText color='muted' font='caption'>
+                      {item.amount === null
+                        ? 'Внесіть суму з рахунку'
+                        : 'Сума з рахунку'}
                     </ThemedText>
                   </ListRow>
                 ))}

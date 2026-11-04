@@ -5,6 +5,7 @@ import type {
   LedgerState,
   MeterReading,
   DayCount,
+  MonthAmount,
   MonthKey,
   ObjectMonth,
 } from './types';
@@ -17,14 +18,15 @@ const emptyState: LedgerState = {
   months: [],
   readings: [],
   dayCounts: [],
+  amounts: [],
 };
 
 const createId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 const isSameEntry = (
-  a: Pick<MeterReading | DayCount, 'serviceId' | 'month'>,
-  b: Pick<MeterReading | DayCount, 'serviceId' | 'month'>,
+  a: Pick<MeterReading | DayCount | MonthAmount, 'serviceId' | 'month'>,
+  b: Pick<MeterReading | DayCount | MonthAmount, 'serviceId' | 'month'>,
 ) => a.serviceId === b.serviceId && a.month === b.month;
 
 // Раніше місяці не зберігались, а показувались від першої послуги до поточного.
@@ -104,6 +106,7 @@ export function createLocalLedgerRepository(
         months: state.months.filter((m) => m.objectId !== id),
         readings: state.readings.filter((r) => !serviceIds.has(r.serviceId)),
         dayCounts: state.dayCounts.filter((d) => !serviceIds.has(d.serviceId)),
+        amounts: state.amounts.filter((a) => !serviceIds.has(a.serviceId)),
       });
     },
     async addService(input) {
@@ -125,6 +128,7 @@ export function createLocalLedgerRepository(
         services: state.services.filter((s) => s.id !== id),
         readings: state.readings.filter((r) => r.serviceId !== id),
         dayCounts: state.dayCounts.filter((d) => d.serviceId !== id),
+        amounts: state.amounts.filter((a) => a.serviceId !== id),
       });
     },
     async addMonths(objectId, months) {
@@ -150,6 +154,7 @@ export function createLocalLedgerRepository(
         ),
         readings: state.readings.filter((r) => !belongs(r)),
         dayCounts: state.dayCounts.filter((d) => !belongs(d)),
+        amounts: state.amounts.filter((a) => !belongs(a)),
       });
     },
     async setReading(reading) {
@@ -167,6 +172,15 @@ export function createLocalLedgerRepository(
         dayCounts: [
           ...state.dayCounts.filter((d) => !isSameEntry(d, dayCount)),
           dayCount,
+        ],
+      });
+    },
+    async setAmount(amount) {
+      await update({
+        ...state,
+        amounts: [
+          ...state.amounts.filter((a) => !isSameEntry(a, amount)),
+          amount,
         ],
       });
     },

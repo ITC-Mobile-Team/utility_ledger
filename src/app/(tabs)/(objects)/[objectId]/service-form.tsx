@@ -51,6 +51,7 @@ const tariffTitles: Record<BillingMode, string> = {
   meter: 'Тариф, ₴ за одиницю',
   fixed: 'Сума на місяць, ₴',
   day: 'Ставка за день, ₴',
+  invoice: '',
 };
 
 export default function ServiceForm() {
@@ -104,20 +105,23 @@ export default function ServiceForm() {
   const isDayNight = mode === 'meter' && zones === 'dayNight';
   const isWater = mode === 'meter' && zones === 'water';
   const isGas = mode === 'meter' && zones === 'gas';
+  // Сума з рахунку вноситься щомісяця, тарифу немає
+  const isInvoice = mode === 'invoice';
   const tariffValue = parseMoney(tariff);
   const nightTariffValue = parseMoney(nightTariff);
   const sewageTariffValue = parseMoney(sewageTariff);
   const waterFeeValue = parseOptionalMoney(waterFee);
   const sewageFeeValue = parseOptionalMoney(sewageFee);
   const hasTariff =
-    tariffValue !== null &&
-    tariffValue > 0 &&
-    (!isDayNight || (nightTariffValue !== null && nightTariffValue > 0)) &&
-    (!isWater ||
-      (sewageTariffValue !== null &&
-        sewageTariffValue > 0 &&
-        waterFeeValue !== null &&
-        sewageFeeValue !== null));
+    isInvoice ||
+    (tariffValue !== null &&
+      tariffValue > 0 &&
+      (!isDayNight || (nightTariffValue !== null && nightTariffValue > 0)) &&
+      (!isWater ||
+        (sewageTariffValue !== null &&
+          sewageTariffValue > 0 &&
+          waterFeeValue !== null &&
+          sewageFeeValue !== null)));
   const keyboardInsets = useFormFooterKeyboardInsets(!hasTariff);
 
   if (!object) return null;
@@ -133,14 +137,14 @@ export default function ServiceForm() {
   };
 
   const save = async () => {
-    if (tariffValue === null) return;
+    if (tariffValue === null && !isInvoice) return;
     const input: ServiceInput = {
       objectId: object.id,
       icon,
       name: name.trim(),
       mode,
       unit: mode === 'meter' ? unit.trim() : '',
-      tariff: tariffValue,
+      tariff: isInvoice ? 0 : (tariffValue ?? 0),
       initialReading:
         mode === 'meter' ? Number(initialReading) || 0 : undefined,
       zones,
@@ -372,6 +376,11 @@ export default function ServiceForm() {
                 </ThemedText>
               </VStack>
             </>
+          ) : isInvoice ? (
+            <ThemedText color='muted' font='caption'>
+              Тариф не потрібен: щомісяця ви вносите суму з рахунку, і вона
+              входить у розрахунок місяця.
+            </ThemedText>
           ) : (
             <ThemedTextInput
               title={
