@@ -8,7 +8,6 @@ import {
   VStack,
 } from '@/components';
 import { monthAppearance } from '@/constants/month-emoji';
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   useLedger,
   useLedgerObject,
@@ -43,7 +42,6 @@ const toKey = (year: number, monthIndex: number): MonthKey =>
   `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
 
 export default function AddMonths() {
-  useHideTabBar();
   const { objectId } = useLocalSearchParams<{ objectId: string }>();
   const ledger = useLedger();
   const state = useLedgerState();

@@ -1,4 +1,3 @@
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   ActionButton,
   AppImage,
@@ -13,7 +12,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 export default function ObjectAdded() {
-  useHideTabBar();
   const { objectId } = useLocalSearchParams<{ objectId: string }>();
   const object = useLedgerObject(objectId);
 

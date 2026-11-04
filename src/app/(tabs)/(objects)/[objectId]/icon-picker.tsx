@@ -6,7 +6,6 @@ import {
   VStack,
 } from '@/components';
 import { serviceIconSections } from '@/constants/service-icons';
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { FormFooter, ServiceIcon } from '@/views';
 import { Image } from 'expo-image';
@@ -16,7 +15,6 @@ import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function IconPicker() {
-  useHideTabBar();
   const { objectId, serviceId, icon, serviceName } = useLocalSearchParams<{
     objectId: string;
     serviceId?: string;

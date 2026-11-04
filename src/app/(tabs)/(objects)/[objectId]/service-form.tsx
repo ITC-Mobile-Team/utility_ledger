@@ -1,4 +1,3 @@
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   ActionButton,
   AppImage,
@@ -55,7 +54,6 @@ const tariffTitles: Record<BillingMode, string> = {
 };
 
 export default function ServiceForm() {
-  useHideTabBar();
   const {
     objectId,
     serviceId,

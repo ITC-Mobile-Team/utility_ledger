@@ -1,4 +1,3 @@
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   AppImage,
   ActionButton,
@@ -24,7 +23,6 @@ import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
 const optional = (value: string) => value.trim() || undefined;
 
 export default function ObjectForm() {
-  useHideTabBar();
   const { objectId } = useLocalSearchParams<{ objectId?: string }>();
   const ledger = useLedger();
   const existing = useLedgerObject(objectId);

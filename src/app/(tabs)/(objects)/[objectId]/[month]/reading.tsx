@@ -1,4 +1,3 @@
-import { useHideTabBar } from '@/hooks/use-hide-tab-bar';
 import {
   ActionButton,
   HStack,
@@ -35,7 +34,6 @@ import { StyleSheet } from 'react-native';
 const METER_LENGTH = 5;
 
 export default function Reading() {
-  useHideTabBar();
   const { month, serviceId } = useLocalSearchParams<{
     objectId: string;
     month: string;
