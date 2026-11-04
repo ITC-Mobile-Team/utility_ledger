@@ -4,62 +4,86 @@ import {
   StyleSheet,
   TextInput,
   type TextInputInstance,
-  type ViewProps,
 } from 'react-native';
-import { MeterDigit } from './meter-digit';
+import { MeterDigit, type MeterDigitState } from './meter-digit';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useRef, useState } from 'react';
 
-type MeterReadingInputProps = ViewProps & {
+type MeterReadingInputProps = {
   value: string;
   onChangeValue: (value: string) => void;
-  integerDigits: number;
-  fractionDigits: number;
+  length: number;
+  // Статичний барабан без введення (ілюстрації)
   readOnly?: boolean;
+  // Усі цифри введено, але значення некоректне — підсвічуємо заповнені клітинки
+  isError?: boolean;
+  accessibilityLabel?: string;
 };
 
+// Барабан лічильника: цифри вводяться по одній зліва направо,
+// активна клітинка з курсором — наступна для введення
 export function MeterReadingInput({
   value,
   onChangeValue,
-  integerDigits,
-  fractionDigits,
+  length,
   readOnly = false,
+  isError = false,
+  accessibilityLabel,
 }: MeterReadingInputProps) {
   const bg = useThemeColor('meterBg');
-
-  const length = integerDigits + fractionDigits;
   const inputRef = useRef<TextInputInstance>(null);
-  const [, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const stateAt = (index: number): MeterDigitState => {
+    if (readOnly) return 'display';
+    if (index < value.length) return 'filled';
+    if (index === value.length && isFocused) return 'active';
+    return 'blank';
+  };
 
   return (
-    <Pressable onPress={() => inputRef.current?.focus()}>
-      <HStack spacing={4} style={[{ backgroundColor: bg }, styles.container]}>
-        {Array.from({ length }, (_, index) => {
-          const digit = value[index] ?? '';
-          const isFraction = index >= length - fractionDigits;
-          return (
-            <MeterDigit
-              key={index}
-              digit={digit}
-              type={isFraction ? 'fraction' : 'integer'}
-            />
-          );
-        })}
+    <Pressable
+      disabled={readOnly}
+      onPress={() => inputRef.current?.focus()}
+      accessible={false}
+    >
+      <HStack
+        spacing={readOnly ? 4 : 8}
+        style={[
+          { backgroundColor: bg },
+          styles.container,
+          !readOnly && styles.entry,
+        ]}
+      >
+        {Array.from({ length }, (_, index) => (
+          <MeterDigit
+            key={index}
+            digit={value[index] ?? ''}
+            state={stateAt(index)}
+            isLast={index === length - 1}
+            isError={isError}
+          />
+        ))}
       </HStack>
 
-      <TextInput
-        ref={inputRef}
-        value={value}
-        onChangeText={(text) => onChangeValue(text)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        keyboardType='number-pad'
-        maxLength={length}
-        caretHidden
-        autoComplete='off'
-        readOnly={readOnly}
-        style={styles.input}
-      />
+      {!readOnly && (
+        <TextInput
+          ref={inputRef}
+          value={value}
+          onChangeText={(text) =>
+            onChangeValue(text.replace(/\D/g, '').slice(0, length))
+          }
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          keyboardType='number-pad'
+          maxLength={length}
+          caretHidden
+          contextMenuHidden
+          autoComplete='off'
+          accessibilityLabel={accessibilityLabel}
+          style={styles.input}
+        />
+      )}
     </Pressable>
   );
 }
@@ -69,6 +93,11 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     justifyContent: 'center',
     borderRadius: 16,
+    borderCurve: 'continuous',
+  },
+  entry: {
+    paddingVertical: 16,
+    paddingHorizontal: 14,
   },
   input: {
     padding: 0, // прибирає дефолтні відступи Android

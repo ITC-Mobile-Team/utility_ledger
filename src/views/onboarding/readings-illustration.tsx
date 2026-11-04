@@ -9,8 +9,7 @@ export function ReadingsIllustration() {
         <MeterReadingInput
           value='12660'
           onChangeValue={() => {}}
-          integerDigits={4}
-          fractionDigits={1}
+          length={5}
           readOnly
         />
       </View>

@@ -49,12 +49,8 @@ export default function Reading() {
     service && validMonth
       ? getReading(state, service.id, validMonth)
       : undefined;
-  const [value, setValue] = useState(
-    saved !== undefined ? String(saved.value) : '',
-  );
-  const [nightValue, setNightValue] = useState(
-    saved?.night !== undefined ? String(saved.night) : '',
-  );
+  const [value, setValue] = useState(toDigits(saved?.value));
+  const [nightValue, setNightValue] = useState(toDigits(saved?.night));
   const [isSaving, setSaving] = useState(false);
   const keyboardInsets = useFormFooterKeyboardInsets(
     false,
@@ -70,8 +66,7 @@ export default function Reading() {
     nightValue,
     getPreviousNightReading(state, service, validMonth),
   );
-  const isValid = (zone: Zone) =>
-    zone.current !== undefined && !zone.isTooSmall;
+  const isValid = (zone: Zone) => zone.isComplete && !zone.isTooSmall;
   const isChanged =
     day.current !== saved?.value ||
     (dayNight && night.current !== saved?.night);
@@ -178,18 +173,65 @@ export default function Reading() {
   );
 }
 
+// Збережене значення у вигляді барабана: доповнюємо нулями зліва до 5 цифр
+const toDigits = (saved?: number) =>
+  saved === undefined
+    ? ''
+    : String(Math.round(saved))
+        .padStart(METER_LENGTH, '0')
+        .slice(-METER_LENGTH);
+
 type Zone = {
   previous: number;
   current?: number;
   consumption?: number;
+  isComplete: boolean;
   isTooSmall: boolean;
 };
 
+// Показник рахується лише коли введено всі цифри барабана
 const toZone = (value: string, previous: number): Zone => {
-  if (value.length === 0) return { previous, isTooSmall: false };
+  if (value.length < METER_LENGTH) {
+    return { previous, isComplete: false, isTooSmall: false };
+  }
   const current = Number(value);
   const consumption = current - previous;
-  return { previous, current, consumption, isTooSmall: consumption < 0 };
+  return {
+    previous,
+    current,
+    consumption,
+    isComplete: true,
+    isTooSmall: consumption < 0,
+  };
+};
+
+const hintFor = (value: string, zone: Zone) => {
+  if (value.length === 0) {
+    return {
+      text: `Введіть ${METER_LENGTH} цифр зліва направо, як на лічильнику`,
+      color: 'muted',
+      font: 'caption',
+    } as const;
+  }
+  if (zone.isTooSmall) {
+    return {
+      text: 'Менше за попередній показник — перевірте цифри',
+      color: 'coralInk',
+      font: 'status',
+    } as const;
+  }
+  if (zone.isComplete) {
+    return {
+      text: `Усі ${METER_LENGTH} цифр введено`,
+      color: 'greenInk',
+      font: 'status',
+    } as const;
+  }
+  return {
+    text: `Цифра ${value.length + 1} з ${METER_LENGTH}`,
+    color: 'muted',
+    font: 'status',
+  } as const;
 };
 
 type ZoneSectionProps = {
@@ -200,7 +242,7 @@ type ZoneSectionProps = {
   zone: Zone;
 };
 
-// Барабан лічильника з попереднім показником і споживанням для однієї зони
+// Барабан лічильника (введення по цифрі) з попереднім показником і споживанням для однієї зони
 function ZoneSection({
   title,
   unit,
@@ -208,7 +250,12 @@ function ZoneSection({
   onChangeValue,
   zone,
 }: ZoneSectionProps) {
-  const hasConsumption = zone.consumption !== undefined && !zone.isTooSmall;
+  const hint = hintFor(value, zone);
+  const consumption = !zone.isComplete
+    ? '—'
+    : zone.isTooSmall
+      ? 'Менше попереднього'
+      : `+${formatNumber(zone.consumption ?? 0)} ${unit}`;
   return (
     <VStack spacing={10}>
       <HStack>
@@ -222,29 +269,27 @@ function ZoneSection({
       </HStack>
       <MeterReadingInput
         value={value}
-        onChangeValue={(text) => onChangeValue(text.replace(/\D/g, ''))}
-        integerDigits={METER_LENGTH - 1}
-        fractionDigits={1}
+        onChangeValue={onChangeValue}
+        length={METER_LENGTH}
+        isError={zone.isTooSmall}
+        accessibilityLabel={`${title}, ${unit}`}
       />
       <ThemedText
-        color={zone.isTooSmall ? 'coral' : 'muted'}
-        font='caption'
+        color={hint.color}
+        font={hint.font}
         align='center'
+        accessibilityLiveRegion='polite'
       >
-        {zone.isTooSmall
-          ? 'Показник не може бути меншим за попередній'
-          : `Введіть цифри як на лічильнику — до ${METER_LENGTH} знаків`}
+        {hint.text}
       </ThemedText>
       <HStack spacing={10}>
         <StatTile title='Попередній' value={formatNumber(zone.previous)} />
         <StatTile
           title='Спожито'
-          value={
-            hasConsumption
-              ? `+${formatNumber(zone.consumption ?? 0)} ${unit}`
-              : '—'
+          value={consumption}
+          tone={
+            !zone.isComplete ? 'default' : zone.isTooSmall ? 'error' : 'success'
           }
-          highlighted={hasConsumption}
         />
       </HStack>
     </VStack>
