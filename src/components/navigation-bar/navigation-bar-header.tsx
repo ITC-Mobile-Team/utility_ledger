@@ -25,6 +25,9 @@ type NavigationBarHeaderProps = {
   titleCollapseDistance: SharedValue<number>;
 };
 
+const BACK_TAP_SIZE = 44;
+const BACK_ICON_SIZE = 22;
+
 const getTitleFont = (
   isTransparent: boolean,
   type: NavigationBarVariant,
@@ -170,16 +173,17 @@ const styles = StyleSheet.create({
     // Same inset as the navbar buttons and screen content
     paddingHorizontal: HORIZONTAL_PADDING,
   },
+  // 44x44 tap area; the centred 22px icon starts at HORIZONTAL_PADDING like the title
   back: {
-    width: 44,
-    height: 44,
+    width: BACK_TAP_SIZE,
+    height: BACK_TAP_SIZE,
+    marginStart: HORIZONTAL_PADDING - (BACK_TAP_SIZE - BACK_ICON_SIZE) / 2,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingStart: 10,
   },
   backIcon: {
-    width: 22,
-    height: 22,
+    width: BACK_ICON_SIZE,
+    height: BACK_ICON_SIZE,
   },
   pressed: {
     opacity: 0.5,
