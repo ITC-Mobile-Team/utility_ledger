@@ -17,6 +17,9 @@ export type ThemedNavigationBarProps = {
   // Довільний вміст під великим заголовком і підзаголовком (напр. чипи);
   // згортається разом із ними. Лише для type='full'
   headerContent?: ReactNode;
+  // Кнопка праворуч від великого заголовка (напр. NavigationBarIconButton);
+  // згортається разом із ним. Лише для type='full'
+  headerTrailing?: ReactNode;
   navigationBarButtons?: NavigationBarButtonItem[];
   onNavigationButtonPress?: (id: string) => void;
   scrollY?: SharedValue<number>;

@@ -1,4 +1,10 @@
-import { NavigationView, Segment, ThemedText, VStack } from '@/components';
+import {
+  NavigationBarIconButton,
+  NavigationView,
+  Segment,
+  ThemedText,
+  VStack,
+} from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import {
   useOutageSchedule,
@@ -23,17 +29,27 @@ import {
   DayTimeline,
   OutageList,
   OutageMessage,
+  OutageSkeleton,
   PowerStatusCard,
   QueueChips,
   SectionHeader,
 } from '@/views';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl, StyleSheet } from 'react-native';
 
 type Day = 'today' | 'tomorrow';
 
 const openSettings = () => router.push('/outage-settings');
+
+// Шестерня праворуч від заголовка — налаштування графіка
+const settingsButton = (
+  <NavigationBarIconButton
+    icon='gear'
+    accessibilityLabel='Налаштування графіка'
+    onPress={openSettings}
+  />
+);
 
 export default function Outages() {
   const settings = useOutageSettings();
@@ -57,6 +73,7 @@ export default function Outages() {
         barType='power'
         cornerRadius={28}
         contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        headerTrailing={settingsButton}
       >
         <OutageMessage
           icon='pin'
@@ -79,14 +96,17 @@ export default function Outages() {
         barType='power'
         cornerRadius={28}
         contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        headerTrailing={settingsButton}
       >
         <OutageMessage
           icon='bulb'
           badge='1.1'
           title='Оберіть свою чергу'
           message='Вкажіть місто й одну або кілька черг — і тут буде видно, коли світло є, а коли вимкнення.'
-          actionTitle='Налаштувати'
+          actionTitle='Обрати чергу'
           onAction={openSettings}
+          linkTitle='Як дізнатися свою чергу?'
+          onLink={openSettings}
         />
       </NavigationView>
     );
@@ -117,7 +137,12 @@ function ScheduleScreen({
 
   // POE пише «4 листопада 2026 19:35» — у навбарі досить часу
   const updatedTime = schedule?.updatedLabel?.match(/\d{1,2}:\d{2}$/)?.[0];
-  const updated = updatedTime ? ` · оновлено о ${updatedTime}` : '';
+  const updated =
+    isLoading || isRefreshing
+      ? ' · оновлюємо…'
+      : updatedTime
+        ? ` · оновлено о ${updatedTime}`
+        : '';
 
   return (
     <NavigationView
@@ -126,6 +151,7 @@ function ScheduleScreen({
       barType='power'
       cornerRadius={28}
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      headerTrailing={settingsButton}
       headerContent={
         <QueueChips
           queues={queues}
@@ -156,7 +182,7 @@ function ScheduleScreen({
         />
 
         {isLoading ? (
-          <ActivityIndicator color={tint} style={styles.loader} />
+          <OutageSkeleton providerName={provider.name} />
         ) : !schedule ? (
           <OutageMessage
             icon='clock'
@@ -251,9 +277,6 @@ function DayContent({
 }
 
 const styles = StyleSheet.create({
-  loader: {
-    paddingVertical: 48,
-  },
   help: {
     paddingHorizontal: 4,
   },

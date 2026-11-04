@@ -5,7 +5,7 @@ import { getProviderForCity } from './registry';
 import { formatDuration, formatTime, getOutageIntervals } from './schedule';
 import {
   type DateKey,
-  defaultNotificationSettings,
+  normalizeNotificationSettings,
   type OutageSchedule,
   type OutageSettings,
 } from './types';
@@ -90,8 +90,11 @@ export async function syncOutageNotifications(
       ),
   );
 
-  const { enabled, leadMinutes } =
-    settings.notifications ?? defaultNotificationSettings;
+  const {
+    enabled,
+    leadMinutes,
+    queues: notifyQueues,
+  } = normalizeNotificationSettings(settings.notifications);
   const provider = getProviderForCity(settings.city);
   if (!enabled || !provider || schedule?.providerId !== provider.id) return;
   const permission = await Notifications.getPermissionsAsync();
@@ -100,6 +103,7 @@ export async function syncOutageNotifications(
   const now = Date.now();
   const requests = settings.queues
     .filter((queue) => provider.queues.includes(queue.id))
+    .filter((queue) => !notifyQueues || notifyQueues.includes(queue.id))
     .flatMap((queue) =>
       schedule.days.flatMap((day) => {
         const slots = day.queues[queue.id];

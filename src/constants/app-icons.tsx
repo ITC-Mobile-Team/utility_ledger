@@ -20,6 +20,7 @@ export const appIcons = {
   bulbOff: require('@/assets/images/icons/bulb-off.svg'),
   pin: require('@/assets/images/icons/pin.svg'),
   clock: require('@/assets/images/icons/clock.svg'),
+  gear: require('@/assets/images/icons/gear.svg'),
   apartment: require('@/assets/images/icons/services/apartment.svg'),
   electricity: require('@/assets/images/icons/services/electricity.svg'),
   water: require('@/assets/images/icons/services/water.svg'),

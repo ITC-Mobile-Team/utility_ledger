@@ -47,18 +47,32 @@ export type QueueSettings = {
 };
 
 // За скільки хвилин до вимкнення попереджати
-export const NOTIFICATION_LEADS = [15, 30, 60] as const;
+export const NOTIFICATION_LEADS = [5, 10, 15] as const;
 export type NotificationLead = (typeof NOTIFICATION_LEADS)[number];
 
 export type OutageNotificationSettings = {
   enabled: boolean;
   leadMinutes: NotificationLead;
+  // Черги, для яких попереджати; без поля — для всіх обраних
+  queues?: QueueId[];
 };
 
 export const defaultNotificationSettings: OutageNotificationSettings = {
   enabled: false,
-  leadMinutes: 30,
+  leadMinutes: 10,
 };
+
+// Збережені раніше налаштування можуть мати час, якого вже немає у виборі
+// (15/30/60 хв) — такий замінюємо на типовий
+export function normalizeNotificationSettings(
+  value: OutageNotificationSettings | undefined,
+): OutageNotificationSettings {
+  if (!value) return defaultNotificationSettings;
+  const leadMinutes = NOTIFICATION_LEADS.includes(value.leadMinutes)
+    ? value.leadMinutes
+    : defaultNotificationSettings.leadMinutes;
+  return { ...value, leadMinutes };
+}
 
 export type OutageSettings = {
   city?: string;

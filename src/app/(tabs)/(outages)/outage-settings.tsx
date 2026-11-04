@@ -18,7 +18,7 @@ import {
   useOutageSettings,
 } from '@/providers/outage-provider';
 import {
-  defaultNotificationSettings,
+  normalizeNotificationSettings,
   ensureNotificationPermission,
   formatDuration,
   getProviderForCity,
@@ -82,8 +82,14 @@ export default function OutageSettingsScreen() {
   );
   const [isCitySheetVisible, setCitySheetVisible] = useState(false);
   const [isSaving, setSaving] = useState(false);
-  const [notifications, setNotifications] = useState(
-    settings.notifications ?? defaultNotificationSettings,
+  const [notifications, setNotifications] = useState(() =>
+    normalizeNotificationSettings(settings.notifications),
+  );
+  // Черги, для яких попереджати; спершу — усі обрані
+  const [notifyQueues, setNotifyQueues] = useState<string[]>(
+    () =>
+      settings.notifications?.queues ??
+      settings.queues.map((queue) => queue.id),
   );
 
   // Увімкнення попереджень спершу просить дозвіл на сповіщення
@@ -108,12 +114,33 @@ export default function OutageSettingsScreen() {
     : [];
   const canSave = Boolean(city) && (!provider || pickedQueues.length > 0);
 
-  const toggle = (id: string) =>
+  // Нова черга одразу потрапляє і в попередження, прибрана — зникає з них
+  const toggle = (id: string) => {
+    const isPicked = picked.includes(id);
     setPicked((current) =>
+      isPicked ? current.filter((item) => item !== id) : [...current, id],
+    );
+    setNotifyQueues((current) =>
+      isPicked
+        ? current.filter((item) => item !== id)
+        : [...new Set([...current, id])],
+    );
+  };
+
+  const toggleNotifyQueue = (id: string) =>
+    setNotifyQueues((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id],
     );
+
+  const notifyPicked = pickedQueues.filter((id) => notifyQueues.includes(id));
+  const notifySubtitle =
+    notifyPicked.length === 0
+      ? 'Оберіть хоча б одну чергу'
+      : notifyPicked.length === pickedQueues.length
+        ? 'Для всіх обраних черг'
+        : `Для ${notifyPicked.length} з ${pickedQueues.length} черг`;
 
   const save = async () => {
     setSaving(true);
@@ -124,7 +151,7 @@ export default function OutageSettingsScreen() {
           id,
           name: names[id]?.trim() || undefined,
         })),
-        notifications,
+        notifications: { ...notifications, queues: notifyPicked },
       };
       await repository.save(next);
       // Попередження переплановуються за збереженим графіком; свіжий
@@ -149,7 +176,7 @@ export default function OutageSettingsScreen() {
     <KeyboardDismissView>
       <NavigationView
         type='short'
-        barType='purple'
+        barType='power'
         title='Графік відключень'
         contentInsets={{ top: 20, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
@@ -289,9 +316,14 @@ export default function OutageSettingsScreen() {
                     <ThemedText font='rowTitle'>
                       Попереджати перед вимкненням
                     </ThemedText>
-                    <ThemedText font='caption' color='muted'>
-                      Для всіх обраних черг
-                    </ThemedText>
+                    {notifications.enabled && (
+                      <ThemedText
+                        font='caption'
+                        color={notifyPicked.length ? 'muted' : 'coralInk'}
+                      >
+                        {notifySubtitle}
+                      </ThemedText>
+                    )}
                   </VStack>
                   <Switch
                     value={notifications.enabled}
@@ -300,6 +332,27 @@ export default function OutageSettingsScreen() {
                     accessibilityLabel='Попереджати перед вимкненням'
                   />
                 </HStack>
+                {notifications.enabled && pickedQueues.length > 0 && (
+                  <VStack spacing={8}>
+                    <ThemedText font='caption' color='muted'>
+                      Для яких черг
+                    </ThemedText>
+                    <View
+                      style={styles.notifyChips}
+                      accessibilityLabel='Черги для сповіщень'
+                    >
+                      {pickedQueues.map((id) => (
+                        <NotifyQueueChip
+                          key={id}
+                          id={id}
+                          name={names[id]?.trim()}
+                          isOn={notifyQueues.includes(id)}
+                          onPress={() => toggleNotifyQueue(id)}
+                        />
+                      ))}
+                    </View>
+                  </VStack>
+                )}
                 {notifications.enabled && (
                   <Segment<`${NotificationLead}`>
                     items={NOTIFICATION_LEADS.map((lead) => ({
@@ -385,6 +438,51 @@ function QueueToggle({
         </ThemedText>
       </Pressable>
     </View>
+  );
+}
+
+function NotifyQueueChip({
+  id,
+  name,
+  isOn,
+  onPress,
+}: {
+  id: string;
+  name?: string;
+  isOn: boolean;
+  onPress: () => void;
+}) {
+  const powerOn = useThemeColor('powerOn');
+  const powerOnSoft = useThemeColor('powerOnSoft');
+  const line = useThemeColor('line');
+  const surface = useThemeColor('surface');
+  return (
+    <Pressable
+      guarded={false}
+      accessibilityRole='button'
+      accessibilityLabel={`Сповіщення для черги ${id}`}
+      accessibilityState={{ selected: isOn }}
+      onPress={onPress}
+      style={(state) => [
+        styles.notifyChip,
+        {
+          backgroundColor: isOn ? powerOnSoft : surface,
+          borderColor: isOn ? powerOn : line,
+          paddingLeft: isOn ? 10 : 14,
+        },
+        state.pressed && styles.pressed,
+      ]}
+    >
+      {isOn && <AppImage icon='check' tintColor='ink' size={{ width: 16 }} />}
+      <ThemedText font='rowTitleCompact' color={isOn ? 'ink' : 'muted'}>
+        {id}
+      </ThemedText>
+      {name && (
+        <ThemedText font='labelMedium' color={isOn ? 'ink' : 'muted'}>
+          {name}
+        </ThemedText>
+      )}
+    </Pressable>
   );
 }
 
@@ -497,6 +595,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0, // прибирає дефолтні відступи Android
     includeFontPadding: false,
+  },
+  notifyChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  notifyChip: {
+    height: 38,
+    paddingRight: 14,
+    borderRadius: 999,
+    borderWidth: 1.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   notifyCard: {
     borderRadius: 22,

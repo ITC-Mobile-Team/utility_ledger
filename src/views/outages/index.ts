@@ -4,3 +4,4 @@ export { OutageList } from './outage-list';
 export { OutageMessage } from './outage-message';
 export { PowerStatusCard } from './power-status-card';
 export { QueueChips } from './queue-chips';
+export { OutageSkeleton } from './outage-skeleton';

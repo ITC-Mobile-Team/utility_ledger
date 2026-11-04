@@ -20,6 +20,7 @@ type NavigationBarHeaderProps = {
   subtitle?: string;
   accessory?: ReactNode;
   content?: ReactNode;
+  trailing?: ReactNode;
   isTransparent: boolean;
   // Колір підзаголовка на кольоровому навбарі
   heroSubtitleColor?: AppColor;
@@ -48,6 +49,7 @@ export const NavigationBarHeader = ({
   subtitle,
   accessory,
   content,
+  trailing,
   isTransparent,
   heroSubtitleColor = 'heroSub',
   paddingBottom,
@@ -138,12 +140,16 @@ export const NavigationBarHeader = ({
             }
           >
             <VStack spacing={6} style={styles.largeContent}>
-              <ThemedText
-                color={titleColor}
-                font={getTitleFont(isTransparent, 'full')}
-              >
-                {title}
-              </ThemedText>
+              <View style={styles.titleRow}>
+                <ThemedText
+                  color={titleColor}
+                  font={getTitleFont(isTransparent, 'full')}
+                  style={styles.titleText}
+                >
+                  {title}
+                </ThemedText>
+                {trailing}
+              </View>
               {subtitle && (
                 <ThemedText color={subtitleColor} font='navigationSubtitle'>
                   {subtitle}
@@ -184,6 +190,14 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 10,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  titleText: {
+    flex: 1,
   },
   largeArea: {
     overflow: 'hidden',
