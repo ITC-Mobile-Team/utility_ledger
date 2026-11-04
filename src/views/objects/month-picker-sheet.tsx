@@ -14,7 +14,7 @@ import {
 } from '@/services/ledger';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   css,
   type CSSTransitionProperties,
@@ -111,18 +111,12 @@ const cellTransition: CSSTransitionProperties = {
   transitionTimingFunction: 'ease-out',
 };
 
-// Щойно обрана клітинка «підстрибує», а емодзі в ній погойдується
+// Щойно обрана клітинка «підстрибує». Емодзі не масштабуємо: збільшений
+// гліф растеризований і стає піксельним
 const cellPop = css.keyframes({
   from: { transform: [{ scale: 0.94 }] },
   '55%': { transform: [{ scale: 1.04 }] },
   to: { transform: [{ scale: 1 }] },
-});
-
-const emojiWiggle = css.keyframes({
-  from: { transform: [{ scale: 1 }, { rotate: '0deg' }] },
-  '35%': { transform: [{ scale: 1.25 }, { rotate: '-10deg' }] },
-  '70%': { transform: [{ scale: 1.1 }, { rotate: '6deg' }] },
-  to: { transform: [{ scale: 1 }, { rotate: '0deg' }] },
 });
 
 type MonthCellProps = {
@@ -170,12 +164,9 @@ function MonthCell({
         ]}
       >
         {/* Звичайний Text: метрики Onest зсувають емодзі */}
-        <Animated.Text
-          allowFontScaling={false}
-          style={[styles.emoji, isSelected && styles.emojiWiggle]}
-        >
+        <Text allowFontScaling={false} style={styles.emoji}>
           {emoji}
-        </Animated.Text>
+        </Text>
         <ThemedText font='segment'>{name}</ThemedText>
         {isAdded && (
           <ThemedView backgroundColor='greenSoft' style={styles.addedMark}>
@@ -261,11 +252,6 @@ const styles = StyleSheet.create({
   cellPop: {
     animationName: cellPop,
     animationDuration: 320,
-    animationTimingFunction: 'ease-out',
-  },
-  emojiWiggle: {
-    animationName: emojiWiggle,
-    animationDuration: 420,
     animationTimingFunction: 'ease-out',
   },
   emoji: {
