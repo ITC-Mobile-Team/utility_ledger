@@ -68,6 +68,12 @@ export const typography = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 17,
   },
+  status: {
+    fontFamily: onestFamily,
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 17,
+  },
   button: {
     fontFamily: onestFamily,
     fontSize: 17,

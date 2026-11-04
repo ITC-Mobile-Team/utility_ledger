@@ -2,8 +2,6 @@ import {
   AppImage,
   HStack,
   IconView,
-  Spacer,
-  ThemedBadge,
   ThemedText,
   ThemedView,
   VStack,
@@ -38,7 +36,7 @@ export function ObjectCard({
   onPress,
 }: ObjectCardProps) {
   const subtitle = formatObjectSubtitle(object);
-  const showsFooter = services.length > 0 && month && status;
+  const showsFooter = services.length > 0;
   return (
     <Pressable
       disabled={!onPress}
@@ -62,6 +60,7 @@ export function ObjectCard({
                   {subtitle}
                 </ThemedText>
               )}
+              {month && status && <StatusLine month={month} status={status} />}
             </VStack>
 
             {onPress && (
@@ -87,26 +86,36 @@ export function ObjectCard({
                     rounded
                   />
                 ))}
-
-                <Spacer />
-
-                {status === 'new' ? (
-                  <ThemedBadge
-                    text={`${getMonthName(month)} · внести показники`}
-                    type='red'
-                  />
-                ) : (
-                  <ThemedBadge
-                    text={`${getMonthName(month)} заповнено`}
-                    type='green'
-                  />
-                )}
               </HStack>
             </>
           )}
         </VStack>
       </ThemedView>
     </Pressable>
+  );
+}
+
+function StatusLine({
+  month,
+  status,
+}: {
+  month: MonthKey;
+  status: MonthStatus;
+}) {
+  const isNew = status === 'new';
+  const monthName = getMonthName(month);
+  return (
+    <HStack spacing={6} align='center' style={styles.statusLine}>
+      <ThemedView
+        backgroundColor={isNew ? 'coral' : 'green'}
+        style={styles.statusDot}
+      />
+      <ThemedText color={isNew ? 'coralInk' : 'greenInk'} font='status'>
+        {isNew
+          ? `Внести показники за ${monthName.toLowerCase()}`
+          : `${monthName} заповнено`}
+      </ThemedText>
+    </HStack>
   );
 }
 
@@ -120,6 +129,14 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
+  },
+  statusLine: {
+    marginTop: 4,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
