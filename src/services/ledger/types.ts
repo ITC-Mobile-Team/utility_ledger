@@ -108,4 +108,6 @@ export interface LedgerRepository {
   setReading(reading: MeterReading): Promise<void>;
   setDayCount(dayCount: DayCount): Promise<void>;
   setAmount(amount: MonthAmount): Promise<void>;
+  // Скидає внесене за місяць значення послуги: показник, кількість днів або суму
+  resetEntry(serviceId: string, month: MonthKey): Promise<void>;
 }

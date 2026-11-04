@@ -18,3 +18,4 @@ export { type Size, toSize } from './size';
 export { Spacer } from './spacer';
 export { TransparentActionButton } from './transparent-action-button';
 export { IconView } from './icon-view';
+export { TextButton, TEXT_BUTTON_HEIGHT } from './text-button';

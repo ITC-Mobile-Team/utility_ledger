@@ -3,6 +3,7 @@ import {
   HStack,
   KeyboardDismissView,
   NavigationView,
+  TextButton,
   ThemedBadge,
   ThemedText,
   ThemedTextInput,
@@ -17,7 +18,12 @@ import {
   isMonthKey,
   parseMoney,
 } from '@/services/ledger';
-import { FormFooter, ServiceIcon, useFormFooterKeyboardInsets } from '@/views';
+import {
+  confirmResetEntry,
+  FormFooter,
+  ServiceIcon,
+  useFormFooterKeyboardInsets,
+} from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -41,7 +47,10 @@ export default function Amount() {
     saved !== undefined ? formatMoneyInput(saved) : '',
   );
   const [isSaving, setSaving] = useState(false);
-  const keyboardInsets = useFormFooterKeyboardInsets();
+  const keyboardInsets = useFormFooterKeyboardInsets(
+    false,
+    saved !== undefined,
+  );
 
   if (!service || !validMonth) return null;
 
@@ -113,6 +122,19 @@ export default function Amount() {
           loading={isSaving}
           onPress={save}
         />
+        {isEditing && (
+          <TextButton
+            title='Скинути суму'
+            disabled={isSaving}
+            onPress={() =>
+              confirmResetEntry(service, validMonth, () => {
+                // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
+                router.back();
+                ledger.resetEntry(service.id, validMonth);
+              })
+            }
+          />
+        )}
       </FormFooter>
     </KeyboardDismissView>
   );

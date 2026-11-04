@@ -184,5 +184,14 @@ export function createLocalLedgerRepository(
         ],
       });
     },
+    async resetEntry(serviceId, month) {
+      const entry = { serviceId, month };
+      await update({
+        ...state,
+        readings: state.readings.filter((r) => !isSameEntry(r, entry)),
+        dayCounts: state.dayCounts.filter((d) => !isSameEntry(d, entry)),
+        amounts: state.amounts.filter((a) => !isSameEntry(a, entry)),
+      });
+    },
   };
 }

@@ -34,14 +34,14 @@ return (
 
 ## Хто за що відповідає
 
-| Частина | Файл | Що робить |
-| --- | --- | --- |
-| `KeyboardProvider` | `src/app/_layout.tsx` | Потрібен для `react-native-keyboard-controller` |
-| `KeyboardDismissView` | `src/components/keyboard-dismiss-view.tsx` | Корінь екрана; тап поза полями закриває клавіатуру |
-| `NavigationView` | `src/components/navigation-view.tsx` | `KeyboardAwareScrollView`, `keyboardShouldPersistTaps='handled'` за замовчуванням; скрол вмикається при фокусі інпута |
-| `FormFooter` | `src/views/objects/form-footer.tsx` | `KeyboardStickyView` з відступом 12 над клавіатурою |
-| `useFormFooterKeyboardInsets` | `src/views/objects/form-footer.tsx` | `bottomOffset` і `extraKeyboardSpace` для `NavigationView` під висоту футера |
-| `ThemedTextInput` | `src/components/themed-text-input.tsx` | Тап по всьому полю фокусує інпут, `returnKeyType='done'` за замовчуванням |
+| Частина                       | Файл                                       | Що робить                                                                                                             |
+| ----------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `KeyboardProvider`            | `src/app/_layout.tsx`                      | Потрібен для `react-native-keyboard-controller`                                                                       |
+| `KeyboardDismissView`         | `src/components/keyboard-dismiss-view.tsx` | Корінь екрана; тап поза полями закриває клавіатуру                                                                    |
+| `NavigationView`              | `src/components/navigation-view.tsx`       | `KeyboardAwareScrollView`, `keyboardShouldPersistTaps='handled'` за замовчуванням; скрол вмикається при фокусі інпута |
+| `FormFooter`                  | `src/views/objects/form-footer.tsx`        | `KeyboardStickyView` з відступом 12 над клавіатурою                                                                   |
+| `useFormFooterKeyboardInsets` | `src/views/objects/form-footer.tsx`        | `bottomOffset` і `extraKeyboardSpace` для `NavigationView` під висоту футера                                          |
+| `ThemedTextInput`             | `src/components/themed-text-input.tsx`     | Тап по всьому полю фокусує інпут, `returnKeyType='done'` за замовчуванням                                             |
 
 ## Не робити
 

@@ -2,6 +2,7 @@ import {
   ActionButton,
   AppImage,
   HStack,
+  TextButton,
   ThemedText,
   ThemedView,
   VStack,
@@ -27,6 +28,8 @@ type DaysSheetProps = {
   days: number;
   onClose: () => void;
   onSave: (days: number) => void;
+  // Є лише тоді, коли кількість днів внесено вручну
+  onReset?: () => void;
 };
 
 const quickDays = [21, 14, 7];
@@ -38,6 +41,7 @@ export function DaysSheet({
   days,
   onClose,
   onSave,
+  onReset,
 }: DaysSheetProps) {
   const daysInMonth = getDaysInMonth(month);
   const [value, setValue] = useState(days);
@@ -112,6 +116,13 @@ export function DaysSheet({
       </HStack>
 
       <ActionButton title='Зберегти' onPress={() => onSave(value)} />
+      {onReset && (
+        <TextButton
+          title='Скинути значення'
+          onPress={onReset}
+          style={styles.reset}
+        />
+      )}
     </BottomSheet>
   );
 }
@@ -175,6 +186,9 @@ const styles = StyleSheet.create({
   },
   total: {
     justifyContent: 'space-between',
+  },
+  reset: {
+    marginTop: -6,
   },
   disabled: {
     opacity: 0.35,

@@ -10,6 +10,7 @@ export const appIcons = {
   gauge: require('@/assets/images/icons/gauge.svg'),
   pencil: require('@/assets/images/icons/pencil.svg'),
   trash: require('@/assets/images/icons/trash.svg'),
+  reset: require('@/assets/images/icons/reset.svg'),
   search: require('@/assets/images/icons/search.svg'),
   check: require('@/assets/images/icons/check.svg'),
   chevronRight: require('@/assets/images/icons/chevron-right.svg'),

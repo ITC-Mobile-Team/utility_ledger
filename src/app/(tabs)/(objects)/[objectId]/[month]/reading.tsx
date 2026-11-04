@@ -3,6 +3,7 @@ import {
   HStack,
   KeyboardDismissView,
   NavigationView,
+  TextButton,
   Spacer,
   ThemedBadge,
   ThemedText,
@@ -21,6 +22,7 @@ import {
   isMonthKey,
 } from '@/services/ledger';
 import {
+  confirmResetEntry,
   FormFooter,
   useFormFooterKeyboardInsets,
   ServiceIcon,
@@ -54,7 +56,10 @@ export default function Reading() {
     saved?.night !== undefined ? String(saved.night) : '',
   );
   const [isSaving, setSaving] = useState(false);
-  const keyboardInsets = useFormFooterKeyboardInsets();
+  const keyboardInsets = useFormFooterKeyboardInsets(
+    false,
+    saved !== undefined,
+  );
 
   if (!service || !validMonth) return null;
 
@@ -155,6 +160,19 @@ export default function Reading() {
           loading={isSaving}
           onPress={save}
         />
+        {isEditing && (
+          <TextButton
+            title='Скинути показник'
+            disabled={isSaving}
+            onPress={() =>
+              confirmResetEntry(service, validMonth, () => {
+                // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
+                router.back();
+                ledger.resetEntry(service.id, validMonth);
+              })
+            }
+          />
+        )}
       </FormFooter>
     </KeyboardDismissView>
   );
