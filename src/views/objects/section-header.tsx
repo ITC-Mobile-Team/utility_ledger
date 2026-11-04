@@ -4,9 +4,22 @@ import { StyleSheet } from 'react-native';
 type SectionHeaderProps = {
   title: string;
   trailing?: string;
+  // overline — дрібний підпис великими літерами над карткою-групою
+  variant?: 'section' | 'overline';
 };
 
-export function SectionHeader({ title, trailing }: SectionHeaderProps) {
+export function SectionHeader({
+  title,
+  trailing,
+  variant = 'section',
+}: SectionHeaderProps) {
+  if (variant === 'overline') {
+    return (
+      <ThemedText color='muted' font='overline' style={styles.overline}>
+        {title.toLocaleUpperCase('uk')}
+      </ThemedText>
+    );
+  }
   return (
     <HStack align='bottom' style={styles.container}>
       <ThemedText font='section' style={styles.title}>
@@ -28,5 +41,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flexShrink: 1,
+  },
+  overline: {
+    paddingLeft: 4,
   },
 });

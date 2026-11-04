@@ -1,7 +1,6 @@
 import {
   type NavigationBarButtonItem,
   NavigationView,
-  ThemedBadge,
   ThemedText,
   VStack,
 } from '@/components';
@@ -12,12 +11,17 @@ import {
 } from '@/providers/ledger-provider';
 import {
   calculateMonth,
+  calculateService,
   formatMoney,
   formatMonthTitle,
   formatNumber,
   formatShortAddress,
   getDaysInMonth,
+  getMonthName,
+  getPreviousMonth,
   isMonthKey,
+  type LedgerState,
+  type MonthKey,
   pluralForms,
   pluralize,
   type ServiceBill,
@@ -27,12 +31,13 @@ import {
   EmptyStateView,
   ListCard,
   ListRow,
-  ProgressBar,
   SectionHeader,
   ServiceIcon,
+  StatusLine,
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 const monthButtons: NavigationBarButtonItem[] = [
   { id: 'bill', title: 'Розрахунок', icon: 'document', iconBackground: 'blue' },
@@ -44,21 +49,39 @@ const monthButtons: NavigationBarButtonItem[] = [
   },
 ];
 
-const meterSubtitle = ({
-  service,
-  previous = 0,
-  current,
-  consumption,
-  night,
-}: ServiceBill) => {
-  if (night) {
-    return current === undefined
-      ? `Попередній: ☀️ ${formatNumber(previous)} · 🌙 ${formatNumber(night.previous)} ${service.unit}`
-      : `☀️ +${formatNumber(consumption ?? 0)} · 🌙 +${formatNumber(night.consumption ?? 0)} ${service.unit}`;
+const rowIconSize = 38;
+const compactIconSize = 32;
+
+// Внесений показник — спожите за місяць; невнесений — підказка з минулого місяця
+const meterSubtitle = (
+  state: LedgerState,
+  month: MonthKey,
+  { service, previous = 0, current, consumption, night }: ServiceBill,
+) => {
+  if (current !== undefined) {
+    return night
+      ? `☀️ +${formatNumber(consumption ?? 0)} · 🌙 +${formatNumber(night.consumption ?? 0)} ${service.unit}`
+      : `+${formatNumber(consumption ?? 0)} ${service.unit}`;
   }
-  return current === undefined
-    ? `Попередній: ${formatNumber(previous)} ${service.unit}`
-    : `${formatNumber(previous)} → ${formatNumber(current)} · +${formatNumber(consumption ?? 0)} ${service.unit}`;
+  const last = calculateService(state, service, getPreviousMonth(month));
+  if (last.consumption !== undefined) {
+    const total = last.consumption + (last.night?.consumption ?? 0);
+    return `Минулого місяця ${formatNumber(total)} ${service.unit}`;
+  }
+  return night
+    ? `Попередній: ☀️ ${formatNumber(previous)} · 🌙 ${formatNumber(night.previous)} ${service.unit}`
+    : `Попередній: ${formatNumber(previous)} ${service.unit}`;
+};
+
+// «Залишилось внести 1 показник і 2 суми» або «Усе внесено»
+const missingText = (readings: number, sums: number) => {
+  const parts = [
+    readings > 0 && `${readings} ${pluralize(readings, pluralForms.reading)}`,
+    sums > 0 && `${sums} ${pluralize(sums, pluralForms.sum)}`,
+  ].filter(Boolean);
+  return parts.length > 0
+    ? `Залишилось внести ${parts.join(' і ')}`
+    : 'Усе внесено';
 };
 
 export default function MonthServices() {
@@ -76,16 +99,23 @@ export default function MonthServices() {
 
   if (!object || !isMonthKey(month)) return null;
 
-  const { items } = calculateMonth(state, object.id, month);
+  const { items, total } = calculateMonth(state, object.id, month);
   const meters = items.filter((item) => item.service.mode === 'meter');
   const byDays = items.filter((item) => item.service.mode === 'day');
   const fixed = items.filter((item) => item.service.mode === 'fixed');
   const invoices = items.filter((item) => item.service.mode === 'invoice');
-  const filledInvoices = invoices.filter((item) => item.amount !== null).length;
-  const filledMeters = meters.filter(
-    (item) => item.current !== undefined,
+  const missingReadings = meters.filter(
+    (item) => item.current === undefined,
   ).length;
+  const missingSums = invoices.filter((item) => item.amount === null).length;
   const daysItem = byDays.find((item) => item.service.id === daysServiceId);
+  const daysInMonth = getDaysInMonth(month);
+
+  const openBill = () =>
+    router.push({
+      pathname: '/[objectId]/[month]/bill',
+      params: { objectId: object.id, month },
+    });
 
   const openServices = () =>
     router.push({
@@ -113,12 +143,7 @@ export default function MonthServices() {
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
       navigationBarButtons={monthButtons}
       onNavigationButtonPress={(id) => {
-        if (id === 'bill') {
-          router.push({
-            pathname: '/[objectId]/[month]/bill',
-            params: { objectId: object.id, month },
-          });
-        }
+        if (id === 'bill') openBill();
         if (id === 'services') openServices();
       }}
     >
@@ -136,101 +161,96 @@ export default function MonthServices() {
           }
         />
       ) : (
-        <VStack spacing={24}>
+        <VStack spacing={20}>
+          <Pressable
+            onPress={openBill}
+            style={(state) => state.pressed && styles.pressed}
+          >
+            <ListCard style={styles.totalCard}>
+              <VStack spacing={6}>
+                <VStack style={styles.totalRow}>
+                  <ThemedText color='muted' font='labelMedium'>
+                    {`До сплати за ${getMonthName(month).toLocaleLowerCase('uk')}`}
+                  </ThemedText>
+                  <ThemedText font='monthTotal'>
+                    {formatMoney(total)}
+                  </ThemedText>
+                </VStack>
+                <StatusLine
+                  tone={
+                    missingReadings + missingSums > 0 ? 'attention' : 'done'
+                  }
+                  text={missingText(missingReadings, missingSums)}
+                />
+              </VStack>
+            </ListCard>
+          </Pressable>
+
           {meters.length > 0 && (
-            <VStack spacing={12}>
-              <SectionHeader
-                title='Показники'
-                trailing={`${filledMeters} з ${meters.length} внесено`}
-              />
-              <ProgressBar progress={filledMeters / meters.length} />
+            <Section title='Показники'>
               <ListCard>
                 {meters.map((item) => (
                   <ListRow
                     key={item.service.id}
-                    leading={<ServiceIcon icon={item.service.icon} />}
-                    trailing={
-                      item.current === undefined ? (
-                        <ThemedBadge text='Не внесено' type='red' />
-                      ) : (
-                        <ThemedBadge text='Внесено' type='green' />
-                      )
+                    leading={
+                      <ServiceIcon
+                        icon={item.service.icon}
+                        size={rowIconSize}
+                      />
                     }
+                    trailing={<RowValue amount={item.amount} />}
                     onPress={() => openReading(item.service.id)}
                   >
                     <ThemedText font='rowTitle'>{item.service.name}</ThemedText>
                     <ThemedText color='muted' font='caption'>
-                      {meterSubtitle(item)}
+                      {meterSubtitle(state, month, item)}
                     </ThemedText>
                   </ListRow>
                 ))}
               </ListCard>
-            </VStack>
+            </Section>
           )}
 
           {invoices.length > 0 && (
-            <VStack spacing={12}>
-              <SectionHeader
-                title='Суми з рахунків'
-                trailing={`${filledInvoices} з ${invoices.length} внесено`}
-              />
+            <Section title='Рахунки'>
               <ListCard>
                 {invoices.map((item) => (
                   <ListRow
                     key={item.service.id}
-                    leading={<ServiceIcon icon={item.service.icon} />}
-                    trailing={
-                      item.amount === null ? (
-                        <ThemedBadge text='Не внесено' type='red' />
-                      ) : (
-                        <ThemedText font='rowTitle'>
-                          {formatMoney(item.amount)}
-                        </ThemedText>
-                      )
+                    leading={
+                      <ServiceIcon
+                        icon={item.service.icon}
+                        size={rowIconSize}
+                      />
                     }
+                    trailing={<RowValue amount={item.amount} />}
                     onPress={() => openAmount(item.service.id)}
                   >
                     <ThemedText font='rowTitle'>{item.service.name}</ThemedText>
                     <ThemedText color='muted' font='caption'>
-                      {item.amount === null
-                        ? 'Внесіть суму з рахунку'
-                        : 'Сума з рахунку'}
+                      Сума з рахунку
                     </ThemedText>
                   </ListRow>
                 ))}
               </ListCard>
-            </VStack>
+            </Section>
           )}
 
           {byDays.length > 0 && (
-            <VStack spacing={12}>
-              <SectionHeader
-                title='За днями'
-                trailing='Можна змінити кількість днів'
-              />
+            <Section title='За днями'>
               <ListCard>
                 {byDays.map((item) => {
                   const days = item.days ?? 0;
-                  const isFullMonth = days === getDaysInMonth(month);
                   return (
                     <ListRow
                       key={item.service.id}
-                      leading={<ServiceIcon icon={item.service.icon} />}
-                      trailing={
-                        <VStack spacing={4} align='bottom'>
-                          <ThemedText font='rowTitle'>
-                            {formatMoney(item.amount ?? 0)}
-                          </ThemedText>
-                          <ThemedBadge
-                            text={
-                              isFullMonth
-                                ? 'Весь місяць'
-                                : `${days} ${pluralize(days, pluralForms.day)}`
-                            }
-                            type='blue'
-                          />
-                        </VStack>
+                      leading={
+                        <ServiceIcon
+                          icon={item.service.icon}
+                          size={rowIconSize}
+                        />
                       }
+                      trailing={<RowValue amount={item.amount ?? 0} />}
                       onPress={() => {
                         setDaysServiceId(item.service.id);
                         setDaysSheetKey((key) => key + 1);
@@ -241,38 +261,44 @@ export default function MonthServices() {
                         {item.service.name}
                       </ThemedText>
                       <ThemedText color='muted' font='caption'>
-                        {`${days} ${pluralize(days, pluralForms.day)} × ${formatMoney(item.service.tariff)}`}
+                        {days === daysInMonth
+                          ? `Весь місяць · ${days} ${pluralize(days, pluralForms.day)}`
+                          : `${days} з ${daysInMonth} ${pluralize(daysInMonth, pluralForms.day)}`}
                       </ThemedText>
                     </ListRow>
                   );
                 })}
               </ListCard>
-            </VStack>
+            </Section>
           )}
 
           {fixed.length > 0 && (
-            <VStack spacing={12}>
-              <SectionHeader title='Нараховуються автоматично' />
+            <Section title='Автоматично'>
               <ListCard>
                 {fixed.map((item) => (
                   <ListRow
                     key={item.service.id}
-                    leading={<ServiceIcon icon={item.service.icon} />}
+                    compact
+                    leading={
+                      <ServiceIcon
+                        icon={item.service.icon}
+                        size={compactIconSize}
+                      />
+                    }
                     trailing={
-                      <ThemedText font='rowTitle'>
+                      <ThemedText color='muted' font='body'>
                         {formatMoney(item.amount ?? 0)}
                       </ThemedText>
                     }
                     showsChevron={false}
                   >
-                    <ThemedText font='rowTitle'>{item.service.name}</ThemedText>
-                    <ThemedText color='muted' font='caption'>
-                      Фіксована сума
+                    <ThemedText font='rowTitleMedium'>
+                      {item.service.name}
                     </ThemedText>
                   </ListRow>
                 ))}
               </ListCard>
-            </VStack>
+            </Section>
           )}
         </VStack>
       )}
@@ -283,7 +309,7 @@ export default function MonthServices() {
         visible={isDaysSheetVisible}
         service={daysItem?.service}
         month={month}
-        days={daysItem?.days ?? getDaysInMonth(month)}
+        days={daysItem?.days ?? daysInMonth}
         onClose={() => setDaysSheetVisible(false)}
         onSave={async (days) => {
           if (daysItem) {
@@ -299,3 +325,44 @@ export default function MonthServices() {
     </NavigationView>
   );
 }
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <VStack spacing={8}>
+      <SectionHeader title={title} variant='overline' />
+      {children}
+    </VStack>
+  );
+}
+
+// Сума справа в рядку; без суми — заклик внести значення
+function RowValue({ amount }: { amount: number | null }) {
+  return amount === null ? (
+    <ThemedText color='coralInk' font='rowTitle'>
+      Внести
+    </ThemedText>
+  ) : (
+    <ThemedText font='rowTitle' style={styles.amount}>
+      {formatMoney(amount)}
+    </ThemedText>
+  );
+}
+
+const styles = StyleSheet.create({
+  totalCard: {
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    gap: 12,
+  },
+  amount: {
+    fontVariant: ['tabular-nums'],
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+});

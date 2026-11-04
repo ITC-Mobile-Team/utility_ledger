@@ -36,6 +36,8 @@ type ListRowProps = {
   showsChevron?: boolean;
   // false — рядок не тьмяніє при натисканні (стан показує сам контент)
   highlightsOnPress?: boolean;
+  // Нижчий рядок для другорядних пунктів
+  compact?: boolean;
   onPress?: () => void;
 };
 
@@ -45,6 +47,7 @@ export function ListRow({
   trailing,
   showsChevron = true,
   highlightsOnPress = true,
+  compact = false,
   onPress,
 }: ListRowProps) {
   return (
@@ -53,7 +56,11 @@ export function ListRow({
       onPress={onPress}
       style={(state) => highlightsOnPress && state.pressed && styles.pressed}
     >
-      <HStack align='center' spacing={12} style={styles.row}>
+      <HStack
+        align='center'
+        spacing={12}
+        style={[styles.row, compact && styles.compactRow]}
+      >
         {leading}
         <VStack spacing={2} style={styles.content}>
           {children}
@@ -80,6 +87,9 @@ const styles = StyleSheet.create({
   row: {
     paddingVertical: 14,
     paddingHorizontal: 16,
+  },
+  compactRow: {
+    paddingVertical: 10,
   },
   content: {
     flex: 1,

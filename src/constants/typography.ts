@@ -44,6 +44,13 @@ export const typography = StyleSheet.create({
     lineHeight: 48,
     letterSpacing: -1.2,
   },
+  monthTotal: {
+    fontFamily: onestFamily,
+    fontSize: 24,
+    fontWeight: '700',
+    lineHeight: 30,
+    letterSpacing: -0.48,
+  },
   totalValue: {
     fontFamily: onestFamily,
     fontSize: 22,
@@ -54,6 +61,12 @@ export const typography = StyleSheet.create({
     fontFamily: onestFamily,
     fontSize: 15,
     fontWeight: '600',
+    lineHeight: 19.5,
+  },
+  rowTitleMedium: {
+    fontFamily: onestFamily,
+    fontSize: 15,
+    fontWeight: '500',
     lineHeight: 19.5,
   },
   rowTitle: {

@@ -53,6 +53,12 @@ export const getMonthLocative = (month: MonthKey) =>
 export const formatMonthTitle = (month: MonthKey) =>
   `${getMonthName(month)} ${parseMonthKey(month).year}`;
 
+// «2026-01» → «2025-12»
+export const getPreviousMonth = (month: MonthKey): MonthKey => {
+  const { year, monthIndex } = parseMonthKey(month);
+  return toMonthKey(new Date(year, monthIndex - 1, 1));
+};
+
 export const getDaysInMonth = (month: MonthKey) => {
   const { year, monthIndex } = parseMonthKey(month);
   return new Date(year, monthIndex + 1, 0).getDate();
@@ -76,6 +82,8 @@ export const pluralForms = {
   address: ['адреса', 'адреси', 'адрес'],
   day: ['день', 'дні', 'днів'],
   month: ['місяць', 'місяці', 'місяців'],
+  reading: ['показник', 'показники', 'показників'],
+  sum: ['суму', 'суми', 'сум'],
   service: ['послуга', 'послуги', 'послуг'],
 } as const;
 

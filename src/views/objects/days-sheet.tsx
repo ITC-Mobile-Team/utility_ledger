@@ -91,7 +91,7 @@ export function DaysSheet({
                 style={styles.chip}
               >
                 <ThemedText
-                  font='chipLabel'
+                  font='segment'
                   color={isSelected ? 'blueInk' : 'ink'}
                 >
                   {index === 0 ? 'Весь' : option}
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    borderRadius: 18,
+    borderRadius: 20,
     borderCurve: 'continuous',
   },
   stepperButton: {
@@ -167,7 +167,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chip: {
-    paddingVertical: 10,
+    height: 40,
+    justifyContent: 'center',
     borderRadius: 12,
     borderCurve: 'continuous',
     alignItems: 'center',

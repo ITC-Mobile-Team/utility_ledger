@@ -18,6 +18,7 @@ import {
 } from '@/services/ledger';
 import { Pressable, StyleSheet } from 'react-native';
 import { EmojiTile } from './objects/emoji-tile';
+import { StatusLine } from './status-line';
 
 type ObjectCardProps = {
   object: LedgerObject;
@@ -60,7 +61,9 @@ export function ObjectCard({
                   {subtitle}
                 </ThemedText>
               )}
-              {month && status && <StatusLine month={month} status={status} />}
+              {month && status && (
+                <MonthStatusLine month={month} status={status} />
+              )}
             </VStack>
 
             {onPress && (
@@ -95,7 +98,7 @@ export function ObjectCard({
   );
 }
 
-function StatusLine({
+function MonthStatusLine({
   month,
   status,
 }: {
@@ -105,17 +108,16 @@ function StatusLine({
   const isNew = status === 'new';
   const monthName = getMonthName(month);
   return (
-    <HStack spacing={6} align='center' style={styles.statusLine}>
-      <ThemedView
-        backgroundColor={isNew ? 'coral' : 'green'}
-        style={styles.statusDot}
+    <VStack style={styles.statusLine}>
+      <StatusLine
+        tone={isNew ? 'attention' : 'done'}
+        text={
+          isNew
+            ? `Внести показники за ${monthName.toLowerCase()}`
+            : `${monthName} заповнено`
+        }
       />
-      <ThemedText color={isNew ? 'coralInk' : 'greenInk'} font='status'>
-        {isNew
-          ? `Внести показники за ${monthName.toLowerCase()}`
-          : `${monthName} заповнено`}
-      </ThemedText>
-    </HStack>
+    </VStack>
   );
 }
 
@@ -132,11 +134,6 @@ const styles = StyleSheet.create({
   },
   statusLine: {
     marginTop: 4,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
