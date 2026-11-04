@@ -125,7 +125,9 @@ export async function syncOutageNotifications(
         });
       }),
     )
-    .filter((request) => request.fireAt > now + 5_000)
+    // Мінімальний запас: перепланування за кілька секунд до спрацювання
+    // не повинно губити сповіщення (тригер у минулому iOS не прийме)
+    .filter((request) => request.fireAt > now + 1_000)
     .sort((a, b) => a.fireAt - b.fireAt)
     .slice(0, MAX_SCHEDULED);
 
