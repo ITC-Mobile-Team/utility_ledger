@@ -1,5 +1,6 @@
 import {
   getZonedNow,
+  syncOutageNotifications,
   type OutageProvider as ScheduleProvider,
   type OutageSchedule,
   type OutageSettingsRepository,
@@ -96,6 +97,10 @@ export function useOutageSchedule(
       setSchedule(next);
       setError(undefined);
       await repository.cacheSchedule(next);
+      // Попередження ставляться за найсвіжішим графіком
+      void syncOutageNotifications(repository.getSnapshot(), next).catch(
+        () => {},
+      );
     } catch (e) {
       if (current.signal.aborted) return;
       setError(e instanceof Error ? e : new Error(String(e)));

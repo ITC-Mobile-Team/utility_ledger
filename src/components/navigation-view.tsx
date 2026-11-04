@@ -22,6 +22,8 @@ import {
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
+  Extrapolation,
+  interpolate,
   useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -35,6 +37,8 @@ import { useIsFocused } from 'expo-router';
 import { toPadding, type ContentInsets } from './content-insets';
 import { COLLAPSE_DISTANCE } from './navigation-bar/constants';
 import { ThemedView } from './themed-view';
+
+const AnimatedThemedView = Animated.createAnimatedComponent(ThemedView);
 
 type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
   Omit<
@@ -203,6 +207,24 @@ export const NavigationView = ({
   const shrinkSpacerStyle = useAnimatedStyle(() => ({
     height: spacerHeight.value,
   }));
+  // Розгорнутий навбар переходить у контент без заокруглень; кути шторки
+  // з'являються з прогресом скролу і повні, коли навбар згорнутий
+  const sheetCornerStyle = useAnimatedStyle(() => {
+    const distance = Math.max(
+      titleCollapseDistance.value,
+      buttonsCollapseDistance,
+    );
+    const radius =
+      distance > 0
+        ? interpolate(
+            headerScrollY.value,
+            [0, distance],
+            [0, cornerRadius],
+            Extrapolation.CLAMP,
+          )
+        : 0;
+    return { borderTopLeftRadius: radius, borderTopRightRadius: radius };
+  });
 
   return (
     <VStack style={styles.container}>
@@ -223,14 +245,11 @@ export const NavigationView = ({
         cornerRadius={cornerRadius}
       />
       {cornerRadius > 0 && (
-        <ThemedView
+        <AnimatedThemedView
           style={[
             styles.sheet,
-            {
-              borderTopLeftRadius: cornerRadius,
-              borderTopRightRadius: cornerRadius,
-              marginTop: -cornerRadius, // заходить на градієнт навбару
-            },
+            { marginTop: -cornerRadius }, // заходить на градієнт навбару
+            sheetCornerStyle,
           ]}
         />
       )}

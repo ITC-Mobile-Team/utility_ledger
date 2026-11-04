@@ -1,6 +1,7 @@
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { LedgerProvider } from '@/providers/ledger-provider';
 import { OutageProvider } from '@/providers/outage-provider';
+import { configureOutageNotifications } from '@/services/outages';
 import {
   OnboardingProvider,
   useOnboarding,
@@ -12,6 +13,8 @@ import { useEffect, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+
+configureOutageNotifications();
 
 function RootNavigator() {
   const { isSignedIn } = useAuth();

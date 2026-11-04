@@ -6,3 +6,8 @@ export * from './registry';
 export type { OutageSettingsRepository } from './settings-repository';
 
 export const outageSettingsRepository = createOutageSettingsRepository(storage);
+export {
+  configureOutageNotifications,
+  ensureNotificationPermission,
+  syncOutageNotifications,
+} from './notifications';

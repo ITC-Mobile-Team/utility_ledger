@@ -3,7 +3,7 @@ PODS:
     - ReactNativeDependencies
   - DoubleConversion (1.1.6):
     - ReactNativeDependencies
-  - EXConstants (58.0.12):
+  - EXConstants (58.0.15):
     - ExpoModulesCore
   - EXJSONUtils (58.0.1)
   - EXManifests (58.0.1):
@@ -124,6 +124,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - ExpoApplication (58.1.2):
+    - ExpoModulesCore
   - ExpoAsset (58.0.16):
     - ExpoModulesCore
   - ExpoDevice (58.0.5):
@@ -182,6 +184,8 @@ PODS:
     - ExpoModulesJSI
     - ExpoModulesWorklets
     - RNWorklets
+  - ExpoNotifications (58.1.8):
+    - ExpoModulesCore
   - ExpoRouter (58.0.23):
     - ExpoModulesCore
     - RNScreens
@@ -2368,6 +2372,7 @@ DEPENDENCIES:
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
+  - ExpoApplication (from `../node_modules/expo-application/ios`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoDevice (from `../node_modules/expo-device/ios`)
   - "ExpoDomWebView (from `../node_modules/@expo/dom-webview/ios`)"
@@ -2383,6 +2388,7 @@ DEPENDENCIES:
   - ExpoModulesJSI (from `../node_modules/expo-modules-jsi/apple`)
   - ExpoModulesWorklets (from `../node_modules/expo/node_modules/expo-modules-core/ExpoModulesWorklets.podspec`)
   - ExpoModulesWorkletsAdapter (from `../node_modules/expo/node_modules/expo-modules-core`)
+  - ExpoNotifications (from `../node_modules/expo-notifications/ios`)
   - ExpoRouter (from `../node_modules/expo-router/ios`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSymbols (from `../node_modules/expo-symbols/ios`)
@@ -2505,6 +2511,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../node_modules/expo-dev-menu-interface/ios"
+  ExpoApplication:
+    :path: "../node_modules/expo-application/ios"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
   ExpoDevice:
@@ -2535,6 +2543,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/expo/node_modules/expo-modules-core/ExpoModulesWorklets.podspec"
   ExpoModulesWorkletsAdapter:
     :path: "../node_modules/expo/node_modules/expo-modules-core"
+  ExpoNotifications:
+    :path: "../node_modules/expo-notifications/ios"
   ExpoRouter:
     :path: "../node_modules/expo-router/ios"
   ExpoSplashScreen:
@@ -2738,7 +2748,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 8502bfdc46e2804408af2e163049ece181009af4
   DoubleConversion: 501a575c40c0b50c89685762dd3e415e6bb26fb0
-  EXConstants: ff5c226215048137ea31d39fa460027a6daeeadc
+  EXConstants: c1eb9dab7494834d85aa347165da9718cdfc21a6
   EXJSONUtils: d59bf6b18639752631a81818559b2675a46f99e2
   EXManifests: b0b83ad894166f7e080b18814c5e73aed46e366e
   Expo: e782a7e4540040ff71048f2ebde98e97eea54ba8
@@ -2746,6 +2756,7 @@ SPEC CHECKSUMS:
   expo-dev-launcher: 57931b569ed64a2a06764b1ad68a1d16a8074b6d
   expo-dev-menu: 467097ec7bcafceb0fd2d32328bc6315a0ed6ba9
   expo-dev-menu-interface: d304e400271187edf1534704a4a05dcc140076e2
+  ExpoApplication: c83355b2f69f996b5d26b64fef39228e7f1e1208
   ExpoAsset: 7c69bf16ddb143a238c9d6a55b9f699cc60b72cf
   ExpoDevice: 77a9816436a09a0bfc00f5ace649c6ccb219b96d
   ExpoDomWebView: b2a6d681b9d34c23b1f584321386ca8da1d36afb
@@ -2761,6 +2772,7 @@ SPEC CHECKSUMS:
   ExpoModulesJSI: e9fb62ad17ae4d7bb4f45e9728ae7cd29ba3e852
   ExpoModulesWorklets: 6256cf8b2b591c89c3576638d9f70bb46ef51ece
   ExpoModulesWorkletsAdapter: 096cefb887c7090172dd950b2d9f0c2a2532d0ba
+  ExpoNotifications: d0621bf548676831247952ec23d280098391ea3c
   ExpoRouter: 6edd74e2d6252e291b5bdfa36e1927e201424905
   ExpoSplashScreen: fd71780cf74d7a8fdbf5f81eb07e7af78eb9485a
   ExpoSymbols: 1260e741b35b6fd105942779895418db306645c8

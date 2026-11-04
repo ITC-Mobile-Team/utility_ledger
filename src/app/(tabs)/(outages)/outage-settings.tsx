@@ -5,6 +5,7 @@ import {
   KeyboardDismissView,
   NavigationView,
   Pressable,
+  Segment,
   ThemedText,
   ThemedView,
   VStack,
@@ -16,7 +17,16 @@ import {
   useOutageRepository,
   useOutageSettings,
 } from '@/providers/outage-provider';
-import { getProviderForCity, pluralizeQueues } from '@/services/outages';
+import {
+  defaultNotificationSettings,
+  ensureNotificationPermission,
+  formatDuration,
+  getProviderForCity,
+  NOTIFICATION_LEADS,
+  type NotificationLead,
+  pluralizeQueues,
+  syncOutageNotifications,
+} from '@/services/outages';
 import {
   FormFooter,
   ListCard,
@@ -29,8 +39,11 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useRef, useState } from 'react';
 import {
+  Alert,
   Keyboard,
+  Linking,
   StyleSheet,
+  Switch,
   TextInput,
   type TextInputInstance,
   View,
@@ -49,6 +62,7 @@ export default function OutageSettingsScreen() {
   const settings = useOutageSettings();
   const ledger = useLedgerState();
   const keyboardInsets = useFormFooterKeyboardInsets();
+  const switchOn = useThemeColor('green');
 
   // Без збереженого міста пропонуємо місто з адрес користувача
   const objectCities = ledger.objects.flatMap((object) =>
@@ -68,6 +82,25 @@ export default function OutageSettingsScreen() {
   );
   const [isCitySheetVisible, setCitySheetVisible] = useState(false);
   const [isSaving, setSaving] = useState(false);
+  const [notifications, setNotifications] = useState(
+    settings.notifications ?? defaultNotificationSettings,
+  );
+
+  // Увімкнення попереджень спершу просить дозвіл на сповіщення
+  const toggleNotifications = async (enabled: boolean) => {
+    if (enabled && !(await ensureNotificationPermission())) {
+      Alert.alert(
+        'Сповіщення вимкнені',
+        'Дозвольте сповіщення для застосунку в Параметрах, щоб отримувати попередження про вимкнення.',
+        [
+          { text: 'Скасувати', style: 'cancel' },
+          { text: 'Параметри', onPress: () => Linking.openSettings() },
+        ],
+      );
+      return;
+    }
+    setNotifications((current) => ({ ...current, enabled }));
+  };
 
   const provider = getProviderForCity(city);
   const pickedQueues = provider
@@ -85,13 +118,21 @@ export default function OutageSettingsScreen() {
   const save = async () => {
     setSaving(true);
     try {
-      await repository.save({
+      const next = {
         city,
         queues: pickedQueues.map((id) => ({
           id,
           name: names[id]?.trim() || undefined,
         })),
-      });
+        notifications,
+      };
+      await repository.save(next);
+      // Попередження переплановуються за збереженим графіком; свіжий
+      // графік вкладка підтягне сама і переплановує їх ще раз
+      const cached = provider
+        ? await repository.loadCachedSchedule(provider.id)
+        : undefined;
+      await syncOutageNotifications(next, cached).catch(() => {});
       router.back();
     } finally {
       setSaving(false);
@@ -236,6 +277,52 @@ export default function OutageSettingsScreen() {
                 Назва зʼявиться поруч із номером черги на вкладці «Світло» —
                 наприклад «Дім» чи «Офіс».
               </ThemedText>
+            </VStack>
+          )}
+
+          {provider && (
+            <VStack spacing={8}>
+              <SectionHeader title='Сповіщення' variant='overline' />
+              <ThemedView backgroundColor='surface' style={styles.notifyCard}>
+                <HStack align='center' spacing={12}>
+                  <VStack spacing={2} style={styles.flex}>
+                    <ThemedText font='rowTitle'>
+                      Попереджати перед вимкненням
+                    </ThemedText>
+                    <ThemedText font='caption' color='muted'>
+                      Для всіх обраних черг
+                    </ThemedText>
+                  </VStack>
+                  <Switch
+                    value={notifications.enabled}
+                    onValueChange={toggleNotifications}
+                    trackColor={{ true: switchOn }}
+                    accessibilityLabel='Попереджати перед вимкненням'
+                  />
+                </HStack>
+                {notifications.enabled && (
+                  <Segment<`${NotificationLead}`>
+                    items={NOTIFICATION_LEADS.map((lead) => ({
+                      value: `${lead}`,
+                      label: `За ${formatDuration(lead)}`,
+                    }))}
+                    value={`${notifications.leadMinutes}`}
+                    onChange={(value) =>
+                      setNotifications((current) => ({
+                        ...current,
+                        leadMinutes: Number(value) as NotificationLead,
+                      }))
+                    }
+                  />
+                )}
+              </ThemedView>
+              {notifications.enabled && (
+                <ThemedText font='footnote' color='muted' style={styles.help}>
+                  Нагадування ставляться за останнім завантаженим графіком — щоб
+                  вони не відставали від змін, час від часу відкривайте вкладку
+                  «Світло».
+                </ThemedText>
+              )}
             </VStack>
           )}
         </VStack>
@@ -410,6 +497,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0, // прибирає дефолтні відступи Android
     includeFontPadding: false,
+  },
+  notifyCard: {
+    borderRadius: 22,
+    borderCurve: 'continuous',
+    padding: 16,
+    gap: 14,
+  },
+  flex: {
+    flex: 1,
   },
   help: {
     paddingHorizontal: 4,

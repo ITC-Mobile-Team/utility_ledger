@@ -46,7 +46,22 @@ export type QueueSettings = {
   name?: string;
 };
 
+// За скільки хвилин до вимкнення попереджати
+export const NOTIFICATION_LEADS = [15, 30, 60] as const;
+export type NotificationLead = (typeof NOTIFICATION_LEADS)[number];
+
+export type OutageNotificationSettings = {
+  enabled: boolean;
+  leadMinutes: NotificationLead;
+};
+
+export const defaultNotificationSettings: OutageNotificationSettings = {
+  enabled: false,
+  leadMinutes: 30,
+};
+
 export type OutageSettings = {
   city?: string;
   queues: QueueSettings[];
+  notifications?: OutageNotificationSettings;
 };
