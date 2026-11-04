@@ -19,9 +19,11 @@ import {
 
 export const useNavigationBarCollapse = ({
   scrollY,
+  maxScrollY,
   hasButtons,
 }: {
   scrollY?: SharedValue<number>;
+  maxScrollY: SharedValue<number>;
   hasButtons: boolean;
 }) => {
   const fallbackScrollY = useSharedValue(0);
@@ -30,14 +32,14 @@ export const useNavigationBarCollapse = ({
   const shortRowHeight = useSharedValue(40);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const progress = useDerivedValue(() =>
-    interpolate(
-      scroll.value,
-      [0, COLLAPSE_DISTANCE],
-      [0, 1],
-      Extrapolation.CLAMP,
-    ),
-  );
+  // Як і великий заголовок: контент, ледь довший за екран, згортає кнопки за
+  // весь доступний скрол, щоб вони не застрягали посередині
+  const progress = useDerivedValue(() => {
+    const distance = Math.min(COLLAPSE_DISTANCE, maxScrollY.value);
+    return distance > 0
+      ? interpolate(scroll.value, [0, distance], [0, 1], Extrapolation.CLAMP)
+      : 0;
+  });
 
   // Only the visible row should receive touches
   useAnimatedReaction(

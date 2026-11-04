@@ -113,7 +113,11 @@ export const NavigationView = ({
   const isSnappingToCollapsed = useRef(false);
   const snapHeader = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = e.nativeEvent.contentOffset.y;
-    const end = Math.max(titleCollapseDistance.get(), buttonsCollapseDistance);
+    // Короткий контент згортає навбар за весь доступний скрол
+    const end = Math.min(
+      Math.max(titleCollapseDistance.get(), buttonsCollapseDistance),
+      maxScrollY.get(),
+    );
     const scrollTo = (target: number) =>
       scrollRef.current?.scrollTo({ y: target, animated: true });
 
@@ -169,8 +173,15 @@ export const NavigationView = ({
         ref={scrollRef}
         onScroll={onScroll}
         onScrollEndDrag={(e) => {
-          // Без інерції onMomentumScrollEnd не прийде
-          if (Math.abs(e.nativeEvent.velocity?.y ?? 0) < 0.1) snapHeader(e);
+          // Без інерції onMomentumScrollEnd не прийде. Інерції немає і тоді,
+          // коли палець відпустили на краю контенту зі швидкістю: скрол уже
+          // там, куди мав би доїхати
+          const { velocity, targetContentOffset, contentOffset } =
+            e.nativeEvent;
+          const hasMomentum =
+            Math.abs(velocity?.y ?? 0) >= 0.1 &&
+            Math.abs((targetContentOffset?.y ?? 0) - contentOffset.y) >= 1;
+          if (!hasMomentum) snapHeader(e);
         }}
         onMomentumScrollEnd={snapHeader}
         // Відступ під таб-бар і home indicator задаємо самі, а не через
