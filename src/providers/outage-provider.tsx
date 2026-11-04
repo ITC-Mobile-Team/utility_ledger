@@ -16,6 +16,7 @@ import {
   useSyncExternalStore,
   type PropsWithChildren,
 } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { AppState } from 'react-native';
 
 const OutageContext = createContext<OutageSettingsRepository | null>(null);
@@ -49,8 +50,14 @@ export function useOutageSettings() {
   return useSyncExternalStore(repository.subscribe, repository.getSnapshot);
 }
 
-// Графік оновлюємо не частіше, ніж раз на цей час, і при поверненні в застосунок
-const REFRESH_INTERVAL_MS = 10 * 60 * 1000;
+// Скільки графік з кешу вважається свіжим. Схема: запит → кеш → протягом TTL
+// показуємо кеш без запитів. Повторне відкриття екрана або повернення в
+// застосунок після TTL, як і pull-to-refresh, запускають ланцюг знову
+export const SCHEDULE_TTL_MS = 2 * 60 * 1000;
+
+const isFresh = (schedule: OutageSchedule | undefined) =>
+  Boolean(schedule) &&
+  Date.now() - Date.parse(schedule?.fetchedAt ?? '') < SCHEDULE_TTL_MS;
 
 export type ScheduleState = {
   schedule?: OutageSchedule;
@@ -60,7 +67,8 @@ export type ScheduleState = {
   refresh: () => void;
 };
 
-// Графік постачальника: спершу збережений, потім свіжий з мережі.
+// Графік постачальника з кешем на SCHEDULE_TTL_MS (вік рахується від
+// fetchedAt, тож переживає й перезапуск застосунку).
 // Стан не скидається при зміні постачальника — монтуйте з key={provider.id}
 export function useOutageSchedule(
   provider: ScheduleProvider | undefined,
@@ -70,7 +78,10 @@ export function useOutageSchedule(
   const [isLoading, setLoading] = useState(Boolean(provider));
   const [isRefreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<Error>();
-  const lastFetch = useRef(0);
+  // Останній графік (з кешу чи мережі) для перевірки TTL поза рендером
+  const latest = useRef<OutageSchedule | undefined>(undefined);
+  // Кеш уже прочитано зі сховища: до цього TTL перевіряти нема з чим
+  const isCacheRead = useRef(false);
   const controller = useRef<AbortController | null>(null);
 
   const fetchSchedule = useCallback(async () => {
@@ -81,7 +92,7 @@ export function useOutageSchedule(
     try {
       const next = await provider.fetchSchedule(current.signal);
       if (current.signal.aborted) return;
-      lastFetch.current = Date.now();
+      latest.current = next;
       setSchedule(next);
       setError(undefined);
       await repository.cacheSchedule(next);
@@ -89,6 +100,7 @@ export function useOutageSchedule(
       if (current.signal.aborted) return;
       setError(e instanceof Error ? e : new Error(String(e)));
     } finally {
+      if (controller.current === current) controller.current = null;
       if (!current.signal.aborted) {
         setLoading(false);
         setRefreshing(false);
@@ -96,38 +108,45 @@ export function useOutageSchedule(
     }
   }, [provider, repository]);
 
+  // Запит лише коли кеш застарів і запит ще не йде
+  const refreshIfStale = useCallback(() => {
+    if (!isCacheRead.current || controller.current) return;
+    if (!isFresh(latest.current)) void fetchSchedule();
+  }, [fetchSchedule]);
+
   useEffect(() => {
     if (!provider) return;
     let isActive = true;
-    // Спершу показуємо збережений графік, потім ідемо в мережу
     void repository.loadCachedSchedule(provider.id).then((cached) => {
       if (!isActive) return;
-      if (cached) setSchedule((fresh) => fresh ?? cached);
-      return fetchSchedule();
-    });
-
-    const refreshIfStale = () => {
-      if (Date.now() - lastFetch.current >= REFRESH_INTERVAL_MS) {
-        void fetchSchedule();
+      isCacheRead.current = true;
+      if (cached && !latest.current) {
+        latest.current = cached;
+        setSchedule(cached);
+        setLoading(false);
       }
-    };
-    const timer = setInterval(refreshIfStale, REFRESH_INTERVAL_MS);
+      refreshIfStale();
+    });
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') refreshIfStale();
     });
     return () => {
       isActive = false;
-      clearInterval(timer);
       subscription.remove();
       controller.current?.abort();
+      controller.current = null;
     };
-  }, [provider, repository, fetchSchedule]);
+  }, [provider, repository, refreshIfStale]);
+
+  // Повернення на екран (з іншої вкладки чи вкладеного екрана)
+  useFocusEffect(refreshIfStale);
 
   return {
     schedule,
     isLoading: isLoading && !schedule,
     isRefreshing,
     error,
+    // pull-to-refresh іде в мережу незалежно від TTL
     refresh: () => {
       setRefreshing(true);
       void fetchSchedule();
