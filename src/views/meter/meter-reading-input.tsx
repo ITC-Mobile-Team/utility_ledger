@@ -1,4 +1,4 @@
-import { HStack } from '@/components';
+import { HStack, VStack } from '@/components';
 import {
   Pressable,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { MeterDigit, type MeterDigitState } from './meter-digit';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 type MeterReadingInputProps = {
   value: string;
@@ -18,6 +18,9 @@ type MeterReadingInputProps = {
   // Усі цифри введено, але значення некоректне — підсвічуємо заповнені клітинки
   isError?: boolean;
   accessibilityLabel?: string;
+  // Вміст під барабаном (підказка, плитки). При фокусі скрол піднімає
+  // над клавіатурою весь блок разом з ним, а не лише барабан
+  children?: ReactNode;
 };
 
 // Барабан лічильника: цифри вводяться по одній зліва направо,
@@ -29,6 +32,7 @@ export function MeterReadingInput({
   readOnly = false,
   isError = false,
   accessibilityLabel,
+  children,
 }: MeterReadingInputProps) {
   const bg = useThemeColor('meterBg');
   const inputRef = useRef<TextInputInstance>(null);
@@ -47,24 +51,27 @@ export function MeterReadingInput({
       onPress={() => inputRef.current?.focus()}
       accessible={false}
     >
-      <HStack
-        spacing={readOnly ? 4 : 8}
-        style={[
-          { backgroundColor: bg },
-          styles.container,
-          !readOnly && styles.entry,
-        ]}
-      >
-        {Array.from({ length }, (_, index) => (
-          <MeterDigit
-            key={index}
-            digit={value[index] ?? ''}
-            state={stateAt(index)}
-            isLast={index === length - 1}
-            isError={isError}
-          />
-        ))}
-      </HStack>
+      <VStack spacing={10}>
+        <HStack
+          spacing={readOnly ? 4 : 8}
+          style={[
+            { backgroundColor: bg },
+            styles.container,
+            !readOnly && styles.entry,
+          ]}
+        >
+          {Array.from({ length }, (_, index) => (
+            <MeterDigit
+              key={index}
+              digit={value[index] ?? ''}
+              state={stateAt(index)}
+              isLast={index === length - 1}
+              isError={isError}
+            />
+          ))}
+        </HStack>
+        {children}
+      </VStack>
 
       {!readOnly && (
         <TextInput
@@ -103,9 +110,14 @@ const styles = StyleSheet.create({
     padding: 0, // прибирає дефолтні відступи Android
     includeFontPadding: false, // Android: прибирає зайвий простір над/під текстом
     textAlignVertical: 'center',
+    // KeyboardAwareScrollView піднімає над клавіатурою позицію курсора інпута,
+    // тож ставимо крихітний інпут під низ блоку — над клавіатурою стає весь блок
     position: 'absolute',
+    left: 0,
+    bottom: 0,
     width: 1,
     height: 1,
     opacity: 0,
+    pointerEvents: 'none', // тапи ловить Pressable, інпут лише тримає фокус
   },
 });

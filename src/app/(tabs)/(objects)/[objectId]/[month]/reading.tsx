@@ -273,25 +273,30 @@ function ZoneSection({
         length={METER_LENGTH}
         isError={zone.isTooSmall}
         accessibilityLabel={`${title}, ${unit}`}
-      />
-      <ThemedText
-        color={hint.color}
-        font={hint.font}
-        align='center'
-        accessibilityLiveRegion='polite'
       >
-        {hint.text}
-      </ThemedText>
-      <HStack spacing={10}>
-        <StatTile title='Попередній' value={formatNumber(zone.previous)} />
-        <StatTile
-          title='Спожито'
-          value={consumption}
-          tone={
-            !zone.isComplete ? 'default' : zone.isTooSmall ? 'error' : 'success'
-          }
-        />
-      </HStack>
+        <ThemedText
+          color={hint.color}
+          font={hint.font}
+          align='center'
+          accessibilityLiveRegion='polite'
+        >
+          {hint.text}
+        </ThemedText>
+        <HStack spacing={10}>
+          <StatTile title='Попередній' value={formatNumber(zone.previous)} />
+          <StatTile
+            title='Спожито'
+            value={consumption}
+            tone={
+              !zone.isComplete
+                ? 'default'
+                : zone.isTooSmall
+                  ? 'error'
+                  : 'success'
+            }
+          />
+        </HStack>
+      </MeterReadingInput>
     </VStack>
   );
 }
