@@ -177,7 +177,7 @@ export default function OutageSettingsScreen() {
       <NavigationView
         type='short'
         barType='power'
-        title='Графік відключень'
+        title='Налаштування'
         contentInsets={{ top: 20, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
         bottomOffset={keyboardInsets.bottomOffset + NAME_ROW_BELOW_TEXT}
