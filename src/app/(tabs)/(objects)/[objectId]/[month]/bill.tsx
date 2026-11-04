@@ -440,14 +440,35 @@ function ZigzagEdge({ edge }: { edge: 'top' | 'bottom' }) {
   );
 }
 
+// Як `border-top: 1.5px dashed` у макеті: штрих і проміжок утричі довші за товщину
 const DASH_WIDTH = 1.5;
+const DASH_LENGTH = DASH_WIDTH * 3;
 
-// iOS не малює пунктир лише на одній стороні рамки, тож беремо рамку з усіх
-// боків і показуємо тільки верхню через обрізання
+// Пунктир малюємо окремими штрихами: `borderStyle: 'dashed'` на iOS заливає
+// проміжки чорним і ламає кут на початку лінії. Штрихи на обох кінцях,
+// проміжки рівномірно розтягуються на всю ширину
 function Dashed() {
+  const [width, setWidth] = useState(0);
+  const count = Math.max(
+    1,
+    Math.round((width + DASH_LENGTH) / (DASH_LENGTH * 2)),
+  );
+  const gap = count > 1 ? (width - count * DASH_LENGTH) / (count - 1) : 0;
+
   return (
-    <View style={styles.dashedClip}>
-      <ThemedView borderColor='line' style={styles.dashed} />
+    <View
+      pointerEvents='none'
+      onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+      style={styles.dashedLine}
+    >
+      {width > 0 &&
+        Array.from({ length: count }, (_, index) => (
+          <ThemedView
+            key={index}
+            backgroundColor='line'
+            style={[styles.dash, { left: index * (DASH_LENGTH + gap) }]}
+          />
+        ))}
     </View>
   );
 }
@@ -525,14 +546,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     transform: [{ rotate: '45deg' }],
   },
-  dashedClip: {
+  dashedLine: {
     height: DASH_WIDTH,
-    overflow: 'hidden',
   },
-  dashed: {
-    height: DASH_WIDTH * 4,
-    borderWidth: DASH_WIDTH,
-    borderStyle: 'dashed',
+  dash: {
+    position: 'absolute',
+    top: 0,
+    width: DASH_LENGTH,
+    height: DASH_WIDTH,
   },
   empty: {
     paddingVertical: 12,
