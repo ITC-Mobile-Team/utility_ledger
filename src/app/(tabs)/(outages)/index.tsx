@@ -72,7 +72,7 @@ export default function Outages() {
         subtitle={subtitle}
         barType='power'
         cornerRadius={28}
-        contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        contentInsets={{ horizontal: 20, bottom: 32 }}
         headerTrailing={settingsButton}
       >
         <OutageMessage
@@ -95,7 +95,7 @@ export default function Outages() {
         subtitle={subtitle}
         barType='power'
         cornerRadius={28}
-        contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        contentInsets={{ horizontal: 20, bottom: 32 }}
         headerTrailing={settingsButton}
       >
         <OutageMessage
@@ -150,7 +150,7 @@ function ScheduleScreen({
       subtitle={`${provider.name}${updated}`}
       barType='power'
       cornerRadius={28}
-      contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      contentInsets={{ horizontal: 20, bottom: 32 }}
       headerTrailing={settingsButton}
       headerContent={
         <QueueChips
