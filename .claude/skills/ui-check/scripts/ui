@@ -1,0 +1,7 @@
+#!/bin/sh
+# Stale DEVELOPER_DIR (removed Xcode) breaks even /usr/bin/python3, so fix it first.
+if [ -z "$DEVELOPER_DIR" ] || [ ! -d "$DEVELOPER_DIR" ]; then
+  DEVELOPER_DIR=$(ls -d /Applications/Xcode*.app/Contents/Developer 2>/dev/null | sort -V | tail -1)
+  export DEVELOPER_DIR
+fi
+exec /usr/bin/python3 "$(dirname "$0")/ui.py" "$@"

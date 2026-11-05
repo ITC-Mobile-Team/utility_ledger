@@ -1,0 +1,12 @@
+# Димова перевірка: застосунок стартує, усі вкладки відкриваються.
+# Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/smoke.flow
+launch
+tap label=Обʼєкти
+check role=tab&label=Обʼєкти value=1
+see Ваші адреси
+tap label=Світло
+see Відсутність світла
+tap label=Аналітика
+check role=tab&label=Аналітика value=1
+open /more
+check role=tab&label=Ще value=1
