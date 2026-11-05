@@ -1,4 +1,4 @@
-import { AppImage, HStack, Pressable, ThemedText } from '@/components';
+import { HStack, Pressable, ThemedText } from '@/components';
 import type { QueueSettings } from '@/services/outages';
 import { ScrollView, StyleSheet } from 'react-native';
 
@@ -6,17 +6,11 @@ type QueueChipsProps = {
   queues: QueueSettings[];
   selected: string;
   onSelect: (id: string) => void;
-  onAdd: () => void;
 };
 
 // Перемикач між обраними чергами в шапці навбару «Світла»: скляні чипи на
-// градієнті, обраний — білий. «+» відкриває налаштування черг
-export function QueueChips({
-  queues,
-  selected,
-  onSelect,
-  onAdd,
-}: QueueChipsProps) {
+// градієнті, обраний — білий. Набір черг змінюється через шестерню в навбарі
+export function QueueChips({ queues, selected, onSelect }: QueueChipsProps) {
   return (
     <ScrollView
       horizontal
@@ -60,18 +54,6 @@ export function QueueChips({
           </Pressable>
         );
       })}
-      <Pressable
-        accessibilityRole='button'
-        accessibilityLabel='Змінити черги'
-        onPress={onAdd}
-        style={(state) => [
-          styles.chip,
-          styles.add,
-          state.pressed && styles.pressed,
-        ]}
-      >
-        <AppImage icon='plus' tintColor='onPrimary' size={{ width: 18 }} />
-      </Pressable>
     </ScrollView>
   );
 }
@@ -98,11 +80,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor: '#FFFFFF',
     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.18)',
-  },
-  add: {
-    width: 40,
-    paddingHorizontal: 0,
-    alignItems: 'center',
   },
   pressed: {
     opacity: 0.7,

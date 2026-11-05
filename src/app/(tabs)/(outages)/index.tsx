@@ -157,7 +157,6 @@ function ScheduleScreen({
           queues={queues}
           selected={queue}
           onSelect={setSelectedQueue}
-          onAdd={openSettings}
         />
       }
       refreshControl={
