@@ -101,7 +101,17 @@ export const NavigationView = ({
   // Перевіряємо лише нагорі: згорнутий навбар нижчий, і там контент може
   // вміститись, але скрол потрібен, щоб повернутись. З клавіатурою скрол
   // лишається, щоб догорнути до поля над нею, і вмикається вже при фокусі
+  // Поки палець на екрані чи скрол доїжджає за інерцією, scrollEnabled не
+  // чіпаємо: вимкнений посеред жесту він обриває скрол там, де той є, і екран
+  // «замерзає». А під час жесту вміщення змінюється саме собою: згорнутий
+  // навбар нижчий (вʼюпорт вищий), контент міняється (скелетон → графік)
+  const [isUserScrolling, setUserScrolling] = useState(false);
+  // З pull-to-refresh скрол потрібен завжди, навіть короткому контенту,
+  // інакше графік не оновити, поки він завантажується чи не опублікований
+  const hasRefreshControl = Boolean(rest.refreshControl);
   const contentFits =
+    !hasRefreshControl &&
+    !isUserScrolling &&
     isAtTop &&
     viewportHeight > 0 &&
     contentEnd + (contentInsets?.bottom ?? 0) <= viewportHeight - bottomInset;
@@ -259,6 +269,7 @@ export const NavigationView = ({
       <KeyboardAwareScrollView
         ref={scrollRef}
         onScroll={onScroll}
+        onScrollBeginDrag={() => setUserScrolling(true)}
         onScrollEndDrag={(e) => {
           // Без інерції onMomentumScrollEnd не прийде. Інерції немає і тоді,
           // коли палець відпустили на краю контенту зі швидкістю: скрол уже
@@ -268,9 +279,15 @@ export const NavigationView = ({
           const hasMomentum =
             Math.abs(velocity?.y ?? 0) >= 0.1 &&
             Math.abs((targetContentOffset?.y ?? 0) - contentOffset.y) >= 1;
-          if (!hasMomentum) snapHeader(e);
+          if (!hasMomentum) {
+            setUserScrolling(false);
+            snapHeader(e);
+          }
         }}
-        onMomentumScrollEnd={snapHeader}
+        onMomentumScrollEnd={(e) => {
+          setUserScrolling(false);
+          snapHeader(e);
+        }}
         // Відступ під таб-бар і home indicator задаємо самі, а не через
         // contentInsetAdjustmentBehavior: автоматичний відступ не потрапляє в
         // події скролу, і без нього maxScrollY хибний. Лише та частина safe
@@ -287,7 +304,7 @@ export const NavigationView = ({
         contentInset={{ bottom: bottomInset }}
         scrollIndicatorInsets={{ bottom: bottomInset }}
         contentInsetAdjustmentBehavior='never'
-        alwaysBounceVertical={false}
+        alwaysBounceVertical={hasRefreshControl}
         scrollEventThrottle={16}
         style={{ backgroundColor: bg }}
         contentContainerStyle={[{ flexGrow: 1 }, toPadding(contentInsets)]}
