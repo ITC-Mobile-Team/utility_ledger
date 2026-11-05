@@ -37,7 +37,7 @@ return (
 | Частина                       | Файл                                       | Що робить                                                                                                             |
 | ----------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
 | `KeyboardProvider`            | `src/app/_layout.tsx`                      | Потрібен для `react-native-keyboard-controller`                                                                       |
-| `KeyboardDismissView`         | `src/components/keyboard-dismiss-view.tsx` | Корінь екрана; тап поза полями закриває клавіатуру                                                                    |
+| `KeyboardDismissView`         | `src/components/keyboard-dismiss-view.tsx` | Корінь екрана; тап поза полями закриває клавіатуру. Без клавіатури вимкнений (див. «Не робити»)                       |
 | `NavigationView`              | `src/components/navigation-view.tsx`       | `KeyboardAwareScrollView`, `keyboardShouldPersistTaps='handled'` за замовчуванням; скрол вмикається при фокусі інпута |
 | `FormFooter`                  | `src/views/objects/form-footer.tsx`        | `KeyboardStickyView` з відступом 12 над клавіатурою                                                                   |
 | `useFormFooterKeyboardInsets` | `src/views/objects/form-footer.tsx`        | `bottomOffset` і `extraKeyboardSpace` для `NavigationView` під висоту футера                                          |
@@ -57,6 +57,7 @@ return (
 - `returnKeyType` на `TextInput` з цифровою клавіатурою — iOS-реалізація RN тоді додає панель з «Done».
 - `KeyboardAvoidingView` з `react-native` навколо форми — його роботу вже роблять `KeyboardAwareScrollView` і `KeyboardStickyView`.
 - Окремий `KeyboardStickyView` навколо `FormFooter` — він уже всередині.
+- `Pressable` / інший JS-респондер, що завжди ловить дотики, над `ScrollView`. На iOS (Fabric) скрол не стартує, поки JS-респондер — будь-який його предок (`touchesShouldCancelInContentView`): екран то не скролиться, то замерзає назовсім. Тому `KeyboardDismissView` вмикається лише з відкритою клавіатурою; тапи поза полями всередині скролу закриває сам `ScrollView` (`keyboardShouldPersistTaps='handled'`).
 
 ## Шторки (`BottomSheet`)
 
