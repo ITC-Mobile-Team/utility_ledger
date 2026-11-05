@@ -54,7 +54,11 @@ export default function ObjectAdded() {
       </ScreenView>
 
       <FormFooter>
-        <ActionButton title='Готово' onPress={finish} />
+        <ActionButton
+          title='Готово'
+          testID='objectAdded.done'
+          onPress={finish}
+        />
       </FormFooter>
     </View>
   );

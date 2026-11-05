@@ -42,6 +42,7 @@ type ListRowProps = {
   highlightsOnPress?: boolean;
   // Нижчий рядок для другорядних пунктів
   compact?: boolean;
+  testID?: string;
   onPress?: () => void;
 };
 
@@ -52,12 +53,14 @@ export function ListRow({
   showsChevron = true,
   highlightsOnPress = true,
   compact = false,
+  testID,
   onPress,
 }: ListRowProps) {
   return (
     // Pressable з gesture-handler скасовує натискання, коли рядок свайпають
     <GesturePressable
       disabled={!onPress}
+      testID={testID}
       onPress={onPress}
       style={(state) => highlightsOnPress && state.pressed && styles.pressed}
     >

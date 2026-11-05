@@ -107,6 +107,9 @@ export const NavigationBarHeader = ({
       <Animated.View style={[styles.row, isFull && collapse.rowStyle]}>
         {canGoBack && (
           <Pressable
+            accessibilityRole='button'
+            accessibilityLabel='Назад'
+            testID='navigationBar.back'
             style={(state) => [state.pressed && styles.pressed, styles.back]}
             onPress={() => {
               router.back();

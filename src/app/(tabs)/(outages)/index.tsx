@@ -47,6 +47,7 @@ const settingsButton = (
   <NavigationBarIconButton
     icon='gear'
     accessibilityLabel='Налаштування графіка'
+    testID='outages.settings'
     onPress={openSettings}
   />
 );
@@ -169,6 +170,7 @@ function ScheduleScreen({
     >
       <VStack spacing={14}>
         <Segment<Day>
+          testID='outages.day'
           items={[
             { value: 'today', label: `Сьогодні, ${formatShortDate(now.date)}` },
             {

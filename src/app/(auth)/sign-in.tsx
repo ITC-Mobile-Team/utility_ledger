@@ -50,6 +50,7 @@ export default function SignIn() {
           <ActionButton
             type='apple'
             title='Продовжити з Apple'
+            testID='signIn.apple'
             loading={pendingMethod === 'apple'}
             disabled={pendingMethod === 'google'}
             onPress={() => signInWith('apple')}
@@ -57,6 +58,7 @@ export default function SignIn() {
           <ActionButton
             type='google'
             title='Продовжити з Google'
+            testID='signIn.google'
             loading={pendingMethod === 'google'}
             disabled={pendingMethod === 'apple'}
             onPress={() => signInWith('google')}

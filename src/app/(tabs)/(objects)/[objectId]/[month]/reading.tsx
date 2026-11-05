@@ -95,6 +95,7 @@ export default function Reading() {
     <KeyboardDismissView>
       <NavigationView
         title={isEditing ? 'Змінити показник' : 'Додати показник'}
+        testID='reading.screen'
         subtitle={`${formatMonthTitle(validMonth)} · ${service.name}`}
         contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
@@ -117,6 +118,7 @@ export default function Reading() {
             <>
               <ZoneSection
                 title='☀️ ДЕНЬ'
+                testID='reading.day'
                 unit={service.unit}
                 value={value}
                 onChangeValue={setValue}
@@ -124,6 +126,7 @@ export default function Reading() {
               />
               <ZoneSection
                 title='🌙 НІЧ'
+                testID='reading.night'
                 unit={service.unit}
                 value={nightValue}
                 onChangeValue={setNightValue}
@@ -133,6 +136,7 @@ export default function Reading() {
           ) : (
             <ZoneSection
               title='ПОКАЗНИК ЛІЧИЛЬНИКА'
+              testID='reading.value'
               unit={service.unit}
               value={value}
               onChangeValue={setValue}
@@ -153,12 +157,14 @@ export default function Reading() {
           title={isEditing ? 'Зберегти зміни' : 'Записати показник'}
           disabled={!canSave}
           loading={isSaving}
+          testID='reading.save'
           onPress={save}
         />
         {isEditing && (
           <TextButton
             title='Скинути показник'
             disabled={isSaving}
+            testID='reading.reset'
             onPress={() =>
               confirmResetEntry(service, validMonth, () => {
                 // Спершу назад, щоб екран не встиг перемкнутись на «Додати»
@@ -240,6 +246,7 @@ type ZoneSectionProps = {
   value: string;
   onChangeValue: (value: string) => void;
   zone: Zone;
+  testID: string;
 };
 
 // Барабан лічильника (введення по цифрі) з попереднім показником і споживанням для однієї зони
@@ -249,6 +256,7 @@ function ZoneSection({
   value,
   onChangeValue,
   zone,
+  testID,
 }: ZoneSectionProps) {
   const hint = hintFor(value, zone);
   const consumption = !zone.isComplete
@@ -273,6 +281,7 @@ function ZoneSection({
         length={METER_LENGTH}
         isError={zone.isTooSmall}
         accessibilityLabel={`${title}, ${unit}`}
+        testID={testID}
       >
         <ThemedText
           color={hint.color}

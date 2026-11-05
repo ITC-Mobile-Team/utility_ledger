@@ -13,6 +13,8 @@ type EmptyStateViewProps = {
   title: string;
   message: string;
   actionTitle?: string;
+  // testID кнопки дії
+  actionTestID?: string;
   onAction?: () => void;
 };
 
@@ -21,6 +23,7 @@ export function EmptyStateView({
   title,
   message,
   actionTitle,
+  actionTestID,
   onAction,
 }: EmptyStateViewProps) {
   return (
@@ -48,6 +51,7 @@ export function EmptyStateView({
       {actionTitle && (
         <ActionButton
           title={`+  ${actionTitle}`}
+          testID={actionTestID}
           onPress={onAction}
           style={styles.button}
         />

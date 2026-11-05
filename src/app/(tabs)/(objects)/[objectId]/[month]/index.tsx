@@ -49,12 +49,19 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '@/components';
 
 const monthButtons: NavigationBarButtonItem[] = [
-  { id: 'bill', title: 'Розрахунок', icon: 'document', iconBackground: 'blue' },
+  {
+    id: 'bill',
+    title: 'Розрахунок',
+    icon: 'document',
+    iconBackground: 'blue',
+    testID: 'month.nav.bill',
+  },
   {
     id: 'services',
     title: 'Послуги обʼєкта',
     icon: 'gauge',
     iconBackground: 'inkTile',
+    testID: 'month.nav.services',
   },
 ];
 
@@ -217,6 +224,7 @@ export default function MonthServices() {
             title='Місяць'
             icon='calendar'
             accessibilityLabel='Змінити місяць'
+            testID='month.change'
             onPress={() => {
               setMonthSheetKey((key) => key + 1);
               setMonthSheetVisible(true);
@@ -225,6 +233,7 @@ export default function MonthServices() {
         }
         barType='blue'
         contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        testID='month.screen'
         navigationBarButtons={monthButtons}
         onNavigationButtonPress={(id) => {
           if (id === 'bill') openBill();
@@ -237,6 +246,7 @@ export default function MonthServices() {
             title='Нічого вносити'
             message='За цей місяць немає послуг. Додайте послугу обʼєкта, щоб вносити показники й бачити суму до сплати.'
             actionTitle='Додати послугу'
+            actionTestID='month.empty.addService'
             onAction={() =>
               router.push({
                 pathname: '/[objectId]/service-form',
@@ -247,6 +257,8 @@ export default function MonthServices() {
         ) : (
           <VStack spacing={20}>
             <Pressable
+              accessibilityRole='button'
+              testID='month.total'
               onPress={openBill}
               style={(state) => state.pressed && styles.pressed}
             >
@@ -279,10 +291,11 @@ export default function MonthServices() {
             {meters.length > 0 && (
               <Section title='Показники'>
                 <ListCard>
-                  {meters.map((item) =>
+                  {meters.map((item, index) =>
                     resettable(
                       item.service,
                       <ListRow
+                        testID={`month.meter.${index}`}
                         leading={
                           <ServiceIcon
                             icon={item.service.icon}
@@ -308,10 +321,11 @@ export default function MonthServices() {
             {invoices.length > 0 && (
               <Section title='Рахунки'>
                 <ListCard>
-                  {invoices.map((item) =>
+                  {invoices.map((item, index) =>
                     resettable(
                       item.service,
                       <ListRow
+                        testID={`month.invoice.${index}`}
                         leading={
                           <ServiceIcon
                             icon={item.service.icon}
@@ -337,11 +351,12 @@ export default function MonthServices() {
             {byDays.length > 0 && (
               <Section title='За днями'>
                 <ListCard>
-                  {byDays.map((item) => {
+                  {byDays.map((item, index) => {
                     const days = item.days;
                     return resettable(
                       item.service,
                       <ListRow
+                        testID={`month.days.${index}`}
                         leading={
                           <ServiceIcon
                             icon={item.service.icon}

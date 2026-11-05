@@ -1,11 +1,18 @@
-# Димова перевірка: застосунок стартує, усі вкладки відкриваються.
+# Димова перевірка: застосунок стартує, усі вкладки й основні екрани адреси відкриваються.
+# Потрібна хоча б одна адреса з місяцем.
 # Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/smoke.flow
 launch
 tap label=Обʼєкти
 check role=tab&label=Обʼєкти value=1
-see Ваші адреси
+wait id=objects.screen
+tap id=objects.card.0
+wait id=object.screen
+tap id=navigationBar.back
 tap label=Світло
 see Відсутність світла
+tap id=outages.settings
+wait id=outageSettings.screen
+tap id=navigationBar.back
 tap label=Аналітика
 check role=tab&label=Аналітика value=1
 open /more

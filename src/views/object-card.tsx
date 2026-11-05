@@ -27,6 +27,7 @@ type ObjectCardProps = {
   // Статус поточного місяця; без нього нижня частина картки не показується
   month?: MonthKey;
   status?: MonthStatus;
+  testID?: string;
   onPress?: () => void;
 };
 
@@ -35,6 +36,7 @@ export function ObjectCard({
   services = [],
   month,
   status,
+  testID,
   onPress,
 }: ObjectCardProps) {
   const subtitle = formatObjectSubtitle(object);
@@ -42,6 +44,7 @@ export function ObjectCard({
   return (
     <Pressable
       disabled={!onPress}
+      testID={testID}
       onPress={onPress}
       style={(state) => state.pressed && styles.pressed}
     >

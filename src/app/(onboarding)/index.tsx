@@ -119,7 +119,11 @@ export default function Onboarding() {
         />
 
         <View style={styles.footer}>
-          <ActionButton title={isLast ? 'Почати' : 'Далі'} onPress={onNext} />
+          <ActionButton
+            title={isLast ? 'Почати' : 'Далі'}
+            testID='onboarding.next'
+            onPress={onNext}
+          />
         </View>
 
         <HStack
@@ -133,6 +137,7 @@ export default function Onboarding() {
           <Spacer />
           <TransparentActionButton
             title='Пропустити'
+            testID='onboarding.skip'
             onPress={completeOnboarding}
           />
         </HStack>

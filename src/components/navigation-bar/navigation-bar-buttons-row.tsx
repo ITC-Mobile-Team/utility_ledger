@@ -38,6 +38,10 @@ export const NavigationBarButtonsRow = ({
   return (
     <Animated.View
       pointerEvents={isInteractive ? 'auto' : 'none'}
+      // Обидва ряди (повний і короткий) змонтовані одночасно: прихований не
+      // має потрапляти до VoiceOver і в дерево UI-перевірок з тими самими testID
+      accessibilityElementsHidden={!isInteractive}
+      importantForAccessibility={isInteractive ? 'auto' : 'no-hide-descendants'}
       onLayout={(e) => onHeightChange(e.nativeEvent.layout.height)}
       style={[styles.container, { top }, style]}
     >

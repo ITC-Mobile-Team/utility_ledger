@@ -340,6 +340,30 @@ def cmd_type(selector, text, replace=True, timeout=5.0):
     return "type %s" % selector
 
 
+def _axe():
+    """AXe ships inside the XcodeBuildMCP formula; `axe type` needs no elementRef."""
+    import shutil
+    candidates = [os.environ.get("UI_AXE"), shutil.which("axe")]
+    xcb_path = shutil.which(XCB)
+    if xcb_path:
+        root = os.path.dirname(os.path.dirname(os.path.realpath(xcb_path)))
+        candidates.append(os.path.join(root, "libexec", "bundled", "axe"))
+    for c in candidates:
+        if c and os.access(c, os.X_OK):
+            return c
+    raise Blocked("axe not found (set UI_AXE); it comes with `brew install xcodebuildmcp`")
+
+
+def cmd_keys(text):
+    """Type into whatever field has focus, through the HID keyboard. For inputs
+    the tree does not show (hidden TextInput behind the meter / amount UI).
+    US keyboard characters only: digits, latin letters, `.` (becomes `,` in sums)."""
+    r = run([_axe(), "type", text, "--udid", simulator()], 60)
+    if r.returncode:
+        raise Blocked("axe type failed: " + (r.stderr or r.stdout).strip()[:160])
+    return "keys %s" % text
+
+
 def cmd_swipe(selector, direction, distance=0.6):
     e, _ = resolve(selector, "swipeWithin", 3.0)
     xcb("swipe", {"withinElementRef": e["ref"], "direction": direction, "distance": distance, "duration": 0.2})
@@ -566,6 +590,8 @@ def step(line):
         return cmd_tap(pos[0], t if t is not None else 5.0, long_press=True)
     if verb == "type":
         return cmd_type(pos[0], pos[1], replace="append" not in pos[2:])
+    if verb == "keys":
+        return cmd_keys(" ".join(pos))
     if verb == "swipe":
         return cmd_swipe(pos[0], pos[1] if len(pos) > 1 else "up", float(opt.get("distance", 0.6)))
     if verb == "scrollto":

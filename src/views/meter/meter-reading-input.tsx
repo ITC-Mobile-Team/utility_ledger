@@ -13,6 +13,9 @@ type MeterReadingInputProps = {
   // Усі цифри введено, але значення некоректне — підсвічуємо заповнені клітинки
   isError?: boolean;
   accessibilityLabel?: string;
+  // testID барабана: прихований інпут (opacity 0) iOS не показує в дереві
+  // доступності. UI-перевірка: `tap id=…`, потім `keys 01234`
+  testID?: string;
   // Вміст під барабаном (підказка, плитки). При фокусі скрол піднімає
   // над клавіатурою весь блок разом з ним, а не лише барабан
   children?: ReactNode;
@@ -27,6 +30,7 @@ export function MeterReadingInput({
   readOnly = false,
   isError = false,
   accessibilityLabel,
+  testID,
   children,
 }: MeterReadingInputProps) {
   const bg = useThemeColor('meterBg');
@@ -46,6 +50,7 @@ export function MeterReadingInput({
       disabled={readOnly}
       onPress={() => inputRef.current?.focus()}
       accessible={false}
+      testID={testID}
     >
       <VStack spacing={10}>
         <HStack

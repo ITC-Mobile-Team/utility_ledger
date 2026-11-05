@@ -43,26 +43,36 @@ const objectButtons: NavigationBarButtonItem[] = [
     title: 'Додати місяць',
     icon: 'calendar',
     iconBackground: 'green',
+    testID: 'object.nav.addMonth',
   },
   {
     id: 'add-service',
     title: 'Додати послугу',
     icon: 'plus',
     iconBackground: 'coral',
+    testID: 'object.nav.addService',
   },
   {
     id: 'services',
     title: 'Послуги',
     icon: 'gauge',
     iconBackground: 'inkTile',
+    testID: 'object.nav.services',
   },
-  { id: 'edit', title: 'Редагувати', icon: 'pencil', iconBackground: 'blue' },
+  {
+    id: 'edit',
+    title: 'Редагувати',
+    icon: 'pencil',
+    iconBackground: 'blue',
+    testID: 'object.nav.edit',
+  },
   {
     id: 'delete',
     title: 'Видалити',
     icon: 'trash',
     iconBackground: 'coralSoft',
     iconColor: 'coral',
+    testID: 'object.nav.delete',
   },
 ];
 
@@ -163,6 +173,7 @@ export default function ObjectMonths() {
       type='short'
       title={formatShortAddress(object)}
       barType='blue'
+      testID='object.screen'
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
       navigationBarButtons={objectButtons}
       onNavigationButtonPress={onButtonPress}
@@ -173,6 +184,7 @@ export default function ObjectMonths() {
           title='Ще немає місяців'
           message='Додайте послугу — світло, воду чи інтернет, — щоб вносити показники й рахувати суму. Місяць можна додати й одразу.'
           actionTitle='Додати послугу'
+          actionTestID='object.empty.addService'
           onAction={addService}
         />
       ) : months.length === 0 ? (
@@ -181,6 +193,7 @@ export default function ObjectMonths() {
           title='Ще немає місяців'
           message='Додайте місяць, щоб вносити показники й рахувати суму.'
           actionTitle='Додати місяць'
+          actionTestID='object.empty.addMonth'
           onAction={addMonth}
         />
       ) : (
@@ -203,6 +216,7 @@ export default function ObjectMonths() {
                           title: 'Видалити',
                           icon: 'trash',
                           background: 'coral',
+                          testID: `object.month.${month}.delete`,
                           onPress: () => confirmDeleteMonth(month),
                         },
                       ]}
@@ -232,6 +246,7 @@ export default function ObjectMonths() {
                             </ThemedView>
                           )
                         }
+                        testID={`object.month.${month}`}
                         onPress={() =>
                           router.push({
                             pathname: '/[objectId]/[month]',

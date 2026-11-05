@@ -9,6 +9,7 @@ export type SwipeAction = {
   title: string;
   icon: AppIcon;
   background: AppColor;
+  testID?: string;
   onPress: () => void;
 };
 
@@ -27,6 +28,8 @@ export function SwipeableRow({ actions, children }: SwipeableRowProps) {
           {[...actions].reverse().map((action) => (
             <Pressable
               key={action.title}
+              accessibilityRole='button'
+              testID={action.testID}
               onPress={() => {
                 methods.close();
                 action.onPress();

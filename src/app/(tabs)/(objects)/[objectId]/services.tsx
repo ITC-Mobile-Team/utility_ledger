@@ -59,6 +59,7 @@ export default function ObjectServices() {
       type='short'
       title='Послуги'
       barType='blue'
+      testID='services.screen'
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
       navigationBarButtons={[
         {
@@ -66,6 +67,7 @@ export default function ObjectServices() {
           title: 'Додати послугу',
           icon: 'plus',
           iconBackground: 'coral',
+          testID: 'services.nav.add',
         },
       ]}
       onNavigationButtonPress={() => openForm()}
@@ -76,6 +78,7 @@ export default function ObjectServices() {
           title='Послуг ще немає'
           message='Обліковуйте за показником лічильника, фіксованою сумою або ставкою за день. Тариф вказується одразу при створенні.'
           actionTitle='Додати послугу'
+          actionTestID='services.empty.add'
           onAction={() => openForm()}
         />
       ) : (
@@ -88,7 +91,7 @@ export default function ObjectServices() {
           </VStack>
 
           <ListCard>
-            {services.map((service) => (
+            {services.map((service, index) => (
               <SwipeableRow
                 key={service.id}
                 actions={[
@@ -96,18 +99,21 @@ export default function ObjectServices() {
                     title: 'Редагувати',
                     icon: 'pencil',
                     background: 'blue',
+                    testID: `services.row.${index}.edit`,
                     onPress: () => openForm(service.id),
                   },
                   {
                     title: 'Видалити',
                     icon: 'trash',
                     background: 'coral',
+                    testID: `services.row.${index}.delete`,
                     onPress: () => confirmDelete(service),
                   },
                 ]}
               >
                 <ListRow
                   leading={<ServiceIcon icon={service.icon} />}
+                  testID={`services.row.${index}`}
                   onPress={() => openForm(service.id)}
                 >
                   <ThemedText font='rowTitle'>{service.name}</ThemedText>

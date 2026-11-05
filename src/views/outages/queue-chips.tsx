@@ -28,6 +28,7 @@ export function QueueChips({ queues, selected, onSelect }: QueueChipsProps) {
             guarded={false}
             accessibilityRole='tab'
             accessibilityState={{ selected: isSelected }}
+            testID={`outages.queue.${queue.id}`}
             onPress={() => onSelect(queue.id)}
             style={(state) => [
               styles.chip,

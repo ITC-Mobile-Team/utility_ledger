@@ -15,6 +15,7 @@ export type NavigationBarButtonItem = {
   icon: AppIcon;
   iconBackground: AppColor;
   iconColor?: AppColor;
+  testID?: string;
 };
 
 export type NavigationBarButtonProps = NavigationBarButtonItem & {
@@ -26,6 +27,7 @@ export const NavigationBarButton = ({
   icon,
   iconBackground,
   iconColor = 'onPrimary',
+  testID,
   onPress,
 }: NavigationBarButtonProps) => {
   const navigationBarIcon = appIcons[icon];
@@ -33,7 +35,12 @@ export const NavigationBarButton = ({
   const { width: screenWidth } = useWindowDimensions();
   const buttonWidth = screenWidth * FULL_BUTTON_WIDTH_RATIO;
   return (
-    <Pressable onPress={onPress} style={{ width: buttonWidth }}>
+    <Pressable
+      accessibilityRole='button'
+      testID={testID}
+      onPress={onPress}
+      style={{ width: buttonWidth }}
+    >
       <ThemedView backgroundColor='surface' style={styles.button}>
         <HStack align='center' spacing={12}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>

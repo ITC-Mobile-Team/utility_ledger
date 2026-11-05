@@ -13,12 +13,13 @@ export const ShortNavigationBarButton = ({
   icon,
   iconBackground,
   iconColor = 'onPrimary',
+  testID,
   onPress,
 }: NavigationBarButtonProps) => {
   const navigationBarIcon = appIcons[icon];
   const iconTint = useThemeColor(iconColor);
   return (
-    <Pressable onPress={onPress}>
+    <Pressable accessibilityRole='button' testID={testID} onPress={onPress}>
       <View style={styles.container}>
         <HStack align='center' spacing={8}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>

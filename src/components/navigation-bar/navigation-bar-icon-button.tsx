@@ -7,6 +7,7 @@ import { Pressable } from '../pressable';
 type NavigationBarIconButtonProps = {
   icon: AppIcon;
   accessibilityLabel: string;
+  testID?: string;
   onPress: () => void;
 };
 
@@ -15,6 +16,7 @@ type NavigationBarIconButtonProps = {
 export function NavigationBarIconButton({
   icon,
   accessibilityLabel,
+  testID,
   onPress,
 }: NavigationBarIconButtonProps) {
   const tint = useThemeColor('onPrimary');
@@ -22,6 +24,7 @@ export function NavigationBarIconButton({
     <Pressable
       accessibilityRole='button'
       accessibilityLabel={accessibilityLabel}
+      testID={testID}
       onPress={onPress}
       style={(state) => [styles.button, state.pressed && styles.pressed]}
     >

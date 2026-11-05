@@ -131,6 +131,7 @@ export default function Amount() {
               guarded={false}
               accessibilityRole='button'
               accessibilityLabel={`Підставити суму: ${reference.label}, ${formatMoney(last.amount)}`}
+              testID='amount.last'
               onPress={() => setValue(formatMoneyInput(last.amount))}
               style={({ pressed }) => pressed && styles.pressed}
             >
@@ -160,6 +161,7 @@ export default function Amount() {
             onChangeValue={setValue}
             autoFocus
             accessibilityLabel='Сума з рахунку, гривень'
+            testID='amount.value'
           >
             <ThemedText
               color={hint.color}
@@ -187,12 +189,14 @@ export default function Amount() {
             title={isEditing ? 'Зберегти зміни' : 'Зберегти суму'}
             disabled={!canSave}
             loading={isSaving}
+            testID='amount.save'
             onPress={save}
           />
           {isEditing && (
             <TextButton
               title='Скинути суму'
               disabled={isSaving}
+              testID='amount.reset'
               onPress={confirmReset}
             />
           )}

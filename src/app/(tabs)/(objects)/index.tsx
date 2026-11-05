@@ -22,12 +22,14 @@ const objectsNavigationButtons: NavigationBarButtonItem[] = [
     title: 'Додати адресу',
     icon: 'plus',
     iconBackground: 'coral',
+    testID: 'objects.nav.add',
   },
   {
     id: 'archive',
     title: 'Архів',
     icon: 'archive',
     iconBackground: 'inkTile',
+    testID: 'objects.nav.archive',
   },
 ];
 
@@ -47,6 +49,7 @@ export default function Index() {
     <NavigationView
       title='Обʼєкти'
       subtitle={subtitle}
+      testID='objects.screen'
       barType='blue'
       cornerRadius={isEmpty ? 28 : 0}
       contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
@@ -64,14 +67,16 @@ export default function Index() {
           title='Додайте першу адресу'
           message='Квартира, будинок чи офіс — після цього можна додати послуги та вносити показники щомісяця.'
           actionTitle='Додати адресу'
+          actionTestID='objects.empty.add'
           onAction={addObject}
         />
       ) : (
         <VStack spacing={12}>
           <SectionHeader title='Ваші адреси' />
-          {state.objects.map((object) => (
+          {state.objects.map((object, index) => (
             <ObjectCard
               key={object.id}
+              testID={`objects.card.${index}`}
               object={object}
               services={getObjectServices(state, object.id)}
               month={month}

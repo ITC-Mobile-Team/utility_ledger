@@ -178,6 +178,7 @@ export default function OutageSettingsScreen() {
         type='short'
         barType='power'
         title='Налаштування'
+        testID='outageSettings.screen'
         contentInsets={{ top: 20, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
         bottomOffset={keyboardInsets.bottomOffset + NAME_ROW_BELOW_TEXT}
@@ -196,6 +197,7 @@ export default function OutageSettingsScreen() {
                     />
                   </ThemedView>
                 }
+                testID='outageSettings.city'
                 onPress={() => {
                   Keyboard.dismiss();
                   setCitySheetVisible(true);
@@ -330,6 +332,7 @@ export default function OutageSettingsScreen() {
                     onValueChange={toggleNotifications}
                     trackColor={{ true: switchOn }}
                     accessibilityLabel='Попереджати перед вимкненням'
+                    testID='outageSettings.notify'
                   />
                 </HStack>
                 {notifications.enabled && pickedQueues.length > 0 && (
@@ -355,6 +358,7 @@ export default function OutageSettingsScreen() {
                 )}
                 {notifications.enabled && (
                   <Segment<`${NotificationLead}`>
+                    testID='outageSettings.lead'
                     items={NOTIFICATION_LEADS.map((lead) => ({
                       value: `${lead}`,
                       label: `За ${formatDuration(lead)}`,
@@ -386,6 +390,7 @@ export default function OutageSettingsScreen() {
           title={footerTitle}
           disabled={!canSave}
           loading={isSaving}
+          testID='outageSettings.save'
           onPress={save}
         />
       </FormFooter>
@@ -422,6 +427,7 @@ function QueueToggle({
         guarded={false}
         accessibilityRole='button'
         accessibilityLabel={`Черга ${id}`}
+        testID={`outageSettings.queue.${id}`}
         accessibilityState={{ selected: isOn }}
         onPress={onPress}
         style={(state) => [
@@ -461,6 +467,7 @@ function NotifyQueueChip({
       guarded={false}
       accessibilityRole='button'
       accessibilityLabel={`Сповіщення для черги ${id}`}
+      testID={`outageSettings.notifyQueue.${id}`}
       accessibilityState={{ selected: isOn }}
       onPress={onPress}
       style={(state) => [
@@ -520,6 +527,7 @@ function QueueNameRow({
           returnKeyType='done'
           maxLength={24}
           accessibilityLabel={`Назва черги ${id}`}
+          testID={`outageSettings.queueName.${id}`}
           style={[typography.rowTitle, styles.nameInput, { color: ink }]}
         />
       </HStack>

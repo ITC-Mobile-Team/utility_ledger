@@ -32,6 +32,7 @@ export default function Welcome() {
         <Content />
         <ActionButton
           title='Увійти або зареєструватися'
+          testID='welcome.signIn'
           onPress={signInPress}
         />
       </VStack>

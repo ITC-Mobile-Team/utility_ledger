@@ -86,6 +86,7 @@ export default function ObjectForm() {
               value={name}
               onChangeText={setName}
               placeholder='Квартира в Полтаві'
+              testID='objectForm.name'
               returnKeyType='done'
             />
             <ThemedText color='muted' font='caption'>
@@ -99,6 +100,7 @@ export default function ObjectForm() {
             </ThemedText>
 
             <Pressable
+              testID='objectForm.city'
               onPress={() => {
                 Keyboard.dismiss();
                 setCityPickerVisible(true);
@@ -132,6 +134,7 @@ export default function ObjectForm() {
               value={street}
               onChangeText={setStreet}
               placeholder='Наприклад, Соборності'
+              testID='objectForm.street'
             />
 
             <HStack spacing={10}>
@@ -140,6 +143,7 @@ export default function ObjectForm() {
                   title='Будинок'
                   value={house}
                   onChangeText={setHouse}
+                  testID='objectForm.house'
                   placeholder='—'
                 />
               </View>
@@ -148,6 +152,7 @@ export default function ObjectForm() {
                   title='Квартира'
                   value={apartment}
                   onChangeText={setApartment}
+                  testID='objectForm.apartment'
                   placeholder='—'
                 />
               </View>
@@ -156,6 +161,7 @@ export default function ObjectForm() {
                   title='Корпус'
                   value={building}
                   onChangeText={setBuilding}
+                  testID='objectForm.building'
                   placeholder='—'
                 />
               </View>
@@ -173,6 +179,7 @@ export default function ObjectForm() {
           title='Зберегти'
           disabled={!canSave}
           loading={isSaving}
+          testID='objectForm.save'
           onPress={save}
         />
       </FormFooter>

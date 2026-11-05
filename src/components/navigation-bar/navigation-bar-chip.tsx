@@ -9,6 +9,7 @@ type NavigationBarChipProps = {
   title: string;
   icon: AppIcon;
   accessibilityLabel?: string;
+  testID?: string;
   onPress: () => void;
 };
 
@@ -17,6 +18,7 @@ export function NavigationBarChip({
   title,
   icon,
   accessibilityLabel,
+  testID,
   onPress,
 }: NavigationBarChipProps) {
   const tint = useThemeColor('onPrimary');
@@ -25,6 +27,7 @@ export function NavigationBarChip({
       accessibilityRole='button'
       accessibilityLabel={accessibilityLabel ?? title}
       hitSlop={4}
+      testID={testID}
       onPress={onPress}
       style={(state) => [styles.chip, state.pressed && styles.pressed]}
     >

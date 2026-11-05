@@ -99,6 +99,7 @@ export function MonthPickerSheet({
       <ActionButton
         title={saveTitle}
         disabled={!canSave}
+        testID='monthPicker.save'
         onPress={() => selected && onSave(selected)}
       />
     </BottomSheet>

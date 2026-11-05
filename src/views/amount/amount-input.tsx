@@ -21,6 +21,9 @@ type AmountInputProps = {
   onChangeValue: (value: string) => void;
   autoFocus?: boolean;
   accessibilityLabel?: string;
+  // testID видимого блоку суми: прихований інпут (opacity 0) iOS не показує
+  // в дереві доступності. UI-перевірка: `tap id=…`, потім `keys 125.70`
+  testID?: string;
   // Вміст під сумою (підказка). Тап по ньому теж відкриває клавіатуру
   children?: ReactNode;
 };
@@ -32,6 +35,7 @@ export function AmountInput({
   onChangeValue,
   autoFocus = false,
   accessibilityLabel,
+  testID,
   children,
 }: AmountInputProps) {
   const inputRef = useRef<TextInputInstance>(null);
@@ -43,6 +47,7 @@ export function AmountInput({
       guarded={false}
       onPress={() => inputRef.current?.focus()}
       accessible={false}
+      testID={testID}
       style={styles.container}
     >
       <HStack spacing={6} align='center'>

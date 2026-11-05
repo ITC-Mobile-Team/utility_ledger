@@ -180,11 +180,14 @@ export default function ServiceForm() {
       <NavigationView
         title={existing ? 'Редагувати послугу' : 'Додати послугу'}
         subtitle={`Для обʼєкта: ${formatAddress(object)}`}
+        testID='serviceForm.screen'
         contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
         {...keyboardInsets}
       >
         <VStack spacing={20}>
           <Pressable
+            accessibilityRole='button'
+            testID='serviceForm.icon'
             onPress={() =>
               router.push({
                 pathname: '/[objectId]/icon-picker',
@@ -220,7 +223,12 @@ export default function ServiceForm() {
             <ThemedText color='muted' font='overline'>
               ЯК ОБЛІКОВУВАТИ
             </ThemedText>
-            <RadioGroup items={billingModes} value={mode} onChange={setMode} />
+            <RadioGroup
+              items={billingModes}
+              value={mode}
+              onChange={setMode}
+              testID='serviceForm.mode'
+            />
           </VStack>
 
           <ThemedTextInput
@@ -228,6 +236,7 @@ export default function ServiceForm() {
             value={name}
             onChangeText={setName}
             placeholder='Світло'
+            testID='serviceForm.name'
           />
 
           {mode === 'meter' && (
@@ -236,6 +245,7 @@ export default function ServiceForm() {
               value={unit}
               onChangeText={setUnit}
               placeholder='кВт·год'
+              testID='serviceForm.unit'
             />
           )}
 
@@ -244,10 +254,16 @@ export default function ServiceForm() {
               <ThemedText color='muted' font='overline'>
                 ТИП ЛІЧИЛЬНИКА
               </ThemedText>
-              <Segment items={zoneItems} value={zones} onChange={changeZones} />
+              <Segment
+                items={zoneItems}
+                value={zones}
+                onChange={changeZones}
+                testID='serviceForm.zones'
+              />
               {!isDayNight && (
                 <ThemedTextInput
                   title='Початковий показник'
+                  testID='serviceForm.initialReading'
                   value={initialReading}
                   onChangeText={(text) =>
                     setInitialReading(text.replace(/\D/g, ''))
@@ -270,6 +286,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='☀️ День'
+                      testID='serviceForm.initialReading.day'
                       value={initialReading}
                       onChangeText={(text) =>
                         setInitialReading(text.replace(/\D/g, ''))
@@ -282,6 +299,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='🌙 Ніч'
+                      testID='serviceForm.initialReading.night'
                       value={initialNightReading}
                       onChangeText={(text) =>
                         setInitialNightReading(text.replace(/\D/g, ''))
@@ -302,6 +320,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='☀️ День, ₴'
+                      testID='serviceForm.tariff.day'
                       value={tariff}
                       onChangeText={setTariff}
                       placeholder='0,00'
@@ -311,6 +330,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='🌙 Ніч, ₴'
+                      testID='serviceForm.tariff.night'
                       value={nightTariff}
                       onChangeText={setNightTariff}
                       placeholder='0,00'
@@ -334,6 +354,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='💧 Водопостач., ₴'
+                      testID='serviceForm.tariff.water'
                       value={tariff}
                       onChangeText={setTariff}
                       placeholder='0,00'
@@ -343,6 +364,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='🚽 Стоки, ₴'
+                      testID='serviceForm.tariff.sewage'
                       value={sewageTariff}
                       onChangeText={setSewageTariff}
                       placeholder='0,00'
@@ -360,6 +382,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='💧 Вода, ₴'
+                      testID='serviceForm.fee.water'
                       value={waterFee}
                       onChangeText={setWaterFee}
                       placeholder='0,00'
@@ -369,6 +392,7 @@ export default function ServiceForm() {
                   <View style={styles.flex}>
                     <ThemedTextInput
                       title='🚽 Стоки, ₴'
+                      testID='serviceForm.fee.sewage'
                       value={sewageFee}
                       onChangeText={setSewageFee}
                       placeholder='0,00'
@@ -395,6 +419,7 @@ export default function ServiceForm() {
                   ? `Ціна за 1 ${unit.trim() || 'м³'}, ₴`
                   : tariffTitles[mode]
               }
+              testID='serviceForm.tariff'
               value={tariff}
               onChangeText={setTariff}
               placeholder='0,00'
@@ -421,6 +446,7 @@ export default function ServiceForm() {
           title='Зберегти'
           disabled={!canSave}
           loading={isSaving}
+          testID='serviceForm.save'
           onPress={save}
         />
       </FormFooter>

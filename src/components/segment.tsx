@@ -30,6 +30,8 @@ type SegmentProps<T extends string> = {
   value: T;
   onChange: (value: T) => void;
   style?: StyleProp<ViewStyle>;
+  // Префікс: сегменти отримують `${testID}.${value}`
+  testID?: string;
 };
 
 export function Segment<T extends string>({
@@ -37,6 +39,7 @@ export function Segment<T extends string>({
   value,
   onChange,
   style,
+  testID,
 }: SegmentProps<T>) {
   const surface = useThemeColor('surface');
   const selectedIndex = Math.max(
@@ -91,6 +94,7 @@ export function Segment<T extends string>({
             key={item.value}
             accessibilityRole='tab'
             accessibilityState={{ selected }}
+            testID={testID && `${testID}.${item.value}`}
             onPress={() => {
               if (!selected) {
                 onChange(item.value);

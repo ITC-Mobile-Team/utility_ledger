@@ -73,12 +73,13 @@ launch                       # перезапуск: dev-збірка підкл
 launch keep                  # без terminate, просто вивести на передній план
 open /outage-settings        # маршрут Expo Router → utilityledger://outage-settings (групи (tabs) тощо не пишуться)
 open utilityledger://more    # або повний URL
-tap id=objects.addButton     # timeout=5 за замовчуванням: чекає появи елемента
+tap id=objects.nav.add       # timeout=5 за замовчуванням: чекає появи елемента
 hold label~=iPhone           # довге натискання
-type id=objectForm.name "Дача"   # append — дописати, а не замінити
-swipe id=objects.list up distance=0.6
-scrollto text~=Січень within=id=object.months dir=up max=8
-wait id=outages.screen timeout=10
+type id=objectForm.name "Dacha"  # append — дописати, а не замінити; лише латиниця, див. нижче
+tap id=reading.value | keys 01234    # набір у поле з фокусом (прихований інпут барабана й суми)
+swipe id=object.screen up distance=0.6
+scrollto id=object.month.2026-01 within=id=object.screen dir=up max=8
+wait id=outageSettings.screen timeout=10
 gone label~=Завантаження
 see Ваші адреси              # текст на екрані (nosee — відсутній)
 check role=tab&label=Світло value=1    # label=… value=… label~=… enabled disabled count=N
@@ -87,11 +88,32 @@ shot                                   # весь екран, scale 0.6
 button home | sleep 0.5 | screen grep=…
 ```
 
+## Відкрити екран одразу, без проходу по ланцюжку
+
+Будь-який екран відкривається deep link'ом за його шляхом у `src/app/` (групи в дужках не пишуться, `[param]` — значення, решта параметрів — query):
+
+```
+launch
+open /mw0spa9l-45k71j/2026-11/reading?serviceId=mw0tdfq7-p5rsf5
+wait id=reading.screen
+```
+
+Це ~2 с замість трьох тапів по ~7 с. Токенів у `ui run` обидва способи на успіху не витрачають, тож різниця в часі й стабільності: менше кроків, менше місць для падіння. Але в стеку лише відкритий екран — «Назад» веде до кореня вкладки, а не на попередній екран ланцюжка. Якщо перевіряєш саме навігацію, проходь тапами.
+
+id адрес і послуг — у даних застосунку (AsyncStorage, ключ `ledgerState`):
+`"$(xcrun simctl get_app_container booted com.bogdanpoh.utility-ledger data)/Library/Application Support/com.bogdanpoh.utility-ledger/RCTAsyncLocalStorage_V1/"` — `manifest.json`, великі значення лежать у файлі з md5 ключа. Читай лише `id` і назви, не весь стан.
+
+## Введення тексту
+
+- `type` і `keys` друкують через HID-клавіатуру симулятора: **лише символи US-клавіатури** (кирилицю AXe не приймає), а літери проходять через розкладку апаратної клавіатури симулятора — з українською розкладкою `Dacha` стає `Вфсрф`. Цифри від розкладки не залежать. Для текстових полів у сценаріях бери цифри або латиницю й вимкни в Simulator «I/O → Keyboard → Use the Same Keyboard Language as macOS».
+- Барабан показника й велика сума мають прихований `TextInput` (opacity 0), якого iOS не показує в дереві. testID стоїть на видимому блоці: `tap id=reading.value`, потім `keys 16253`; сума — `keys 125`.
+- Якщо після набору поле не змінилось (`check … value=` FAIL), а поле у фокусі — HID-клавіатура симулятора «зависла»: вона не відновлюється перезапуском застосунку. Скажи користувачу, що треба перезапустити Simulator, і не повторюй набір у циклі.
+
 `scale` — кількість пікселів на point. На 1.0 текст 13–17 pt добре читається. Нижче 0.5 дрібний текст губиться.
 
 ## testID
 
-Сценарій настільки дешевий і стабільний, наскільки стабільні testID. Зараз у проєкті їх майже немає, тому тимчасово працюють `label~=…`. Якщо фіча, яку тестуєш, не має testID на ключових елементах, **запропонуй** додати їх (не додавай мовчки). Схема й правила — у `docs/patterns/test-ids.md`.
+Сценарій настільки дешевий і стабільний, наскільки стабільні testID. Основні екрани їх уже мають (перелік префіксів — у `docs/patterns/test-ids.md`), тож бери `id=…`, а `label~=…` — лише для даних (назви міст, місяців) і нативних табів. Якщо фіча, яку тестуєш, не має testID на ключових елементах, **запропонуй** додати їх (не додавай мовчки).
 
 - `testID` на iOS стає accessibility identifier (`id=` у селекторі). VoiceOver його не читає.
 - `ui screen` у кінці виводить «N tappable without id» — скільки інтерактивних елементів без testID.

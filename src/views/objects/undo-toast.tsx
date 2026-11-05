@@ -41,6 +41,7 @@ export function UndoToast({ text, onUndo, onHide }: UndoToastProps) {
         </ThemedText>
         <Pressable
           accessibilityRole='button'
+          testID='undoToast.undo'
           onPress={onUndo}
           style={(state) => [styles.undo, state.pressed && styles.pressed]}
         >

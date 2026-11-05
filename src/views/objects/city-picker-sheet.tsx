@@ -58,6 +58,7 @@ export function CityPickerSheet({
             value={query}
             onChangeText={setQuery}
             placeholder='Пошук міста'
+            testID='cityPicker.search'
             placeholderTextColor={placeholder}
             autoCorrect={false}
             style={[typography.bodyLarge, styles.input, { color: ink }]}

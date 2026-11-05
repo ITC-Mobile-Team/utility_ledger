@@ -12,12 +12,15 @@ type RadioGroupProps<T extends string> = {
   items: readonly RadioItem<T>[];
   value: T;
   onChange: (value: T) => void;
+  // Префікс: варіанти отримують `${testID}.${value}`
+  testID?: string;
 };
 
 export function RadioGroup<T extends string>({
   items,
   value,
   onChange,
+  testID,
 }: RadioGroupProps<T>) {
   return (
     <VStack spacing={8}>
@@ -26,6 +29,9 @@ export function RadioGroup<T extends string>({
           <Pressable
             guarded={false}
             key={item.value}
+            accessibilityRole='radio'
+            accessibilityState={{ selected: item.value === value }}
+            testID={testID && `${testID}.${item.value}`}
             onPress={() => {
               onChange(item.value);
             }}
