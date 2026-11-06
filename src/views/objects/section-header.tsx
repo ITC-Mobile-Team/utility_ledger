@@ -15,7 +15,12 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   if (variant === 'overline') {
     return (
-      <ThemedText color='muted' font='overline' style={styles.overline}>
+      <ThemedText
+        color='muted'
+        font='overline'
+        accessibilityRole='header'
+        style={styles.overline}
+      >
         {title.toLocaleUpperCase('uk')}
       </ThemedText>
     );

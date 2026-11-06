@@ -64,9 +64,10 @@ export default function EditNameScreen() {
           <ThemedTextInput
             title='Імʼя'
             value={value}
-            onChangeText={setValue}
+            onChangeText={(text) =>
+              setValue(Array.from(text).slice(0, NAME_MAX_LENGTH).join(''))
+            }
             placeholder='Введіть імʼя'
-            maxLength={NAME_MAX_LENGTH}
             autoComplete='given-name'
             textContentType='givenName'
             autoFocus

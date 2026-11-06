@@ -34,7 +34,7 @@ export function ProfileCard({
         <HStack align='center' spacing={14}>
           <Avatar initial={initial} size={56} />
           <VStack spacing={2} style={styles.copy}>
-            <ThemedText font='headline' numberOfLines={1}>
+            <ThemedText font='rowTitle' numberOfLines={1} style={styles.name}>
               {name}
             </ThemedText>
             <ThemedText font='caption' color='muted' numberOfLines={1}>
@@ -56,6 +56,11 @@ const styles = StyleSheet.create({
   },
   copy: {
     flex: 1,
+  },
+  // `row-title` 18 на артборді 16
+  name: {
+    fontSize: 18,
+    lineHeight: 24,
   },
   pressed: {
     opacity: 0.6,
