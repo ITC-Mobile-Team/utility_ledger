@@ -1,11 +1,4 @@
-import {
-  AppImage,
-  HStack,
-  Pressable,
-  ThemedText,
-  ThemedView,
-  VStack,
-} from '@/components';
+import { HStack, ThemedText, ThemedView, VStack } from '@/components';
 import { StyleSheet } from 'react-native';
 import { Avatar } from './avatar';
 
@@ -13,38 +6,31 @@ type ProfileCardProps = {
   name: string;
   email: string;
   initial: string;
-  onPress: () => void;
 };
 
-export function ProfileCard({
-  name,
-  email,
-  initial,
-  onPress,
-}: ProfileCardProps) {
+// Картка зі сторінки профілю лише інформує: імʼя змінюється рядком «Імʼя» в
+// розділі «Акаунт», тож дотику й стрілки тут немає
+export function ProfileCard({ name, email, initial }: ProfileCardProps) {
   return (
-    <Pressable
+    <ThemedView
+      backgroundColor='surface'
+      style={styles.card}
       testID='profile.card'
-      accessibilityRole='button'
-      accessibilityLabel={`Профіль: ${name}. Змінити імʼя`}
-      onPress={onPress}
-      style={(state) => state.pressed && styles.pressed}
+      accessible
+      accessibilityLabel={`${name}, ${email}`}
     >
-      <ThemedView backgroundColor='surface' style={styles.card}>
-        <HStack align='center' spacing={14}>
-          <Avatar initial={initial} size={56} />
-          <VStack spacing={2} style={styles.copy}>
-            <ThemedText font='rowTitle' numberOfLines={1} style={styles.name}>
-              {name}
-            </ThemedText>
-            <ThemedText font='caption' color='muted' numberOfLines={1}>
-              {email}
-            </ThemedText>
-          </VStack>
-          <AppImage icon='chevronRight' tintColor='chev' size={{ width: 18 }} />
-        </HStack>
-      </ThemedView>
-    </Pressable>
+      <HStack align='center' spacing={14}>
+        <Avatar initial={initial} size={56} />
+        <VStack spacing={2} style={styles.copy}>
+          <ThemedText font='rowTitle' numberOfLines={1} style={styles.name}>
+            {name}
+          </ThemedText>
+          <ThemedText font='caption' color='muted' numberOfLines={1}>
+            {email}
+          </ThemedText>
+        </VStack>
+      </HStack>
+    </ThemedView>
   );
 }
 
@@ -61,8 +47,5 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     lineHeight: 24,
-  },
-  pressed: {
-    opacity: 0.6,
   },
 });

@@ -108,7 +108,6 @@ export default function ProfileScreen() {
           name={name}
           email={formatProfileEmail(profile?.email)}
           initial={getInitial(profile?.name)}
-          onPress={openEditName}
         />
 
         <VStack spacing={8} style={styles.section}>
@@ -127,9 +126,6 @@ export default function ProfileScreen() {
               onPress={openEditName}
             >
               <ThemedText font='rowTitle'>Імʼя</ThemedText>
-              <ThemedText font='caption' color='muted'>
-                Як до вас звертатися в застосунку
-              </ThemedText>
             </ListRow>
             <SignInMethodRow method={method} />
           </ListCard>
@@ -223,7 +219,7 @@ export default function ProfileScreen() {
           </ListCard>
         </VStack>
 
-        <ListCard style={styles.section}>
+        <ListCard style={styles.accountActions}>
           <ListRow
             leading={
               <RowIcon icon='signOut' background='surface2' color='ink' />
@@ -275,6 +271,11 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   section: {
     marginTop: 6,
+  },
+  // Разом із відступом між блоками (14) дає 40 — вдвічі більше, ніж між
+  // розділами, щоб «Вийти» і «Видалити акаунт» не плуталися з документами
+  accountActions: {
+    marginTop: 26,
   },
   card: {
     borderRadius: 22,

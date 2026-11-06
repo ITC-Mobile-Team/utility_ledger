@@ -1,4 +1,5 @@
-# Таб «Профіль»: імʼя змінюється й видно в профілі, документи відкриваються і закриваються.
+# Таб «Профіль»: імʼя змінюється через рядок «Імʼя» й видно в профілі, картка профілю не інтерактивна,
+# документи відкриваються і закриваються.
 # Потрібен вхід. `keys` дописує «2026» до поточного імені (цифри не залежать від розкладки
 # HID-клавіатури, а `type` у це поле не друкує) — після прогону поверни імʼя вручну.
 # Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/profile.flow
@@ -7,7 +8,15 @@ tap label=Профіль
 check role=tab&label=Профіль value=1
 wait id=profile.screen
 see Спосіб входу
+# Картка лише інформує: дотик нічого не відкриває, підпису в рядку «Імʼя» немає
 tap id=profile.card
+sleep 0.8
+check id=profile.screen
+gone id=editName.screen
+nosee "Як до вас звертатися в застосунку"
+see Стартова вкладка
+see Тема
+tap id=profile.name
 wait id=editName.screen
 tap id=editName.input
 keys 2026
@@ -15,11 +24,13 @@ check id=editName.save enabled
 tap id=editName.save
 wait id=profile.screen
 check id=profile.card label~=2026
+swipe id=profile.screen up distance=0.7
 tap id=profile.privacy
 wait id=privacy.screen
 see 1. Які дані ми збираємо
 tap id=navigationBar.back
 wait id=profile.screen
+swipe id=profile.screen up distance=0.7
 tap id=profile.terms
 wait id=terms.screen
 see 1. Що робить застосунок
