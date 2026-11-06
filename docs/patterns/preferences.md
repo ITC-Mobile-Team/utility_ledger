@@ -28,3 +28,7 @@
 2. Прочитати ключ у `PreferencesProvider` разом з іншими й додати сеттер.
 3. Додати `removeItem` ключа в `createLocalDataWiper` (`src/services/account/wipe-local-data.ts`) і скидання в `resetPreferences()`.
 4. Оновити цей файл і `account-actions.md`.
+
+## Перший кадр
+
+`PreferencesProvider` повертає `null`, поки читає налаштування, а `SplashScreen.preventAutoHideAsync()` на рівні його модуля тримає splash; `hideAsync()` викликається в ефекті після читання. Без цього між splash і першим кадром видно порожнє вікно в системній (світлій) темі, навіть коли вибрана темна. Ефекти дітей (фон вікна в `useNavigationTheme`) спрацьовують раніше за батьківські, тож до зникнення splash вікно вже має колір вибраної теми.

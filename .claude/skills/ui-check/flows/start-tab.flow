@@ -5,6 +5,9 @@
 launch
 tap role=tab&label=Профіль
 wait id=profile.screen
+# Розділ «Застосунок» може ховатись під таб-баром: прокручуємо до нього
+swipe id=profile.screen up distance=0.8
+sleep 0.6
 check id=profile.startTab "label~=Обʼєкти"
 tap id=profile.startTab
 sleep 1

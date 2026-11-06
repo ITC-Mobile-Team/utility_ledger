@@ -5,6 +5,9 @@
 launch
 tap label=Профіль
 wait id=profile.screen
+# Розділ «Застосунок» може ховатись під таб-баром (особливо зі статусом «Світла»): прокручуємо до нього
+swipe id=profile.screen up distance=0.8
+sleep 0.6
 # Початковий стан не важливий: спершу вибираємо «Як у системі»
 tap id=profile.theme
 wait id=theme.screen

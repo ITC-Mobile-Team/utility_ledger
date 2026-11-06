@@ -36,3 +36,4 @@
 
 - На iOS `testID` у `@expo/ui` не підтримується — тримаємо `accessibilityIdentifier(...)` з тим самим id.
 - Опції з іконками табів — SF-символи тих самих табів, що в `src/app/(tabs)/_layout.tsx`.
+- `start-tab-row.tsx` без суфікса платформи — запасний варіант для платформ без нативного меню (веб): `ListRow`, що відкриває `Alert` з варіантами. TypeScript резолвить імпорт `./start-tab-row` саме в цей файл, тож він потрібен і як тип для платформних реалізацій; на iOS і Android Metro бере `.ios.tsx` / `.android.tsx`.

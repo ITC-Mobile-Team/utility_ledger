@@ -1,21 +1,10 @@
-import { AuthProvider, useAuth } from '@/providers/auth-provider';
-import { LedgerProvider } from '@/providers/ledger-provider';
-import { OutageProvider } from '@/providers/outage-provider';
+import { useAuth } from '@/providers/auth-provider';
+import { useOnboarding } from '@/providers/onboarding-provider';
 import { PreferencesProvider } from '@/providers/preferences-provider';
-import { ProfileProvider } from '@/providers/profile-provider';
 import { configureOutageNotifications } from '@/services/outages';
-import {
-  OnboardingProvider,
-  useOnboarding,
-} from '@/providers/onboarding-provider';
-import { ThemeTransition } from '@/components';
-import { colors } from '@/constants/colors';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
-import * as SystemUI from 'expo-system-ui';
-import { useEffect, useMemo } from 'react';
-import { useColorScheme } from 'react-native';
+import { AppProviders } from '@/views/app-providers';
+import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 configureOutageNotifications();
 
@@ -39,63 +28,13 @@ function RootNavigator() {
   );
 }
 
-// Фон навігаторів і кореневого вікна береться з токена `bg`, інакше під час
-// переходів між екранами з-під заокруглених кутів проступає білий фон
-// стандартної теми
-function useNavigationTheme() {
-  const scheme = useColorScheme() === 'dark' ? 'dark' : 'light';
-  const palette = colors[scheme];
-
-  useEffect(() => {
-    SystemUI.setBackgroundColorAsync(palette.bg);
-  }, [palette.bg]);
-
-  return useMemo(() => {
-    const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
-    return {
-      ...base,
-      colors: {
-        ...base.colors,
-        background: palette.bg,
-        card: palette.surface,
-        text: palette.ink,
-        border: palette.line,
-      },
-    };
-  }, [scheme, palette]);
-}
-
-// Усе, що залежить від теми, живе всередині PreferencesProvider: до першого
-// рендеру він уже виставив вибрану схему, тож фон вікна й навігація беруть її
-function AppProviders() {
-  const theme = useNavigationTheme();
-  return (
-    <>
-      <ThemeProvider value={theme}>
-        <KeyboardProvider>
-          <AuthProvider>
-            <OnboardingProvider>
-              <LedgerProvider>
-                <OutageProvider>
-                  <ProfileProvider>
-                    <RootNavigator />
-                  </ProfileProvider>
-                </OutageProvider>
-              </LedgerProvider>
-            </OnboardingProvider>
-          </AuthProvider>
-        </KeyboardProvider>
-      </ThemeProvider>
-      <ThemeTransition />
-    </>
-  );
-}
-
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PreferencesProvider>
-        <AppProviders />
+        <AppProviders>
+          <RootNavigator />
+        </AppProviders>
       </PreferencesProvider>
     </GestureHandlerRootView>
   );
