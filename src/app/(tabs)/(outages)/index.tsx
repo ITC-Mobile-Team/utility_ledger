@@ -19,6 +19,7 @@ import {
   getOffMinutes,
   getOutageIntervals,
   getPowerStatus,
+  getOutageSetupStatus,
   getProviderForCity,
   type OutageProvider,
   type OutageSchedule,
@@ -58,7 +59,7 @@ export default function Outages() {
   const queues = provider
     ? settings.queues.filter((queue) => provider.queues.includes(queue.id))
     : [];
-  const isConfigured = Boolean(provider) && queues.length > 0;
+  const isConfigured = getOutageSetupStatus(settings) === 'ready';
 
   const subtitle = provider
     ? provider.name

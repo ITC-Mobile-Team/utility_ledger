@@ -7,10 +7,17 @@ import {
 } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useOnboarding } from '@/providers/onboarding-provider';
-import { useOutageNotificationToggle } from '@/providers/outage-provider';
+import {
+  useOutageNotificationToggle,
+  useOutageSettings,
+} from '@/providers/outage-provider';
 import { usePreferences } from '@/providers/preferences-provider';
 import { useProfile } from '@/providers/profile-provider';
 import { wipeLocalData } from '@/services/account';
+import {
+  getOutageSetupMessage,
+  getOutageSetupStatus,
+} from '@/services/outages';
 import { getThemeLabel } from '@/services/preferences';
 import {
   formatProfileEmail,
@@ -21,6 +28,7 @@ import {
 import { ListCard, ListRow, SectionHeader } from '@/views';
 import {
   confirmDestructive,
+  OutageSetupNotice,
   ProfileCard,
   RowIcon,
   SignInMethodRow,
@@ -35,6 +43,7 @@ export default function ProfileScreen() {
   const { resetOnboarding } = useOnboarding();
   const { theme, resetPreferences } = usePreferences();
   const notifications = useOutageNotificationToggle();
+  const setupStatus = getOutageSetupStatus(useOutageSettings());
   const switchOn = useThemeColor('green');
   // Підтвердження приходить із системного діалогу, тож повторний запуск
   // стирання блокуємо самі
@@ -45,6 +54,10 @@ export default function ProfileScreen() {
   const version = Constants.expoConfig?.version;
 
   const openEditName = () => router.push('/profile/edit-name');
+
+  // Таб-бар перемикається на «Світло» сам: `navigate` не дублює екран, якщо
+  // налаштування вже відкриті там
+  const openOutageSettings = () => router.navigate('/outage-settings');
 
   const wipe = async () => {
     if (isWiping.current) return;
@@ -146,6 +159,15 @@ export default function ProfileScreen() {
                 testID='profile.notify'
               />
             </HStack>
+            {setupStatus !== 'ready' && (
+              <>
+                <ThemedView backgroundColor='line' style={styles.divider} />
+                <OutageSetupNotice
+                  message={getOutageSetupMessage(setupStatus)}
+                  onSetup={openOutageSettings}
+                />
+              </>
+            )}
           </ThemedView>
         </VStack>
 
@@ -263,6 +285,10 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: 16,
   },
   value: {
     maxWidth: 96,

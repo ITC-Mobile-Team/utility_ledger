@@ -25,3 +25,38 @@ wait id=terms.screen
 see 1. Що робить застосунок
 tap id=navigationBar.back
 check role=tab&label=Профіль value=1
+
+# Статус «Світла» в «Сповіщеннях»: Київ — постачальника немає; кнопка «Налаштувати»
+# відкриває налаштування, «Назад» веде на головний екран «Світла»; після вибору
+# Полтави й черги 1.1 статус зникає. Сценарій змінює місто «Світла» і наприкінці
+# повертає Полтаву з чергою 1.1.
+open /outage-settings
+wait id=outageSettings.screen
+tap id=outageSettings.city
+sleep 1
+tap label~=Київ
+sleep 0.8
+tap id=outageSettings.save
+sleep 1
+tap label=Профіль
+wait id=profile.screen
+see "Постачальник для вашого міста ще не доданий"
+tap id=profile.outageSetup
+wait id=outageSettings.screen
+tap id=navigationBar.back
+check role=tab&label=Світло value=1
+tap label=Профіль
+wait id=profile.screen
+open /outage-settings
+wait id=outageSettings.screen
+tap id=outageSettings.city
+sleep 1
+tap "label~=Полтава, Полтаваобленерго"
+sleep 0.8
+tap id=outageSettings.queue.1.1
+tap id=outageSettings.save
+sleep 1
+tap label=Профіль
+wait id=profile.screen
+gone id=profile.outageSetup
+nosee "Постачальник для вашого міста ще не доданий"
