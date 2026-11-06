@@ -56,7 +56,7 @@
 
 ## R10. Як таб-бар відкриває стартову вкладку
 
-- **Decision (основний шлях)**: `PreferencesProvider` уже прочитав `startTab` до першого рендеру, тож `(tabs)/_layout.tsx` передає `NativeTabs` проп `initialRouteName` (`'(objects)' | '(outages)' | 'analytics'`) — він є в `NativeTabsProps` через `DefaultRouterOptions` (`node_modules/expo-router/build/react-navigation/routers/types.d.ts`). Таб-бар монтується лише після входу й онбордингу (`Stack.Protected`), тож значення застосовується саме на першому показі табів після холодного запуску; повернення з фону таб-бар не перемонтовує (FR-023).
+- **Decision (основний шлях, недоступний у 58 — див. результат нижче)**: `PreferencesProvider` уже прочитав `startTab` до першого рендеру, тож `(tabs)/_layout.tsx` передає `NativeTabs` проп `initialRouteName` (`'(objects)' | '(outages)' | 'analytics'`) — він є в `NativeTabsProps` через `DefaultRouterOptions` (`node_modules/expo-router/build/react-navigation/routers/types.d.ts`). Таб-бар монтується лише після входу й онбордингу (`Stack.Protected`), тож значення застосовується саме на першому показі табів після холодного запуску; повернення з фону таб-бар не перемонтовує (FR-023).
 - **Decision (запасний шлях, якщо Expo Router перекриє `initialRouteName` станом із початкового URL `/`)**: одноразовий ефект у `(tabs)/_layout.tsx` — якщо `usePathname() === '/'` і `startTab !== 'objects'`, `router.replace` на корінь вибраного табу; кореневий лейаут тримає `SplashScreen.preventAutoHideAsync()` до завершення, щоб «Обʼєкти» не мигнули. Вибір шляху — перша задача стартової вкладки, перевірка холодним запуском у симуляторі.
 - **Rationale**: основний шлях не має ні ефекту, ні мигання; запасний гарантує FR-023, якщо початковий URL має пріоритет.
 - **Alternatives considered**: `unstable_settings.initialRouteName` — статичний, не залежить від вибору; перемикати таб після показу — видимий стрибок (порушує SC-007).
@@ -66,3 +66,5 @@
 
 - **Decision**: окремої логіки не додаємо. Сповіщення про вимкнення (`src/services/outages/notifications.ts`) зараз не несуть маршруту (`data: { queue }`) і не обробляються при відкритті — дотик просто запускає застосунок, і відкривається стартова вкладка. Запасний шлях R10 застосовується лише при початковому шляху `/`, тож майбутнє сповіщення з deep link (інший шлях) матиме пріоритет автоматично.
 - **Rationale**: FR-023 вимагає, щоб ціль сповіщення перемагала; поки цілі немає, конфлікту немає, а правило «лише для `/`» не зламає її пізніше.
+
+**Результат перевірки (T028)**: основний шлях недоступний — `NativeTabs` у Expo Router 58 не має пропа `initialRouteName` (помилка типів). Реалізовано запасний шлях без утримання splash: одноразовий `router.replace` у `useOpenStartTab` (`src/app/(tabs)/_layout.tsx`), прапорець на рівні модуля. Холодний запуск відкриває вибрану вкладку, повернення з фону — ні.

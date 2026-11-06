@@ -32,6 +32,7 @@ import {
   ProfileCard,
   RowIcon,
   SignInMethodRow,
+  StartTabRow,
 } from '@/views/profile';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
@@ -41,7 +42,7 @@ import { StyleSheet, Switch } from 'react-native';
 export default function ProfileScreen() {
   const profile = useProfile();
   const { resetOnboarding } = useOnboarding();
-  const { theme, resetPreferences } = usePreferences();
+  const { theme, startTab, setStartTab, resetPreferences } = usePreferences();
   const notifications = useOutageNotificationToggle();
   const setupStatus = getOutageSetupStatus(useOutageSettings());
   const switchOn = useThemeColor('green');
@@ -174,6 +175,7 @@ export default function ProfileScreen() {
         <VStack spacing={8} style={styles.section}>
           <SectionHeader title='Застосунок' variant='overline' />
           <ListCard>
+            <StartTabRow value={startTab} onChange={setStartTab} />
             <ListRow
               leading={
                 <RowIcon

@@ -1,0 +1,32 @@
+# Стартова вкладка: меню від рядка в «Застосунку», вибір «Світло» не перемикає поточну вкладку,
+# холодний запуск відкриває «Світло», повернення з фону лишає поточну; наприкінці повертається «Обʼєкти».
+# Потрібен вхід. Запуск з кореня проєкту:
+# .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/start-tab.flow
+launch
+tap role=tab&label=Профіль
+wait id=profile.screen
+check id=profile.startTab "label~=Обʼєкти"
+tap id=profile.startTab
+sleep 1
+tap role=button&label=Світло
+sleep 1
+check id=profile.startTab "label~=Світло"
+check role=tab&label=Профіль value=1
+launch
+sleep 1.5
+check role=tab&label=Світло value=1
+see Відсутність світла
+tap role=tab&label=Обʼєкти
+sleep 1
+button home
+sleep 1
+launch keep
+sleep 1.5
+check role=tab&label=Обʼєкти value=1
+tap role=tab&label=Профіль
+wait id=profile.screen
+tap id=profile.startTab
+sleep 1
+tap role=button&label=Обʼєкти
+sleep 1
+check id=profile.startTab "label~=Обʼєкти"

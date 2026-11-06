@@ -1,8 +1,38 @@
-import { useSegments } from 'expo-router';
+import { type Href, usePathname, useRouter, useSegments } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import { useThemeColor } from '@/hooks/use-theme-colors';
+import { usePreferences } from '@/providers/preferences-provider';
+import type { StartTab } from '@/services/preferences';
+import { useEffect } from 'react';
+
+// Корені табів. «Обʼєкти» — це `/`, тож решту адресуємо через групу
+const startTabHrefs: Record<Exclude<StartTab, 'objects'>, Href> = {
+  outages: '/(tabs)/(outages)',
+  analytics: '/(tabs)/analytics',
+};
+
+// NativeTabs не має `initialRouteName`, тому стартову вкладку відкриваємо
+// переходом при першому показі табів після холодного запуску. Прапорець на
+// рівні модуля: повернення з фону й перемонтування табів його не чіпають, а
+// запуск із глибокого посилання (шлях не `/`) лишає ціль посилання
+let startTabHandled = false;
+
+function useOpenStartTab() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { startTab } = usePreferences();
+
+  useEffect(() => {
+    if (startTabHandled) return;
+    startTabHandled = true;
+    if (startTab !== 'objects' && pathname === '/') {
+      router.replace(startTabHrefs[startTab]);
+    }
+  }, [pathname, router, startTab]);
+}
 
 export default function TabsLayout() {
+  useOpenStartTab();
   const segments = useSegments();
   // Таб-бар видно лише на кореневих екранах табів: усе, що відкрито
   // всередині «Обʼєктів», «Світла» і «Профілю», показується без нього
