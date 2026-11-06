@@ -2,6 +2,7 @@ import type { AuthService } from '@/services/auth';
 import type { LedgerRepository } from '@/services/ledger';
 import type { OutageSettingsRepository } from '@/services/outages';
 import type { ProfileRepository } from '@/services/profile';
+import { START_TAB_KEY, THEME_KEY } from '@/services/preferences';
 import type { KeyValueStorage } from '@/storage';
 
 export const PENDING_WIPE_KEY = 'pendingWipe';
@@ -30,6 +31,8 @@ export function createLocalDataWiper(deps: Dependencies) {
       outages.clear(),
       profile.clear(),
       storage.removeItem(ONBOARDING_KEY),
+      storage.removeItem(THEME_KEY),
+      storage.removeItem(START_TAB_KEY),
     ]);
     await storage.removeItem(PENDING_WIPE_KEY);
   };

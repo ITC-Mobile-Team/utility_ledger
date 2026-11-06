@@ -8,6 +8,7 @@ import {
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useOnboarding } from '@/providers/onboarding-provider';
 import { useOutageNotificationToggle } from '@/providers/outage-provider';
+import { usePreferences } from '@/providers/preferences-provider';
 import { useProfile } from '@/providers/profile-provider';
 import { wipeLocalData } from '@/services/account';
 import {
@@ -31,6 +32,7 @@ import { StyleSheet, Switch } from 'react-native';
 export default function ProfileScreen() {
   const profile = useProfile();
   const { resetOnboarding } = useOnboarding();
+  const { resetPreferences } = usePreferences();
   const notifications = useOutageNotificationToggle();
   const switchOn = useThemeColor('green');
   // Підтвердження приходить із системного діалогу, тож повторний запуск
@@ -49,6 +51,7 @@ export default function ProfileScreen() {
     try {
       await wipeLocalData();
       await resetOnboarding();
+      resetPreferences();
     } finally {
       isWiping.current = false;
     }

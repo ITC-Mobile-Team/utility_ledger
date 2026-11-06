@@ -1,6 +1,7 @@
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { LedgerProvider } from '@/providers/ledger-provider';
 import { OutageProvider } from '@/providers/outage-provider';
+import { PreferencesProvider } from '@/providers/preferences-provider';
 import { ProfileProvider } from '@/providers/profile-provider';
 import { configureOutageNotifications } from '@/services/outages';
 import {
@@ -63,25 +64,35 @@ function useNavigationTheme() {
   }, [scheme, palette]);
 }
 
-export default function RootLayout() {
+// Усе, що залежить від теми, живе всередині PreferencesProvider: до першого
+// рендеру він уже виставив вибрану схему, тож фон вікна й навігація беруть її
+function AppProviders() {
   const theme = useNavigationTheme();
   return (
+    <ThemeProvider value={theme}>
+      <KeyboardProvider>
+        <AuthProvider>
+          <OnboardingProvider>
+            <LedgerProvider>
+              <OutageProvider>
+                <ProfileProvider>
+                  <RootNavigator />
+                </ProfileProvider>
+              </OutageProvider>
+            </LedgerProvider>
+          </OnboardingProvider>
+        </AuthProvider>
+      </KeyboardProvider>
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={theme}>
-        <KeyboardProvider>
-          <AuthProvider>
-            <OnboardingProvider>
-              <LedgerProvider>
-                <OutageProvider>
-                  <ProfileProvider>
-                    <RootNavigator />
-                  </ProfileProvider>
-                </OutageProvider>
-              </LedgerProvider>
-            </OnboardingProvider>
-          </AuthProvider>
-        </KeyboardProvider>
-      </ThemeProvider>
+      <PreferencesProvider>
+        <AppProviders />
+      </PreferencesProvider>
     </GestureHandlerRootView>
   );
 }

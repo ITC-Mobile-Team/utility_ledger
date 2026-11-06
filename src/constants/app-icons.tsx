@@ -15,6 +15,8 @@ export const appIcons = {
   search: require('@/assets/images/icons/search.svg'),
   check: require('@/assets/images/icons/check.svg'),
   chevronRight: require('@/assets/images/icons/chevron-right.svg'),
+  chevronUpDown: require('@/assets/images/icons/chevron-up-down.svg'),
+  contrast: require('@/assets/images/icons/contrast.svg'),
   minus: require('@/assets/images/icons/minus.svg'),
   bulb: require('@/assets/images/icons/bulb.svg'),
   bulbOff: require('@/assets/images/icons/bulb-off.svg'),
