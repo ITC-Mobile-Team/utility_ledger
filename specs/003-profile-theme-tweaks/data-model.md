@@ -1,4 +1,4 @@
-# Data Model: Профіль — тема застосунку та дрібні правки
+# Data Model: Профіль — стартова вкладка, тема застосунку та дрібні правки
 
 ## ThemePreference
 
@@ -14,7 +14,24 @@
 - **Життєвий цикл**:
   - старт: читається до першого рендеру; якщо в сховищі висить `pendingWipe = 'true'` — береться `system`;
   - вибір на екрані «Тема»: одразу застосовується і пишеться в сховище;
-  - «Вийти» / «Видалити акаунт»: ключ стирається в `wipeLocalData()`, стан у памʼяті скидається на `system` через `resetAppearance()`.
+  - «Вийти» / «Видалити акаунт»: ключ стирається в `wipeLocalData()`, стан у памʼяті скидається на `system` через `resetPreferences()`.
+
+## StartTab
+
+Вкладка, яку таб-бар відкриває при холодному запуску.
+
+| Поле | Тип | Правила |
+|---|---|---|
+| значення | `'objects' \| 'outages' \| 'analytics'` | типово `'objects'`; невідоме, пошкоджене чи відсутнє значення читається як `'objects'`; `profile` недопустиме |
+
+- **Сховище**: `KeyValueStorage`, ключ `startTab`.
+- **Маршрут табу**: `objects` → `'(objects)'`, `outages` → `'(outages)'`, `analytics` → `'analytics'` (імена `NativeTabs.Trigger` у `(tabs)/_layout.tsx`).
+- **Підписи й іконки в меню**: «Обʼєкти», «Світло», «Аналітика» — ті самі, що в таб-барі.
+- **Життєвий цикл**:
+  - старт: читається разом із темою до першого рендеру; при `pendingWipe = 'true'` — `objects`;
+  - вибір у меню: пишеться в стан і сховище, поточна вкладка не змінюється;
+  - перший показ таб-бару після холодного запуску: відкривається збережена вкладка;
+  - «Вийти» / «Видалити акаунт»: ключ стирається, стан → `objects`.
 
 ## OutageSetupStatus
 
@@ -32,4 +49,4 @@
 ## Наявні сутності, яких торкається фіча
 
 - **OutageSettings** (`src/services/outages/types.ts`) — лише читається; форма не змінюється.
-- **Ключі, які стирає `wipeLocalData()`** — до наявних (`ledgerState`, `outageSettings`, `outageSchedule:<id>`, `userProfile`, `authUser`, `hasSeenOnboarding`, `pendingWipe`) додається `themePreference`.
+- **Ключі, які стирає `wipeLocalData()`** — до наявних (`ledgerState`, `outageSettings`, `outageSchedule:<id>`, `userProfile`, `authUser`, `hasSeenOnboarding`, `pendingWipe`) додаються `themePreference` і `startTab`.
