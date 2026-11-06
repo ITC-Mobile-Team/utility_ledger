@@ -28,4 +28,11 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 
 ## Префікси екранів
 
-`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`.
+`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `theme`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`.
+
+## Профіль і тема
+
+- `profile.card` — інформаційна картка, **не інтерактивна** (дотик нічого не відкриває); `profile.name` — рядок «Імʼя», єдиний перехід у «Ваше імʼя».
+- `profile.outageStatus` і `profile.outageSetup` — статус «Світла» та кнопка «Налаштувати» у «Сповіщеннях» (є лише поки «Світло» не налаштоване); `profile.notify` — перемикач.
+- `profile.startTab` і `profile.theme` — рядки розділу «Застосунок». На iOS `profile.startTab` — `accessibilityIdentifier` нативного меню (`@expo/ui` не підтримує `testID`), пункти меню без id: шукай `role=button&label=Світло`.
+- `theme.screen` і `theme.option.system|light|dark` — екран «Тема» та його картки (`role=radio`, стан у `value`: `radio button, checked`).

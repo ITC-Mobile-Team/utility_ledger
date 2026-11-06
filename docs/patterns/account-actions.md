@@ -20,3 +20,11 @@
 ## Сповіщення поза налаштуваннями «Світла»
 
 Перемикач попереджень у профілі — `useOutageNotificationToggle()` з `src/providers/outage-provider.tsx`: ті самі налаштування, той самий запит дозволу й `showNotificationPermissionAlert()`, перепланування за кешованим графіком.
+
+## Налаштування пристрою при виході
+
+`wipeLocalData()` стирає також `themePreference` і `startTab` (див. [preferences.md](preferences.md)). Після нього екран викликає `resetPreferences()` разом з `resetOnboarding()`: сховище вже порожнє, тож це лише повертає тему «Як у системі» і стартову вкладку «Обʼєкти» в памʼяті.
+
+## Статус «Світла» під перемикачем
+
+Якщо «Світло» не налаштоване, у картці «Сповіщення» під перемикачем видно статус і кнопку «Налаштувати» (`OutageSetupNotice`). Умова — `getOutageSetupStatus()` з `src/services/outages`, та сама, за якою вкладка «Світло» вирішує, показувати графік чи ні: `noCity`, `noProvider`, `noQueues` → текст через `getOutageSetupMessage()`, `ready` → нічого. Статус не залежить від того, увімкнений перемикач чи ні.
