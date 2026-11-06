@@ -8,6 +8,7 @@ import {
   OnboardingProvider,
   useOnboarding,
 } from '@/providers/onboarding-provider';
+import { ThemeTransition } from '@/components';
 import { colors } from '@/constants/colors';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
@@ -69,21 +70,24 @@ function useNavigationTheme() {
 function AppProviders() {
   const theme = useNavigationTheme();
   return (
-    <ThemeProvider value={theme}>
-      <KeyboardProvider>
-        <AuthProvider>
-          <OnboardingProvider>
-            <LedgerProvider>
-              <OutageProvider>
-                <ProfileProvider>
-                  <RootNavigator />
-                </ProfileProvider>
-              </OutageProvider>
-            </LedgerProvider>
-          </OnboardingProvider>
-        </AuthProvider>
-      </KeyboardProvider>
-    </ThemeProvider>
+    <>
+      <ThemeProvider value={theme}>
+        <KeyboardProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <LedgerProvider>
+                <OutageProvider>
+                  <ProfileProvider>
+                    <RootNavigator />
+                  </ProfileProvider>
+                </OutageProvider>
+              </LedgerProvider>
+            </OnboardingProvider>
+          </AuthProvider>
+        </KeyboardProvider>
+      </ThemeProvider>
+      <ThemeTransition />
+    </>
   );
 }
 

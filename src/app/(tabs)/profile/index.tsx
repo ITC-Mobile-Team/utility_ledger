@@ -11,6 +11,7 @@ import { useOutageNotificationToggle } from '@/providers/outage-provider';
 import { usePreferences } from '@/providers/preferences-provider';
 import { useProfile } from '@/providers/profile-provider';
 import { wipeLocalData } from '@/services/account';
+import { getThemeLabel } from '@/services/preferences';
 import {
   formatProfileEmail,
   getDisplayName,
@@ -32,7 +33,7 @@ import { StyleSheet, Switch } from 'react-native';
 export default function ProfileScreen() {
   const profile = useProfile();
   const { resetOnboarding } = useOnboarding();
-  const { resetPreferences } = usePreferences();
+  const { theme, resetPreferences } = usePreferences();
   const notifications = useOutageNotificationToggle();
   const switchOn = useThemeColor('green');
   // Підтвердження приходить із системного діалогу, тож повторний запуск
@@ -149,6 +150,30 @@ export default function ProfileScreen() {
         </VStack>
 
         <VStack spacing={8} style={styles.section}>
+          <SectionHeader title='Застосунок' variant='overline' />
+          <ListCard>
+            <ListRow
+              leading={
+                <RowIcon
+                  icon='contrast'
+                  background='purpleSoft'
+                  color='purple'
+                />
+              }
+              trailing={
+                <ThemedText style={styles.valueWide} numberOfLines={1}>
+                  {getThemeLabel(theme)}
+                </ThemedText>
+              }
+              testID='profile.theme'
+              onPress={() => router.push('/profile/theme')}
+            >
+              <ThemedText font='rowTitle'>Тема</ThemedText>
+            </ListRow>
+          </ListCard>
+        </VStack>
+
+        <VStack spacing={8} style={styles.section}>
           <SectionHeader title='Документи' variant='overline' />
           <ListCard>
             <ListRow
@@ -241,6 +266,10 @@ const styles = StyleSheet.create({
   },
   value: {
     maxWidth: 96,
+    fontSize: 15,
+  },
+  valueWide: {
+    maxWidth: 140,
     fontSize: 15,
   },
   version: {

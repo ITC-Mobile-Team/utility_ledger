@@ -7,6 +7,7 @@ export default function ProfileLayout() {
       <Stack.Screen name='edit-name' />
       <Stack.Screen name='privacy' />
       <Stack.Screen name='terms' />
+      <Stack.Screen name='theme' />
     </Stack>
   );
 }

@@ -27,3 +27,4 @@ export {
   PRESS_LOCK_MS,
 } from './pressable';
 export type { PressableProps, GesturePressableProps } from './pressable';
+export { ThemeTransition } from './theme-transition';
