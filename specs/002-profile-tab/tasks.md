@@ -223,3 +223,12 @@ Task: "Створити confirmDestructive у src/views/profile/confirm-destruct
 4. US4 → коміт
 5. US5 → коміт
 6. Polish (патерни, ui-check, lint/typecheck) → коміт разом з оновленими `docs/patterns/`
+
+---
+
+## Phase 10: Convergence
+
+- [ ] T048 Показати підтвердження «Видалити акаунт?» (і «Вийти з акаунта?») знизу екрана, як на артбордах 16b/16c: на iOS 27 `ActionSheetIOS` без якоря з'являється по центру — або власна шторка з карткою й окремою «Скасувати» у `src/views/profile/confirm-destructive.ts`, або узгодити з дизайном системний вигляд і оновити `docs/patterns/account-actions.md` per US3/AC1, SC-001 (partial)
+- [ ] T049 [P] Шрифт імені в картці профілю `src/views/profile/profile-card.tsx` — 18 pt / 600, як `row-title` 18 на артборді 16 (зараз `headline` 17 / 700) per plan: T014 (partial)
+- [ ] T050 [P] Додати `accessibilityRole='header'` підписам секцій «Акаунт», «Сповіщення», «Документи» на `src/app/(tabs)/profile/index.tsx` (через `SectionHeader` у `src/views/objects/section-header.tsx` для `variant='overline'`) per plan: contracts/ui.md (partial)
+- [ ] T051 [P] Узгодити ліміт 40 символів імені: `maxLength` у `src/app/(tabs)/profile/edit-name.tsx` рахує UTF-16, а `setName` у `src/services/profile/local-profile-repository.ts` — кодові точки, тож імʼя з емодзі обрізається раніше; рахувати однаково (обрізати введення за `Array.from`) per FR-005 (partial)
