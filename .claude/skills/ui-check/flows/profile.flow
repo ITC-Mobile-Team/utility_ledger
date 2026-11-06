@@ -1,7 +1,7 @@
 # Таб «Профіль»: імʼя змінюється через рядок «Імʼя» й видно в профілі, картка профілю не інтерактивна,
 # документи відкриваються і закриваються.
-# Потрібен вхід. `keys` дописує «2026» до поточного імені (цифри не залежать від розкладки
-# HID-клавіатури, а `type` у це поле не друкує) — після прогону поверни імʼя вручну.
+# Потрібен вхід. `keys` дописує «2026» до поля імені (цифри не залежать від розкладки HID-клавіатури,
+# а `type` у це поле не друкує), але сценарій виходить без збереження, тож імʼя не змінюється.
 # Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/profile.flow
 launch
 tap label=Профіль
@@ -21,9 +21,11 @@ wait id=editName.screen
 tap id=editName.input
 keys 2026
 check id=editName.save enabled
-tap id=editName.save
+# Імʼя не зберігаємо: HID-клавіатура симулятора може зависнути й не прибрати дописане, а збереження
+# імені перевірено в специфікації 002. Вихід без збереження лишає імʼя без змін
+tap id=navigationBar.back
 wait id=profile.screen
-check id=profile.card label~=2026
+nosee 2026
 swipe id=profile.screen up distance=0.7
 tap id=profile.privacy
 wait id=privacy.screen
@@ -52,6 +54,9 @@ sleep 1
 tap label=Профіль
 wait id=profile.screen
 see "Постачальник для вашого міста ще не доданий"
+# Після кроків із документами профіль прокручений донизу: повертаємось нагору до кнопки
+swipe id=profile.screen down distance=0.9
+sleep 0.6
 tap id=profile.outageSetup
 wait id=outageSettings.screen
 tap id=navigationBar.back

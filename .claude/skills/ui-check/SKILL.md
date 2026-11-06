@@ -77,6 +77,7 @@ tap id=objects.nav.add       # timeout=5 за замовчуванням: чек
 hold label~=iPhone           # довге натискання
 type id=objectForm.name "Dacha"  # append — дописати, а не замінити; лише латиниця, див. нижче
 tap id=reading.value | keys 01234    # набір у поле з фокусом (прихований інпут барабана й суми)
+key 42 count=4                       # натиснути клавішу за HID-кодом (42 — Backspace, 40 — Return) 4 рази в полі з фокусом; HID симулятора може зависати — перевіряй результат `check`-ом, `axe key` на ньому не завжди спрацьовує
 swipe id=object.screen up distance=0.6
 scrollto id=object.month.2026-01 within=id=object.screen dir=up max=8
 wait id=outageSettings.screen timeout=10

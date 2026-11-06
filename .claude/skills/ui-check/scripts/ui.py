@@ -364,6 +364,16 @@ def cmd_keys(text):
     return "keys %s" % text
 
 
+def cmd_key(code, count=1):
+    """Press one HID key by keycode (42 — Backspace, 40 — Return, 43 — Tab) `count`
+    times, in whatever field has focus. For what `keys` cannot type."""
+    for _ in range(count):
+        r = run([_axe(), "key", str(code), "--udid", simulator()], 30)
+        if r.returncode:
+            raise Blocked("axe key failed: " + (r.stderr or r.stdout).strip()[:160])
+    return "key %s x%d" % (code, count)
+
+
 def cmd_swipe(selector, direction, distance=0.6):
     e, _ = resolve(selector, "swipeWithin", 3.0)
     xcb("swipe", {"withinElementRef": e["ref"], "direction": direction, "distance": distance, "duration": 0.2})
@@ -568,7 +578,7 @@ def _opts(tokens):
     """Split `k=v` options (timeout=, scale=, …) from positional tokens."""
     pos, opt = [], {}
     for t in tokens:
-        m = re.match(r"^(timeout|scale|pad|name|rect|distance|max|dir|within|grep)=(.*)$", t)
+        m = re.match(r"^(timeout|scale|pad|name|rect|distance|max|dir|within|grep|count)=(.*)$", t)
         if m:
             opt[m.group(1)] = m.group(2)
         else:
@@ -592,6 +602,8 @@ def step(line):
         return cmd_type(pos[0], pos[1], replace="append" not in pos[2:])
     if verb == "keys":
         return cmd_keys(" ".join(pos))
+    if verb == "key":
+        return cmd_key(pos[0], int(opt.get("count", 1)))
     if verb == "swipe":
         return cmd_swipe(pos[0], pos[1] if len(pos) > 1 else "up", float(opt.get("distance", 0.6)))
     if verb == "scrollto":
