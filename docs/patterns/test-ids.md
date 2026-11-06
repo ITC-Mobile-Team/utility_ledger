@@ -28,4 +28,4 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 
 ## Префікси екранів
 
-`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `undoToast`, `navigationBar`.
+`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`.

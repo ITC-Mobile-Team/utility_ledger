@@ -15,5 +15,6 @@ wait id=outageSettings.screen
 tap id=navigationBar.back
 tap label=Аналітика
 check role=tab&label=Аналітика value=1
-open /more
-check role=tab&label=Ще value=1
+open /profile
+check role=tab&label=Профіль value=1
+wait id=profile.screen

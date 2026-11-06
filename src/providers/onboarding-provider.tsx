@@ -6,13 +6,14 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
+import { ONBOARDING_KEY as KEY } from '@/services/account';
 import { storage as defaultStorage, type KeyValueStorage } from '@/storage';
-
-const KEY = 'hasSeenOnboarding';
 
 type OnboardingContextValue = {
   hasSeenOnboarding: boolean;
   completeOnboarding: () => Promise<void>;
+  // Після виходу чи видалення акаунта наступний вхід починається з онбордингу
+  resetOnboarding: () => Promise<void>;
 };
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null);
@@ -39,11 +40,18 @@ export function OnboardingProvider({
     setHasSeenOnboarding(true);
   }, [storage]);
 
+  const resetOnboarding = useCallback(async () => {
+    await storage.removeItem(KEY);
+    setHasSeenOnboarding(false);
+  }, [storage]);
+
   // Поки значення не прочитане, нічого не рендеримо, щоб не мигав неправильний екран
   if (hasSeenOnboarding === null) return null;
 
   return (
-    <OnboardingContext value={{ hasSeenOnboarding, completeOnboarding }}>
+    <OnboardingContext
+      value={{ hasSeenOnboarding, completeOnboarding, resetOnboarding }}
+    >
       {children}
     </OnboardingContext>
   );

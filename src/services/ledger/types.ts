@@ -92,6 +92,8 @@ export type ServiceInput = Omit<LedgerService, 'id' | 'createdAt'>;
 export interface LedgerRepository {
   // Читає збережений стан зі сховища; повторні виклики повертають той самий проміс
   load(): Promise<void>;
+  // Стерти всі дані (вихід / видалення акаунта)
+  clear(): Promise<void>;
   getSnapshot(): LedgerState;
   subscribe(listener: () => void): () => void;
   addObject(input: ObjectInput): Promise<LedgerObject>;

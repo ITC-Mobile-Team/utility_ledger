@@ -25,6 +25,7 @@ import {
   NOTIFICATION_LEADS,
   type NotificationLead,
   pluralizeQueues,
+  showNotificationPermissionAlert,
   syncOutageNotifications,
 } from '@/services/outages';
 import {
@@ -39,9 +40,7 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
-  Linking,
   StyleSheet,
   Switch,
   TextInput,
@@ -95,14 +94,7 @@ export default function OutageSettingsScreen() {
   // Увімкнення попереджень спершу просить дозвіл на сповіщення
   const toggleNotifications = async (enabled: boolean) => {
     if (enabled && !(await ensureNotificationPermission())) {
-      Alert.alert(
-        'Сповіщення вимкнені',
-        'Дозвольте сповіщення для застосунку в Параметрах, щоб отримувати попередження про вимкнення.',
-        [
-          { text: 'Скасувати', style: 'cancel' },
-          { text: 'Параметри', onPress: () => Linking.openSettings() },
-        ],
-      );
+      showNotificationPermissionAlert();
       return;
     }
     setNotifications((current) => ({ ...current, enabled }));

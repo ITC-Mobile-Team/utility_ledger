@@ -1,4 +1,5 @@
 import type { KeyValueStorage } from '@/storage';
+import { outageProviders } from './registry';
 import type { OutageSchedule, OutageSettings } from './types';
 
 const SETTINGS_KEY = 'outageSettings';
@@ -14,6 +15,8 @@ export type OutageSettingsRepository = {
   // Останній отриманий графік — щоб показати його без мережі
   loadCachedSchedule(providerId: string): Promise<OutageSchedule | undefined>;
   cacheSchedule(schedule: OutageSchedule): Promise<void>;
+  // Стерти налаштування й кеш графіків усіх постачальників
+  clear(): Promise<void>;
 };
 
 export function createOutageSettingsRepository(
@@ -41,6 +44,16 @@ export function createOutageSettingsRepository(
       settings = next;
       listeners.forEach((listener) => listener());
       await storage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    },
+    async clear() {
+      settings = emptySettings;
+      listeners.forEach((listener) => listener());
+      await Promise.all([
+        storage.removeItem(SETTINGS_KEY),
+        ...outageProviders.map((provider) =>
+          storage.removeItem(scheduleKey(provider.id)),
+        ),
+      ]);
     },
     async loadCachedSchedule(providerId) {
       const raw = await storage.getItem(scheduleKey(providerId));

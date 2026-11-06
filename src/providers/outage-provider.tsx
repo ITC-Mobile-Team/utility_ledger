@@ -1,5 +1,9 @@
 import {
+  ensureNotificationPermission,
+  getProviderForCity,
   getZonedNow,
+  normalizeNotificationSettings,
+  showNotificationPermissionAlert,
   syncOutageNotifications,
   type OutageProvider as ScheduleProvider,
   type OutageSchedule,
@@ -167,4 +171,35 @@ export function useZonedNow(timeZone: string): ZonedNow {
     return () => clearInterval(timer);
   }, [timeZone]);
   return now;
+}
+
+// Перемикач попереджень про вимкнення поза екраном налаштувань (профіль).
+// Працює з тими самими налаштуваннями, що й «Світло» → налаштування
+export function useOutageNotificationToggle() {
+  const repository = useOutageRepository();
+  const settings = useOutageSettings();
+  const notifications = normalizeNotificationSettings(settings.notifications);
+
+  const setEnabled = async (enabled: boolean) => {
+    if (enabled && !(await ensureNotificationPermission())) {
+      showNotificationPermissionAlert();
+      return;
+    }
+    const current = repository.getSnapshot();
+    const next = {
+      ...current,
+      notifications: {
+        ...normalizeNotificationSettings(current.notifications),
+        enabled,
+      },
+    };
+    await repository.save(next);
+    const provider = getProviderForCity(next.city);
+    const cached = provider
+      ? await repository.loadCachedSchedule(provider.id)
+      : undefined;
+    await syncOutageNotifications(next, cached).catch(() => {});
+  };
+
+  return { enabled: notifications.enabled, setEnabled };
 }

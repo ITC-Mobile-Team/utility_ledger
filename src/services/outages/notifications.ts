@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { AndroidImportance } from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import { getProviderForCity } from './registry';
 import { formatDuration, formatTime, getOutageIntervals } from './schedule';
 import {
@@ -74,13 +74,20 @@ function zonedToDate(date: DateKey, minutes: number, timeZone: string) {
 
 const leadLabel = (minutes: number) => formatDuration(minutes);
 
-// Перепланувати попередження за останнім графіком. Старі сповіщення
-// «Світла» знімаються завжди; нові ставляться, лише якщо попередження
-// увімкнені, місто має постачальника і графік від нього
-export async function syncOutageNotifications(
-  settings: OutageSettings,
-  schedule: OutageSchedule | undefined,
-) {
+// Дозвіл відхилено в системі — пояснюємо, де його дати
+export function showNotificationPermissionAlert() {
+  Alert.alert(
+    'Сповіщення вимкнені',
+    'Дозвольте сповіщення для застосунку в Параметрах, щоб отримувати попередження про вимкнення.',
+    [
+      { text: 'Скасувати', style: 'cancel' },
+      { text: 'Параметри', onPress: () => Linking.openSettings() },
+    ],
+  );
+}
+
+// Зняти всі заплановані попередження «Світла»
+export async function cancelOutageNotifications() {
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   await Promise.all(
     scheduled
@@ -89,6 +96,16 @@ export async function syncOutageNotifications(
         Notifications.cancelScheduledNotificationAsync(request.identifier),
       ),
   );
+}
+
+// Перепланувати попередження за останнім графіком. Старі сповіщення
+// «Світла» знімаються завжди; нові ставляться, лише якщо попередження
+// увімкнені, місто має постачальника і графік від нього
+export async function syncOutageNotifications(
+  settings: OutageSettings,
+  schedule: OutageSchedule | undefined,
+) {
+  await cancelOutageNotifications();
 
   const {
     enabled,

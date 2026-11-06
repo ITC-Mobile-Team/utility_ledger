@@ -79,6 +79,11 @@ export function createLocalLedgerRepository(
       return loading;
     },
     getSnapshot: () => state,
+    async clear() {
+      state = emptyState;
+      listeners.forEach((listener) => listener());
+      await storage.removeItem(KEY);
+    },
     subscribe(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);

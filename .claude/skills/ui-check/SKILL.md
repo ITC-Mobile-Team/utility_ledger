@@ -72,7 +72,7 @@ description: Перевірка фічі цього Expo/React Native засто
 launch                       # перезапуск: dev-збірка підключається до Metro напряму, чекає на рендер JS (timeout=40)
 launch keep                  # без terminate, просто вивести на передній план
 open /outage-settings        # маршрут Expo Router → utilityledger://outage-settings (групи (tabs) тощо не пишуться)
-open utilityledger://more    # або повний URL
+open utilityledger://profile # або повний URL
 tap id=objects.nav.add       # timeout=5 за замовчуванням: чекає появи елемента
 hold label~=iPhone           # довге натискання
 type id=objectForm.name "Dacha"  # append — дописати, а не замінити; лише латиниця, див. нижче

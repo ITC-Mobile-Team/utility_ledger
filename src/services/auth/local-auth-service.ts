@@ -35,6 +35,7 @@ export function createLocalAuthService(storage: KeyValueStorage): AuthService {
         id: `preview-id-${method}`,
         name: 'Preview user',
         email: 'preview@example.com',
+        method,
       };
       await storage.setItem(KEY, JSON.stringify(next));
       user = next;

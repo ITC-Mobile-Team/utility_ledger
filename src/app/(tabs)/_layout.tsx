@@ -5,15 +5,17 @@ import { useThemeColor } from '@/hooks/use-theme-colors';
 export default function TabsLayout() {
   const segments = useSegments();
   // Таб-бар видно лише на кореневих екранах табів: усе, що відкрито
-  // всередині «Обʼєктів» і «Світла», показується без нього
+  // всередині «Обʼєктів», «Світла» і «Профілю», показується без нього
   const isTabBarHidden =
-    (segments[1] === '(objects)' || segments[1] === '(outages)') &&
+    (segments[1] === '(objects)' ||
+      segments[1] === '(outages)' ||
+      segments[1] === 'profile') &&
     segments.length > 2;
   const tabInk = useThemeColor('tabInk');
   const objectsColor = useThemeColor('blue');
   const outagesColor = useThemeColor('powerOnInk');
   const analyticsColor = useThemeColor('greenInk');
-  const moreColor = useThemeColor('purpleInk');
+  const profileColor = useThemeColor('purpleInk');
 
   return (
     <NativeTabs
@@ -51,14 +53,14 @@ export default function TabsLayout() {
           selectedColor={analyticsColor}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='more'>
-        <NativeTabs.Trigger.Label selectedStyle={{ color: moreColor }}>
-          Ще
+      <NativeTabs.Trigger name='profile'>
+        <NativeTabs.Trigger.Label selectedStyle={{ color: profileColor }}>
+          Профіль
         </NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          sf='ellipsis'
-          md='more_horiz'
-          selectedColor={moreColor}
+          sf='person.crop.circle'
+          md='person'
+          selectedColor={profileColor}
         />
       </NativeTabs.Trigger>
     </NativeTabs>
