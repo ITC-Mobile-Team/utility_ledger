@@ -9,8 +9,6 @@ import {
 import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  ActivityIndicator,
-  Platform,
   type RefreshControlProps,
   StyleSheet,
   View,
@@ -30,8 +28,6 @@ import {
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
-  Extrapolation,
-  interpolate,
   useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -47,10 +43,6 @@ import {
   HORIZONTAL_PADDING,
   SHEET_CONTENT_TOP,
 } from './navigation-bar/constants';
-
-// Розмір системного ActivityIndicator; власний індикатор оновлення на iOS
-// проявляється, коли контент відтягнуто на один-два такі розміри
-const PULL_INDICATOR_SIZE = 20;
 
 // Ціль доводки: ближчий зі станів (межа — половина відстані згортання),
 // напрямок останнього руху не враховується
@@ -240,33 +232,14 @@ export const NavigationView = ({
       },
     ],
   }));
-  // Індикатор оновлення має бути під навбаром, а не за ним. Android зсуває
-  // свій сам (progressViewOffset). На iOS системний стоїть угорі скролу, під
-  // накладкою, і зсунути його нічим (contentInset.top тут не застосовується),
-  // тож він прозорий, а під навбаром показуємо свій: проявляється з відтягуванням
-  // і крутиться, поки йде оновлення
-  const refreshControlElement = isValidElement<RefreshControlProps>(
+  // Системний індикатор оновлення стоїть угорі скролу, тобто під накладкою.
+  // progressViewOffset (iOS і Android) зсуває його під навбар: на те саме
+  // місце, що й до накладки, — SHEET_CONTENT_TOP від верху шторки
+  const refreshControl = isValidElement<RefreshControlProps>(
     rest.refreshControl,
   )
-    ? rest.refreshControl
-    : null;
-  const isRefreshing = Boolean(refreshControlElement?.props.refreshing);
-  const refreshControl = refreshControlElement
-    ? cloneElement(
-        refreshControlElement,
-        Platform.OS === 'android'
-          ? { progressViewOffset: contentTop }
-          : { tintColor: 'transparent' },
-      )
+    ? cloneElement(rest.refreshControl, { progressViewOffset: contentTop })
     : rest.refreshControl;
-  const pullIndicatorStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      -scrollY.value,
-      [PULL_INDICATOR_SIZE, PULL_INDICATOR_SIZE * 2],
-      [0, 1],
-      Extrapolation.CLAMP,
-    ),
-  }));
   // У воркетах лише get()/set(): React Compiler робить `.value` залежністю
   // мемоізації й читає його під час рендеру
   useKeyboardHandler(
@@ -360,18 +333,6 @@ export const NavigationView = ({
           <Animated.View style={spacerStyle} />
         </KeyboardAwareScrollView>
       </Animated.View>
-      {Platform.OS === 'ios' && refreshControlElement && (
-        <Animated.View
-          pointerEvents='none'
-          style={[
-            styles.pullIndicator,
-            { top: headerHeight + (contentTop - headerHeight) / 2 },
-            isRefreshing ? null : pullIndicatorStyle,
-          ]}
-        >
-          <ActivityIndicator animating={isRefreshing || undefined} />
-        </Animated.View>
-      )}
       <ThemedNavigationBar
         type={type}
         barType={barType}
@@ -393,12 +354,5 @@ export const NavigationView = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  pullIndicator: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    marginTop: -PULL_INDICATOR_SIZE / 2,
   },
 });
