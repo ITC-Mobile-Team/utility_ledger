@@ -18,6 +18,8 @@ export { type Size, toSize } from './size';
 export { Spacer } from './spacer';
 export { TransparentActionButton } from './transparent-action-button';
 export { IconView } from './icon-view';
+export { EmojiGlyph } from './emoji-glyph';
+export { Chevron } from './chevron';
 export { TextButton, TEXT_BUTTON_HEIGHT } from './text-button';
 export {
   Pressable,
