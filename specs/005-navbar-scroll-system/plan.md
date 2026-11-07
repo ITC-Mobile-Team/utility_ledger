@@ -113,7 +113,7 @@ docs/patterns/navigation-bar-title.md, navigation-bar-buttons.md, README.md
 
 ## Порядок робіт (для `/speckit-tasks`)
 
-1. **Фундамент**: константи, один прогрес `p`, накладка з трансформаціями, один ряд кнопок у великому блоці, шторка `SHEET_RADIUS` у накладці, нормалізований `scrollY` (iOS `contentInset.top` / Android `paddingTop`), `top = H − SHEET_RADIUS + SHEET_CONTENT_TOP`. `cornerRadius` і `contentInsets.top` лишаються `@deprecated` і ігноруються, тож tsc проходить після кожного кроку.
+1. **Фундамент**: константи, один прогрес `p`, накладка з трансформаціями, один ряд кнопок у великому блоці, кути шторки `SHEET_RADIUS` під накладкою кольором градієнта, нормалізований `scrollY` (`paddingTop` на обох платформах; iOS-таби без автоматичних інсетів), `top = H + SHEET_CONTENT_TOP`. `cornerRadius` і `contentInsets.top` лишаються `@deprecated` і ігноруються, тож tsc проходить після кожного кроку.
 2. **US1**: прибрати мертвий `ShortNavigationBarButton`, оновити канвас, перевірити testID.
 3. **US2**: доводка (межа `D/2`, скасування дотиком, без гілки «повернутись»), відскок, розпірка R6, клавіатура R7, refresh R8, зміна фокуса й висоти шапки.
 4. **US3**: прибрати `cornerRadius` і `contentInsets.top` з екранів, потім з типів; звірити екрани з власною версткою.

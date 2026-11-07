@@ -4,15 +4,19 @@ import { Pressable } from '../pressable';
 import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { type SharedValue } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { type AppColor } from '@/constants/colors';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type AppFont, ThemedText } from '../themed-text';
 import { VStack } from '../stack';
-import { HORIZONTAL_PADDING } from './constants';
+import {
+  BUTTONS_TOP_GAP,
+  EMPTY_BOTTOM,
+  HORIZONTAL_PADDING,
+  SHORT_TITLE_ROW_HEIGHT,
+} from './constants';
 import { type NavigationBarVariant } from './types';
-import { useTitleCollapse } from './use-title-collapse';
+import { type NavigationBarProgress } from './use-navigation-bar-progress';
 
 type NavigationBarHeaderProps = {
   type?: NavigationBarVariant;
@@ -21,15 +25,15 @@ type NavigationBarHeaderProps = {
   accessory?: ReactNode;
   content?: ReactNode;
   trailing?: ReactNode;
+  // Ряд великих кнопок; входить у великий блок і згортається з ним
+  buttons?: ReactNode;
   isTransparent: boolean;
   // Колір підзаголовка на кольоровому навбарі
   heroSubtitleColor?: AppColor;
-  paddingBottom: number;
-  scrollY: SharedValue<number>;
-  maxScrollY: SharedValue<number>;
-  titleShrink: SharedValue<number>;
-  collapseScroll: SharedValue<number>;
-  titleCollapseDistance: SharedValue<number>;
+  safeAreaTop: number;
+  // Великий блок згорнутий: не натискається й схований від доступності
+  isCollapsed: boolean;
+  progress: NavigationBarProgress;
 };
 
 const BACK_TAP_SIZE = 44;
@@ -50,14 +54,12 @@ export const NavigationBarHeader = ({
   accessory,
   content,
   trailing,
+  buttons,
   isTransparent,
   heroSubtitleColor = 'heroSub',
-  paddingBottom,
-  scrollY,
-  maxScrollY,
-  titleShrink,
-  collapseScroll,
-  titleCollapseDistance,
+  safeAreaTop,
+  isCollapsed,
+  progress,
 }: NavigationBarHeaderProps) => {
   const router = useRouter();
   const route = useRoute();
@@ -67,21 +69,18 @@ export const NavigationBarHeader = ({
       state.routes.findIndex((r) => r.key === route.key) > 0
     );
   });
-  const { top: safeAreaTop } = useSafeAreaInsets();
   const subtitleColor: AppColor = isTransparent ? 'muted' : heroSubtitleColor;
   const backIconTintColor = useThemeColor(
     isTransparent ? 'coral' : 'onPrimary',
   );
   const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
-  const collapse = useTitleCollapse({
-    scrollY,
-    maxScrollY,
-    shrink: titleShrink,
-    collapseScroll,
-    collapseDistance: titleCollapseDistance,
-    hasBackButton: canGoBack,
-  });
   const isFull = type === 'full';
+  const hasButtons = Boolean(buttons);
+  // Великий блок: заголовок (full) і ряд кнопок. У short — лише кнопки
+  const hasLargeBlock = isFull || hasButtons;
+  // Без кнопки «назад» великий заголовок починається одразу під safe area, а
+  // рядок короткого заголовка з'являється поверх нього під час згортання
+  const topRowSpace = isFull && !canGoBack ? 0 : SHORT_TITLE_ROW_HEIGHT;
 
   const shortTitleLabel = (
     <ThemedText
@@ -98,13 +97,52 @@ export const NavigationBarHeader = ({
   );
 
   return (
-    <VStack
+    <View
       style={{
-        paddingTop: safeAreaTop,
-        paddingBottom,
+        paddingTop: safeAreaTop + topRowSpace,
+        paddingBottom: hasButtons ? 0 : EMPTY_BOTTOM,
       }}
     >
-      <Animated.View style={[styles.row, isFull && collapse.rowStyle]}>
+      {hasLargeBlock && (
+        <Animated.View
+          style={progress.largeContentStyle}
+          pointerEvents={isCollapsed ? 'none' : 'auto'}
+          // Згорнутий блок не має потрапляти до VoiceOver/TalkBack і в дерево
+          // UI-перевірок: кожна дія навбару — рівно один раз
+          accessibilityElementsHidden={isCollapsed}
+          importantForAccessibility={
+            isCollapsed ? 'no-hide-descendants' : 'auto'
+          }
+        >
+          {isFull && (
+            <VStack spacing={6} style={styles.largeContent}>
+              <View style={styles.titleRow}>
+                <ThemedText
+                  color={titleColor}
+                  font={getTitleFont(isTransparent, 'full')}
+                  style={styles.titleText}
+                >
+                  {title}
+                </ThemedText>
+                {trailing}
+              </View>
+              {subtitle && (
+                <ThemedText color={subtitleColor} font='navigationSubtitle'>
+                  {subtitle}
+                </ThemedText>
+              )}
+              {content && <View style={styles.content}>{content}</View>}
+            </VStack>
+          )}
+          {hasButtons && <View style={styles.buttons}>{buttons}</View>}
+        </Animated.View>
+      )}
+      <Animated.View
+        // Без кнопки «назад» рядок лежить поверх великого заголовка: дотики
+        // проходять крізь нього до кнопки праворуч від заголовка
+        pointerEvents='box-none'
+        style={[styles.row, { top: safeAreaTop }, progress.pinnedRowStyle]}
+      >
         {canGoBack && (
           <Pressable
             accessibilityRole='button'
@@ -125,7 +163,7 @@ export const NavigationBarHeader = ({
         )}
         {isFull ? (
           <Animated.View
-            style={[styles.shortTitleWrap, collapse.shortTitleStyle]}
+            style={[styles.shortTitleWrap, progress.shortTitleStyle]}
           >
             {shortTitleLabel}
           </Animated.View>
@@ -134,44 +172,18 @@ export const NavigationBarHeader = ({
         )}
         {accessory && <View style={styles.accessory}>{accessory}</View>}
       </Animated.View>
-      {isFull && (
-        <Animated.View style={[styles.largeArea, collapse.largeAreaStyle]}>
-          <Animated.View
-            style={collapse.largeContentStyle}
-            onLayout={(e) =>
-              collapse.onLargeHeightChange(e.nativeEvent.layout.height)
-            }
-          >
-            <VStack spacing={6} style={styles.largeContent}>
-              <View style={styles.titleRow}>
-                <ThemedText
-                  color={titleColor}
-                  font={getTitleFont(isTransparent, 'full')}
-                  style={styles.titleText}
-                >
-                  {title}
-                </ThemedText>
-                {trailing}
-              </View>
-              {subtitle && (
-                <ThemedText color={subtitleColor} font='navigationSubtitle'>
-                  {subtitle}
-                </ThemedText>
-              )}
-              {content && <View style={styles.content}>{content}</View>}
-            </VStack>
-          </Animated.View>
-        </Animated.View>
-      )}
-    </VStack>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   row: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: SHORT_TITLE_ROW_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   accessory: {
     flex: 1,
@@ -202,13 +214,13 @@ const styles = StyleSheet.create({
   titleText: {
     flex: 1,
   },
-  largeArea: {
-    overflow: 'hidden',
-  },
   largeContent: {
     paddingTop: 6,
     // Same inset as the navbar buttons and screen content
     paddingHorizontal: HORIZONTAL_PADDING,
+  },
+  buttons: {
+    paddingTop: BUTTONS_TOP_GAP,
   },
   // 44x44 tap area; the centred 22px icon starts at HORIZONTAL_PADDING like the title
   back: {

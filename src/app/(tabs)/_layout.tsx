@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { useSegments } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import { useThemeColor } from '@/hooks/use-theme-colors';
@@ -13,6 +14,11 @@ export default function TabsLayout() {
       segments[1] === '(outages)' ||
       segments[1] === 'profile') &&
     segments.length > 2;
+  // На iOS таб-бар сам підміняє contentInsetAdjustmentBehavior першого
+  // скролу на 'automatic' і додає відступ під safe area. NavigationView лежить
+  // під навбаром-накладкою й рахує відступи сам, тож автоматику вимикаємо.
+  // На Android автоматика — це SafeAreaView над таб-баром, її лишаємо
+  const ownsInsets = Platform.OS === 'ios';
   const tabInk = useThemeColor('tabInk');
   const objectsColor = useThemeColor('blue');
   const outagesColor = useThemeColor('powerOnInk');
@@ -25,7 +31,10 @@ export default function TabsLayout() {
       iconColor={tabInk}
       labelStyle={{ color: tabInk }}
     >
-      <NativeTabs.Trigger name='(objects)'>
+      <NativeTabs.Trigger
+        name='(objects)'
+        disableAutomaticContentInsets={ownsInsets}
+      >
         <NativeTabs.Trigger.Label selectedStyle={{ color: objectsColor }}>
           Обʼєкти
         </NativeTabs.Trigger.Label>
@@ -35,7 +44,10 @@ export default function TabsLayout() {
           selectedColor={objectsColor}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='(outages)'>
+      <NativeTabs.Trigger
+        name='(outages)'
+        disableAutomaticContentInsets={ownsInsets}
+      >
         <NativeTabs.Trigger.Label selectedStyle={{ color: outagesColor }}>
           Світло
         </NativeTabs.Trigger.Label>
@@ -55,7 +67,10 @@ export default function TabsLayout() {
           selectedColor={analyticsColor}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='profile'>
+      <NativeTabs.Trigger
+        name='profile'
+        disableAutomaticContentInsets={ownsInsets}
+      >
         <NativeTabs.Trigger.Label selectedStyle={{ color: profileColor }}>
           Профіль
         </NativeTabs.Trigger.Label>

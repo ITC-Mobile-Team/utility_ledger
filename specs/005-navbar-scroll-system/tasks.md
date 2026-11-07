@@ -13,7 +13,7 @@
 - `L` — висота великого блоку.
 - `D` — відстань згортання.
 - `p = clamp(max(scrollY, keyboard × D) / D, 0, 1)`; якщо `D = 0`, то `p = 0`.
-- `top` — верхній відступ контенту: `H − SHEET_RADIUS + SHEET_CONTENT_TOP` для кольорового навбару, `H` для прозорого.
+- `top` — верхній відступ контенту: `H + SHEET_CONTENT_TOP` для кольорового навбару (низ накладки — це верх шторки), `H` для прозорого.
 
 У воркетах лише `get()`/`set()` (`docs/patterns/reanimated.md`).
 
@@ -21,14 +21,14 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 У `src/components/navigation-bar/constants.ts` додати дві константи з коментарями: `export const SHEET_RADIUS = 28;` (канвас `--r-xl`) і `export const SHEET_CONTENT_TOP = 24;` (канвас `.sheet{padding:24px 20px 0}`). Старі константи прибере T012
-- [ ] T002 [P] У `src/components/content-insets.ts` позначити поле `top` у `ContentInsets` як `/** @deprecated ігнорується: відступ до першого блоку задає NavigationView (SHEET_CONTENT_TOP); прибирається в T030 */`. `toPadding` повертає `{ paddingHorizontal: insets?.horizontal ?? HORIZONTAL_PADDING, paddingBottom: insets?.bottom }` без `paddingTop`; `HORIZONTAL_PADDING` імпортувати з `./navigation-bar/constants`. Робити разом із T010, бо T010 додає новий верхній відступ
+- [X] T001 У `src/components/navigation-bar/constants.ts` додати дві константи з коментарями: `export const SHEET_RADIUS = 28;` (канвас `--r-xl`) і `export const SHEET_CONTENT_TOP = 24;` (канвас `.sheet{padding:24px 20px 0}`). Старі константи прибере T012
+- [X] T002 [P] У `src/components/content-insets.ts` позначити поле `top` у `ContentInsets` як `/** @deprecated ігнорується: відступ до першого блоку задає NavigationView (SHEET_CONTENT_TOP); прибирається в T030 */`. `toPadding` повертає `{ paddingHorizontal: insets?.horizontal ?? HORIZONTAL_PADDING, paddingBottom: insets?.bottom }` без `paddingTop`; `HORIZONTAL_PADDING` імпортувати з `./navigation-bar/constants`. Робити разом із T010, бо T010 додає новий верхній відступ
 
 ## Phase 2: Foundational (блокує всі історії)
 
 **⚠️ CRITICAL**: поки T003–T012 не готові, навбар не розбирається по історіях: прогрес, накладка, один ряд кнопок і шторка — спільна основа. Після цієї фази коротких кнопок-«пігулок» уже немає, бо ряд тільки один. US1 лише прибирає мертвий код, оновлює канвас і перевіряє.
 
-- [ ] T003 Створити `src/components/navigation-bar/use-navigation-bar-progress.ts` замість `use-title-collapse.ts`.
+- [X] T003 Створити `src/components/navigation-bar/use-navigation-bar-progress.ts` замість `use-title-collapse.ts`.
   - **Вхід**: `scrollY: SharedValue<number>` (вже з урахуванням клавіатури), `hasBackButton: boolean`, `hasLargeBlock: boolean` (= `type === 'full' || hasButtons`), `collapseDistance: SharedValue<number>` (вихід для `NavigationView`).
   - **Розміри**:
     - `L` міряється максимумом: `onLargeHeightChange: (h) => largeHeight.set(c => Math.max(c, h))`. `resetLargeHeight()` описано в T025.
@@ -42,35 +42,35 @@
     - `sheetCornerStyle`: верхні радіуси `D > 0 ? p × SHEET_RADIUS : SHEET_RADIUS`.
 
   Видалити `src/components/navigation-bar/use-title-collapse.ts`
-- [ ] T004 Переробити `src/components/navigation-bar/navigation-bar-header.tsx` під T003.
+- [X] T004 Переробити `src/components/navigation-bar/navigation-bar-header.tsx` під T003.
   - **Великий блок** міряється одним `onLayout`. Для `type='full'` це заголовок, підзаголовок, `content` і `trailing`, а під ними слот для ряду кнопок (T008). Для `type='short'` великий блок — **лише** ряд кнопок, якщо вони є, а якщо немає — блоку немає.
   - **Згортання**: великий блок прозорішає за `largeContentStyle` і зсувається разом із накладкою, а рядок «назад» закріплений `pinnedRowStyle`.
   - **Що прибрати**: пропси `titleShrink`, `collapseScroll`, `maxScrollY`, а також `largeAreaStyle` і `rowStyle` з анімованою висотою.
   - **Без кнопки «назад»** рядок короткого заголовка завжди резервує `SHORT_TITLE_ROW_HEIGHT`, а заголовок у ньому прозорий, доки `p < 0.6`.
   - **Не чіпати**: `marginStart` кнопки «назад» (`HORIZONTAL_PADDING − (44 − 22) / 2`) і вирівнювання великого заголовка на `HORIZONTAL_PADDING`.
-- [ ] T005 Оновити `src/components/navigation-bar/types.ts`:
+- [X] T005 Оновити `src/components/navigation-bar/types.ts`:
   - прибрати `maxScrollY`, `titleShrink` і `collapseScroll`;
   - `titleCollapseDistance` перейменувати на `collapseDistance` (скрол до повного згортання; 0 без великого блоку);
   - додати `onHeightChange?: (height: number) => void` — він повідомляє `H`;
   - `cornerRadius?` поки лишити з `/** @deprecated ігнорується: шторка за правилом SHEET_RADIUS; прибирається в T030 */`.
-- [ ] T006 Переробити `src/components/navigation-bar/themed-navigation-bar.tsx` на накладку.
+- [X] T006 Переробити `src/components/navigation-bar/themed-navigation-bar.tsx` на накладку.
   - **Корінь**: `Animated.View` з `position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1` і `overlayStyle`; `onLayout` → `onHeightChange(e.nativeEvent.layout.height)`.
   - **Порядок усередині**: фон-градієнт, заголовок, смужка шторки.
   - **Шторка**: смужка висотою `SHEET_RADIUS` кольору `bg` внизу накладки, лише для `barType !== 'transparent'`, з `sheetCornerStyle`.
   - **Нижній відступ без кнопок**: прибрати `paddingBottom = EMPTY_BOTTOM + cornerRadius` і звірити відступ з артбордом 16 «Профіль».
   - Проп `cornerRadius` ігнорувати.
-- [ ] T007 Спростити `src/components/navigation-bar/navigation-bar-buttons-row.tsx`:
+- [X] T007 Спростити `src/components/navigation-bar/navigation-bar-buttons-row.tsx`:
   - прибрати `variant`, `top`, `onHeightChange` і `position: 'absolute'`;
   - рендерити лише `NavigationBarButton`; ряд стоїть у потоці розкладки;
   - `isInteractive` керує `pointerEvents`, `accessibilityElementsHidden` і `importantForAccessibility='no-hide-descendants'`;
   - не чіпати горизонтальний `ScrollView` з `paddingHorizontal: HORIZONTAL_PADDING` і `HStack spacing={12}` (ширина кнопки 50% екрана, `docs/patterns/navigation-bar-buttons.md`).
-- [ ] T008 Переписати `src/components/navigation-bar/navigation-bar-buttons.tsx`: один `NavigationBarButtonsRow`, без перехресного затухання.
+- [X] T008 Переписати `src/components/navigation-bar/navigation-bar-buttons.tsx`: один `NavigationBarButtonsRow`, без перехресного затухання.
   - Ряд рендериться в слоті великого блоку `navigation-bar-header.tsx` з T004. Він входить у `L`, згортається й прозорішає разом із блоком.
   - Відступ ряду від заголовка і накладання кнопок на смужку шторки взяти з артборду 05 «Обʼєкти» (зараз `FULL_ROW_OFFSET = GRADIENT_TAIL − 36`).
   - `isInteractive` = `p < 0.5`: `useAnimatedReaction` на `progress.get() < 0.5` → `scheduleOnRN(setInteractive, …)` лише тоді, коли значення змінилося.
   - Проп `collapse` прибрати.
-- [ ] T009 Видалити `src/components/navigation-bar/use-navigation-bar-collapse.ts` і його імпорти з `themed-navigation-bar.tsx` і `navigation-bar-buttons.tsx`. Градієнт тепер має висоту `H` (з хвостом під кнопками, як в артборді 05) і їде разом із накладкою, а не за `gradientStyle`
-- [ ] T010 У `src/components/navigation-view.tsx` поставити `ThemedNavigationBar` накладкою над `KeyboardAwareScrollView`.
+- [X] T009 Видалити `src/components/navigation-bar/use-navigation-bar-collapse.ts` і його імпорти з `themed-navigation-bar.tsx` і `navigation-bar-buttons.tsx`. Градієнт тепер має висоту `H` (з хвостом під кнопками, як в артборді 05) і їде разом із накладкою, а не за `gradientStyle`
+- [X] T010 У `src/components/navigation-view.tsx` поставити `ThemedNavigationBar` накладкою над `KeyboardAwareScrollView`.
   - **Розкладка**: обгортка `View` з `flex: 1`, навбар абсолютно зверху, скрол на всю висоту.
   - **Висота шапки**: `const [headerHeight, setHeaderHeight] = useState(0)` з `onHeightChange`; `top` — за формулою зі скорочень (data-model.md), тримати також у shared value для воркету.
   - **iOS**: `contentInset={{ top, bottom: bottomInset }}`, `scrollIndicatorInsets` так само, в `onScroll` `scrollY = contentOffset.y + top`.
@@ -79,12 +79,12 @@
   - **Що прибрати**: `titleShrink`, `collapseScroll`, `naturalScroll`, старий `spacerHeight` (новий — T021), а також `AnimatedThemedView`, `sheetCornerStyle`, `styles.sheet` і рендер шторки — вона тепер у T006.
   - `cornerRadius` з пропсів ігнорувати.
   - Перед зміною звірити `contentInset` і `contentOffset` з документацією ScrollView RN 0.88 (Constitution I).
-- [ ] T011 У `src/components/navigation-view.tsx` перейти на одну відстань.
+- [X] T011 У `src/components/navigation-view.tsx` перейти на одну відстань.
   - `collapseDistance` (shared value з навбару) замінює `titleCollapseDistance` і `buttonsCollapseDistance`.
   - `headerScrollY = max(scrollY, keyboardCollapse × collapseDistance)` передається в навбар як `scrollY`.
   - Прибрати імпорт `COLLAPSE_DISTANCE`.
   - `isAtTop` і `contentFits` рахувати від нормалізованого `scrollY` і `viewportHeight − bottomInset − top`.
-- [ ] T012 Прибрати з `src/components/navigation-bar/constants.ts` невживані тепер `COLLAPSE_DISTANCE`, `SHORT_ROW_OFFSET`, `SHORT_ROW_BOTTOM`, `EMPTY_BOTTOM`, а також `FULL_ROW_OFFSET` і `GRADIENT_TAIL`, якщо T008–T009 їх більше не використовують. Перевірити через `grep -rn` по `src/`. **Перевірка фази**: `npx tsc --noEmit` і `npx expo lint` без помилок. У симуляторі «Профіль», обʼєкт і «Обʼєкти» згортаються, контент іде 1:1 з пальцем, «пігулок» немає
+- [X] T012 Прибрати з `src/components/navigation-bar/constants.ts` невживані тепер `COLLAPSE_DISTANCE`, `SHORT_ROW_OFFSET`, `SHORT_ROW_BOTTOM`, `EMPTY_BOTTOM`, а також `FULL_ROW_OFFSET` і `GRADIENT_TAIL`, якщо T008–T009 їх більше не використовують. Перевірити через `grep -rn` по `src/`. **Перевірка фази**: `npx tsc --noEmit` і `npx expo lint` без помилок. У симуляторі «Профіль», обʼєкт і «Обʼєкти» згортаються, контент іде 1:1 з пальцем, «пігулок» немає
 
 **Checkpoint**: навбар — накладка з одним прогресом, одним рядом кнопок і шторкою за єдиним правилом. Далі історії можна робити в будь-якому порядку.
 
@@ -94,14 +94,23 @@
 
 **Independent Test**: «Обʼєкти» з 5+ адресами, обʼєкт і послуги — прогорнути до кінця й назад. «Пігулок» немає в жодній точці, нагорі кнопки натискаються, у дереві `ui-check` кожен testID кнопки навбару трапляється не більше одного разу (quickstart 1–2).
 
-- [ ] T013 [P] [US1] Видалити `src/components/navigation-bar/short-navigation-bar-button.tsx` і його експорт з `src/components/navigation-bar/index.ts`. Через `grep -rn ShortNavigationBarButton src` перевірити, що інших використань немає
-- [ ] T014 [P] [US1] Оновити канвас: `docs/design.md` → артефакт `Px8EEBtJf8LRD97UwbGUjj`, читати й публікувати через Artifact.
+- [X] T013 [P] [US1] Видалити `src/components/navigation-bar/short-navigation-bar-button.tsx` і його експорт з `src/components/navigation-bar/index.ts`. Через `grep -rn ShortNavigationBarButton src` перевірити, що інших використань немає
+- [X] T014 [P] [US1] Оновити канвас: `docs/design.md` → артефакт `Px8EEBtJf8LRD97UwbGUjj`, читати й публікувати через Artifact.
   - У спільних компонентах `Properties`, `Property`, `PropertyMonth`, `PropertyMeters` і `Outage` змінити згорнутий стан (`start-collapsed` / `start-scrolled`): лишити тільки рядок «назад» і короткий заголовок, прибрати «пігулки» й чипи-кнопки.
   - Звірити артборди 05b, 08b, 08c, 09b, 12b і 20s.
   - Перед публікацією перечитати артефакт: там може бути новіша версія.
-- [ ] T015 [US1] Перевірити US1 в iOS Simulator через skill `ui-check` (quickstart 1–2): «Обʼєкти», обʼєкт і послуги в розгорнутому й згорнутому стані. У згорнутому стані testID кнопок навбару (`docs/patterns/test-ids.md`) відсутні в дереві, у розгорнутому — по одному
+- [X] T015 [US1] Перевірити US1 в iOS Simulator через skill `ui-check` (quickstart 1–2): «Обʼєкти», обʼєкт і послуги в розгорнутому й згорнутому стані. У згорнутому стані testID кнопок навбару (`docs/patterns/test-ids.md`) відсутні в дереві, у розгорнутому — по одному
 
 **Checkpoint**: MVP готовий; коміт після lint і tsc.
+
+**Як зроблено MVP (відхилення від опису задач):**
+- Кути шторки — не смужка `bg` у накладці (вона перекривала б перший блок), а «зворотні» кути кольором низу градієнта під накладкою, масштаб `p` (`navigation-bar-background.tsx`). Низ накладки = верх шторки, тож `top = H + SHEET_CONTENT_TOP`.
+- `D = H − (safe area + 44 + EMPTY_BOTTOM)`: у згорнутому стані під рядком «назад» лишається хвіст градієнта 24. З кнопками хвіст накладки — 0, градієнт заходить у кнопки на `BUTTONS_GRADIENT_OVERLAP` і з'їжджає вниз з прогресом.
+- Верхній відступ контенту — `paddingTop` на обох платформах. `contentInset.top` на iOS не брали, бо початковий зсув тоді треба виставляти окремо; pull-to-refresh під навбаром вирішує T023.
+- Нативні таби на iOS підміняли `contentInsetAdjustmentBehavior` скролу на `automatic` і додавали 62 pt зверху: у `src/app/(tabs)/_layout.tsx` для «Обʼєктів», «Світла» і «Профілю» — `disableAutomaticContentInsets` на iOS.
+- `navigation-bar-buttons.tsx` видалено: один ряд — це `NavigationBarButtonsRow` у слоті великого блоку.
+- Розпірка R6 (`spacerHeight = max(0, D − природний maxScrollY)`) уже є в T010; T021 лишається на перевірку.
+- Канвас: з компонентів `Properties`, `Property`, `PropertyMonth`, `PropertyMeters` прибрано блок «пігулок» у згорнутому стані (версія 120); `Outage` не мінявся — чипи черг там є `headerContent`, а не кнопки.
 
 ## Phase 4: User Story 2 — Різкі й довгі свайпи без смикання (Priority: P1)
 
@@ -148,7 +157,7 @@
 
 **Independent Test**: скріншоти всіх екранів з обсягу в розгорнутому й згорнутому стані. Кути 0→28 (зі згортанням) або 28 (без згортання), поле 20, відступ від шторки до першого блоку 24, розбіжність ≤ 1 pt (quickstart 8–9).
 
-- [ ] T026 [US3] У `src/components/navigation-view.tsx` переконатися, що відступ від верху шторки до першого блоку дорівнює рівно `SHEET_CONTENT_TOP`: `top = H − SHEET_RADIUS + SHEET_CONTENT_TOP` (T010) на кольоровому навбарі. Бічне поле за замовчуванням 20 (T002). Звірити з артбордом 05 «Обʼєкти»
+- [ ] T026 [US3] У `src/components/navigation-view.tsx` переконатися, що відступ від верху шторки до першого блоку дорівнює рівно `SHEET_CONTENT_TOP`: `top = H + SHEET_CONTENT_TOP` (T010) на кольоровому навбарі. Бічне поле за замовчуванням 20 (T002). Звірити з артбордом 05 «Обʼєкти»
 - [ ] T027 [P] [US3] Прибрати `cornerRadius` і `contentInsets.top`, а також `horizontal: 20` (тепер це значення за замовчуванням) з екранів «Обʼєктів». Лишити лише `contentInsets={{ bottom: N }}`:
   - `src/app/(tabs)/(objects)/index.tsx:54-55` (`cornerRadius={isEmpty ? 28 : 0}` прибрати повністю)
   - `src/app/(tabs)/(objects)/object-form.tsx:79`
@@ -202,7 +211,7 @@
   - refresh R8;
   - зміна фокуса й висоти;
   - шторка `SHEET_RADIUS`;
-  - відступи `top = H − SHEET_RADIUS + SHEET_CONTENT_TOP` і `HORIZONTAL_PADDING`;
+  - відступи `top = H + SHEET_CONTENT_TOP` і `HORIZONTAL_PADDING`; `disableAutomaticContentInsets` для вкладок на iOS;
   - `contentInsets` без `top`.
 
   Прибрати застарілі пункти: `titleShrink`, `cornerRadius`, повернення в розгорнутий стан для короткого контенту

@@ -14,7 +14,6 @@ import {
   useKeyboardState,
   useReanimatedFocusedInput,
 } from 'react-native-keyboard-controller';
-import { VStack } from './stack';
 import {
   ThemedNavigationBar,
   type ThemedNavigationBarProps,
@@ -22,8 +21,6 @@ import {
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
-  Extrapolation,
-  interpolate,
   useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -35,15 +32,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 import { useIsFocused } from 'expo-router';
 import { toPadding, type ContentInsets } from './content-insets';
-import { COLLAPSE_DISTANCE } from './navigation-bar/constants';
-import { ThemedView } from './themed-view';
-
-const AnimatedThemedView = Animated.createAnimatedComponent(ThemedView);
+import { SHEET_CONTENT_TOP } from './navigation-bar/constants';
 
 type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
   Omit<
     ThemedNavigationBarProps,
-    'type' | 'scrollY' | 'maxScrollY' | 'titleShrink' | 'collapseScroll'
+    'type' | 'scrollY' | 'collapseDistance' | 'onHeightChange'
   > & {
     type?: NavigationBarVariant;
     contentInsets?: ContentInsets;
@@ -60,7 +54,8 @@ export const NavigationView = ({
   navigationBarButtons,
   onNavigationButtonPress,
   contentInsets,
-  cornerRadius = 0,
+  // Застарілий проп: шторка тепер за єдиним правилом навбару
+  cornerRadius: _cornerRadius,
   keyboardShouldPersistTaps = 'handled',
   children,
   ...rest
@@ -68,15 +63,19 @@ export const NavigationView = ({
   const bg = useThemeColor('bg');
   const scrollY = useSharedValue(0);
   const maxScrollY = useSharedValue(Number.MAX_VALUE);
-  const titleShrink = useSharedValue(0);
-  const collapseScroll = useSharedValue(0);
-  const titleCollapseDistance = useSharedValue(0);
+  // Скрол, за який навбар згортається повністю (міряє сам навбар)
+  const collapseDistance = useSharedValue(0);
   const scrollRef = useRef<KeyboardAwareScrollViewRef>(null);
   // Safe area екрана включає таб-бар
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
   const [bottomInset, setBottomInset] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
+  // Навбар лежить поверх скролу, тож контент починається під ним: на кольоровому
+  // навбарі — через SHEET_CONTENT_TOP від верху шторки (низу накладки)
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const isColored = barType !== undefined && barType !== 'transparent';
+  const contentTop = headerHeight + (isColored ? SHEET_CONTENT_TOP : 0);
   // Де закінчується контент (без розпірки та нижнього відступу)
   const [contentEnd, setContentEnd] = useState(0);
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
@@ -98,13 +97,14 @@ export const NavigationView = ({
     },
   );
   // Короткий контент не скролиться: він і так видно повністю над таб-баром.
-  // Перевіряємо лише нагорі: згорнутий навбар нижчий, і там контент може
-  // вміститись, але скрол потрібен, щоб повернутись. З клавіатурою скрол
-  // лишається, щоб догорнути до поля над нею, і вмикається вже при фокусі
+  // Перевіряємо лише нагорі: там навбар розгорнутий, а згорнутий забирає менше
+  // місця, і контент може вміститись, але скрол потрібен, щоб повернутись.
+  // З клавіатурою скрол лишається, щоб догорнути до поля над нею, і вмикається
+  // вже при фокусі.
   // Поки палець на екрані чи скрол доїжджає за інерцією, scrollEnabled не
   // чіпаємо: вимкнений посеред жесту він обриває скрол там, де той є, і екран
-  // «замерзає». А під час жесту вміщення змінюється саме собою: згорнутий
-  // навбар нижчий (вʼюпорт вищий), контент міняється (скелетон → графік)
+  // «замерзає». А під час жесту вміщення змінюється саме собою (скелетон →
+  // графік)
   const [isUserScrolling, setUserScrolling] = useState(false);
   // З pull-to-refresh скрол потрібен завжди, навіть короткому контенту,
   // інакше графік не оновити, поки він завантажується чи не опублікований
@@ -116,19 +116,19 @@ export const NavigationView = ({
     viewportHeight > 0 &&
     contentEnd + (contentInsets?.bottom ?? 0) <= viewportHeight - bottomInset;
   const isScrollEnabled = !contentFits || isKeyboardVisible || hasFocusedInput;
-  const buttonsCollapseDistance = navigationBarButtons?.length
-    ? COLLAPSE_DISTANCE
-    : 0;
-  // Scroll range without the spacer, with the header expanded
-  const naturalScroll = useSharedValue(Number.MAX_VALUE);
-  // The scroll area grows as the header shrinks; the spacer keeps enough scroll
-  // range for the large title to collapse completely. Long content needs none,
-  // so it doesn't leave an empty gap at the bottom
+  const isScrollEnabledValue = useSharedValue(isScrollEnabled);
+  useEffect(() => {
+    isScrollEnabledValue.set(isScrollEnabled);
+  }, [isScrollEnabled, isScrollEnabledValue]);
+  // Діапазон скролу без розпірки
+  const naturalMaxScroll = useSharedValue(Number.MAX_VALUE);
+  // Контенту, ледь довшому за екран, бракує скролу, щоб згорнути навбар
+  // повністю: розпірка під ним додає рівно стільки, скільки бракує. Довгий
+  // контент обходиться без неї, тож унизу форми немає порожнього місця
   const spacerHeight = useDerivedValue(() =>
-    Math.min(
-      titleShrink.value,
-      Math.max(collapseScroll.value - naturalScroll.value, 0),
-    ),
+    isScrollEnabledValue.value
+      ? Math.max(collapseDistance.value - naturalMaxScroll.value, 0)
+      : 0,
   );
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollY.value = e.contentOffset.y;
@@ -136,8 +136,7 @@ export const NavigationView = ({
       e.contentSize.height +
       (e.contentInset?.bottom ?? 0) -
       e.layoutMeasurement.height;
-    naturalScroll.value =
-      maxScrollY.value - spacerHeight.value + titleShrink.value;
+    naturalMaxScroll.value = maxScrollY.value - spacerHeight.value;
   });
   // Навбар не зупиняється посередині згортання: скрол, що завершився між
   // розгорнутим і згорнутим станами, доїжджає до ближчого
@@ -145,10 +144,7 @@ export const NavigationView = ({
   const snapHeader = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = e.nativeEvent.contentOffset.y;
     // Короткий контент згортає навбар за весь доступний скрол
-    const end = Math.min(
-      Math.max(titleCollapseDistance.get(), buttonsCollapseDistance),
-      maxScrollY.get(),
-    );
+    const end = Math.min(collapseDistance.get(), maxScrollY.get());
     const scrollTo = (target: number) =>
       scrollRef.current?.scrollTo({ y: target, animated: true });
 
@@ -180,21 +176,14 @@ export const NavigationView = ({
   }, [isFocused, isScreenFocused]);
   const keyboardCollapse = useSharedValue(0);
   const headerScrollY = useDerivedValue(() =>
-    Math.max(
-      scrollY.value,
-      keyboardCollapse.value *
-        Math.max(titleCollapseDistance.value, buttonsCollapseDistance),
-    ),
+    Math.max(scrollY.value, keyboardCollapse.value * collapseDistance.value),
   );
   const onKeyboardHidden = useCallback(() => {
     const y = scrollY.get();
-    const end = Math.min(
-      Math.max(titleCollapseDistance.get(), buttonsCollapseDistance),
-      maxScrollY.get(),
-    );
+    const end = Math.min(collapseDistance.get(), maxScrollY.get());
     if (end <= 0 || y <= 0 || y >= end) return;
     scrollRef.current?.scrollTo({ y: y >= end / 2 ? end : 0, animated: true });
-  }, [buttonsCollapseDistance, maxScrollY, scrollY, titleCollapseDistance]);
+  }, [collapseDistance, maxScrollY, scrollY]);
   // У воркетах лише get()/set(): React Compiler робить `.value` залежністю
   // мемоізації й читає його під час рендеру
   useKeyboardHandler(
@@ -215,56 +204,12 @@ export const NavigationView = ({
     },
     [onKeyboardHidden],
   );
-  const shrinkSpacerStyle = useAnimatedStyle(() => ({
+  const spacerStyle = useAnimatedStyle(() => ({
     height: spacerHeight.value,
   }));
-  // Розгорнутий навбар переходить у контент без заокруглень; кути шторки
-  // з'являються з прогресом скролу і повні, коли навбар згорнутий
-  const sheetCornerStyle = useAnimatedStyle(() => {
-    const distance = Math.max(
-      titleCollapseDistance.value,
-      buttonsCollapseDistance,
-    );
-    const radius =
-      distance > 0
-        ? interpolate(
-            headerScrollY.value,
-            [0, distance],
-            [0, cornerRadius],
-            Extrapolation.CLAMP,
-          )
-        : 0;
-    return { borderTopLeftRadius: radius, borderTopRightRadius: radius };
-  });
 
   return (
-    <VStack style={styles.container}>
-      <ThemedNavigationBar
-        type={type}
-        barType={barType}
-        title={title}
-        subtitle={subtitle}
-        headerAccessory={headerAccessory}
-        headerContent={headerContent}
-        headerTrailing={headerTrailing}
-        navigationBarButtons={navigationBarButtons}
-        onNavigationButtonPress={onNavigationButtonPress}
-        scrollY={headerScrollY}
-        maxScrollY={maxScrollY}
-        titleShrink={titleShrink}
-        collapseScroll={collapseScroll}
-        titleCollapseDistance={titleCollapseDistance}
-        cornerRadius={cornerRadius}
-      />
-      {cornerRadius > 0 && (
-        <AnimatedThemedView
-          style={[
-            styles.sheet,
-            { marginTop: -cornerRadius }, // заходить на градієнт навбару
-            sheetCornerStyle,
-          ]}
-        />
-      )}
+    <View style={styles.container}>
       {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
       <KeyboardAwareScrollView
         ref={scrollRef}
@@ -302,28 +247,45 @@ export const NavigationView = ({
         }}
         scrollEnabled={isScrollEnabled}
         contentInset={{ bottom: bottomInset }}
-        scrollIndicatorInsets={{ bottom: bottomInset }}
+        scrollIndicatorInsets={{ top: contentTop, bottom: bottomInset }}
         contentInsetAdjustmentBehavior='never'
+        // Скрол тепер доходить до верху екрана, під навбар: iOS не має сам
+        // додавати відступ під safe area, його вже містить висота навбару
+        automaticallyAdjustContentInsets={false}
         alwaysBounceVertical={hasRefreshControl}
         scrollEventThrottle={16}
         style={{ backgroundColor: bg }}
-        contentContainerStyle={[{ flexGrow: 1 }, toPadding(contentInsets)]}
+        contentContainerStyle={[
+          { flexGrow: 1, paddingTop: contentTop },
+          toPadding(contentInsets),
+        ]}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         {...rest}
       >
         {children}
         <View onLayout={(e) => setContentEnd(e.nativeEvent.layout.y)} />
-        <Animated.View style={shrinkSpacerStyle} />
+        <Animated.View style={spacerStyle} />
       </KeyboardAwareScrollView>
-    </VStack>
+      <ThemedNavigationBar
+        type={type}
+        barType={barType}
+        title={title}
+        subtitle={subtitle}
+        headerAccessory={headerAccessory}
+        headerContent={headerContent}
+        headerTrailing={headerTrailing}
+        navigationBarButtons={navigationBarButtons}
+        onNavigationButtonPress={onNavigationButtonPress}
+        scrollY={headerScrollY}
+        collapseDistance={collapseDistance}
+        onHeightChange={setHeaderHeight}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  sheet: {
-    height: 24,
   },
 });

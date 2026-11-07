@@ -9,7 +9,6 @@ export type {
   NavigationBarButtonItem,
   NavigationBarButtonProps,
 } from './navigation-bar-button';
-export { ShortNavigationBarButton } from './short-navigation-bar-button';
 export { NavigationBarBackground } from './navigation-bar-background';
 export { NavigationBarChip } from './navigation-bar-chip';
 export { NavigationBarIconButton } from './navigation-bar-icon-button';

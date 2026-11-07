@@ -20,13 +20,18 @@ export type ThemedNavigationBarProps = {
   // Кнопка праворуч від великого заголовка (напр. NavigationBarIconButton);
   // згортається разом із ним. Лише для type='full'
   headerTrailing?: ReactNode;
+  // Великі кнопки; ховаються разом із великим заголовком
   navigationBarButtons?: NavigationBarButtonItem[];
   onNavigationButtonPress?: (id: string) => void;
+  // Нормалізований зсув контенту (0 — верх), з урахуванням клавіатури
   scrollY?: SharedValue<number>;
-  maxScrollY?: SharedValue<number>;
-  titleShrink?: SharedValue<number>;
-  collapseScroll?: SharedValue<number>;
-  // Скрол, за який згортається великий заголовок (0, якщо його немає)
-  titleCollapseDistance?: SharedValue<number>;
+  // Скрол, за який навбар згортається повністю (0, якщо згортатися нічому)
+  collapseDistance?: SharedValue<number>;
+  // Висота розгорнутої накладки — з неї рахується верхній відступ контенту
+  onHeightChange?: (height: number) => void;
+  /**
+   * @deprecated ігнорується: шторка за єдиним правилом SHEET_RADIUS;
+   * прибирається, щойно екрани перестануть його передавати
+   */
   cornerRadius?: number;
 };
