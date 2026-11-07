@@ -53,7 +53,7 @@ export function CityPickerSheet({
 
       <ThemedView backgroundColor='surface2' style={styles.search}>
         <HStack align='center' spacing={8}>
-          <AppImage icon='search' tintColor='muted' size={{ width: 18 }} />
+          <AppImage icon='search' role='inline' />
           <TextInput
             value={query}
             onChangeText={setQuery}

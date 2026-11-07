@@ -13,7 +13,7 @@ export function InfoBanner({ icon, title, text, style }: InfoBannerProps) {
   return (
     <ThemedView backgroundColor='blueSoft' style={[styles.banner, style]}>
       <HStack align='top' spacing={12}>
-        <AppImage icon={icon} tintColor='blueInk' size={{ width: 18 }} />
+        <AppImage icon={icon} role='inline' />
         <VStack spacing={2} style={styles.text}>
           <ThemedText font='hintTitle'>{title}</ThemedText>
           <ThemedText color='blueInk' font='radioCardSubtitle'>

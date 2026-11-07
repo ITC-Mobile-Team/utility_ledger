@@ -13,18 +13,18 @@
 - [X] T001 Створити `src/constants/icon-sizes.ts`: `export const iconSizes = { badge: 12, inline: 16, button: 20, feature: 28, hero: 40, heroLarge: 64 } as const;` і `export type IconRole = keyof typeof iconSizes;` (контракт — contracts/icons.md)
 - [X] T002 Створити `src/components/emoji-glyph.tsx`: квадрат `size × size` з `alignItems/justifyContent: 'center'`, усередині звичайний `Text` (не `ThemedText`, без шрифту Onest) з `allowFontScaling={false}`, `includeFontPadding: false`, `textAlign: 'center'`, `fontSize = size × k`, `lineHeight = size`, платформні `k` і `translateY` через `Platform.select`, `accessible={false}`; перед написанням звірити `allowFontScaling`/`includeFontPadding` з документацією RN 0.88 (Constitution I); пропси `emoji`, `size`, `testID?`; додати експорт у `src/components/index.ts`
 - [X] T003 [P] Створити `src/components/chevron.tsx`: векторний шеврон (`direction: 'right' | 'upDown'`, `color?: AppColor` за замовчуванням `chev`) на `expo-image` + `tintColor`, джерела `assets/images/icons/chevron-right.svg` і `chevron-up-down.svg`, розмір за роллю `inline` (`iconSizes.inline`) і те саме центрування, що в `EmojiGlyph`; додати експорт у `src/components/index.ts` (контракт — contracts/icons.md)
-- [ ] T004 Затвердити карту emoji: показати користувачу повну карту з research.md R4 (32 ключі без шевронів) і ролі зі шкали, внести правки в research.md і в `src/constants/app-icons.tsx` (T005) до масової заміни; за потреби одразу оновити відповідні артборди канвасу. Без цієї відповіді T005 не починати
+- [X] T004 Затвердити карту emoji: показати користувачу повну карту з research.md R4 (32 ключі без шевронів) і ролі зі шкали, внести правки в research.md і в `src/constants/app-icons.tsx` (T005) до масової заміни; за потреби одразу оновити відповідні артборди канвасу. Без цієї відповіді T005 не починати
 
 ## Phase 2: Foundational (блокує US1 і US2)
 
 **⚠️ CRITICAL**: поки не готові T005–T010, жоден екран не можна переводити на emoji, а модуль стирання — видаляти.
 
-- [ ] T005 Замінити в `src/constants/app-icons.tsx` усі `require('@/assets/images/icons/…svg')` на emoji-рядки за затвердженою в T004 картою з research.md R4 (32 ключі: без `chevronRight` і `chevronUpDown`, які лишаються векторними через `Chevron`; решта ключів `AppIcon` ті самі); експортувати `appIcons` як `Record<AppIcon, string>`
-- [ ] T006 [P] Переписати `src/components/app-image.tsx`: пропси `icon: AppIcon`, `role: IconRole`; рендерить `EmojiGlyph` з `appIcons[icon]` і `iconSizes[role]`; прибрати `tintColor`, `Size` і `expo-image`
-- [ ] T007 [P] Переписати `src/components/icon-view.tsx`: пропси `icon`, `background?`, `size: Size`; гліф — `button`, якщо коло ≤ 44, інакше `feature`; прибрати `iconColor` і `iconSize`; зберегти круглу підкладку (`rgba(255,255,255,0.22)` без `background`)
-- [ ] T008 [P] Переписати `src/views/profile/row-icon.tsx`: пропси `icon`, `background?` (за замовчуванням `blueSoft`); прибрати `color`; коло 42 pt
-- [ ] T009 [P] Переписати `src/views/objects/emoji-tile.tsx` на `EmojiGlyph` із `size = tileSize × 0.5` (прибрати власний `Text`); зберегти скруглення (`rounded ? size / 2 : size × 0.3`, `borderCurve: 'continuous'`)
-- [ ] T010 Перенести `ONBOARDING_KEY` (`'hasSeenOnboarding'`) у `src/services/preferences/onboarding.ts` із експортом в `src/services/preferences/index.ts` і перепідключити імпорт в `src/providers/onboarding-provider.tsx` (щоб модуль `src/services/account` можна було видалити в US2)
+- [X] T005 Замінити в `src/constants/app-icons.tsx` усі `require('@/assets/images/icons/…svg')` на emoji-рядки за затвердженою в T004 картою з research.md R4 (32 ключі: без `chevronRight` і `chevronUpDown`, які лишаються векторними через `Chevron`; решта ключів `AppIcon` ті самі); експортувати `appIcons` як `Record<AppIcon, string>`
+- [X] T006 [P] Переписати `src/components/app-image.tsx`: пропси `icon: AppIcon`, `role: IconRole`; рендерить `EmojiGlyph` з `appIcons[icon]` і `iconSizes[role]`; прибрати `tintColor`, `Size` і `expo-image`
+- [X] T007 [P] Переписати `src/components/icon-view.tsx`: пропси `icon`, `background?`, `size: Size`; гліф — `button`, якщо коло ≤ 44, інакше `feature`; прибрати `iconColor` і `iconSize`; зберегти круглу підкладку (`rgba(255,255,255,0.22)` без `background`)
+- [X] T008 [P] Переписати `src/views/profile/row-icon.tsx`: пропси `icon`, `background?` (за замовчуванням `blueSoft`); прибрати `color`; коло 42 pt
+- [X] T009 [P] Переписати `src/views/objects/emoji-tile.tsx` на `EmojiGlyph` із `size = tileSize × 0.5` (прибрати власний `Text`); зберегти скруглення (`rounded ? size / 2 : size × 0.3`, `borderCurve: 'continuous'`)
+- [X] T010 Перенести `ONBOARDING_KEY` (`'hasSeenOnboarding'`) у `src/services/preferences/onboarding.ts` із експортом в `src/services/preferences/index.ts` і перепідключити імпорт в `src/providers/onboarding-provider.tsx` (щоб модуль `src/services/account` можна було видалити в US2)
 
 **Checkpoint**: компоненти іконок і карта готові; проєкт може не збиратися, поки не оновлені місця виклику (US1).
 
@@ -36,32 +36,32 @@
 
 ### Навбар і спільні компоненти
 
-- [ ] T011 [P] [US1] `src/components/navigation-bar/navigation-bar-button.tsx`: замінити `Image` + `tintColor` на `EmojiGlyph` (роль `button`) у колі 44 pt; прибрати `iconColor`
-- [ ] T012 [P] [US1] `src/components/navigation-bar/navigation-bar-chip.tsx`: `EmojiGlyph` (роль `inline`) замість `Image`; прибрати колір
-- [ ] T013 [P] [US1] `src/components/navigation-bar/navigation-bar-icon-button.tsx`: `EmojiGlyph` (роль `button`) у кнопці 44 pt; прибрати колір
-- [ ] T014 [P] [US1] `src/components/navigation-bar/short-navigation-bar-button.tsx`: `EmojiGlyph` (роль `button`) замість `Image` + `tintColor`; прибрати `iconColor`
-- [ ] T015 [P] [US1] `src/components/transparent-action-button.tsx`: `IconView` без `iconSize` (коло 40, роль `button`)
+- [X] T011 [P] [US1] `src/components/navigation-bar/navigation-bar-button.tsx`: замінити `Image` + `tintColor` на `EmojiGlyph` (роль `button`) у колі 44 pt; прибрати `iconColor`
+- [X] T012 [P] [US1] `src/components/navigation-bar/navigation-bar-chip.tsx`: `EmojiGlyph` (роль `inline`) замість `Image`; прибрати колір
+- [X] T013 [P] [US1] `src/components/navigation-bar/navigation-bar-icon-button.tsx`: `EmojiGlyph` (роль `button`) у кнопці 44 pt; прибрати колір
+- [X] T014 [P] [US1] `src/components/navigation-bar/short-navigation-bar-button.tsx`: `EmojiGlyph` (роль `button`) замість `Image` + `tintColor`; прибрати `iconColor`
+- [X] T015 [P] [US1] `src/components/transparent-action-button.tsx`: `IconView` без `iconSize` (коло 40, роль `button`)
 
 ### Views
 
-- [ ] T016 [P] [US1] `src/views/info-banner.tsx` (роль `inline`), `src/views/app-header.tsx` (роль `inline`), `src/views/object-card.tsx` (`IconView` без `iconSize`, шеврон → `Chevron direction='right'`, `EmojiTile` лишити)
-- [ ] T017 [P] [US1] `src/views/objects/list-card.tsx`, `src/views/objects/empty-state-view.tsx` (іконка стану `hero`, «➕» `inline`), `src/views/objects/swipeable-row.tsx` (дії `button`), `src/views/objects/days-sheet.tsx` (степер «➕/➖» `button`, `AppImage` без `tintColor`), `src/views/objects/city-picker-sheet.tsx` (пошук `inline`)
-- [ ] T018 [P] [US1] `src/views/objects/month-picker-sheet.tsx`: заміна власного `Text` з emoji на `EmojiTile`/`EmojiGlyph`, галочка `badge`, шеврон `inline`; `src/views/objects/service-icon.tsx` без змін API
-- [ ] T019 [P] [US1] `src/views/outages/outage-message.tsx` (`hero`), `src/views/outages/power-status-card.tsx` (`feature`), `src/views/outages/outage-city-sheet.tsx` (галочка `inline`)
-- [ ] T020 [P] [US1] `src/views/onboarding/addresses-illustration.tsx` (`IconView` 40 і 52 → ролі `button` і `feature`), `src/views/onboarding/analytics-illustration.tsx`, `src/views/onboarding/readings-illustration.tsx` (`inline`)
-- [ ] T021 [P] [US1] `src/views/profile/start-tab-row-content.tsx` (шеврон → `<Chevron direction='upDown' />`), `src/views/profile/start-tab-row.tsx`, `src/views/profile/theme-option-card.tsx` (галочка `badge`), `src/views/profile/outage-setup-notice.tsx` (`IconView` без `iconSize`/`iconColor`)
+- [X] T016 [P] [US1] `src/views/info-banner.tsx` (роль `inline`), `src/views/app-header.tsx` (роль `inline`), `src/views/object-card.tsx` (`IconView` без `iconSize`, шеврон → `Chevron direction='right'`, `EmojiTile` лишити)
+- [X] T017 [P] [US1] `src/views/objects/list-card.tsx`, `src/views/objects/empty-state-view.tsx` (іконка стану `hero`, «➕» `inline`), `src/views/objects/swipeable-row.tsx` (дії `button`), `src/views/objects/days-sheet.tsx` (степер «➕/➖» `button`, `AppImage` без `tintColor`), `src/views/objects/city-picker-sheet.tsx` (пошук `inline`)
+- [X] T018 [P] [US1] `src/views/objects/month-picker-sheet.tsx`: заміна власного `Text` з emoji на `EmojiTile`/`EmojiGlyph`, галочка `badge`, шеврон `inline`; `src/views/objects/service-icon.tsx` без змін API
+- [X] T019 [P] [US1] `src/views/outages/outage-message.tsx` (`hero`), `src/views/outages/power-status-card.tsx` (`feature`), `src/views/outages/outage-city-sheet.tsx` (галочка `inline`)
+- [X] T020 [P] [US1] `src/views/onboarding/addresses-illustration.tsx` (`IconView` 40 і 52 → ролі `button` і `feature`), `src/views/onboarding/analytics-illustration.tsx`, `src/views/onboarding/readings-illustration.tsx` (`inline`)
+- [X] T021 [P] [US1] `src/views/profile/start-tab-row-content.tsx` (шеврон → `<Chevron direction='upDown' />`), `src/views/profile/start-tab-row.tsx`, `src/views/profile/theme-option-card.tsx` (галочка `badge`), `src/views/profile/outage-setup-notice.tsx` (`IconView` без `iconSize`/`iconColor`)
 
 ### Екрани (`src/app/`)
 
-- [ ] T022 [P] [US1] `src/app/(auth)/index.tsx` (будинок `hero`; іконки послуг на екрані входу (`electricity`, `gas`, `water`, `heating`): замінити кольорові SVG на `appIcons` emoji за роллю `inline`) і `src/app/(auth)/auth-error.tsx` (`danger` `hero`); логотипи Google/Apple не чіпати
-- [ ] T023 [P] [US1] `src/app/(tabs)/(objects)/object-added.tsx` (`check` → `heroLarge`), `src/app/(tabs)/(objects)/object-form.tsx` і `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` (шеврони → `Chevron direction='right'`)
-- [ ] T024 [P] [US1] `src/app/(tabs)/(objects)/[objectId]/index.tsx` (`EmojiTile` лишити; галочка `badge`), `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx` («🔄» `inline`), `src/app/(tabs)/(objects)/[objectId]/[month]/bill.tsx` (`gauge` `button`, шеврон → `Chevron direction='right'`)
-- [ ] T025 [US1] `src/app/(tabs)/(objects)/[objectId]/icon-picker.tsx`: плитки вибору через `EmojiTile`/`EmojiGlyph` замість `ThemedText font='emojiLarge'`; стрілка «Назад» (`arrow-back.svg`) лишається
-- [ ] T026 [P] [US1] `src/app/(tabs)/(outages)/outage-settings.tsx`: пін `inline`, годинник `inline`, «↗️» `inline`, галочка `inline`; прибрати `tintColor` у всіх викликах
-- [ ] T027 [P] [US1] `src/app/(tabs)/profile/index.tsx`: `RowIcon` без `color`, іконки рядків за контрактом ui.md (👤, 🔔, 🌓, 🛡️, 📄, 🚪, 🗑️)
-- [ ] T028 [US1] Усі решта місць, де ще передається `tintColor`/`iconColor`/`iconSize` або `Image` з `appIcons`: знайти `grep -rnE "tintColor|iconColor|iconSize|appIcons\[" src` і привести до нового API; результат — `npx tsc --noEmit` без помилок
-- [ ] T029 [US1] Прибрати невикористані токени `emojiLarge`, `emojiXL`, `emojiXXL` (і `emoji`, якщо його не використовує ініціал аватара в `src/views/profile/avatar.tsx`) з `src/constants/typography.ts`
-- [ ] T030 [US1] Видалити SVG, які більше ніхто не підключає, з `assets/images/icons/` (лишити `arrow-back.svg`, `chevron-right.svg`, `chevron-up-down.svg` і `socials/*`; перед видаленням перевірити `grep -rn "icons/" src app.json`)
+- [X] T022 [P] [US1] `src/app/(auth)/index.tsx` (будинок `hero`; іконки послуг на екрані входу (`electricity`, `gas`, `water`, `heating`): замінити кольорові SVG на `appIcons` emoji за роллю `inline`) і `src/app/(auth)/auth-error.tsx` (`danger` `hero`); логотипи Google/Apple не чіпати
+- [X] T023 [P] [US1] `src/app/(tabs)/(objects)/object-added.tsx` (`check` → `heroLarge`), `src/app/(tabs)/(objects)/object-form.tsx` і `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` (шеврони → `Chevron direction='right'`)
+- [X] T024 [P] [US1] `src/app/(tabs)/(objects)/[objectId]/index.tsx` (`EmojiTile` лишити; галочка `badge`), `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx` («🔄» `inline`), `src/app/(tabs)/(objects)/[objectId]/[month]/bill.tsx` (`gauge` `button`, шеврон → `Chevron direction='right'`)
+- [X] T025 [US1] `src/app/(tabs)/(objects)/[objectId]/icon-picker.tsx`: плитки вибору через `EmojiTile`/`EmojiGlyph` замість `ThemedText font='emojiLarge'`; стрілка «Назад» (`arrow-back.svg`) лишається
+- [X] T026 [P] [US1] `src/app/(tabs)/(outages)/outage-settings.tsx`: пін `inline`, годинник `inline`, «↗️» `inline`, галочка `inline`; прибрати `tintColor` у всіх викликах
+- [X] T027 [P] [US1] `src/app/(tabs)/profile/index.tsx`: `RowIcon` без `color`, іконки рядків за контрактом ui.md (👤, 🔔, 🌓, 🛡️, 📄, 🚪, 🗑️)
+- [X] T028 [US1] Усі решта місць, де ще передається `tintColor`/`iconColor`/`iconSize` або `Image` з `appIcons`: знайти `grep -rnE "tintColor|iconColor|iconSize|appIcons\[" src` і привести до нового API; результат — `npx tsc --noEmit` без помилок
+- [X] T029 [US1] Прибрати невикористані токени `emojiLarge`, `emojiXL`, `emojiXXL` (і `emoji`, якщо його не використовує ініціал аватара в `src/views/profile/avatar.tsx`) з `src/constants/typography.ts`
+- [X] T030 [US1] Видалити SVG, які більше ніхто не підключає, з `assets/images/icons/` (лишити `arrow-back.svg`, `chevron-right.svg`, `chevron-up-down.svg` і `socials/*`; перед видаленням перевірити `grep -rn "icons/" src app.json`)
 - [ ] T031 [US1] Виміряти центрування за quickstart §3 (обрізані скріншоти `ui-check` кола `RowIcon`, плитки послуги, кнопки навбару, степера «➕/➖» на iOS і Android, світла й темна тема; скрипт — у scratchpad) і підкоригувати `k`/`translateY` у `src/components/emoji-glyph.tsx` до розбіжності ≤ 1 pt
 - [ ] T032 [US1] Пройти екрани за quickstart §2 з максимальним розміром шрифту системи: іконки не змінюють розмір, висота рядків списків не зросла порівняно з до змін (скріншот до/після); порівняти ролі між екранами (FR-003)
 

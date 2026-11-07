@@ -153,7 +153,7 @@ function StepperButton({
       ]}
     >
       <ThemedView backgroundColor='surface' style={styles.stepperCircle}>
-        <AppImage icon={icon} tintColor='ink' size={{ width: 22 }} />
+        <AppImage icon={icon} role='button' />
       </ThemedView>
     </Pressable>
   );

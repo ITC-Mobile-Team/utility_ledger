@@ -46,9 +46,7 @@ export function TransparentActionButton({
           paddingHorizontal: paddingHorizontal,
         }}
       >
-        {isFull && (
-          <IconView icon={icon} iconSize={{ width: 18 }} size={{ width: 40 }} />
-        )}
+        {isFull && <IconView icon={icon} size={{ width: 40 }} />}
         <VStack>
           <ThemedText color='onPrimary' font={titleFont}>
             {title}

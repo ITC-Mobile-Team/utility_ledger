@@ -21,13 +21,7 @@ export function OutageSetupNotice({
 }: OutageSetupNoticeProps) {
   return (
     <HStack align='top' spacing={12} style={styles.container}>
-      <IconView
-        icon='danger'
-        background='amberSoft'
-        iconColor='amber'
-        iconSize={{ width: 16 }}
-        size={{ width: 32 }}
-      />
+      <IconView icon='danger' background='amberSoft' size={{ width: 32 }} />
       <VStack spacing={10} style={styles.copy}>
         <ThemedText font='bodySmall' testID='profile.outageStatus'>
           {message}

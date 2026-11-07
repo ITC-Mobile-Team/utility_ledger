@@ -1,6 +1,7 @@
 import {
   ActionButton,
   AppImage,
+  Chevron,
   HStack,
   NavigationView,
   ThemedText,
@@ -253,11 +254,7 @@ export default function Bill() {
               <Dashed />
               <VStack spacing={10} align='center' style={styles.empty}>
                 <ThemedView backgroundColor='surface2' style={styles.emptyIcon}>
-                  <AppImage
-                    icon='gauge'
-                    tintColor='muted'
-                    size={{ width: 22 }}
-                  />
+                  <AppImage icon='gauge' role='feature' />
                 </ThemedView>
                 <ThemedText font='heading'>Ще нічого рахувати</ThemedText>
                 <ThemedText color='muted' font='caption' align='center'>
@@ -374,7 +371,7 @@ function BillItem({ item, row, open, onToggle }: BillItemProps) {
             chevronTransition,
           ]}
         >
-          <AppImage icon='chevronRight' tintColor='chev' size={{ width: 18 }} />
+          <Chevron direction='right' />
         </Animated.View>
       </Pressable>
 

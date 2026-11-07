@@ -32,7 +32,7 @@ export default function ObjectAdded() {
       <ScreenView backgroundColor='bg' edges={['top']} style={styles.screen}>
         <VStack spacing={28} align='center' style={styles.content}>
           <ThemedView backgroundColor='blue' style={styles.check}>
-            <AppImage icon='check' size={{ width: 64 }} />
+            <AppImage icon='check' role='heroLarge' />
           </ThemedView>
 
           <VStack spacing={10} align='center'>

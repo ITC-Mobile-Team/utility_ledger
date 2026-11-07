@@ -45,11 +45,7 @@ export function OutageMessage({
         style={styles.outer}
       >
         <ThemedView backgroundColor='surface' style={styles.tile}>
-          <AppImage
-            icon={icon}
-            tintColor={isPower ? 'powerOnInk' : 'muted'}
-            size={{ width: 40 }}
-          />
+          <AppImage icon={icon} role='hero' />
         </ThemedView>
         {badge && (
           <ThemedView backgroundColor='powerOff' style={styles.badge}>

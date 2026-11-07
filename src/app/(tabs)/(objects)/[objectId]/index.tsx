@@ -71,7 +71,6 @@ const objectButtons: NavigationBarButtonItem[] = [
     title: 'Видалити',
     icon: 'trash',
     iconBackground: 'coralSoft',
-    iconColor: 'coral',
     testID: 'object.nav.delete',
   },
 ];
@@ -238,11 +237,7 @@ export default function ObjectMonths() {
                               backgroundColor='greenSoft'
                               style={styles.check}
                             >
-                              <AppImage
-                                icon='check'
-                                tintColor='green'
-                                size={{ width: 16 }}
-                              />
+                              <AppImage icon='check' role='badge' />
                             </ThemedView>
                           )
                         }

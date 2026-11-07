@@ -68,11 +68,7 @@ export function PowerStatusCard({ status, now }: PowerStatusCardProps) {
           backgroundColor={isOff ? 'powerOff' : 'powerOn'}
           style={[styles.icon, isOff && styles.iconOff]}
         >
-          <AppImage
-            icon={isOff ? 'bulbOff' : 'bulb'}
-            tintColor={isOff ? 'powerOffInk' : 'powerOnText'}
-            size={{ width: 26 }}
-          />
+          <AppImage icon={isOff ? 'bulbOff' : 'bulb'} role='feature' />
         </ThemedView>
         <VStack spacing={2} style={styles.copy}>
           <ThemedText

@@ -1,7 +1,6 @@
-import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { useThemeColor } from '@/hooks/use-theme-colors';
-import { Image } from 'expo-image';
+import { type AppIcon } from '@/constants/app-icons';
 import { StyleSheet } from 'react-native';
+import { AppImage } from '../app-image';
 import { Pressable } from '../pressable';
 
 type NavigationBarIconButtonProps = {
@@ -19,7 +18,6 @@ export function NavigationBarIconButton({
   testID,
   onPress,
 }: NavigationBarIconButtonProps) {
-  const tint = useThemeColor('onPrimary');
   return (
     <Pressable
       accessibilityRole='button'
@@ -28,7 +26,7 @@ export function NavigationBarIconButton({
       onPress={onPress}
       style={(state) => [styles.button, state.pressed && styles.pressed]}
     >
-      <Image source={appIcons[icon]} tintColor={tint} style={styles.icon} />
+      <AppImage icon={icon} role='button' />
     </Pressable>
   );
 }
@@ -43,10 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.18)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255, 255, 255, 0.35)',
-  },
-  icon: {
-    width: 20,
-    height: 20,
   },
   pressed: {
     opacity: 0.7,

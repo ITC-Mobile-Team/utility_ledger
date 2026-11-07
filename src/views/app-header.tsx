@@ -12,7 +12,7 @@ export const AppHeader = () => {
         size={{ width: 36, height: 36 }}
         style={styles.logo}
       >
-        <AppImage icon='house' size={{ width: 18 }} />
+        <AppImage icon='house' role='button' />
       </ThemedView>
       <ThemedText color='blueInk' font='onboardingAppName'>
         Utility Ledger

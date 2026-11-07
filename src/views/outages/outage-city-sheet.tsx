@@ -73,11 +73,7 @@ export function OutageCitySheet({
                       </ThemedText>
                     </View>
                     {name === selected && (
-                      <AppImage
-                        icon='check'
-                        tintColor='blue'
-                        size={{ width: 20 }}
-                      />
+                      <AppImage icon='check' role='inline' />
                     )}
                   </Pressable>
                 );

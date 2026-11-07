@@ -182,11 +182,7 @@ export default function OutageSettingsScreen() {
               <ListRow
                 leading={
                   <ThemedView backgroundColor='powerOnSoft' style={styles.icon}>
-                    <AppImage
-                      icon='pin'
-                      tintColor='powerOnInk'
-                      size={{ width: 18 }}
-                    />
+                    <AppImage icon='pin' role='button' />
                   </ThemedView>
                 }
                 testID='outageSettings.city'
@@ -216,7 +212,7 @@ export default function OutageSettingsScreen() {
           {city && !provider && (
             <ThemedView backgroundColor='surface' style={styles.notice}>
               <ThemedView backgroundColor='surface2' style={styles.noticeIcon}>
-                <AppImage icon='clock' tintColor='muted' size={{ width: 24 }} />
+                <AppImage icon='clock' role='feature' />
               </ThemedView>
               <ThemedText font='heading' align='center'>
                 Постачальник для вашого міста поки що не доданий
@@ -255,13 +251,7 @@ export default function OutageSettingsScreen() {
                   <ListRow
                     showsChevron={false}
                     compact
-                    trailing={
-                      <AppImage
-                        icon='arrowUpRight'
-                        tintColor='blueInk'
-                        size={{ width: 18 }}
-                      />
-                    }
+                    trailing={<AppImage icon='arrowUpRight' role='inline' />}
                     onPress={() =>
                       provider.lookupUrl &&
                       WebBrowser.openBrowserAsync(provider.lookupUrl)
@@ -472,7 +462,7 @@ function NotifyQueueChip({
         state.pressed && styles.pressed,
       ]}
     >
-      {isOn && <AppImage icon='check' tintColor='ink' size={{ width: 16 }} />}
+      {isOn && <AppImage icon='check' role='inline' />}
       <ThemedText font='rowTitleCompact' color={isOn ? 'ink' : 'muted'}>
         {id}
       </ThemedText>

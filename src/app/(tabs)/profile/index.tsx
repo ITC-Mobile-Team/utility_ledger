@@ -114,9 +114,7 @@ export default function ProfileScreen() {
           <SectionHeader title='Акаунт' variant='overline' />
           <ListCard>
             <ListRow
-              leading={
-                <RowIcon icon='person' background='purpleSoft' color='purple' />
-              }
+              leading={<RowIcon icon='person' background='purpleSoft' />}
               trailing={
                 <ThemedText style={styles.value} numberOfLines={1}>
                   {name}
@@ -135,11 +133,7 @@ export default function ProfileScreen() {
           <SectionHeader title='Сповіщення' variant='overline' />
           <ThemedView backgroundColor='surface' style={styles.card}>
             <HStack align='center' spacing={14} style={styles.row}>
-              <RowIcon
-                icon='bell'
-                background='powerOnSoft'
-                color='powerOnInk'
-              />
+              <RowIcon icon='bell' background='powerOnSoft' />
               <VStack spacing={2} style={styles.flex}>
                 <ThemedText font='rowTitle'>Вимкнення світла</ThemedText>
                 <ThemedText font='caption' color='muted'>
@@ -173,13 +167,7 @@ export default function ProfileScreen() {
           <ListCard>
             <StartTabRow value={startTab} onChange={setStartTab} />
             <ListRow
-              leading={
-                <RowIcon
-                  icon='contrast'
-                  background='purpleSoft'
-                  color='purple'
-                />
-              }
+              leading={<RowIcon icon='contrast' background='purpleSoft' />}
               trailing={
                 <ThemedText style={styles.valueWide} numberOfLines={1}>
                   {getThemeLabel(theme)}
@@ -221,9 +209,7 @@ export default function ProfileScreen() {
 
         <ListCard style={styles.accountActions}>
           <ListRow
-            leading={
-              <RowIcon icon='signOut' background='surface2' color='ink' />
-            }
+            leading={<RowIcon icon='signOut' background='surface2' />}
             showsChevron={false}
             testID='profile.signOut'
             onPress={confirmSignOut}
@@ -237,9 +223,7 @@ export default function ProfileScreen() {
 
         <ListCard>
           <ListRow
-            leading={
-              <RowIcon icon='trash' background='coralSoft' color='coral' />
-            }
+            leading={<RowIcon icon='trash' background='coralSoft' />}
             showsChevron={false}
             testID='profile.delete'
             onPress={confirmDelete}

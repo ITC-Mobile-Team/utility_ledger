@@ -39,7 +39,7 @@ export function SwipeableRow({ actions, children }: SwipeableRowProps) {
                 backgroundColor={action.background}
                 style={styles.action}
               >
-                <AppImage icon={action.icon} size={{ width: 18 }} />
+                <AppImage icon={action.icon} role='button' />
                 <ThemedText color='onPrimary' font='labelStrong'>
                   {action.title}
                 </ThemedText>

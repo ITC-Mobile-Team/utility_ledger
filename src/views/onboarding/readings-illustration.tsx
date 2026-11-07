@@ -40,7 +40,7 @@ export function ReadingsIllustration() {
       </HStack>
 
       <HStack align='center' spacing={8} style={styles.tariff}>
-        <AppImage icon='document' size={{ width: 16 }} />
+        <AppImage icon='document' role='inline' />
         <ThemedText color='onPrimary' font='chipLabel'>
           125 × 4,32 ₴ за тарифом
         </ThemedText>

@@ -5,11 +5,11 @@ import {
   View,
   type ViewStyle,
 } from 'react-native';
-import type { AppIcon } from '@/constants/app-icons';
-import type { AppColor } from '@/constants/colors';
+import { type AppIcon, appIcons } from '@/constants/app-icons';
 import {
   ActionButton,
   AppImage,
+  EmojiGlyph,
   ThemedText,
   ThemedView,
   VStack,
@@ -82,7 +82,7 @@ const ContentCircle = () => {
             size={{ width: thirdCircleWidth }}
             style={[styles.circleContainer, styles.circle]}
           >
-            <AppImage icon='house' size={{ width: iconWidth }} />
+            <EmojiGlyph emoji={appIcons.house} size={iconWidth * 0.7} />
           </ThemedView>
         </ThemedView>
       </ThemedView>
@@ -109,15 +109,14 @@ const ContentCircle = () => {
 
 type Service = {
   icon: AppIcon;
-  color: AppColor;
 };
 
 const services: Service[] = [
-  { icon: 'electricity', color: 'amber' },
-  { icon: 'gas', color: 'gas' },
-  { icon: 'water', color: 'water' },
-  { icon: 'heating', color: 'heat' },
-  { icon: 'network', color: 'blue' },
+  { icon: 'electricity' },
+  { icon: 'gas' },
+  { icon: 'water' },
+  { icon: 'heating' },
+  { icon: 'network' },
 ];
 
 const badgeSize = 44;
@@ -137,11 +136,7 @@ const ServiceBadge = ({
       size={{ width: badgeSize }}
       style={[styles.circleContainer, styles.circle, styles.badge, style]}
     >
-      <AppImage
-        icon={service.icon}
-        tintColor={service.color}
-        size={{ width: 16 }}
-      />
+      <AppImage icon={service.icon} role='button' />
     </ThemedView>
   );
 };

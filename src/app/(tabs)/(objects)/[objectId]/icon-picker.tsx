@@ -1,11 +1,13 @@
 import {
   ActionButton,
+  EmojiGlyph,
   HStack,
   ThemedText,
   ThemedView,
   VStack,
   Pressable,
 } from '@/components';
+import { iconSizes } from '@/constants/icon-sizes';
 import { serviceIconSections } from '@/constants/service-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { FormFooter, ServiceIcon } from '@/views';
@@ -84,7 +86,7 @@ export default function IconPicker() {
                       borderColor={isSelected ? 'blue' : 'surface'}
                       style={styles.cell}
                     >
-                      <ThemedText font='emojiLarge'>{icon}</ThemedText>
+                      <EmojiGlyph emoji={icon} size={iconSizes.feature} />
                     </ThemedView>
                   </Pressable>
                 );

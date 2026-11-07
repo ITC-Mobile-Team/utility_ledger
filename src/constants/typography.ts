@@ -313,24 +313,6 @@ export const typography = StyleSheet.create({
     lineHeight: 36,
     letterSpacing: -0.56,
   },
-  emojiLarge: {
-    fontFamily: onestFamily,
-    fontSize: 26,
-    fontWeight: '400',
-    lineHeight: 34,
-  },
-  emojiXL: {
-    fontFamily: onestFamily,
-    fontSize: 28,
-    fontWeight: '400',
-    lineHeight: 28,
-  },
-  emojiXXL: {
-    fontFamily: onestFamily,
-    fontSize: 34,
-    fontWeight: '400',
-    lineHeight: 34,
-  },
   footnote: {
     fontFamily: onestFamily,
     fontSize: 13,

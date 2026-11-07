@@ -141,11 +141,7 @@ export default function Amount() {
                 style={styles.chip}
               >
                 <HStack spacing={6} align='center'>
-                  <AppImage
-                    icon='reset'
-                    tintColor='muted'
-                    size={{ width: 16 }}
-                  />
+                  <AppImage icon='reset' role='inline' />
                   <ThemedText color='muted' font='bodySmall'>
                     {reference.label}
                   </ThemedText>

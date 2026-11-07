@@ -25,7 +25,7 @@ export function AnalyticsIllustration() {
           </VStack>
           <Spacer />
           <View style={styles.trend}>
-            <AppImage icon='arrowUpRight' size={{ width: 18 }} />
+            <AppImage icon='arrowUpRight' role='inline' />
           </View>
         </HStack>
 

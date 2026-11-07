@@ -1,7 +1,6 @@
-import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { useThemeColor } from '@/hooks/use-theme-colors';
-import { Image } from 'expo-image';
+import { type AppIcon } from '@/constants/app-icons';
 import { StyleSheet } from 'react-native';
+import { AppImage } from '../app-image';
 import { Pressable } from '../pressable';
 import { ThemedText } from '../themed-text';
 
@@ -21,7 +20,6 @@ export function NavigationBarChip({
   testID,
   onPress,
 }: NavigationBarChipProps) {
-  const tint = useThemeColor('onPrimary');
   return (
     <Pressable
       accessibilityRole='button'
@@ -31,7 +29,7 @@ export function NavigationBarChip({
       onPress={onPress}
       style={(state) => [styles.chip, state.pressed && styles.pressed]}
     >
-      <Image source={appIcons[icon]} tintColor={tint} style={styles.icon} />
+      <AppImage icon={icon} role='inline' />
       <ThemedText color='onPrimary' font='segment'>
         {title}
       </ThemedText>
@@ -51,10 +49,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.18)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255, 255, 255, 0.35)',
-  },
-  icon: {
-    width: 18,
-    height: 18,
   },
   pressed: {
     opacity: 0.7,

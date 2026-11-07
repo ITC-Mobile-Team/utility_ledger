@@ -52,7 +52,7 @@ export default function AuthError() {
           size={{ width: 96 }}
           style={styles.circle}
         >
-          <AppImage icon='danger' tintColor='coral' size={{ width: 40 }} />
+          <AppImage icon='danger' role='hero' />
         </ThemedView>
 
         <VStack align='center' spacing={10}>

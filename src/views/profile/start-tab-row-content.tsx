@@ -1,4 +1,4 @@
-import { AppImage, HStack, ThemedText, VStack } from '@/components';
+import { Chevron, HStack, ThemedText, VStack } from '@/components';
 import { getStartTabLabel, type StartTab } from '@/services/preferences';
 import { StyleSheet } from 'react-native';
 import { RowIcon } from './row-icon';
@@ -21,7 +21,7 @@ export function StartTabRowContent({ value }: { value: StartTab }) {
       <ThemedText style={styles.value} numberOfLines={1}>
         {getStartTabLabel(value)}
       </ThemedText>
-      <AppImage icon='chevronUpDown' tintColor='chev' size={{ width: 18 }} />
+      <Chevron direction='upDown' />
     </HStack>
   );
 }

@@ -31,11 +31,11 @@ export function EmptyStateView({
       <ThemedView backgroundColor='blueSoft' style={styles.outerCircle}>
         <ThemedView backgroundColor='blueSoft2' style={styles.innerCircle}>
           <ThemedView backgroundColor='surface' style={styles.tile}>
-            <AppImage icon={icon} tintColor='blue' size={{ width: 34 }} />
+            <AppImage icon={icon} role='hero' />
           </ThemedView>
         </ThemedView>
         <ThemedView backgroundColor='coral' style={styles.badge}>
-          <AppImage icon='plus' size={{ width: 18 }} />
+          <AppImage icon='plus' role='inline' />
         </ThemedView>
       </ThemedView>
 

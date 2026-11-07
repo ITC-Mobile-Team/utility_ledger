@@ -1,5 +1,5 @@
 import {
-  AppImage,
+  Chevron,
   GesturePressable,
   HStack,
   ThemedView,
@@ -74,9 +74,7 @@ export function ListRow({
           {children}
         </VStack>
         {trailing}
-        {showsChevron && (
-          <AppImage icon='chevronRight' tintColor='chev' size={{ width: 18 }} />
-        )}
+        {showsChevron && <Chevron direction='right' />}
       </HStack>
     </GesturePressable>
   );

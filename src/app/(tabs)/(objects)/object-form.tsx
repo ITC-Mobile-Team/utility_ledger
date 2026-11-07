@@ -1,5 +1,5 @@
 import {
-  AppImage,
+  Chevron,
   ActionButton,
   HStack,
   KeyboardDismissView,
@@ -120,11 +120,7 @@ export default function ObjectForm() {
                       {city ? `${city.name}, ${city.region}` : 'Не вказано'}
                     </ThemedText>
                   </VStack>
-                  <AppImage
-                    icon='chevronRight'
-                    tintColor='chev'
-                    size={{ width: 18 }}
-                  />
+                  <Chevron direction='right' />
                 </HStack>
               </ThemedView>
             </Pressable>

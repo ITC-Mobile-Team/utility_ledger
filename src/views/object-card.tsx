@@ -1,5 +1,5 @@
 import {
-  AppImage,
+  Chevron,
   HStack,
   IconView,
   ThemedText,
@@ -54,7 +54,6 @@ export function ObjectCard({
             <IconView
               icon={object.apartment ? 'apartment' : 'house'}
               background={object.apartment ? 'blue' : 'inkTile'}
-              iconSize={{ width: 18 }}
               size={{ width: 42 }}
             />
 
@@ -70,13 +69,7 @@ export function ObjectCard({
               )}
             </VStack>
 
-            {onPress && (
-              <AppImage
-                icon='chevronRight'
-                tintColor='chev'
-                size={{ width: 18 }}
-              />
-            )}
+            {onPress && <Chevron direction='right' />}
           </HStack>
 
           {showsFooter && (

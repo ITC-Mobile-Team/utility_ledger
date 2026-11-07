@@ -1,22 +1,13 @@
 import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { type AppColor } from '@/constants/colors';
-import { Image } from 'expo-image';
-import { toSize, type Size } from './size';
-import { useThemeColor } from '@/hooks/use-theme-colors';
+import { type IconRole, iconSizes } from '@/constants/icon-sizes';
+import { EmojiGlyph } from './emoji-glyph';
 
 type AppImageProps = {
   icon: AppIcon;
-  tintColor?: AppColor;
-  size: Size;
+  role: IconRole;
 };
 
-export const AppImage = ({
-  icon,
-  tintColor = 'onPrimary',
-  size,
-}: AppImageProps) => {
-  const tint = useThemeColor(tintColor);
-  return (
-    <Image source={appIcons[icon]} tintColor={tint} style={toSize(size)} />
-  );
-};
+// Іконка застосунку як emoji розміру своєї ролі
+export const AppImage = ({ icon, role }: AppImageProps) => (
+  <EmojiGlyph emoji={appIcons[icon]} size={iconSizes[role]} />
+);

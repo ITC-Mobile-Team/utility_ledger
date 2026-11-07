@@ -6,7 +6,7 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
-import { ONBOARDING_KEY as KEY } from '@/services/account';
+import { ONBOARDING_KEY as KEY } from '@/services/preferences';
 import { storage as defaultStorage, type KeyValueStorage } from '@/storage';
 
 type OnboardingContextValue = {

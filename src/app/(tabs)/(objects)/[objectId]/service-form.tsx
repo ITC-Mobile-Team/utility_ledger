@@ -1,6 +1,6 @@
 import {
   ActionButton,
-  AppImage,
+  Chevron,
   HStack,
   KeyboardDismissView,
   NavigationView,
@@ -210,11 +210,7 @@ export default function ServiceForm() {
                     Торкніться, щоб обрати емодзі
                   </ThemedText>
                 </VStack>
-                <AppImage
-                  icon='chevronRight'
-                  tintColor='chev'
-                  size={{ width: 18 }}
-                />
+                <Chevron direction='right' />
               </HStack>
             </ThemedView>
           </Pressable>

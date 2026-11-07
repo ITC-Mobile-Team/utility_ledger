@@ -78,13 +78,7 @@ export function ThemeOptionCard({
               transition,
             ]}
           >
-            {selected && (
-              <AppImage
-                icon='check'
-                tintColor='onPrimary'
-                size={{ width: 14 }}
-              />
-            )}
+            {selected && <AppImage icon='check' role='badge' />}
           </Animated.View>
         </View>
       </Animated.View>

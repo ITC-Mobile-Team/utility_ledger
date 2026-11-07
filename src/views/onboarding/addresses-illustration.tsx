@@ -39,7 +39,7 @@ export function AddressesIllustration() {
   return (
     <VStack spacing={12} style={styles.container}>
       <HStack align='center' spacing={12} style={styles.glassCard}>
-        <IconView icon='house' iconSize={{ width: 18 }} size={{ width: 40 }} />
+        <IconView icon='house' size={{ width: 40 }} />
         <VStack spacing={2}>
           <ThemedText color='onPrimary' font='rowTitle'>
             вул. Шевченка, 8
@@ -60,12 +60,7 @@ export function AddressesIllustration() {
           />
         </View>
         <View style={styles.addButton}>
-          <IconView
-            icon='plus'
-            background='coral'
-            iconSize={{ width: 22 }}
-            size={{ width: 52 }}
-          />
+          <IconView icon='plus' background='coral' size={{ width: 52 }} />
         </View>
       </View>
     </VStack>

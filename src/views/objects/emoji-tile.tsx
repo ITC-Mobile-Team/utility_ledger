@@ -1,6 +1,6 @@
-import { ThemedView } from '@/components';
+import { EmojiGlyph, ThemedView } from '@/components';
 import type { AppColor } from '@/constants/colors';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 type EmojiTileProps = {
   emoji: string;
@@ -9,6 +9,7 @@ type EmojiTileProps = {
   rounded?: boolean;
 };
 
+// Плитка з emoji: гліф займає половину сторони, центр рахує EmojiGlyph
 export function EmojiTile({
   emoji,
   background,
@@ -21,14 +22,7 @@ export function EmojiTile({
       size={{ width: size }}
       style={[styles.tile, { borderRadius: rounded ? size / 2 : size * 0.3 }]}
     >
-      {/* Звичайний Text без шрифту Onest: його метрики зсувають емодзі
-          з центру плитки */}
-      <Text
-        allowFontScaling={false}
-        style={[styles.emoji, { fontSize: size * 0.5 }]}
-      >
-        {emoji}
-      </Text>
+      <EmojiGlyph emoji={emoji} size={size * 0.5} />
     </ThemedView>
   );
 }
@@ -38,9 +32,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderCurve: 'continuous',
-  },
-  emoji: {
-    textAlign: 'center',
-    includeFontPadding: false,
   },
 });

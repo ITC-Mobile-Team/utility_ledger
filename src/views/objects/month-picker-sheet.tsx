@@ -1,11 +1,14 @@
 import {
   ActionButton,
   AppImage,
+  Chevron,
+  EmojiGlyph,
   HStack,
   ThemedText,
   ThemedView,
   Pressable,
 } from '@/components';
+import { iconSizes } from '@/constants/icon-sizes';
 import { monthAppearance } from '@/constants/month-emoji';
 import {
   getCurrentMonth,
@@ -15,7 +18,7 @@ import {
 } from '@/services/ledger';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   css,
   type CSSTransitionProperties,
@@ -166,14 +169,11 @@ function MonthCell({
           isAdded && styles.disabled,
         ]}
       >
-        {/* Звичайний Text: метрики Onest зсувають емодзі */}
-        <Text allowFontScaling={false} style={styles.emoji}>
-          {emoji}
-        </Text>
+        <EmojiGlyph emoji={emoji} size={iconSizes.feature} />
         <ThemedText font='segment'>{name}</ThemedText>
         {isAdded && (
           <ThemedView backgroundColor='greenSoft' style={styles.addedMark}>
-            <AppImage icon='check' tintColor='green' size={{ width: 10 }} />
+            <AppImage icon='check' role='badge' />
           </ThemedView>
         )}
       </Animated.View>
@@ -199,7 +199,7 @@ function YearButton({ direction, onPress }: YearButtonProps) {
     >
       <ThemedView backgroundColor='surface' style={styles.yearButton}>
         <View style={direction === 'previous' && styles.flipped}>
-          <AppImage icon='chevronRight' tintColor='ink' size={{ width: 18 }} />
+          <Chevron direction='right' color='ink' />
         </View>
       </ThemedView>
     </Pressable>
@@ -257,12 +257,6 @@ const styles = StyleSheet.create({
     animationName: cellPop,
     animationDuration: 320,
     animationTimingFunction: 'ease-out',
-  },
-  emoji: {
-    fontSize: 22,
-    lineHeight: 26,
-    textAlign: 'center',
-    includeFontPadding: false,
   },
   addedMark: {
     position: 'absolute',

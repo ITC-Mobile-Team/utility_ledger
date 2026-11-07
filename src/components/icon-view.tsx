@@ -8,18 +8,12 @@ import { AppImage } from './app-image';
 type IconViewProps = ViewProps & {
   icon: AppIcon;
   background?: AppColor;
-  iconColor?: AppColor;
-  iconSize: Size;
   size: Size;
 };
 
-export function IconView({
-  icon,
-  background,
-  iconColor = 'onPrimary',
-  iconSize,
-  size,
-}: IconViewProps) {
+// Коло з іконкою всередині: гліф рівня button, а в колах більших за 44 pt —
+// feature
+export function IconView({ icon, background, size }: IconViewProps) {
   return (
     <ThemedView
       backgroundColor={background}
@@ -29,7 +23,7 @@ export function IconView({
         styles.iconContainer,
       ]}
     >
-      <AppImage icon={icon} tintColor={iconColor} size={iconSize} />
+      <AppImage icon={icon} role={size.width > 44 ? 'feature' : 'button'} />
     </ThemedView>
   );
 }

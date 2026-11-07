@@ -4,9 +4,8 @@ import { ThemedView } from '../themed-view';
 import { ThemedText } from '../themed-text';
 import { HStack } from '../stack';
 import { type AppColor } from '@/constants/colors';
-import { Image } from 'expo-image';
-import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { useThemeColor } from '@/hooks/use-theme-colors';
+import { type AppIcon } from '@/constants/app-icons';
+import { AppImage } from '../app-image';
 import { FULL_BUTTON_WIDTH_RATIO } from './constants';
 
 export type NavigationBarButtonItem = {
@@ -14,7 +13,6 @@ export type NavigationBarButtonItem = {
   title: string;
   icon: AppIcon;
   iconBackground: AppColor;
-  iconColor?: AppColor;
   testID?: string;
 };
 
@@ -26,12 +24,9 @@ export const NavigationBarButton = ({
   title,
   icon,
   iconBackground,
-  iconColor = 'onPrimary',
   testID,
   onPress,
 }: NavigationBarButtonProps) => {
-  const navigationBarIcon = appIcons[icon];
-  const iconTint = useThemeColor(iconColor);
   const { width: screenWidth } = useWindowDimensions();
   const buttonWidth = screenWidth * FULL_BUTTON_WIDTH_RATIO;
   return (
@@ -44,11 +39,7 @@ export const NavigationBarButton = ({
       <ThemedView backgroundColor='surface' style={styles.button}>
         <HStack align='center' spacing={12}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
-            <Image
-              source={navigationBarIcon}
-              tintColor={iconTint}
-              style={styles.icon}
-            />
+            <AppImage icon={icon} role='button' />
           </ThemedView>
 
           <ThemedText font='rowTitle' style={styles.title}>
@@ -72,10 +63,6 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  icon: {
-    width: 22,
-    height: 22,
   },
   title: {
     flexShrink: 1,
