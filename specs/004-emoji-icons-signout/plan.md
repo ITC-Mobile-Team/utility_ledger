@@ -6,14 +6,14 @@
 
 ## Summary
 
-1. **Іконки.** Карта `appIcons` (`src/constants/app-icons.tsx`) перестає посилатися на SVG і повертає для кожного ключа emoji. Усі місця, що малюють іконку (`AppImage`, `IconView`, `RowIcon`, `EmojiTile`, три компоненти навбару, `month-picker-sheet`, `icon-picker`), рендерять її через один новий компонент `EmojiGlyph`. Він ставить гліф у квадрат фіксованого розміру, вимикає масштабування шрифту й вирівнює emoji по центру з платформними поправками. Розміри задаються не числом у кожному місці, а роллю зі шкали `iconSizes` (`src/constants/icon-sizes.ts`). Пропи кольору іконки (`tintColor`, `iconColor`, `color`) зникають, бо emoji має власні кольори; кольорові підкладки лишаються. Таб-бар (`NativeTabs` з SF Symbols), логотипи Google/Apple і стрілка «Назад» у навбарі не змінюються (див. [research.md](research.md) R3).
+1. **Іконки.** Карта `appIcons` (`src/constants/app-icons.tsx`) перестає посилатися на SVG і повертає для кожного ключа emoji. Усі місця, що малюють іконку (`AppImage`, `IconView`, `RowIcon`, `EmojiTile`, три компоненти навбару, `month-picker-sheet`, `icon-picker`), рендерять її через один новий компонент `EmojiGlyph`. Він ставить гліф у квадрат фіксованого розміру, вимикає масштабування шрифту й вирівнює emoji по центру з платформними поправками. Розміри задаються не числом у кожному місці, а роллю зі шкали `iconSizes` (`src/constants/icon-sizes.ts`). Пропи кольору іконки (`tintColor`, `iconColor`, `color`) зникають, бо emoji має власні кольори; кольорові підкладки лишаються. Таб-бар (`NativeTabs` з SF Symbols), логотипи Google/Apple, стрілка «Назад» у навбарі та шеврони («›», «⌃⌄») лишаються векторними. Шеврони виносяться в окремий компонент `Chevron` (`src/components/chevron.tsx`, `expo-image` + `tintColor`, розмір за роллю `inline`), щоб вони теж мали одну шкалу й центрування (див. [research.md](research.md) R3). Карта emoji затверджується користувачем до масової заміни (задача T003).
 2. **Вихід.** «Вийти» і «Видалити акаунт» після підтвердження викликають лише `useAuth().signOut()`. `Stack.Protected` у `src/app/_layout.tsx` сам переводить користувача з `(tabs)` на `(auth)`. Модуль `src/services/account` (`wipeLocalData`, `finishPendingWipe`, маркер `pendingWipe`) видаляється разом із викликами в `AuthProvider` і `PreferencesProvider`. Також зникають `resetOnboarding` і `resetPreferences`, яких більше ніхто не викликає. Підписи про стирання й тексти підтверджень змінюються ([contracts/ui.md](contracts/ui.md)).
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5 (strict), React 19, React Native 0.88
 
-**Primary Dependencies**: Expo SDK 58 (`expo@^58.0.14`), Expo Router (`Stack.Protected`, `NativeTabs`), `expo-image` (лишається для логотипів і стрілки «Назад»), `react-native` `Text` для emoji
+**Primary Dependencies**: Expo SDK 58 (`expo@^58.0.14`), Expo Router (`Stack.Protected`, `NativeTabs`), `expo-image` (лишається для логотипів, стрілки «Назад» і шевронів), `react-native` `Text` для emoji
 
 **Storage**: локальне key-value сховище (`src/storage`); схема не змінюється, ключ `pendingWipe` більше не пишеться й не читається
 
@@ -65,10 +65,11 @@ specs/004-emoji-icons-signout/
 ```text
 src/
 ├── constants/
-│   ├── app-icons.tsx            # SVG require → emoji-рядки (ключі AppIcon ті самі)
+│   ├── app-icons.tsx            # SVG require → emoji-рядки (ключі AppIcon ті самі, без chevronRight/chevronUpDown)
 │   └── icon-sizes.ts            # НОВИЙ: шкала ролей іконок
 ├── components/
 │   ├── emoji-glyph.tsx          # НОВИЙ: центрований emoji фіксованого розміру
+│   ├── chevron.tsx              # НОВИЙ: векторний шеврон «›»/«⌃⌄» за роллю
 │   ├── app-image.tsx            # рендерить EmojiGlyph; без tintColor
 │   ├── icon-view.tsx            # коло + EmojiGlyph; без iconColor
 │   ├── transparent-action-button.tsx
@@ -90,13 +91,14 @@ src/
 │   ├── (tabs)/(objects)/**     # виклики AppImage без tintColor, icon-picker
 │   ├── (tabs)/(outages)/**     # те саме
 │   └── (tabs)/profile/index.tsx   # іконки + вихід через useAuth().signOut()
+├── services/preferences/onboarding.ts   # НОВИЙ: ONBOARDING_KEY (перенесено із services/account)
 ├── providers/
 │   ├── auth-provider.tsx        # без finishPendingWipe
 │   ├── preferences-provider.tsx # без PENDING_WIPE_KEY і resetPreferences
 │   └── onboarding-provider.tsx  # без resetOnboarding
 └── services/account/            # ВИДАЛЯЄТЬСЯ (wipe-local-data.ts, index.ts)
 
-assets/images/icons/*.svg        # видаляються, крім arrow-back.svg і socials/*
+assets/images/icons/*.svg        # видаляються, крім arrow-back.svg, chevron-right.svg, chevron-up-down.svg і socials/*
 docs/patterns/icons.md           # НОВИЙ патерн
 .claude/skills/ui-check/flows/   # новий sign-out.flow; profile.flow — перевірка рядка «Вийти»
 ```

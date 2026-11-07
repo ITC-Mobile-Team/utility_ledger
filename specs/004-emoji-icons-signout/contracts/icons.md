@@ -41,3 +41,11 @@ export type IconRole = keyof typeof iconSizes;
 ## Не змінюються
 
 `NativeTabs.Trigger.Icon` (SF Symbols), логотипи Google/Apple (`action-button.tsx`, `provider-logo.tsx`), стрілка «Назад» (`navigation-bar-header.tsx`, `icon-picker.tsx`).
+
+## `Chevron` (`src/components/chevron.tsx`)
+
+```ts
+type ChevronProps = { direction: 'right' | 'upDown'; color?: AppColor }; // за замовчуванням 'chev'
+```
+
+Векторний шеврон (`chevron-right.svg`, `chevron-up-down.svg`, `expo-image` + `tintColor`), розмір за роллю `inline`; замінює `AppImage icon='chevronRight' | 'chevronUpDown'`. `AppIcon` без цих двох ключів.
