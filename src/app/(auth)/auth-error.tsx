@@ -43,8 +43,7 @@ export default function AuthError() {
       type='short'
       title='Вхід'
       barType='blue'
-      contentInsets={{ horizontal: 20, bottom: 32 }}
-      cornerRadius={28}
+      contentInsets={{ bottom: 32 }}
     >
       <Spacer />
       <VStack align='center' spacing={22}>

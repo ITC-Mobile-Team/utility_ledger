@@ -50,7 +50,7 @@ export default function EditNameScreen() {
         title='Ваше імʼя'
         subtitle='Як до вас звертатися в застосунку'
         testID='editName.screen'
-        contentInsets={{ top: 0, horizontal: 20, bottom: 24 }}
+        contentInsets={{ bottom: 24 }}
         {...keyboardInsets}
       >
         <VStack spacing={14}>

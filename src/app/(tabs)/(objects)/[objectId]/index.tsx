@@ -173,7 +173,7 @@ export default function ObjectMonths() {
       title={formatShortAddress(object)}
       barType='blue'
       testID='object.screen'
-      contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
       navigationBarButtons={objectButtons}
       onNavigationButtonPress={onButtonPress}
     >

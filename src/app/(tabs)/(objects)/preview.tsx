@@ -55,7 +55,7 @@ export default function Preview() {
       barType='blue'
       title='Preview'
       subtitle='description and other text'
-      contentInsets={{ horizontal: 20 }}
+
       navigationBarButtons={[testNavigationBarItem]}
     >
       <VStack spacing={20}>

@@ -172,7 +172,7 @@ export default function OutageSettingsScreen() {
         barType='power'
         title='Налаштування'
         testID='outageSettings.screen'
-        contentInsets={{ top: 20, horizontal: 20, bottom: 24 }}
+        contentInsets={{ bottom: 24 }}
         {...keyboardInsets}
         bottomOffset={keyboardInsets.bottomOffset + NAME_ROW_BELOW_TEXT}
       >

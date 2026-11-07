@@ -73,8 +73,7 @@ export default function Outages() {
         title='Відсутність світла'
         subtitle={subtitle}
         barType='power'
-        cornerRadius={28}
-        contentInsets={{ horizontal: 20, bottom: 32 }}
+        contentInsets={{ bottom: 32 }}
         headerTrailing={settingsButton}
       >
         <OutageMessage
@@ -96,8 +95,7 @@ export default function Outages() {
         title='Відсутність світла'
         subtitle={subtitle}
         barType='power'
-        cornerRadius={28}
-        contentInsets={{ horizontal: 20, bottom: 32 }}
+        contentInsets={{ bottom: 32 }}
         headerTrailing={settingsButton}
       >
         <OutageMessage
@@ -151,8 +149,7 @@ function ScheduleScreen({
       title='Відсутність світла'
       subtitle={`${provider.name}${updated}`}
       barType='power'
-      cornerRadius={28}
-      contentInsets={{ horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
       headerTrailing={settingsButton}
       headerContent={
         <QueueChips

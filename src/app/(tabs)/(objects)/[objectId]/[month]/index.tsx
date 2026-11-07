@@ -233,7 +233,7 @@ export default function MonthServices() {
           />
         }
         barType='blue'
-        contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+        contentInsets={{ bottom: 32 }}
         testID='month.screen'
         navigationBarButtons={monthButtons}
         onNavigationButtonPress={(id) => {

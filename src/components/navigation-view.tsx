@@ -43,8 +43,11 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 import { useIsFocused } from 'expo-router';
-import { toPadding, type ContentInsets } from './content-insets';
-import { SHEET_CONTENT_TOP } from './navigation-bar/constants';
+import { type ContentInsets } from './content-insets';
+import {
+  HORIZONTAL_PADDING,
+  SHEET_CONTENT_TOP,
+} from './navigation-bar/constants';
 
 // Розмір системного ActivityIndicator; власний індикатор оновлення на iOS
 // проявляється, коли контент відтягнуто на один-два такі розміри
@@ -61,7 +64,9 @@ type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
     'type' | 'scrollY' | 'collapseDistance' | 'onHeightChange'
   > & {
     type?: NavigationBarVariant;
-    contentInsets?: ContentInsets;
+    // Відступ до першого блоку задає сам NavigationView (SHEET_CONTENT_TOP),
+    // бічне поле за замовчуванням — HORIZONTAL_PADDING (0 — на всю ширину)
+    contentInsets?: Omit<ContentInsets, 'top'>;
   };
 
 export const NavigationView = ({
@@ -75,8 +80,6 @@ export const NavigationView = ({
   navigationBarButtons,
   onNavigationButtonPress,
   contentInsets,
-  // Застарілий проп: шторка тепер за єдиним правилом навбару
-  cornerRadius: _cornerRadius,
   keyboardShouldPersistTaps = 'handled',
   children,
   ...rest
@@ -344,7 +347,11 @@ export const NavigationView = ({
           style={{ backgroundColor: bg }}
           contentContainerStyle={[
             { flexGrow: 1, paddingTop: contentTop },
-            toPadding(contentInsets),
+            {
+              paddingHorizontal:
+                contentInsets?.horizontal ?? HORIZONTAL_PADDING,
+              paddingBottom: contentInsets?.bottom,
+            },
           ]}
           keyboardShouldPersistTaps={keyboardShouldPersistTaps}
           {...rest}

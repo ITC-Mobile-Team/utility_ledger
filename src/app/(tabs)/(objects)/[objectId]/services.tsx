@@ -60,7 +60,7 @@ export default function ObjectServices() {
       title='Послуги'
       barType='blue'
       testID='services.screen'
-      contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
       navigationBarButtons={[
         {
           id: 'add',

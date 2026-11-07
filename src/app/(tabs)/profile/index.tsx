@@ -91,9 +91,8 @@ export default function ProfileScreen() {
       title='Профіль'
       subtitle='Імʼя, документи та акаунт'
       barType='purple'
-      cornerRadius={28}
       testID='profile.screen'
-      contentInsets={{ top: 24, horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
     >
       <VStack spacing={14}>
         <ProfileCard

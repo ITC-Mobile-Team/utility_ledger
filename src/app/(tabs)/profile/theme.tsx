@@ -14,9 +14,8 @@ export default function ThemeScreen() {
       title='Тема'
       subtitle='Оформлення застосунку'
       barType='purple'
-      cornerRadius={28}
       testID='theme.screen'
-      contentInsets={{ top: 24, horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
     >
       <VStack spacing={14} accessibilityRole='radiogroup'>
         {THEME_PREFERENCES.map((value) => (

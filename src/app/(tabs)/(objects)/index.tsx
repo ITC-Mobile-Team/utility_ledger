@@ -51,8 +51,7 @@ export default function Index() {
       subtitle={subtitle}
       testID='objects.screen'
       barType='blue'
-      cornerRadius={isEmpty ? 28 : 0}
-      contentInsets={{ top: 20, horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
       navigationBarButtons={isEmpty ? [] : objectsNavigationButtons}
       onNavigationButtonPress={(id) => {
         if (id === 'add') addObject();

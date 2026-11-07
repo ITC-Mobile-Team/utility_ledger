@@ -97,7 +97,7 @@ export default function Reading() {
         title={isEditing ? 'Змінити показник' : 'Додати показник'}
         testID='reading.screen'
         subtitle={`${formatMonthTitle(validMonth)} · ${service.name}`}
-        contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
+        contentInsets={{ bottom: 24 }}
         {...keyboardInsets}
       >
         <VStack spacing={20}>

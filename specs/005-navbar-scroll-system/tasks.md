@@ -165,8 +165,8 @@
 
 **Independent Test**: скріншоти всіх екранів з обсягу в розгорнутому й згорнутому стані. Кути 0→28 (зі згортанням) або 28 (без згортання), поле 20, відступ від шторки до першого блоку 24, розбіжність ≤ 1 pt (quickstart 8–9).
 
-- [ ] T026 [US3] У `src/components/navigation-view.tsx` переконатися, що відступ від верху шторки до першого блоку дорівнює рівно `SHEET_CONTENT_TOP`: `top = H + SHEET_CONTENT_TOP` (T010) на кольоровому навбарі. Бічне поле за замовчуванням 20 (T002). Звірити з артбордом 05 «Обʼєкти»
-- [ ] T027 [P] [US3] Прибрати `cornerRadius` і `contentInsets.top`, а також `horizontal: 20` (тепер це значення за замовчуванням) з екранів «Обʼєктів». Лишити лише `contentInsets={{ bottom: N }}`:
+- [X] T026 [US3] У `src/components/navigation-view.tsx` переконатися, що відступ від верху шторки до першого блоку дорівнює рівно `SHEET_CONTENT_TOP`: `top = H + SHEET_CONTENT_TOP` (T010) на кольоровому навбарі. Бічне поле за замовчуванням 20 (T002). Звірити з артбордом 05 «Обʼєкти»
+- [X] T027 [P] [US3] Прибрати `cornerRadius` і `contentInsets.top`, а також `horizontal: 20` (тепер це значення за замовчуванням) з екранів «Обʼєктів». Лишити лише `contentInsets={{ bottom: N }}`:
   - `src/app/(tabs)/(objects)/index.tsx:54-55` (`cornerRadius={isEmpty ? 28 : 0}` прибрати повністю)
   - `src/app/(tabs)/(objects)/object-form.tsx:79`
   - `src/app/(tabs)/(objects)/preview.tsx:58`
@@ -176,22 +176,29 @@
   - `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx:236`
   - `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx:100`
   - `src/app/(tabs)/(objects)/[objectId]/[month]/bill.tsx:223-224`
-- [ ] T028 [P] [US3] Те саме для «Світла» і «Профілю»:
+- [X] T028 [P] [US3] Те саме для «Світла» і «Профілю»:
   - `src/app/(tabs)/(outages)/index.tsx:76-77, 99-100, 154-155`
   - `src/app/(tabs)/(outages)/outage-settings.tsx:175`
   - `src/app/(tabs)/profile/index.tsx:94-96`
   - `src/app/(tabs)/profile/theme.tsx:17-19`
   - `src/app/(tabs)/profile/edit-name.tsx:53`
-- [ ] T029 [P] [US3] Те саме для входу й онбордингу:
+- [X] T029 [P] [US3] Те саме для входу й онбордингу:
   - `src/app/(auth)/sign-in.tsx:35-36`
   - `src/app/(auth)/auth-error.tsx:46-47`
   - `src/app/(auth)/index.tsx:29`: `horizontal: 24` звірити з артбордом 01 «Перший запуск». Якщо 24 задумано дизайном, лишити як виняток у вмісті екрана, а не через `NavigationView` (research R10)
   - `src/app/(onboarding)/index.tsx:106`: звірити з артбордами 20–22
-- [ ] T030 [US3] Після T027–T029 прибрати застарілі поля з типів: `top` з `ContentInsets` у `src/components/content-insets.ts` і `cornerRadius` з `ThemedNavigationBarProps` у `src/components/navigation-bar/types.ts`. Перевірити через `grep -rn "cornerRadius\|contentInsets={{ top" src/app`, що використань не лишилось. `npx tsc --noEmit` без помилок
-- [ ] T031 [US3] Звірити екрани з власною версткою з артбордами: `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx` (10e–10g), `bill.tsx` (11) і `(onboarding)/index.tsx` (20–22). Якщо після T027–T029 перший блок зсунувся відносно дизайну, виправити відступ усередині контенту екрана
-- [ ] T032 [US3] Пройти quickstart 8–9: зробити через `ui-check` скріншоти всіх екранів з обсягу в розгорнутому й згорнутому стані й порівняти кути, поля й відступ до першого блоку з канвасом (≤ 1 pt). Окремо перевірити «Обʼєкти»: порожньо → перша адреса
+- [X] T030 [US3] Після T027–T029 прибрати застарілі поля з типів: `top` з `ContentInsets` у `src/components/content-insets.ts` і `cornerRadius` з `ThemedNavigationBarProps` у `src/components/navigation-bar/types.ts`. Перевірити через `grep -rn "cornerRadius\|contentInsets={{ top" src/app`, що використань не лишилось. `npx tsc --noEmit` без помилок
+- [X] T031 [US3] Звірити екрани з власною версткою з артбордами: `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx` (10e–10g), `bill.tsx` (11) і `(onboarding)/index.tsx` (20–22). Якщо після T027–T029 перший блок зсунувся відносно дизайну, виправити відступ усередині контенту екрана
+- [X] T032 [US3] Пройти quickstart 8–9: зробити через `ui-check` скріншоти всіх екранів з обсягу в розгорнутому й згорнутому стані й порівняти кути, поля й відступ до першого блоку з канвасом (≤ 1 pt). Окремо перевірити «Обʼєкти»: порожньо → перша адреса
 
 **Checkpoint**: одне правило шторки й відступів на всіх екранах; застарілих пропсів немає.
+
+**Як зроблено US3 і що перевірено:**
+- `cornerRadius`, `contentInsets.top` і `horizontal: 20` прибрано з 16 екранів і з `src/views/profile/legal-document.tsx` (його в списку задач не було). `cornerRadius` прибрано з `ThemedNavigationBarProps`, а `NavigationView` приймає `contentInsets` без `top` (`Omit<ContentInsets, 'top'>`).
+- Регресія з MVP: `ScreenView` (онбординг, `(auth)/index.tsx`) теж використовує `toPadding`, і значення за замовчуванням `HORIZONTAL_PADDING` дало онбордингу бічні поля 20. `toPadding` повернуто до загального вигляду (з `top`, без значень за замовчуванням), а поле 20 за замовчуванням і ігнорування `top` тепер тільки в `NavigationView`. `horizontal: 24` на `(auth)/index.tsx` — це `ScreenView`, тож лишається.
+- T031: сума рахунку й онбординг не використовують `NavigationView`, тож не змінились. Рахунок (`bill.tsx`) — `short` без згортання: перший блок, як і раніше, через 24 від шторки, кути 28.
+- Форми з прозорим навбаром («Додати послугу», «Показник») втратили власні 16 pt зверху: тепер перший блок іде через хвіст навбару 24, як на «Додати адресу».
+- T032: скріншоти «Обʼєктів», «Послуг», «Додати послугу», «Теми», «Ваше ім'я», «Налаштувань» (кути 28 без згортання) — відповідають правилу. Місяць, рахунок і «Показник» не знімали: у симуляторі немає місяців і послуг.
 
 ## Phase 6: User Story 4 — Однакова поведінка на будь-якій довжині контенту (Priority: P3)
 

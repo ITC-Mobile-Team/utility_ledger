@@ -32,8 +32,7 @@ export default function SignIn() {
       type='short'
       title='Вхід і реєстрація'
       barType='blue'
-      contentInsets={{ horizontal: 20, bottom: 32 }}
-      cornerRadius={28}
+      contentInsets={{ bottom: 32 }}
     >
       <VStack style={{ flex: 1 }}>
         <AppHeader />

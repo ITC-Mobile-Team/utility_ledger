@@ -20,7 +20,7 @@ export function LegalDocument({ document, testID }: LegalDocumentProps) {
       type='short'
       title={document.title}
       barType='purple'
-      contentInsets={{ top: 20, horizontal: 20, bottom: 34 }}
+      contentInsets={{ bottom: 34 }}
       testID={testID}
     >
       <ThemedView backgroundColor='surface' style={styles.card}>

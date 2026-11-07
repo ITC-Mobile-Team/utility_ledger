@@ -182,7 +182,7 @@ export default function ServiceForm() {
         title={existing ? 'Редагувати послугу' : 'Додати послугу'}
         subtitle={`Для обʼєкта: ${formatAddress(object)}`}
         testID='serviceForm.screen'
-        contentInsets={{ top: 16, horizontal: 20, bottom: 24 }}
+        contentInsets={{ bottom: 24 }}
         {...keyboardInsets}
       >
         <VStack spacing={20}>

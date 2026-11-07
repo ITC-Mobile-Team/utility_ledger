@@ -76,7 +76,7 @@ export default function ObjectForm() {
             ? 'Змініть назву або адресу обʼєкта.'
             : 'Щоб вести комунальні платежі для ще одного обʼєкта.'
         }
-        contentInsets={{ top: 0, horizontal: 20, bottom: 24 }}
+        contentInsets={{ bottom: 24 }}
         {...keyboardInsets}
       >
         <VStack spacing={24}>

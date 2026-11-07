@@ -220,8 +220,7 @@ export default function Bill() {
       type='short'
       title='Розрахунок'
       barType='blue'
-      cornerRadius={28}
-      contentInsets={{ horizontal: 20, bottom: 32 }}
+      contentInsets={{ bottom: 32 }}
     >
       {/* У макеті між чеком і кнопкою 14 px; зубці вже займають TOOTH_HEIGHT */}
       <VStack spacing={14 - TOOTH_HEIGHT}>

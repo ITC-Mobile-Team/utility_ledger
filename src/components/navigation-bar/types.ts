@@ -29,9 +29,4 @@ export type ThemedNavigationBarProps = {
   collapseDistance?: SharedValue<number>;
   // Висота розгорнутої накладки — з неї рахується верхній відступ контенту
   onHeightChange?: (height: number) => void;
-  /**
-   * @deprecated ігнорується: шторка за єдиним правилом SHEET_RADIUS;
-   * прибирається, щойно екрани перестануть його передавати
-   */
-  cornerRadius?: number;
 };
