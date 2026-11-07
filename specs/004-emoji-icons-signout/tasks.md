@@ -13,13 +13,13 @@
 - [ ] T001 Створити `src/constants/icon-sizes.ts`: `export const iconSizes = { badge: 12, inline: 16, button: 20, feature: 28, hero: 40, heroLarge: 64 } as const;` і `export type IconRole = keyof typeof iconSizes;` (контракт — contracts/icons.md)
 - [ ] T002 Створити `src/components/emoji-glyph.tsx`: квадрат `size × size` з `alignItems/justifyContent: 'center'`, усередині звичайний `Text` (не `ThemedText`, без шрифту Onest) з `allowFontScaling={false}`, `includeFontPadding: false`, `textAlign: 'center'`, `fontSize = size × k`, `lineHeight = size`, платформні `k` і `translateY` через `Platform.select`, `accessible={false}`; перед написанням звірити `allowFontScaling`/`includeFontPadding` з документацією RN 0.88 (Constitution I); пропси `emoji`, `size`, `testID?`; додати експорт у `src/components/index.ts`
 - [ ] T003 [P] Створити `src/components/chevron.tsx`: векторний шеврон (`direction: 'right' | 'upDown'`, `color?: AppColor` за замовчуванням `chev`) на `expo-image` + `tintColor`, джерела `assets/images/icons/chevron-right.svg` і `chevron-up-down.svg`, розмір за роллю `inline` (`iconSizes.inline`) і те саме центрування, що в `EmojiGlyph`; додати експорт у `src/components/index.ts` (контракт — contracts/icons.md)
-- [ ] T004 Затвердити карту emoji: показати користувачу повну карту з research.md R4 (31 ключ без шевронів) і ролі зі шкали, внести правки в research.md і в `src/constants/app-icons.tsx` (T005) до масової заміни; за потреби одразу оновити відповідні артборди канвасу. Без цієї відповіді T005 не починати
+- [ ] T004 Затвердити карту emoji: показати користувачу повну карту з research.md R4 (32 ключі без шевронів) і ролі зі шкали, внести правки в research.md і в `src/constants/app-icons.tsx` (T005) до масової заміни; за потреби одразу оновити відповідні артборди канвасу. Без цієї відповіді T005 не починати
 
 ## Phase 2: Foundational (блокує US1 і US2)
 
 **⚠️ CRITICAL**: поки не готові T005–T010, жоден екран не можна переводити на emoji, а модуль стирання — видаляти.
 
-- [ ] T005 Замінити в `src/constants/app-icons.tsx` усі `require('@/assets/images/icons/…svg')` на emoji-рядки за затвердженою в T004 картою з research.md R4 (33 ключі: без `chevronRight` і `chevronUpDown`, які лишаються векторними через `Chevron`; решта ключів `AppIcon` ті самі); експортувати `appIcons` як `Record<AppIcon, string>`
+- [ ] T005 Замінити в `src/constants/app-icons.tsx` усі `require('@/assets/images/icons/…svg')` на emoji-рядки за затвердженою в T004 картою з research.md R4 (32 ключі: без `chevronRight` і `chevronUpDown`, які лишаються векторними через `Chevron`; решта ключів `AppIcon` ті самі); експортувати `appIcons` як `Record<AppIcon, string>`
 - [ ] T006 [P] Переписати `src/components/app-image.tsx`: пропси `icon: AppIcon`, `role: IconRole`; рендерить `EmojiGlyph` з `appIcons[icon]` і `iconSizes[role]`; прибрати `tintColor`, `Size` і `expo-image`
 - [ ] T007 [P] Переписати `src/components/icon-view.tsx`: пропси `icon`, `background?`, `size: Size`; гліф — `button`, якщо коло ≤ 44, інакше `feature`; прибрати `iconColor` і `iconSize`; зберегти круглу підкладку (`rgba(255,255,255,0.22)` без `background`)
 - [ ] T008 [P] Переписати `src/views/profile/row-icon.tsx`: пропси `icon`, `background?` (за замовчуванням `blueSoft`); прибрати `color`; коло 42 pt
@@ -98,7 +98,7 @@
 
 ## Dependencies & Execution Order
 
-- **Phase 1 → Phase 2 → US1/US2 → Polish.** T001–T002 передують усьому; T005–T010 блокують обидві історії.
+- **Phase 1 → Phase 2 → US1/US2 → Polish.** T001 передує T002–T003, T001–T003 передують усьому; T005–T010 блокують обидві історії.
 - **US1 і US2 незалежні** після Phase 2, але обидві правлять `src/app/(tabs)/profile/index.tsx` (T027, T034, T035): виконувати їх послідовно T027 → T034 → T035, а решту — паралельно.
 - T004 (затвердження карти emoji) блокує T005; T003 (`Chevron`) блокує T011–T027 там, де є шеврони (T016, T017, T018, T021, T023, T024).
 - Усередині US1: T011–T027 паралельні (різні файли), T028 збирає залишки після них, T029–T030 після T028, T031–T032 останні.
