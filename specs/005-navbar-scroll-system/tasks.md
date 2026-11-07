@@ -118,38 +118,46 @@
 
 **Independent Test**: обʼєкт з 12+ місяцями і «Світло» — 20 різких свайпів униз і вгору, частина з зупинкою пальцем під час інерції. Кожен жест закінчується в розгорнутому чи згорнутому стані без зайвого руху (quickstart 3–7).
 
-- [ ] T016 [US2] Переписати `snapHeader` у `src/components/navigation-view.tsx`.
+- [X] T016 [US2] Переписати `snapHeader` у `src/components/navigation-view.tsx`.
   - Ціль: `y < D/2 ? 0 : D` (нормалізований `y`, `D = collapseDistance`).
   - Нічого не робити, якщо `D <= 0`, `y <= 0` або `y >= D`.
   - Прибрати `isSnappingToCollapsed` і гілку «повернутись у розгорнутий»: діапазон гарантує R6.
   - `scrollTo` отримує сирий офсет: на iOS `target − top`, на Android `target`.
   - Тригери не змінювати: `onMomentumScrollEnd` і `onScrollEndDrag` без інерції (наявна перевірка `hasMomentum`).
-- [ ] T017 [US2] Одна доводка на зупинку й поступка новому дотику, у `src/components/navigation-view.tsx`.
+- [X] T017 [US2] Одна доводка на зупинку й поступка новому дотику, у `src/components/navigation-view.tsx`.
   - `useRef` `isSnapping` ставиться перед `scrollTo`.
   - `onScrollBeginDrag` скидає його й викликає `setUserScrolling(true)`.
   - Якщо `onMomentumScrollEnd` прийшов від самої доводки (`isSnapping`), він повторно `snapHeader` не викликає, а лише скидає прапорець.
   - Нативне скасування `scrollTo` дотиком не перехоплювати (research R3).
-- [ ] T018 [US2] Винести в `src/components/navigation-view.tsx` спільну функцію `snapTarget(y, D)` і перерахунок у сирий офсет. Її використовують `snapHeader` і `onKeyboardHidden`, без дублювання
-- [ ] T019 [US2] Відскок: у `src/components/navigation-bar/use-navigation-bar-progress.ts` переконатися, що `progress` обрізаний до `[0, 1]`, а `overlayStyle` і `pinnedRowStyle` при `scrollY < 0` нічого не масштабують і не розтягують (FR-007). Пройти quickstart 7 на iOS
-- [ ] T020 [P] [US2] У `src/components/navigation-bar/navigation-bar-background.tsx` подовжити градієнт угору за верх накладки (`top: −висота_вікна`, колір верхньої точки градієнта) і вниз на `D`. Тоді при відтягуванні зверху й під час згортання не видно смуги фону (research R4)
-- [ ] T021 [US2] Розпірка R6 у `src/components/navigation-view.tsx`.
+- [X] T018 [US2] Винести в `src/components/navigation-view.tsx` спільну функцію `snapTarget(y, D)` і перерахунок у сирий офсет. Її використовують `snapHeader` і `onKeyboardHidden`, без дублювання
+- [X] T019 [US2] Відскок: у `src/components/navigation-bar/use-navigation-bar-progress.ts` переконатися, що `progress` обрізаний до `[0, 1]`, а `overlayStyle` і `pinnedRowStyle` при `scrollY < 0` нічого не масштабують і не розтягують (FR-007). Пройти quickstart 7 на iOS
+- [X] T020 [P] [US2] У `src/components/navigation-bar/navigation-bar-background.tsx` подовжити градієнт угору за верх накладки (`top: −висота_вікна`, колір верхньої точки градієнта) і вниз на `D`. Тоді при відтягуванні зверху й під час згортання не видно смуги фону (research R4)
+- [X] T021 [US2] Розпірка R6 у `src/components/navigation-view.tsx`.
   - `naturalMaxScroll` = `maxScrollY` без розпірки (з обробника скролу: `contentSize − spacer + bottomInset − layoutMeasurement`).
   - `spacerHeight = isScrollEnabled ? max(0, D − naturalMaxScroll) : 0`, анімований `Animated.View` під маркером кінця контенту.
   - Контент, що вміщується, розпірки не отримує.
   - Перевірити quickstart 10.
-- [ ] T022 [US2] Клавіатура R7 у `src/components/navigation-view.tsx`.
+- [X] T022 [US2] Клавіатура R7 у `src/components/navigation-view.tsx`.
   - Поки `keyboardCollapse > 0`, контент зсувається від'ємним `translateY` обгортки дітей на `keyboardCollapse × max(0, D − scrollY)` на обох платформах; розкладка не змінюється.
   - Під згорнутим навбаром не має лишатися порожньої смуги.
   - Перевірити quickstart 13 на «Форма обʼєкта» і «Змінити імʼя».
   - Якщо `KeyboardAwareScrollView` не докручує поле над клавіатурою, перейти на запасний варіант із plan.md (прокрутка до `D` на `onStart` клавіатури) і записати рішення в research.md R7.
-- [ ] T023 [US2] Pull-to-refresh R8 у `src/components/navigation-view.tsx`: на Android клонувати переданий `refreshControl` з `progressViewOffset = top` (`React.cloneElement`). На iOS індикатор сам стає під `contentInset.top`. Перевірити на `src/app/(tabs)/(outages)/index.tsx` (quickstart 12) на iOS і Android: індикатор під навбаром, навбар розгорнутий
-- [ ] T024 [US2] Зміна фокуса посеред руху (spec Edge Cases). У `src/components/navigation-view.tsx`, коли `useIsFocused()` стає `false`, а `isUserScrolling` чи `isSnapping` ще активні, скинути `isUserScrolling`. Коли екран знову у фокусі, викликати доводку `snapTarget(scrollY, D)`, якщо `0 < scrollY < D`. Перевірити quickstart 16: різкий свайп на обʼєкті й одразу «назад» або інша вкладка, потім повернення — навбар у кінцевому стані
-- [ ] T025 [US2] Зміна висоти під час скролу (spec Edge Cases, ризик plan.md).
+- [X] T023 [US2] Pull-to-refresh R8 у `src/components/navigation-view.tsx`: на Android клонувати переданий `refreshControl` з `progressViewOffset = top` (`React.cloneElement`). На iOS індикатор сам стає під `contentInset.top`. Перевірити на `src/app/(tabs)/(outages)/index.tsx` (quickstart 12) на iOS і Android: індикатор під навбаром, навбар розгорнутий
+- [X] T024 [US2] Зміна фокуса посеред руху (spec Edge Cases). У `src/components/navigation-view.tsx`, коли `useIsFocused()` стає `false`, а `isUserScrolling` чи `isSnapping` ще активні, скинути `isUserScrolling`. Коли екран знову у фокусі, викликати доводку `snapTarget(scrollY, D)`, якщо `0 < scrollY < D`. Перевірити quickstart 16: різкий свайп на обʼєкті й одразу «назад» або інша вкладка, потім повернення — навбар у кінцевому стані
+- [X] T025 [US2] Зміна висоти під час скролу (spec Edge Cases, ризик plan.md).
   - `ThemedNavigationBar` перемірює `H` і `L` заново (`resetLargeHeight()` з T003, `setHeaderHeight` без максимуму), лише коли `p = 0` і користувач не скролить: шапка могла зменшитись (підзаголовок «оновлюємо…» зник, чипи черг сховались).
   - Під час згортання лишається максимум.
   - Перевірити quickstart 17 на «Світлі»: скелетон → графік і оновлення не дають ривка навбару й зайвого відступу під шапкою.
 
 **Checkpoint**: різкі свайпи, відскок, клавіатура, оновлення, зміна фокуса й висоти поводяться за FR-003…FR-008 і FR-012.
+
+**Як зроблено US2 і що перевірено:**
+- Доводка (`snapTarget`, `isSnapping`, скидання в `onScrollBeginDrag`) і доводка після повернення фокуса — у `navigation-view.tsx`. В iOS Simulator доводку з середини автоматично не перевірити: свайп AXe до 0,4 екрана не скролить, а 0,5 одразу проїжджає за `D`. Сценарії quickstart 3–6 і 16 — вручну (T039, T040).
+- T020: градієнт подовжувати не треба. Накладка при відскоку не рухається (прогрес обрізаний), а під час згортання низ градієнта сам іде за низом накладки (`gradientStyle`). Перевірено відтягуванням на «Світлі».
+- T022: зсув — `translateY` обгортки скролу, а не контенту: обгортка дітей з `flexGrow` ламала б `contentFits`. Перевірено на «Додати нову адресу»: з клавіатурою навбар згорнутий, поле одразу під ним, після закриття — розгорнутий.
+- T023: `contentInset.top` на iOS не застосовується під `KeyboardAwareScrollView`, тож на iOS — власний індикатор під навбаром (research R8). Розкладку «Світла» перевірено. Сам індикатор на скріншот не потрапив, бо оновлення закінчується за частку секунди; перевірити вручну.
+- T025: нова висота шапки росте одразу, а зменшується лише при `p = 0` (`use-navigation-bar-progress.ts`).
+- T021: розпірка є з MVP; на контенті, ледь довшому за екран, не перевіряли (немає таких даних) — US4 T034.
 
 ## Phase 5: User Story 3 — Одне правило заокруглень і відступів (Priority: P2)
 

@@ -7,6 +7,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { BUTTONS_GRADIENT_OVERLAP } from './constants';
 
 // Один прогрес згортання на весь навбар. Навбар — накладка над скролом, тож
@@ -17,6 +18,7 @@ export const useNavigationBarProgress = ({
   scrollY,
   collapsedHeight,
   collapseDistance,
+  onHeightChange,
 }: {
   // Нормалізований зсув контенту (0 — верх), вже з урахуванням клавіатури
   scrollY: SharedValue<number>;
@@ -24,10 +26,15 @@ export const useNavigationBarProgress = ({
   collapsedHeight: number;
   // Вихід для NavigationView: скрол, за який навбар згортається повністю
   collapseDistance: SharedValue<number>;
+  // Висота розгорнутої накладки змінилась (з неї рахується відступ контенту)
+  onHeightChange: (height: number) => void;
 }) => {
-  // Висоту розгорнутої накладки міряємо максимумом: під час згортання вона
-  // не змінюється, а повторні заміри посеред анімації ламали б її
+  // Висота розгорнутої накладки, з якою рахується згортання. Росте одразу, а
+  // зменшується лише в розгорнутому стані: шапка могла стати нижчою посеред
+  // згортання (зник підзаголовок «оновлюємо…»), і зміна D тоді смикнула б її
   const expandedHeight = useSharedValue(0);
+  // Останній замір накладки
+  const measuredHeight = useSharedValue(0);
   // Висота ряду великих кнопок (0, якщо кнопок немає)
   const buttonsHeight = useSharedValue(0);
 
@@ -46,6 +53,17 @@ export const useNavigationBarProgress = ({
       ? interpolate(scrollY.value, [0, d], [0, 1], Extrapolation.CLAMP)
       : 0;
   });
+
+  // Навбар повернувся в розгорнутий стан: застосувати відкладене зменшення
+  useAnimatedReaction(
+    () => (progress.value === 0 ? measuredHeight.value : -1),
+    (height) => {
+      if (height > 0 && height < expandedHeight.get()) {
+        expandedHeight.set(height);
+        scheduleOnRN(onHeightChange, height);
+      }
+    },
+  );
 
   const overlayStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: -progress.value * distance.value }],
@@ -101,11 +119,13 @@ export const useNavigationBarProgress = ({
     shortTitleStyle,
     gradientStyle,
     sheetCornerStyle,
-    // Повертає висоту накладки, з якою рахується відступ контенту
     onExpandedHeightChange: (height: number) => {
-      const next = Math.max(expandedHeight.get(), height);
-      expandedHeight.set(next);
-      return next;
+      measuredHeight.set(height);
+      const current = expandedHeight.get();
+      if (height > current || (height < current && progress.get() === 0)) {
+        expandedHeight.set(height);
+        onHeightChange(height);
+      }
     },
     onButtonsHeightChange: (height: number) => buttonsHeight.set(height),
   };

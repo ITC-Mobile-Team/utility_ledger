@@ -60,13 +60,13 @@
 
 ## R8. «Потягни, щоб оновити» під накладкою
 
-**Decision**: індикатор оновлення має зʼявлятися під навбаром, а не за ним.
-- iOS: верхній відступ контенту задається через `contentInset.top = H` (UIRefreshControl стає під інсет), `scrollY = contentOffset.y + H`.
-- Android: `contentInset` не підтримується, тому `paddingTop = H` у контенті й `progressViewOffset = H` у `RefreshControl`.
+**Decision**: індикатор оновлення має бути під навбаром, а не за ним.
+- Android: `paddingTop = top` у контенті й `progressViewOffset = top` у `RefreshControl`.
+- iOS: системний індикатор прозорий (`tintColor: 'transparent'`). Під навбаром `NavigationView` показує власний `ActivityIndicator`: він проявляється з відтягуванням (`−scrollY` від 20 до 40 pt) і крутиться, поки `refreshing`.
 
-`NavigationView` нормалізує зсув так, що для решти логіки верх контенту — `scrollY = 0` на обох платформах. Зараз `refreshControl` має лише «Світло».
+Під час реалізації спробували `contentInset.top` на iOS, але під `KeyboardAwareScrollView` верхній інсет не застосовується (після відтягування скрол повертається до 0, а `contentOffset` з від'ємним зсувом обрізається). Тож `scrollY` = `contentOffset.y` на обох платформах. Зараз `refreshControl` має лише «Світло».
 
-**Alternatives considered**: власний індикатор оновлення — це зайвий код і відхід від нативної поведінки.
+**Alternatives considered**: `contentInset.top` + початковий `scrollTo(−top)` — не спрацювало (див. вище); скрол-вʼю нижче навбару — при згортанні між навбаром і контентом лишалась би смуга.
 
 ## R9. Що прибирається
 

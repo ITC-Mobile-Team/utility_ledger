@@ -1,7 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  cloneElement,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
+  ActivityIndicator,
+  Platform,
+  type RefreshControlProps,
   StyleSheet,
   useWindowDimensions,
   View,
@@ -21,6 +31,8 @@ import {
 } from './navigation-bar';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import Animated, {
+  Extrapolation,
+  interpolate,
   useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -33,6 +45,15 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { useIsFocused } from 'expo-router';
 import { toPadding, type ContentInsets } from './content-insets';
 import { SHEET_CONTENT_TOP } from './navigation-bar/constants';
+
+// Розмір системного ActivityIndicator; власний індикатор оновлення на iOS
+// проявляється, коли контент відтягнуто на один-два такі розміри
+const PULL_INDICATOR_SIZE = 20;
+
+// Ціль доводки: ближчий зі станів (межа — половина відстані згортання),
+// напрямок останнього руху не враховується
+const snapTarget = (y: number, distance: number) =>
+  y < distance / 2 ? 0 : distance;
 
 type NavigationViewProps = Omit<KeyboardAwareScrollViewProps, 'onScroll'> &
   Omit<
@@ -76,6 +97,9 @@ export const NavigationView = ({
   const [headerHeight, setHeaderHeight] = useState(0);
   const isColored = barType !== undefined && barType !== 'transparent';
   const contentTop = headerHeight + (isColored ? SHEET_CONTENT_TOP : 0);
+  // З pull-to-refresh скрол потрібен завжди, навіть короткому контенту,
+  // інакше графік не оновити, поки він завантажується чи не опублікований
+  const hasRefreshControl = Boolean(rest.refreshControl);
   // Де закінчується контент (без розпірки та нижнього відступу)
   const [contentEnd, setContentEnd] = useState(0);
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
@@ -106,9 +130,6 @@ export const NavigationView = ({
   // «замерзає». А під час жесту вміщення змінюється саме собою (скелетон →
   // графік)
   const [isUserScrolling, setUserScrolling] = useState(false);
-  // З pull-to-refresh скрол потрібен завжди, навіть короткому контенту,
-  // інакше графік не оновити, поки він завантажується чи не опублікований
-  const hasRefreshControl = Boolean(rest.refreshControl);
   const contentFits =
     !hasRefreshControl &&
     !isUserScrolling &&
@@ -138,30 +159,25 @@ export const NavigationView = ({
       e.layoutMeasurement.height;
     naturalMaxScroll.value = maxScrollY.value - spacerHeight.value;
   });
+  const scrollToY = (y: number) =>
+    scrollRef.current?.scrollTo({ y, animated: true });
   // Навбар не зупиняється посередині згортання: скрол, що завершився між
-  // розгорнутим і згорнутим станами, доїжджає до ближчого
-  const isSnappingToCollapsed = useRef(false);
+  // розгорнутим і згорнутим станами, доїжджає до ближчого. Доводка — одна на
+  // зупинку: її власне завершення (onMomentumScrollEnd) нову не запускає, а
+  // новий дотик скасовує її нативно й скидає прапорець
+  const isSnapping = useRef(false);
   const snapHeader = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (isSnapping.current) {
+      isSnapping.current = false;
+      return;
+    }
     const y = e.nativeEvent.contentOffset.y;
-    // Короткий контент згортає навбар за весь доступний скрол
-    const end = Math.min(collapseDistance.get(), maxScrollY.get());
-    const scrollTo = (target: number) =>
-      scrollRef.current?.scrollTo({ y: target, animated: true });
-
-    // Короткому контенту не вистачає скролу на повне згортання: доводка
-    // виходить за межі контенту, тож повертаємо навбар у розгорнутий стан
-    if (isSnappingToCollapsed.current) {
-      isSnappingToCollapsed.current = false;
-      if (y < end - 1 || y > maxScrollY.get() + 1) scrollTo(0);
-      return;
-    }
-    if (end <= 0 || y <= 0 || y >= end) return;
-    if (y < end / 2) {
-      scrollTo(0);
-      return;
-    }
-    isSnappingToCollapsed.current = true;
-    scrollTo(end);
+    const distance = collapseDistance.get();
+    // Інерція, що сама довезла за межу згортання чи до верху, доводки не
+    // потребує
+    if (distance <= 0 || y <= 0 || y >= distance) return;
+    isSnapping.current = true;
+    scrollToY(Math.min(snapTarget(y, distance), maxScrollY.get()));
   };
   // Клавіатура сама прокручує контент до поля у фокусі й може зупинити його
   // посеред згортання навбару, а прокрутку зверху KeyboardAwareScrollView
@@ -174,16 +190,80 @@ export const NavigationView = ({
   useEffect(() => {
     isScreenFocused.set(isFocused);
   }, [isFocused, isScreenFocused]);
+  // Екран втратив фокус посеред жесту, інерції чи доводки (свайп і одразу
+  // «назад» або інша вкладка): кінця скролу він може не отримати. Повернувшись,
+  // доводимо навбар до ближчого стану
+  const [wasFocused, setWasFocused] = useState(isFocused);
+  if (wasFocused !== isFocused) {
+    setWasFocused(isFocused);
+    if (!isFocused && isUserScrolling) setUserScrolling(false);
+  }
+  useEffect(() => {
+    if (!isFocused) {
+      isSnapping.current = false;
+      return;
+    }
+    const y = scrollY.get();
+    const distance = collapseDistance.get();
+    if (distance > 0 && y > 0 && y < distance) {
+      scrollRef.current?.scrollTo({
+        y: snapTarget(y, distance),
+        animated: true,
+      });
+    }
+  }, [isFocused, collapseDistance, scrollY]);
   const keyboardCollapse = useSharedValue(0);
   const headerScrollY = useDerivedValue(() =>
     Math.max(scrollY.value, keyboardCollapse.value * collapseDistance.value),
   );
   const onKeyboardHidden = useCallback(() => {
     const y = scrollY.get();
-    const end = Math.min(collapseDistance.get(), maxScrollY.get());
-    if (end <= 0 || y <= 0 || y >= end) return;
-    scrollRef.current?.scrollTo({ y: y >= end / 2 ? end : 0, animated: true });
+    const distance = collapseDistance.get();
+    if (distance <= 0 || y <= 0 || y >= distance) return;
+    scrollRef.current?.scrollTo({
+      y: Math.min(snapTarget(y, distance), maxScrollY.get()),
+      animated: true,
+    });
   }, [collapseDistance, maxScrollY, scrollY]);
+  // Навбар-накладка згорнута клавіатурою, а скрол ще ні: контент зсуваємо
+  // вгору на непокриту скролом частину згортання, інакше під навбаром лишиться
+  // порожня смуга. Лише трансформація, розкладка не змінюється
+  const keyboardShiftStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY:
+          -keyboardCollapse.value *
+          Math.max(collapseDistance.value - Math.max(scrollY.value, 0), 0),
+      },
+    ],
+  }));
+  // Індикатор оновлення має бути під навбаром, а не за ним. Android зсуває
+  // свій сам (progressViewOffset). На iOS системний стоїть угорі скролу, під
+  // накладкою, і зсунути його нічим (contentInset.top тут не застосовується),
+  // тож він прозорий, а під навбаром показуємо свій: проявляється з відтягуванням
+  // і крутиться, поки йде оновлення
+  const refreshControlElement = isValidElement<RefreshControlProps>(
+    rest.refreshControl,
+  )
+    ? rest.refreshControl
+    : null;
+  const isRefreshing = Boolean(refreshControlElement?.props.refreshing);
+  const refreshControl = refreshControlElement
+    ? cloneElement(
+        refreshControlElement,
+        Platform.OS === 'android'
+          ? { progressViewOffset: contentTop }
+          : { tintColor: 'transparent' },
+      )
+    : rest.refreshControl;
+  const pullIndicatorStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      -scrollY.value,
+      [PULL_INDICATOR_SIZE, PULL_INDICATOR_SIZE * 2],
+      [0, 1],
+      Extrapolation.CLAMP,
+    ),
+  }));
   // У воркетах лише get()/set(): React Compiler робить `.value` залежністю
   // мемоізації й читає його під час рендеру
   useKeyboardHandler(
@@ -210,62 +290,83 @@ export const NavigationView = ({
 
   return (
     <View style={styles.container}>
-      {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
-      <KeyboardAwareScrollView
-        ref={scrollRef}
-        onScroll={onScroll}
-        onScrollBeginDrag={() => setUserScrolling(true)}
-        onScrollEndDrag={(e) => {
-          // Без інерції onMomentumScrollEnd не прийде. Інерції немає і тоді,
-          // коли палець відпустили на краю контенту зі швидкістю: скрол уже
-          // там, куди мав би доїхати
-          const { velocity, targetContentOffset, contentOffset } =
-            e.nativeEvent;
-          const hasMomentum =
-            Math.abs(velocity?.y ?? 0) >= 0.1 &&
-            Math.abs((targetContentOffset?.y ?? 0) - contentOffset.y) >= 1;
-          if (!hasMomentum) {
+      <Animated.View style={[styles.container, keyboardShiftStyle]}>
+        {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
+        <KeyboardAwareScrollView
+          ref={scrollRef}
+          onScroll={onScroll}
+          onScrollBeginDrag={() => {
+            isSnapping.current = false;
+            setUserScrolling(true);
+          }}
+          onScrollEndDrag={(e) => {
+            // Без інерції onMomentumScrollEnd не прийде. Інерції немає і тоді,
+            // коли палець відпустили на краю контенту зі швидкістю: скрол уже
+            // там, куди мав би доїхати
+            const { velocity, targetContentOffset, contentOffset } =
+              e.nativeEvent;
+            const hasMomentum =
+              Math.abs(velocity?.y ?? 0) >= 0.1 &&
+              Math.abs((targetContentOffset?.y ?? 0) - contentOffset.y) >= 1;
+            if (!hasMomentum) {
+              setUserScrolling(false);
+              snapHeader(e);
+            }
+          }}
+          onMomentumScrollEnd={(e) => {
             setUserScrolling(false);
             snapHeader(e);
-          }
-        }}
-        onMomentumScrollEnd={(e) => {
-          setUserScrolling(false);
-          snapHeader(e);
-        }}
-        // Відступ під таб-бар і home indicator задаємо самі, а не через
-        // contentInsetAdjustmentBehavior: автоматичний відступ не потрапляє в
-        // події скролу, і без нього maxScrollY хибний. Лише та частина safe
-        // area, яку скрол перекриває: над футером форми відступ не потрібен
-        onLayout={(e) => {
-          setViewportHeight(e.nativeEvent.layout.height);
-          scrollRef.current?.measureInWindow((_x, y, _width, height) =>
-            setBottomInset(
-              Math.max(safeAreaBottom - (windowHeight - (y + height)), 0),
-            ),
-          );
-        }}
-        scrollEnabled={isScrollEnabled}
-        contentInset={{ bottom: bottomInset }}
-        scrollIndicatorInsets={{ top: contentTop, bottom: bottomInset }}
-        contentInsetAdjustmentBehavior='never'
-        // Скрол тепер доходить до верху екрана, під навбар: iOS не має сам
-        // додавати відступ під safe area, його вже містить висота навбару
-        automaticallyAdjustContentInsets={false}
-        alwaysBounceVertical={hasRefreshControl}
-        scrollEventThrottle={16}
-        style={{ backgroundColor: bg }}
-        contentContainerStyle={[
-          { flexGrow: 1, paddingTop: contentTop },
-          toPadding(contentInsets),
-        ]}
-        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-        {...rest}
-      >
-        {children}
-        <View onLayout={(e) => setContentEnd(e.nativeEvent.layout.y)} />
-        <Animated.View style={spacerStyle} />
-      </KeyboardAwareScrollView>
+          }}
+          // Відступ під таб-бар і home indicator задаємо самі, а не через
+          // contentInsetAdjustmentBehavior: автоматичний відступ не потрапляє в
+          // події скролу, і без нього maxScrollY хибний. Лише та частина safe
+          // area, яку скрол перекриває: над футером форми відступ не потрібен
+          onLayout={(e) => {
+            setViewportHeight(e.nativeEvent.layout.height);
+            scrollRef.current?.measureInWindow((_x, y, _width, height) =>
+              setBottomInset(
+                Math.max(safeAreaBottom - (windowHeight - (y + height)), 0),
+              ),
+            );
+          }}
+          scrollEnabled={isScrollEnabled}
+          contentInset={{ bottom: bottomInset }}
+          scrollIndicatorInsets={{
+            top: contentTop,
+            bottom: bottomInset,
+          }}
+          contentInsetAdjustmentBehavior='never'
+          // Скрол тепер доходить до верху екрана, під навбар: iOS не має сам
+          // додавати відступ під safe area, його вже містить висота навбару
+          automaticallyAdjustContentInsets={false}
+          alwaysBounceVertical={hasRefreshControl}
+          scrollEventThrottle={16}
+          style={{ backgroundColor: bg }}
+          contentContainerStyle={[
+            { flexGrow: 1, paddingTop: contentTop },
+            toPadding(contentInsets),
+          ]}
+          keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+          {...rest}
+          refreshControl={refreshControl}
+        >
+          {children}
+          <View onLayout={(e) => setContentEnd(e.nativeEvent.layout.y)} />
+          <Animated.View style={spacerStyle} />
+        </KeyboardAwareScrollView>
+      </Animated.View>
+      {Platform.OS === 'ios' && refreshControlElement && (
+        <Animated.View
+          pointerEvents='none'
+          style={[
+            styles.pullIndicator,
+            { top: headerHeight + (contentTop - headerHeight) / 2 },
+            isRefreshing ? null : pullIndicatorStyle,
+          ]}
+        >
+          <ActivityIndicator animating={isRefreshing || undefined} />
+        </Animated.View>
+      )}
       <ThemedNavigationBar
         type={type}
         barType={barType}
@@ -287,5 +388,12 @@ export const NavigationView = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  pullIndicator: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    marginTop: -PULL_INDICATOR_SIZE / 2,
   },
 });

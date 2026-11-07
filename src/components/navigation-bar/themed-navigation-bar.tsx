@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedReaction,
@@ -39,8 +39,8 @@ export function ThemedNavigationBar({
     scrollY: scrollY ?? fallbackScrollY,
     collapsedHeight: safeAreaTop + SHORT_TITLE_ROW_HEIGHT + EMPTY_BOTTOM,
     collapseDistance: collapseDistance ?? fallbackCollapseDistance,
+    onHeightChange: (height) => onHeightChange?.(height),
   });
-  const lastHeight = useRef(0);
 
   // Великий блок натискається, лише поки його видно більше ніж наполовину
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -54,15 +54,9 @@ export function ThemedNavigationBar({
   return (
     <Animated.View
       style={[styles.overlay, { backgroundColor: bg }, progress.overlayStyle]}
-      onLayout={(e) => {
-        const height = progress.onExpandedHeightChange(
-          e.nativeEvent.layout.height,
-        );
-        if (height !== lastHeight.current) {
-          lastHeight.current = height;
-          onHeightChange?.(height);
-        }
-      }}
+      onLayout={(e) =>
+        progress.onExpandedHeightChange(e.nativeEvent.layout.height)
+      }
     >
       {barType !== 'transparent' && (
         <NavigationBarBackground
