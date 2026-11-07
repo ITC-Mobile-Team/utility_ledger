@@ -66,7 +66,7 @@ export default function ObjectServices() {
           id: 'add',
           title: 'Додати послугу',
           icon: 'plus',
-          iconBackground: 'coralSoft',
+          iconBackground: 'plusSoft',
           testID: 'services.nav.add',
         },
       ]}

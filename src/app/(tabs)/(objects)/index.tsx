@@ -21,7 +21,7 @@ const objectsNavigationButtons: NavigationBarButtonItem[] = [
     id: 'add',
     title: 'Додати адресу',
     icon: 'plus',
-    iconBackground: 'coralSoft',
+    iconBackground: 'plusSoft',
     testID: 'objects.nav.add',
   },
   {

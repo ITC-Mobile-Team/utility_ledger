@@ -35,7 +35,7 @@ export function EmptyStateView({
             <AppImage icon={icon} container={iconTiles.empty} />
           </ThemedView>
         </ThemedView>
-        <ThemedView backgroundColor='coralSoft' style={styles.badge}>
+        <ThemedView backgroundColor='plusSoft' style={styles.badge}>
           <AppImage icon='plus' container={iconTiles.menu} />
         </ThemedView>
       </ThemedView>

@@ -29,6 +29,7 @@
 - Коло, а не скруглений квадрат, для всіх іконок (`EmojiTile` завжди кругла).
 - На світлих поверхнях — мʼякий тон. Тон за іконкою — `getIconTone(icon)` з `iconTones` (`person`/`contrast` → `purpleSoft`, `bell`/`pin` → `powerOnSoft`, `danger` → `amberSoft`, `signOut`/`clock`/`gauge` → `surface2`, `trash` → `coralSoft`, решта `blueSoft`); послуги — `getServiceIconBackground`. Кнопки навбару теж з мʼяким тоном (`coralSoft`, `surface2`, `greenSoft`, `blueSoft`), суцільних `coral`/`inkTile`/`blue` під emoji немає.
 - На кольоровому навбарі — скло `rgba(255,255,255,0.22)` (`IconView` без `background`).
+- Темні emoji (➕, ➖) у темній темі губляться на темних мʼяких тонах, тому для них окремі токени: `plusSoft` (світлий кораловий у темній темі) і `glyphLight` (світло-сіре коло степера). У `iconTones` вони вже прописані для `plus` і `minus`.
 
 ## Центрування
 
@@ -36,4 +37,4 @@
 
 ## Доступність
 
-Іконка декоративна (`accessible={false}`): назву несе рядок чи кнопка, у `accessibilityLabel` які потрібні. Emoji потрапляє в текстовий label `Pressable`-рядка (напр. «🚪 Вийти»); у сценаріях `ui-check` шукай `label~=`.
+Іконка декоративна: назву несе рядок чи кнопка. iOS збирає назву батька з `accessibilityLabel` дочірніх елементів, а порожній рядок вважає відсутнім, тому текст гліфа в `EmojiGlyph` має `accessibilityLabel=' '` — emoji не потрапляє в назву рядка («Вийти», а не «🚪 Вийти»).

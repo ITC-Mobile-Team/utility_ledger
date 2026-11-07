@@ -153,7 +153,7 @@ function StepperButton({
         state.pressed && styles.pressed,
       ]}
     >
-      <ThemedView backgroundColor='surface' style={styles.stepperCircle}>
+      <ThemedView backgroundColor='glyphLight' style={styles.stepperCircle}>
         <AppImage icon={icon} container={iconTiles.large} />
       </ThemedView>
     </Pressable>

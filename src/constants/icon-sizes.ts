@@ -40,6 +40,8 @@ export const iconTones: Partial<Record<AppIcon, AppColor>> = {
   clock: 'surface2',
   gauge: 'surface2',
   trash: 'coralSoft',
+  plus: 'plusSoft',
+  minus: 'glyphLight',
 };
 export const defaultIconTone: AppColor = 'blueSoft';
 export const getIconTone = (icon: AppIcon): AppColor =>

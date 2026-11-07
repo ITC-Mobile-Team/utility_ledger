@@ -48,7 +48,7 @@ export default function Preview() {
     id: 'test',
     title: 'test',
     icon: 'plus',
-    iconBackground: 'surface2',
+    iconBackground: 'plusSoft',
   };
   return (
     <NavigationView

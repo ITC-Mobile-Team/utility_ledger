@@ -49,7 +49,7 @@ const objectButtons: NavigationBarButtonItem[] = [
     id: 'add-service',
     title: 'Додати послугу',
     icon: 'plus',
-    iconBackground: 'coralSoft',
+    iconBackground: 'plusSoft',
     testID: 'object.nav.addService',
   },
   {
