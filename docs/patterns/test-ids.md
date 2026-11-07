@@ -18,7 +18,7 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 | Компонент | Як |
 |---|---|
 | `ActionButton`, `TextButton`, `TransparentActionButton`, `ThemedTextInput`, `Pressable` | проп `testID` |
-| Кнопки навбару | поле `testID` у `NavigationBarButtonItem` (`екран.nav.<id>`); прихований ряд (повний чи короткий) прибраний з дерева доступності, тож дублікатів немає |
+| Кнопки навбару | поле `testID` у `NavigationBarButtonItem` (`екран.nav.<id>`); кнопки входять у великий блок навбару: коли він згорнутий більше ніж наполовину (`p ≥ 0.5`), блок прибраний з дерева доступності, тож у згорнутому навбарі testID кнопок немає, а в розгорнутому кожен трапляється один раз |
 | `NavigationBarIconButton`, `NavigationBarChip`, `ListRow`, `ObjectCard` | проп `testID` |
 | `Segment`, `RadioGroup` | проп-префікс `testID` → варіанти `${testID}.${value}` |
 | `SwipeAction` | поле `testID` (`…row.0.delete`) |
