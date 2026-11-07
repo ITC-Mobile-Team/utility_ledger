@@ -10,6 +10,7 @@ import {
   ThemedView,
   VStack,
 } from '@/components';
+import { iconTiles } from '@/constants/icon-sizes';
 import { typography } from '@/constants/typography';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useLedgerState } from '@/providers/ledger-provider';
@@ -182,7 +183,7 @@ export default function OutageSettingsScreen() {
               <ListRow
                 leading={
                   <ThemedView backgroundColor='powerOnSoft' style={styles.icon}>
-                    <AppImage icon='pin' role='button' />
+                    <AppImage icon='pin' container={iconTiles.menu} />
                   </ThemedView>
                 }
                 testID='outageSettings.city'
@@ -212,7 +213,7 @@ export default function OutageSettingsScreen() {
           {city && !provider && (
             <ThemedView backgroundColor='surface' style={styles.notice}>
               <ThemedView backgroundColor='surface2' style={styles.noticeIcon}>
-                <AppImage icon='clock' role='feature' />
+                <AppImage icon='clock' container={iconTiles.large} />
               </ThemedView>
               <ThemedText font='heading' align='center'>
                 Постачальник для вашого міста поки що не доданий
@@ -519,9 +520,9 @@ function QueueNameRow({
 
 const styles = StyleSheet.create({
   icon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: iconTiles.menu,
+    height: iconTiles.menu,
+    borderRadius: iconTiles.menu / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -534,9 +535,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   noticeIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: iconTiles.large,
+    height: iconTiles.large,
+    borderRadius: iconTiles.large / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

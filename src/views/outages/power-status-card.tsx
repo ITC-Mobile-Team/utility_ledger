@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import { AppImage, ThemedText, ThemedView, VStack, HStack } from '@/components';
 import {
   formatDuration,
@@ -68,7 +69,10 @@ export function PowerStatusCard({ status, now }: PowerStatusCardProps) {
           backgroundColor={isOff ? 'powerOff' : 'powerOn'}
           style={[styles.icon, isOff && styles.iconOff]}
         >
-          <AppImage icon={isOff ? 'bulbOff' : 'bulb'} role='feature' />
+          <AppImage
+            icon={isOff ? 'bulbOff' : 'bulb'}
+            container={iconTiles.large}
+          />
         </ThemedView>
         <VStack spacing={2} style={styles.copy}>
           <ThemedText
@@ -98,9 +102,9 @@ const styles = StyleSheet.create({
     padding: 18,
   },
   icon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: iconTiles.large,
+    height: iconTiles.large,
+    borderRadius: iconTiles.large / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

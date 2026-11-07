@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   type NavigationBarButtonItem,
   NavigationBarChip,
@@ -65,7 +66,7 @@ const monthButtons: NavigationBarButtonItem[] = [
   },
 ];
 
-const rowIconSize = 38;
+const rowIconSize = iconTiles.menu;
 
 // Внесений показник — спожите за місяць; невнесений — підказка з минулого місяця
 const meterSubtitle = (

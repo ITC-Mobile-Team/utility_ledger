@@ -7,7 +7,7 @@ import {
   VStack,
   Pressable,
 } from '@/components';
-import { iconSizes } from '@/constants/icon-sizes';
+import { glyphSizeFor, iconTiles } from '@/constants/icon-sizes';
 import { serviceIconSections } from '@/constants/service-icons';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { FormFooter, ServiceIcon } from '@/views';
@@ -86,7 +86,10 @@ export default function IconPicker() {
                       borderColor={isSelected ? 'blue' : 'surface'}
                       style={styles.cell}
                     >
-                      <EmojiGlyph emoji={icon} size={iconSizes.feature} />
+                      <EmojiGlyph
+                        emoji={icon}
+                        size={glyphSizeFor(iconTiles.large)}
+                      />
                     </ThemedView>
                   </Pressable>
                 );
@@ -130,8 +133,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   cell: {
-    width: 52,
-    height: 52,
+    width: iconTiles.large,
+    height: iconTiles.large,
     borderRadius: 14,
     borderCurve: 'continuous',
     borderWidth: 2,

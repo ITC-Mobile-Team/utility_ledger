@@ -1,4 +1,5 @@
 import { type AppIcon } from '@/constants/app-icons';
+import { iconTiles } from '@/constants/icon-sizes';
 import { StyleSheet } from 'react-native';
 import { AppImage } from '../app-image';
 import { Pressable } from '../pressable';
@@ -26,16 +27,16 @@ export function NavigationBarIconButton({
       onPress={onPress}
       style={(state) => [styles.button, state.pressed && styles.pressed]}
     >
-      <AppImage icon={icon} role='button' />
+      <AppImage icon={icon} container={iconTiles.touch} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: iconTiles.touch,
+    height: iconTiles.touch,
+    borderRadius: iconTiles.touch / 2,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.18)',

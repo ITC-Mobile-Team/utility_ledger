@@ -9,6 +9,7 @@ import {
   VStack,
   Pressable,
 } from '@/components';
+import { iconTiles } from '@/constants/icon-sizes';
 import { useLedgerObject, useLedgerState } from '@/providers/ledger-provider';
 import {
   calculateMonth,
@@ -254,7 +255,7 @@ export default function Bill() {
               <Dashed />
               <VStack spacing={10} align='center' style={styles.empty}>
                 <ThemedView backgroundColor='surface2' style={styles.emptyIcon}>
-                  <AppImage icon='gauge' role='feature' />
+                  <AppImage icon='gauge' container={iconTiles.large} />
                 </ThemedView>
                 <ThemedText font='heading'>Ще нічого рахувати</ThemedText>
                 <ThemedText color='muted' font='caption' align='center'>
@@ -350,7 +351,7 @@ function BillItem({ item, row, open, onToggle }: BillItemProps) {
         onPress={onToggle}
         style={(state) => [styles.itemRow, state.pressed && styles.pressed]}
       >
-        <ServiceIcon icon={item.service.icon} size={36} />
+        <ServiceIcon icon={item.service.icon} size={iconTiles.menu} />
         <VStack spacing={2} style={styles.flex}>
           <ThemedText font='rowTitleCompact'>{item.service.name}</ThemedText>
           <ThemedText color='muted' font='caption'>
@@ -556,9 +557,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: iconTiles.large,
+    height: iconTiles.large,
+    borderRadius: iconTiles.large / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

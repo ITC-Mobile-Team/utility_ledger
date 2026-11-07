@@ -1,6 +1,7 @@
 import { AppImage, ThemedText, ThemedView, Pressable } from '@/components';
 import type { AppColor } from '@/constants/colors';
 import type { AppIcon } from '@/constants/app-icons';
+import { iconTiles } from '@/constants/icon-sizes';
 import type { PropsWithChildren } from 'react';
 import { StyleSheet } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -39,7 +40,7 @@ export function SwipeableRow({ actions, children }: SwipeableRowProps) {
                 backgroundColor={action.background}
                 style={styles.action}
               >
-                <AppImage icon={action.icon} role='button' />
+                <AppImage icon={action.icon} container={iconTiles.menu} />
                 <ThemedText color='onPrimary' font='labelStrong'>
                   {action.title}
                 </ThemedText>

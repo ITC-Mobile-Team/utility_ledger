@@ -5,6 +5,7 @@ import { HStack } from '../stack';
 import { type NavigationBarButtonProps } from './navigation-bar-button';
 import { ThemedText } from '../themed-text';
 import { AppImage } from '../app-image';
+import { iconTiles } from '@/constants/icon-sizes';
 
 export const ShortNavigationBarButton = ({
   title,
@@ -18,7 +19,7 @@ export const ShortNavigationBarButton = ({
       <View style={styles.container}>
         <HStack align='center' spacing={8}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
-            <AppImage icon={icon} role='inline' />
+            <AppImage icon={icon} container={iconTiles.compact} />
           </ThemedView>
 
           <ThemedText color='onPrimary' font='segment' style={styles.title}>
@@ -41,9 +42,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.35)',
   },
   circle: {
-    width: 28,
-    height: 28,
-    borderRadius: 24,
+    width: iconTiles.compact,
+    height: iconTiles.compact,
+    borderRadius: iconTiles.compact / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -49,10 +50,10 @@ export default function AuthError() {
       <VStack align='center' spacing={22}>
         <ThemedView
           backgroundColor='coralSoft'
-          size={{ width: 96 }}
+          size={{ width: iconTiles.xlarge }}
           style={styles.circle}
         >
-          <AppImage icon='danger' role='hero' />
+          <AppImage icon='danger' container={iconTiles.xlarge} />
         </ThemedView>
 
         <VStack align='center' spacing={10}>
@@ -84,7 +85,7 @@ export default function AuthError() {
 
 const styles = StyleSheet.create({
   circle: {
-    borderRadius: 48,
+    borderRadius: iconTiles.xlarge / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

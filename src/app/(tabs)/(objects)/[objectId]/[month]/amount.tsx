@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -112,7 +113,7 @@ export default function Amount() {
       {/* Лише кнопка «назад»: назва з іконкою послуги — окремим рядком нижче */}
       <ThemedNavigationBar type='short' title='' />
       <HStack spacing={14} align='center' style={styles.header}>
-        <ServiceIcon icon={service.icon} size={48} />
+        <ServiceIcon icon={service.icon} size={iconTiles.menu} />
         <VStack spacing={2} style={styles.flex}>
           <ThemedText font='titleSmall' numberOfLines={2}>
             {service.name}

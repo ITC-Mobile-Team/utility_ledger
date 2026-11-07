@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import { HStack, IconView, ThemedText, VStack } from '@/components';
 import { ObjectCard } from '@/views/object-card';
 import {
@@ -39,7 +40,7 @@ export function AddressesIllustration() {
   return (
     <VStack spacing={12} style={styles.container}>
       <HStack align='center' spacing={12} style={styles.glassCard}>
-        <IconView icon='house' size={{ width: 40 }} />
+        <IconView icon='house' size={{ width: iconTiles.menu }} />
         <VStack spacing={2}>
           <ThemedText color='onPrimary' font='rowTitle'>
             вул. Шевченка, 8
@@ -60,7 +61,11 @@ export function AddressesIllustration() {
           />
         </View>
         <View style={styles.addButton}>
-          <IconView icon='plus' background='coral' size={{ width: 52 }} />
+          <IconView
+            icon='plus'
+            background='coral'
+            size={{ width: iconTiles.large }}
+          />
         </View>
       </View>
     </VStack>

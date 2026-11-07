@@ -17,6 +17,7 @@ import {
   pluralForms,
   pluralize,
 } from '@/services/ledger';
+import { iconTiles } from '@/constants/icon-sizes';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { BottomSheet } from './bottom-sheet';
@@ -153,7 +154,7 @@ function StepperButton({
       ]}
     >
       <ThemedView backgroundColor='surface' style={styles.stepperCircle}>
-        <AppImage icon={icon} role='button' />
+        <AppImage icon={icon} container={iconTiles.large} />
       </ThemedView>
     </Pressable>
   );
@@ -174,9 +175,9 @@ const styles = StyleSheet.create({
     borderRadius: 26,
   },
   stepperCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: iconTiles.large,
+    height: iconTiles.large,
+    borderRadius: iconTiles.large / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

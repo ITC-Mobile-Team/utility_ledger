@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -31,11 +32,11 @@ export function EmptyStateView({
       <ThemedView backgroundColor='blueSoft' style={styles.outerCircle}>
         <ThemedView backgroundColor='blueSoft2' style={styles.innerCircle}>
           <ThemedView backgroundColor='surface' style={styles.tile}>
-            <AppImage icon={icon} role='hero' />
+            <AppImage icon={icon} container={iconTiles.empty} />
           </ThemedView>
         </ThemedView>
         <ThemedView backgroundColor='coral' style={styles.badge}>
-          <AppImage icon='plus' role='inline' />
+          <AppImage icon='plus' container={iconTiles.menu} />
         </ThemedView>
       </ThemedView>
 
@@ -81,10 +82,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tile: {
-    width: 80,
-    height: 80,
-    borderRadius: 22,
-    borderCurve: 'continuous',
+    width: iconTiles.empty,
+    height: iconTiles.empty,
+    borderRadius: iconTiles.empty / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 14,
     bottom: 28,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: iconTiles.menu,
+    height: iconTiles.menu,
+    borderRadius: iconTiles.menu / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

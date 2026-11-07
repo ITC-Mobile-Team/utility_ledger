@@ -8,7 +8,7 @@ import {
   ThemedView,
   Pressable,
 } from '@/components';
-import { iconSizes } from '@/constants/icon-sizes';
+import { glyphSizeFor, iconTiles } from '@/constants/icon-sizes';
 import { monthAppearance } from '@/constants/month-emoji';
 import {
   getCurrentMonth,
@@ -169,7 +169,7 @@ function MonthCell({
           isAdded && styles.disabled,
         ]}
       >
-        <EmojiGlyph emoji={emoji} size={iconSizes.feature} />
+        <EmojiGlyph emoji={emoji} size={glyphSizeFor(iconTiles.large)} />
         <ThemedText font='segment'>{name}</ThemedText>
         {isAdded && (
           <ThemedView backgroundColor='greenSoft' style={styles.addedMark}>

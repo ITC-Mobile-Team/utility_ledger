@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -45,7 +46,7 @@ export function OutageMessage({
         style={styles.outer}
       >
         <ThemedView backgroundColor='surface' style={styles.tile}>
-          <AppImage icon={icon} role='hero' />
+          <AppImage icon={icon} container={iconTiles.xlarge} />
         </ThemedView>
         {badge && (
           <ThemedView backgroundColor='powerOff' style={styles.badge}>
@@ -92,10 +93,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tile: {
-    width: 88,
-    height: 88,
-    borderRadius: 26,
-    borderCurve: 'continuous',
+    width: iconTiles.xlarge,
+    height: iconTiles.xlarge,
+    borderRadius: iconTiles.xlarge / 2,
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 10px 24px rgba(16,32,64,0.12)',

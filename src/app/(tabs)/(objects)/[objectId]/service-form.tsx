@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   Chevron,
@@ -203,7 +204,7 @@ export default function ServiceForm() {
           >
             <ThemedView backgroundColor='surface' style={styles.iconRow}>
               <HStack align='center' spacing={14}>
-                <ServiceIcon icon={icon} size={48} />
+                <ServiceIcon icon={icon} size={iconTiles.large} />
                 <VStack spacing={2} style={styles.flex}>
                   <ThemedText font='rowTitle'>Іконка послуги</ThemedText>
                   <ThemedText color='muted' font='caption'>

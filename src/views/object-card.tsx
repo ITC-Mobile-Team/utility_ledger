@@ -7,6 +7,7 @@ import {
   VStack,
   Pressable,
 } from '@/components';
+import { iconTiles } from '@/constants/icon-sizes';
 import { getServiceIconBackground } from '@/constants/service-icons';
 import {
   formatAddress,
@@ -53,8 +54,8 @@ export function ObjectCard({
           <HStack align='center' spacing={12}>
             <IconView
               icon={object.apartment ? 'apartment' : 'house'}
-              background={object.apartment ? 'blue' : 'inkTile'}
-              size={{ width: 42 }}
+              background={object.apartment ? 'blueSoft' : 'surface2'}
+              size={{ width: iconTiles.menu }}
             />
 
             <VStack spacing={2} style={styles.title}>
@@ -82,8 +83,7 @@ export function ObjectCard({
                     key={service.id}
                     emoji={service.icon}
                     background={getServiceIconBackground(service.icon)}
-                    size={28}
-                    rounded
+                    size={iconTiles.compact}
                   />
                 ))}
               </HStack>

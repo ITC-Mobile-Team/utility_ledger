@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import { StyleSheet } from 'react-native';
 import { Pressable, type PressableProps } from './pressable';
 import { type AppIcon } from '@/constants/app-icons';
@@ -46,7 +47,7 @@ export function TransparentActionButton({
           paddingHorizontal: paddingHorizontal,
         }}
       >
-        {isFull && <IconView icon={icon} size={{ width: 40 }} />}
+        {isFull && <IconView icon={icon} size={{ width: iconTiles.menu }} />}
         <VStack>
           <ThemedText color='onPrimary' font={titleFont}>
             {title}

@@ -6,6 +6,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { type AppIcon, appIcons } from '@/constants/app-icons';
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -119,7 +120,7 @@ const services: Service[] = [
   { icon: 'network' },
 ];
 
-const badgeSize = 44;
+const badgeSize = iconTiles.touch;
 const firstServiceAngle = -40;
 
 const ServiceBadge = ({
@@ -136,7 +137,7 @@ const ServiceBadge = ({
       size={{ width: badgeSize }}
       style={[styles.circleContainer, styles.circle, styles.badge, style]}
     >
-      <AppImage icon={service.icon} role='button' />
+      <AppImage icon={service.icon} container={badgeSize} />
     </ThemedView>
   );
 };

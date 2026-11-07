@@ -5,6 +5,7 @@ import { ThemedText } from '../themed-text';
 import { HStack } from '../stack';
 import { type AppColor } from '@/constants/colors';
 import { type AppIcon } from '@/constants/app-icons';
+import { iconTiles } from '@/constants/icon-sizes';
 import { AppImage } from '../app-image';
 import { FULL_BUTTON_WIDTH_RATIO } from './constants';
 
@@ -39,7 +40,7 @@ export const NavigationBarButton = ({
       <ThemedView backgroundColor='surface' style={styles.button}>
         <HStack align='center' spacing={12}>
           <ThemedView backgroundColor={iconBackground} style={styles.circle}>
-            <AppImage icon={icon} role='button' />
+            <AppImage icon={icon} container={iconTiles.touch} />
           </ThemedView>
 
           <ThemedText font='rowTitle' style={styles.title}>
@@ -58,9 +59,9 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   circle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: iconTiles.touch,
+    height: iconTiles.touch,
+    borderRadius: iconTiles.touch / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

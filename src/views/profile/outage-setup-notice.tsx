@@ -1,3 +1,4 @@
+import { iconTiles } from '@/constants/icon-sizes';
 import {
   HStack,
   IconView,
@@ -21,7 +22,11 @@ export function OutageSetupNotice({
 }: OutageSetupNoticeProps) {
   return (
     <HStack align='top' spacing={12} style={styles.container}>
-      <IconView icon='danger' background='amberSoft' size={{ width: 32 }} />
+      <IconView
+        icon='danger'
+        background='amberSoft'
+        size={{ width: iconTiles.menu }}
+      />
       <VStack spacing={10} style={styles.copy}>
         <ThemedText font='bodySmall' testID='profile.outageStatus'>
           {message}

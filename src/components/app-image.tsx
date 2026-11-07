@@ -1,13 +1,16 @@
 import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { type IconRole, iconSizes } from '@/constants/icon-sizes';
+import { glyphSizeFor, type IconRole, iconSizes } from '@/constants/icon-sizes';
 import { EmojiGlyph } from './emoji-glyph';
 
-type AppImageProps = {
-  icon: AppIcon;
-  role: IconRole;
-};
+// Без контейнера розмір задає роль, у колі чи плитці — її сторона (`container`),
+// а гліф рахується за правилом «половина сторони»
+type AppImageProps = { icon: AppIcon } & (
+  { role: IconRole; container?: never } | { container: number; role?: never }
+);
 
-// Іконка застосунку як emoji розміру своєї ролі
-export const AppImage = ({ icon, role }: AppImageProps) => (
-  <EmojiGlyph emoji={appIcons[icon]} size={iconSizes[role]} />
+export const AppImage = ({ icon, role, container }: AppImageProps) => (
+  <EmojiGlyph
+    emoji={appIcons[icon]}
+    size={container != null ? glyphSizeFor(container) : iconSizes[role]}
+  />
 );
