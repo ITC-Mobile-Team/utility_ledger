@@ -38,6 +38,8 @@ type NavigationBarHeaderProps = {
 
 const BACK_TAP_SIZE = 44;
 const BACK_ICON_SIZE = 22;
+// headline 17 pt × 1.5 ще вміщується в рядок 44 pt
+const SHORT_TITLE_MAX_FONT_SCALE = 1.5;
 
 const getTitleFont = (
   isTransparent: boolean,
@@ -87,6 +89,10 @@ export const NavigationBarHeader = ({
       color={titleColor}
       font={getTitleFont(isTransparent, 'short')}
       numberOfLines={1}
+      // Рядок «назад» фіксованої висоти: з найбільшим системним шрифтом
+      // короткий заголовок інакше вилазить за нього (як і системний навбар,
+      // масштабуємо його обмежено)
+      maxFontSizeMultiplier={SHORT_TITLE_MAX_FONT_SCALE}
       style={[
         styles.shortTitle,
         canGoBack ? styles.afterBack : isFull && styles.inset,

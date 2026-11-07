@@ -1,0 +1,30 @@
+# Навбар (specs/005-navbar-scroll-system, quickstart 1, 2, 8, 11): великі кнопки
+# по одному разу, згортання ховає великий блок з дерева, повернення нагору — розгортає,
+# короткий контент («Тема») навбар не згортає. Потрібна хоча б одна адреса.
+# Доводку з середини (quickstart 3–6, 16) так не перевірити: свайп AXe до 0,4
+# екрана не скролить, а 0,5 одразу проїжджає за межу згортання — це вручну.
+# Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/navbar.flow
+launch
+tap role=tab&label=Обʼєкти
+wait id=objects.screen
+check id=objects.nav.add count=1
+check id=objects.nav.archive count=1
+shot name=navbar-objects
+tap role=tab&label=Профіль
+wait id=profile.screen
+see Імʼя, документи та акаунт
+swipe id=profile.screen up distance=0.6
+gone "label=Імʼя, документи та акаунт"
+shot name=navbar-profile-collapsed
+swipe id=profile.screen down distance=0.9
+swipe id=profile.screen down distance=0.9
+see Імʼя, документи та акаунт
+tap id=profile.theme
+see Оформлення застосунку
+shot name=navbar-theme
+tap id=navigationBar.back
+tap role=tab&label=Світло
+tap id=outages.settings
+wait id=outageSettings.screen
+shot name=navbar-outage-settings
+tap id=navigationBar.back
