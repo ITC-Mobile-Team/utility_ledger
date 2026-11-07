@@ -85,7 +85,7 @@ src/components/
 ├── content-insets.ts                         # без top; horizontal за замовчуванням 20
 └── navigation-bar/
     ├── constants.ts                          # + SHEET_RADIUS, SHEET_CONTENT_TOP; − COLLAPSE_DISTANCE, SHORT_ROW_*
-    ├── types.ts                              # − cornerRadius, titleShrink, collapseScroll; + спільний progress
+    ├── types.ts                              # − titleShrink, collapseScroll, maxScrollY; titleCollapseDistance → collapseDistance; + onHeightChange; cornerRadius @deprecated до T030
     ├── themed-navigation-bar.tsx             # absolute-накладка, шторка всередині, onLayout → H
     ├── navigation-bar-header.tsx             # великий блок включає ряд кнопок; трансформації замість height
     ├── use-title-collapse.ts                 # → use-navigation-bar-progress.ts: один прогрес p і стилі з нього
@@ -113,10 +113,10 @@ docs/patterns/navigation-bar-title.md, navigation-bar-buttons.md, README.md
 
 ## Порядок робіт (для `/speckit-tasks`)
 
-1. **Фундамент**: константи, один прогрес `p`, накладка з трансформаціями, нормалізований `scrollY` (iOS `contentInset.top` / Android `paddingTop`).
-2. **US1**: прибрати «пігулки», кнопки у великому блоці, натискання й доступність за `p`.
-3. **US2**: доводка (межа `D/2`, скасування дотиком, без гілки «повернутись»), відскок, розпірка R6, клавіатура R7, refresh R8.
-4. **US3**: шторка в накладці, `SHEET_RADIUS`, прибрати `cornerRadius` і `contentInsets.top` з екранів, звірити екрани з власною версткою.
+1. **Фундамент**: константи, один прогрес `p`, накладка з трансформаціями, один ряд кнопок у великому блоці, шторка `SHEET_RADIUS` у накладці, нормалізований `scrollY` (iOS `contentInset.top` / Android `paddingTop`), `top = H − SHEET_RADIUS + SHEET_CONTENT_TOP`. `cornerRadius` і `contentInsets.top` лишаються `@deprecated` і ігноруються, тож tsc проходить після кожного кроку.
+2. **US1**: прибрати мертвий `ShortNavigationBarButton`, оновити канвас, перевірити testID.
+3. **US2**: доводка (межа `D/2`, скасування дотиком, без гілки «повернутись»), відскок, розпірка R6, клавіатура R7, refresh R8, зміна фокуса й висоти шапки.
+4. **US3**: прибрати `cornerRadius` і `contentInsets.top` з екранів, потім з типів; звірити екрани з власною версткою.
 5. **US4**: регресія правил короткого й ледь довшого контенту.
 6. Канвас: артборди «після скролу» без «пігулок».
 7. Патерни `docs/patterns/` + `README.md`.
