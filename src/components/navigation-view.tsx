@@ -13,7 +13,6 @@ import {
   Platform,
   type RefreshControlProps,
   StyleSheet,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import {
@@ -40,7 +39,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaListener } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 import { useIsFocused } from 'expo-router';
 import { type ContentInsets } from './content-insets';
@@ -90,9 +89,10 @@ export const NavigationView = ({
   // Скрол, за який навбар згортається повністю (міряє сам навбар)
   const collapseDistance = useSharedValue(0);
   const scrollRef = useRef<KeyboardAwareScrollViewRef>(null);
-  // Safe area екрана включає таб-бар
-  const { bottom: safeAreaBottom } = useSafeAreaInsets();
-  const { height: windowHeight } = useWindowDimensions();
+  // Нижній відступ під таб-бар і home indicator — safe area самого екрана
+  // (SafeAreaListener міряє його нативно для цього вʼю): на вкладках у ньому
+  // вже є таб-бар, на вкладених екранах — лише home indicator, а над футером
+  // форми він 0. Кореневий useSafeAreaInsets таб-бару не знає
   const [bottomInset, setBottomInset] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   // Навбар лежить поверх скролу, тож контент починається під ним: на кольоровому
@@ -292,7 +292,10 @@ export const NavigationView = ({
   }));
 
   return (
-    <View style={styles.container}>
+    <SafeAreaListener
+      style={styles.container}
+      onChange={({ insets }) => setBottomInset(insets.bottom)}
+    >
       <Animated.View style={[styles.container, keyboardShiftStyle]}>
         {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
         <KeyboardAwareScrollView
@@ -326,11 +329,6 @@ export const NavigationView = ({
           // area, яку скрол перекриває: над футером форми відступ не потрібен
           onLayout={(e) => {
             setViewportHeight(e.nativeEvent.layout.height);
-            scrollRef.current?.measureInWindow((_x, y, _width, height) =>
-              setBottomInset(
-                Math.max(safeAreaBottom - (windowHeight - (y + height)), 0),
-              ),
-            );
           }}
           scrollEnabled={isScrollEnabled}
           contentInset={{ bottom: bottomInset }}
@@ -388,7 +386,7 @@ export const NavigationView = ({
         collapseDistance={collapseDistance}
         onHeightChange={setHeaderHeight}
       />
-    </View>
+    </SafeAreaListener>
   );
 };
 
