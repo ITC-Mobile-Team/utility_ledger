@@ -63,7 +63,7 @@ export function AddressesIllustration() {
         <View style={styles.addButton}>
           <IconView
             icon='plus'
-            background='coral'
+            background='coralSoft'
             size={{ width: iconTiles.large }}
           />
         </View>

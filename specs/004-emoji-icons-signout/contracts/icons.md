@@ -15,6 +15,8 @@ type EmojiGlyphProps = {
 - Не має пропа кольору.
 - Доступність: `accessible={false}` (декоративний). Назву несе батьківський рядок/кнопка, як і зараз.
 
+> **Оновлено в Phase 6 (T050–T055)**: ролі `button` і `feature` замінила шкала контейнерів `iconTiles` (`compact` 28, `menu` 42, `touch` 44, `large` 52, `empty` 80, `xlarge` 88) і правило `glyphSizeFor(container) = container × 0,5`; `AppImage` приймає `role` (без контейнера) або `container`; `IconView` рахує гліф з кола; `EmojiTile` завжди кругла; тон підкладки — `getIconTone(icon)`. Актуальний опис — `docs/patterns/icons.md`.
+
 ## `iconSizes` (`src/constants/icon-sizes.ts`)
 
 ```ts

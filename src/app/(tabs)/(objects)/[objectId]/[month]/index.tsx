@@ -54,14 +54,14 @@ const monthButtons: NavigationBarButtonItem[] = [
     id: 'bill',
     title: 'Розрахунок',
     icon: 'document',
-    iconBackground: 'blue',
+    iconBackground: 'blueSoft',
     testID: 'month.nav.bill',
   },
   {
     id: 'services',
     title: 'Послуги обʼєкта',
     icon: 'gauge',
-    iconBackground: 'inkTile',
+    iconBackground: 'surface2',
     testID: 'month.nav.services',
   },
 ];

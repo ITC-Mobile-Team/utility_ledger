@@ -8,11 +8,13 @@ type EmojiGlyphProps = {
 };
 
 // Поправки підбираються вимірюванням (specs/004-emoji-icons-signout, T031):
-// k — частка сторони, яку займає кегль, shift — вертикальний зсув у частках
-// сторони, що вирівнює оптичний центр emoji за метриками системного шрифту
+// k — частка сторони, яку займає кегль, shiftX і shiftY — зсув у частках
+// сторони, що вирівнює оптичний центр emoji за метриками системного шрифту.
+// iOS: Apple Color Emoji малюється на ~0,8 pt правіше й на ~0,5 pt нижче
+// центру кола 42 pt (гліф 21 pt)
 const metrics = Platform.select({
-  ios: { k: 0.8, shift: 0 },
-  default: { k: 0.78, shift: 0 },
+  ios: { k: 0.8, shiftX: -0.04, shiftY: -0.025 },
+  default: { k: 0.78, shiftX: 0, shiftY: 0 },
 });
 
 // Emoji фіксованого розміру по центру квадрата. Звичайний Text без шрифту
@@ -35,7 +37,10 @@ export function EmojiGlyph({ emoji, size, testID }: EmojiGlyphProps) {
             lineHeight: size,
             width: size,
             height: size,
-            transform: [{ translateY: size * metrics.shift }],
+            transform: [
+              { translateX: size * metrics.shiftX },
+              { translateY: size * metrics.shiftY },
+            ],
           },
         ]}
       >
