@@ -2,7 +2,7 @@ import { ActionSheetIOS, Alert, Platform } from 'react-native';
 
 type ConfirmDestructiveOptions = {
   title: string;
-  message: string;
+  message?: string;
   confirmText: string;
   onConfirm: () => void;
 };

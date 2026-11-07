@@ -1,0 +1,64 @@
+# «Вийти» і «Видалити акаунт» лише завершують сесію: відкривається екран входу, а після нового входу
+# обʼєкт, тема й стартова вкладка на місці, онбординг не повертається, підписів про стирання немає.
+# Потрібен вхід і хоча б одна адреса. Запуск з кореня проєкту:
+# .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/sign-out.flow
+launch
+tap label=Профіль
+wait id=profile.screen
+swipe id=profile.screen up distance=0.8
+sleep 0.6
+# Налаштування, які мають пережити вихід: темна тема
+tap id=profile.theme
+wait id=theme.screen
+tap id=theme.option.dark
+sleep 0.6
+tap id=navigationBar.back
+wait id=profile.screen
+swipe id=profile.screen up distance=0.8
+sleep 0.6
+see Вийти
+see Видалити акаунт
+nosee Дані на цьому пристрої буде стерто
+nosee Обʼєкти, показники та розрахунки буде стерто
+# Вихід: у підтвердженні немає тексту про стирання
+tap id=profile.signOut
+sleep 0.8
+see Вийти з акаунта?
+nosee стерто
+tap role=button&label=Вийти
+wait id=welcome.signIn
+# Новий вхід: онбордингу немає, тема темна, обʼєкт на місці
+tap id=welcome.signIn
+wait id=signIn.apple
+tap id=signIn.apple
+wait id=objects.screen
+check role=tab&label=Обʼєкти value=1
+wait id=objects.card.0
+tap label=Профіль
+wait id=profile.screen
+swipe id=profile.screen up distance=0.8
+sleep 0.6
+check id=profile.theme label~=Темна
+# «Видалити акаунт»: те саме, без видалення даних
+tap id=profile.delete
+sleep 0.8
+see Видалити акаунт?
+see Поки що це лише вихід з акаунта
+tap "role=button&label=Видалити акаунт"
+wait id=welcome.signIn
+tap id=welcome.signIn
+wait id=signIn.apple
+tap id=signIn.apple
+wait id=objects.screen
+wait id=objects.card.0
+# Повертаємо тему «Як у системі»
+tap label=Профіль
+wait id=profile.screen
+swipe id=profile.screen up distance=0.8
+sleep 0.6
+tap id=profile.theme
+wait id=theme.screen
+tap id=theme.option.system
+sleep 0.6
+tap id=navigationBar.back
+wait id=profile.screen

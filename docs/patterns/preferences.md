@@ -1,11 +1,11 @@
 # Налаштування пристрою
 
-Еталон — «Застосунок» у профілі (`src/app/(tabs)/profile/`): стартова вкладка і тема. Це налаштування пристрою, а не акаунта: вони живуть у `KeyValueStorage` і стираються разом з рештою даних при «Вийти» та «Видалити акаунт».
+Еталон — «Застосунок» у профілі (`src/app/(tabs)/profile/`): стартова вкладка і тема. Це налаштування пристрою, а не акаунта: вони живуть у `KeyValueStorage` і переживають «Вийти» та «Видалити акаунт».
 
 ## Де що лежить
 
 - `src/services/preferences` — типи (`ThemePreference`, `StartTab`), ключі (`themePreference`, `startTab`), `parse*` (невідоме чи пошкоджене значення → типове: «Як у системі» / «Обʼєкти»), підписи й відображення (`toColorScheme`, `toTabRouteName`).
-- `src/providers/preferences-provider.tsx` — `PreferencesProvider` і `usePreferences()`. Найзовнішній провайдер у `src/app/_layout.tsx`: читає обидва значення до першого рендеру, поки видно splash, тому застосунок не мигає іншою темою. Якщо при старті висить маркер `pendingWipe`, береться типове значення.
+- `src/providers/preferences-provider.tsx` — `PreferencesProvider` і `usePreferences()`. Найзовнішній провайдер у `src/app/_layout.tsx`: читає обидва значення до першого рендеру, поки видно splash, тому застосунок не мигає іншою темою.
 - Екрани й компоненти беруть налаштування лише через `usePreferences()`, до сховища напряму не звертаються.
 
 ## Тема
@@ -26,8 +26,7 @@
 
 1. Тип і значення за замовчуванням, ключ, `parse*` у `src/services/preferences`.
 2. Прочитати ключ у `PreferencesProvider` разом з іншими й додати сеттер.
-3. Додати `removeItem` ключа в `createLocalDataWiper` (`src/services/account/wipe-local-data.ts`) і скидання в `resetPreferences()`.
-4. Оновити цей файл і `account-actions.md`.
+3. Оновити цей файл (вихід налаштування не скидає, окремо нічого додавати не треба).
 
 ## Перший кадр
 

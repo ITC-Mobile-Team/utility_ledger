@@ -6,14 +6,13 @@ import {
   VStack,
 } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
-import { useOnboarding } from '@/providers/onboarding-provider';
+import { useAuth } from '@/providers/auth-provider';
 import {
   useOutageNotificationToggle,
   useOutageSettings,
 } from '@/providers/outage-provider';
 import { usePreferences } from '@/providers/preferences-provider';
 import { useProfile } from '@/providers/profile-provider';
-import { wipeLocalData } from '@/services/account';
 import {
   getOutageSetupMessage,
   getOutageSetupStatus,
@@ -23,7 +22,6 @@ import {
   formatProfileEmail,
   getDisplayName,
   getInitial,
-  getProviderName,
 } from '@/services/profile';
 import { ListCard, ListRow, SectionHeader } from '@/views';
 import {
@@ -41,14 +39,14 @@ import { StyleSheet, Switch } from 'react-native';
 
 export default function ProfileScreen() {
   const profile = useProfile();
-  const { resetOnboarding } = useOnboarding();
-  const { theme, startTab, setStartTab, resetPreferences } = usePreferences();
+  const { signOut } = useAuth();
+  const { theme, startTab, setStartTab } = usePreferences();
   const notifications = useOutageNotificationToggle();
   const setupStatus = getOutageSetupStatus(useOutageSettings());
   const switchOn = useThemeColor('green');
-  // Підтвердження приходить із системного діалогу, тож повторний запуск
-  // стирання блокуємо самі
-  const isWiping = useRef(false);
+  // Підтвердження приходить із системного діалогу, тож повторний вихід
+  // блокуємо самі
+  const isSigningOut = useRef(false);
 
   const name = getDisplayName(profile);
   const method = profile?.method ?? null;
@@ -60,38 +58,32 @@ export default function ProfileScreen() {
   // налаштування вже відкриті там
   const openOutageSettings = () => router.navigate('/outage-settings');
 
-  const wipe = async () => {
-    if (isWiping.current) return;
-    isWiping.current = true;
+  // Вихід лише знімає сесію: `Stack.Protected` сам відкриває `(auth)`, а дані
+  // й налаштування лишаються на пристрої, доки їх не замінить Firebase
+  const leave = async () => {
+    if (isSigningOut.current) return;
+    isSigningOut.current = true;
     try {
-      await wipeLocalData();
-      await resetOnboarding();
-      resetPreferences();
+      await signOut();
     } finally {
-      isWiping.current = false;
+      isSigningOut.current = false;
     }
   };
 
   const confirmSignOut = () =>
     confirmDestructive({
       title: 'Вийти з акаунта?',
-      message:
-        'Обʼєкти, показники й налаштування на цьому пристрої буде стерто. Наступний вхід почнеться з нуля.',
       confirmText: 'Вийти',
-      onConfirm: wipe,
+      onConfirm: leave,
     });
 
   const confirmDelete = () =>
     confirmDestructive({
       title: 'Видалити акаунт?',
-      message: [
-        'Усі обʼєкти, послуги, показники й розрахунки буде видалено назавжди. Відновити їх не вийде.',
-        method && `Вхід через ${getProviderName(method)} буде відʼєднано.`,
-      ]
-        .filter(Boolean)
-        .join(' '),
+      message:
+        'Поки що це лише вихід з акаунта. Видалення даних зʼявиться згодом.',
       confirmText: 'Видалити акаунт',
-      onConfirm: wipe,
+      onConfirm: leave,
     });
 
   return (
@@ -215,9 +207,6 @@ export default function ProfileScreen() {
             onPress={confirmSignOut}
           >
             <ThemedText font='rowTitle'>Вийти</ThemedText>
-            <ThemedText font='caption' color='muted'>
-              Дані на цьому пристрої буде стерто
-            </ThemedText>
           </ListRow>
         </ListCard>
 
@@ -230,9 +219,6 @@ export default function ProfileScreen() {
           >
             <ThemedText font='rowTitle' color='coral'>
               Видалити акаунт
-            </ThemedText>
-            <ThemedText font='caption' color='muted'>
-              Обʼєкти, показники та розрахунки буде стерто
             </ThemedText>
           </ListRow>
         </ListCard>

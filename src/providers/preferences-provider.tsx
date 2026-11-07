@@ -1,4 +1,3 @@
-import { PENDING_WIPE_KEY } from '@/services/account';
 import {
   DEFAULT_START_TAB,
   DEFAULT_THEME,
@@ -30,8 +29,6 @@ type PreferencesContextValue = Preferences & {
   // Лише стан і сховище: поточна вкладка не змінюється, а вибір діє з
   // наступного холодного запуску
   setStartTab: (next: StartTab) => Promise<void>;
-  // Після wipeLocalData() сховище вже стерте, тож лише повертаємо типові
-  resetPreferences: () => void;
 };
 
 const defaults: Preferences = {
@@ -59,20 +56,11 @@ export function PreferencesProvider({
 
   useEffect(() => {
     let active = true;
-    Promise.all([
-      storage.getItem(THEME_KEY),
-      storage.getItem(START_TAB_KEY),
-      storage.getItem(PENDING_WIPE_KEY),
-    ])
-      .then(([theme, startTab, pendingWipe]): Preferences => {
-        // Перерване стирання доведе до кінця finishPendingWipe, а до того
-        // темна тема чи інша вкладка не мають пережити вихід
-        if (pendingWipe === 'true') return defaults;
-        return {
-          theme: parseThemePreference(theme),
-          startTab: parseStartTab(startTab),
-        };
-      })
+    Promise.all([storage.getItem(THEME_KEY), storage.getItem(START_TAB_KEY)])
+      .then(([theme, startTab]): Preferences => ({
+        theme: parseThemePreference(theme),
+        startTab: parseStartTab(startTab),
+      }))
       .catch(() => defaults)
       .then((next) => {
         Appearance.setColorScheme(toColorScheme(next.theme));
@@ -108,18 +96,11 @@ export function PreferencesProvider({
     [storage],
   );
 
-  const resetPreferences = useCallback(() => {
-    Appearance.setColorScheme(toColorScheme(defaults.theme));
-    setPreferences(defaults);
-  }, []);
-
   // Поки значення не прочитані, нічого не рендеримо
   if (!preferences) return null;
 
   return (
-    <PreferencesContext
-      value={{ ...preferences, setTheme, setStartTab, resetPreferences }}
-    >
+    <PreferencesContext value={{ ...preferences, setTheme, setStartTab }}>
       {children}
     </PreferencesContext>
   );

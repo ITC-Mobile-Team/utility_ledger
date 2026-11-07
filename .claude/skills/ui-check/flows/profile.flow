@@ -76,3 +76,10 @@ tap label=Профіль
 wait id=profile.screen
 gone id=profile.outageSetup
 nosee "Постачальник для вашого міста ще не доданий"
+# Рядки «Вийти» і «Видалити акаунт» без підписів про стирання
+swipe id=profile.screen up distance=0.8
+sleep 0.6
+see Вийти
+see Видалити акаунт
+nosee Дані на цьому пристрої буде стерто
+nosee Обʼєкти, показники та розрахунки буде стерто

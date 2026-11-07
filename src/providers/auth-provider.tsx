@@ -4,7 +4,6 @@ import {
   type AuthService,
   authService,
 } from '@/services/auth';
-import { finishPendingWipe } from '@/services/account';
 import {
   createContext,
   use,
@@ -29,19 +28,7 @@ export function AuthProvider({ service = authService, children }: Props) {
   const [user, setUser] = useState<AuthUser | null | undefined>(undefined);
 
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-    let isActive = true;
-    // Якщо минулого разу вихід чи видалення акаунта перервали, спершу
-    // доводимо стирання до кінця, а вже потім показуємо стан сесії
-    finishPendingWipe()
-      .catch(() => {})
-      .finally(() => {
-        if (isActive) unsubscribe = service.onAuthStateChanged(setUser);
-      });
-    return () => {
-      isActive = false;
-      unsubscribe?.();
-    };
+    return service.onAuthStateChanged(setUser);
   }, [service]);
 
   if (user === undefined) return null;

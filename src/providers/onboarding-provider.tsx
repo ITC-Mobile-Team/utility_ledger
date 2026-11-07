@@ -12,8 +12,6 @@ import { storage as defaultStorage, type KeyValueStorage } from '@/storage';
 type OnboardingContextValue = {
   hasSeenOnboarding: boolean;
   completeOnboarding: () => Promise<void>;
-  // Після виходу чи видалення акаунта наступний вхід починається з онбордингу
-  resetOnboarding: () => Promise<void>;
 };
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null);
@@ -40,18 +38,11 @@ export function OnboardingProvider({
     setHasSeenOnboarding(true);
   }, [storage]);
 
-  const resetOnboarding = useCallback(async () => {
-    await storage.removeItem(KEY);
-    setHasSeenOnboarding(false);
-  }, [storage]);
-
   // Поки значення не прочитане, нічого не рендеримо, щоб не мигав неправильний екран
   if (hasSeenOnboarding === null) return null;
 
   return (
-    <OnboardingContext
-      value={{ hasSeenOnboarding, completeOnboarding, resetOnboarding }}
-    >
+    <OnboardingContext value={{ hasSeenOnboarding, completeOnboarding }}>
       {children}
     </OnboardingContext>
   );
