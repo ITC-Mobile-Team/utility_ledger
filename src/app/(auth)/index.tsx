@@ -6,7 +6,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { type AppIcon, appIcons } from '@/constants/app-icons';
-import { iconTiles } from '@/constants/icon-sizes';
+import { glyphSizeFor, iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
@@ -64,7 +64,6 @@ const ContentCircle = () => {
   const firstCircleWidth = screenWidth - 182;
   const secondCircleWidth = firstCircleWidth - 60;
   const thirdCircleWidth = secondCircleWidth - 56;
-  const iconWidth = thirdCircleWidth - 56;
   const orbitRadius = firstCircleWidth / 2;
   return (
     <View style={{ width: firstCircleWidth, height: firstCircleWidth }}>
@@ -83,7 +82,10 @@ const ContentCircle = () => {
             size={{ width: thirdCircleWidth }}
             style={[styles.circleContainer, styles.circle]}
           >
-            <EmojiGlyph emoji={appIcons.house} size={iconWidth * 0.7} />
+            <EmojiGlyph
+              emoji={appIcons.house}
+              size={glyphSizeFor(thirdCircleWidth)}
+            />
           </ThemedView>
         </ThemedView>
       </ThemedView>

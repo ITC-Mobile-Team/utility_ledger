@@ -23,12 +23,20 @@ const metrics = Platform.select({
 export function EmojiGlyph({ emoji, size, testID }: EmojiGlyphProps) {
   return (
     <View
+      // Іконка декоративна: її текст не входить у назву батьківського рядка
+      // чи кнопки. iOS збирає назву батька з accessibilityLabel дочірніх
+      // елементів, а порожній рядок там вважається відсутнім, тому в тексту
+      // гліфа назва — пробіл, який читач екрана не озвучує
       accessible={false}
+      accessibilityElementsHidden
       importantForAccessibility='no-hide-descendants'
       testID={testID}
       style={[styles.box, { width: size, height: size }]}
     >
       <Text
+        accessibilityLabel=' '
+        accessibilityElementsHidden
+        importantForAccessibility='no'
         allowFontScaling={false}
         style={[
           styles.glyph,
