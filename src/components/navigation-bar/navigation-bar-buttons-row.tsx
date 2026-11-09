@@ -1,10 +1,18 @@
 import { ScrollView, View } from 'react-native';
+import { ScrollViewMarker } from 'react-native-screens/experimental';
 import { HStack } from '../stack';
 import { HORIZONTAL_PADDING } from './constants';
 import {
   NavigationBarButton,
   type NavigationBarButtonItem,
 } from './navigation-bar-button';
+
+const HIDDEN_EDGE_EFFECTS = {
+  top: 'hidden',
+  bottom: 'hidden',
+  left: 'hidden',
+  right: 'hidden',
+} as const;
 
 type NavigationBarButtonsRowProps = {
   buttons: NavigationBarButtonItem[];
@@ -19,22 +27,30 @@ export const NavigationBarButtonsRow = ({
 }: NavigationBarButtonsRowProps) => {
   return (
     <View onLayout={(e) => onHeightChange(e.nativeEvent.layout.height)}>
-      {/* Кнопки завжди в один ряд і гортаються горизонтально */}
-      <ScrollView
-        horizontal
-        contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
-        showsHorizontalScrollIndicator={false}
-      >
-        <HStack spacing={12} style={{ flex: 1 }}>
-          {buttons.map((button) => (
-            <NavigationBarButton
-              key={button.id}
-              {...button}
-              onPress={() => onButtonPress(button.id)}
-            />
-          ))}
-        </HStack>
-      </ScrollView>
+      {/* iOS 26+ чіпляє на цей скрол верхній ефект краю (після екрана з
+          клавіатурою — світла смуга над кнопками); маркер його вимикає */}
+      <ScrollViewMarker scrollEdgeEffects={HIDDEN_EDGE_EFFECTS}>
+        {/* Кнопки завжди в один ряд і гортаються горизонтально */}
+        <ScrollView
+          horizontal
+          // Ряд лежить у навбарі, а не під системними барами: автоматичні інсети
+          // iOS тут зайві
+          contentInsetAdjustmentBehavior='never'
+          automaticallyAdjustContentInsets={false}
+          contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
+          showsHorizontalScrollIndicator={false}
+        >
+          <HStack spacing={12} style={{ flex: 1 }}>
+            {buttons.map((button) => (
+              <NavigationBarButton
+                key={button.id}
+                {...button}
+                onPress={() => onButtonPress(button.id)}
+              />
+            ))}
+          </HStack>
+        </ScrollView>
+      </ScrollViewMarker>
     </View>
   );
 };
