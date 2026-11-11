@@ -28,11 +28,11 @@ setUser(uid: string | null): Promise<void>;
 
 ## `ProfileRepository` (`src/services/profile/types.ts`)
 
-`syncFromAuth`, `setName` — ті самі правила (FR-012); документ `users/{uid}`. Перенесення імені з часів імітації читає старий ключ `userProfile` (research R7).
+`syncFromAuth`, `setName` — ті самі правила (FR-012); документ `users/{uid}`. `ProfileProvider` викликає `syncFromAuth` лише коли `useAccountDataStatus().status === 'ready'`: до серверного читання порожній кеш нового пристрою виглядає як «профілю немає», і новий профіль затер би хмарний (змінене імʼя). Перенесення імені з часів імітації читає старий ключ `userProfile` (research R7).
 
 ## Новий: стан даних акаунта
 
-`src/services/account-data/` + `src/providers/account-data-provider.tsx` (усередині `AuthProvider`, обгортає `LedgerProvider`/`OutageProvider`/`ProfileProvider`).
+`src/services/account-data/` (на web — `index.web.ts` без Firestore: статус `ready`, `deleteAccountData` нічого не робить) + `src/providers/account-data-provider.tsx` (усередині `AuthProvider`, обгортає `LedgerProvider`/`OutageProvider`/`ProfileProvider`).
 
 ```ts
 type AccountDataStatus = 'loading' | 'offline' | 'ready';
@@ -58,7 +58,7 @@ function deleteAccountData(uid: string): Promise<void>;
 
 ```ts
 // deleteData викликається після повторного підтвердження Apple (якщо
-// потрібне) і до видалення акаунта; якщо він відхилився — акаунт не
+// потрібне), до відкликання доступу Apple (iOS) і до видалення акаунта; якщо він відхилився — акаунт не
 // видаляється, відхиляється AuthError('failed')
 deleteAccount(deleteData: () => Promise<void>): Promise<void>;
 ```
