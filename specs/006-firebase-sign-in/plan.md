@@ -64,6 +64,7 @@ specs/006-firebase-sign-in/
 GoogleService-Info.plist              # новий, з ~/Downloads (iOS-конфіг Firebase)
 google-services.json                  # новий, з ~/Downloads/google-services (1).json (Android-конфіг з OAuth-клієнтом типу 1, SHA-1 debug-ключа)
 app.json                              # googleServicesFile, usesAppleSignIn, плагіни
+plugins/with-google-signin-spm-link.js # config plugin: лінкує спільні SPM-продукти GoogleSignIn/Firebase у застосунок (research R2)
 src/services/auth/
 ├── types.ts                          # + deleteAccount(), AuthError (cancelled | failed)
 ├── index.ts                          # authService = createFirebaseAuthService(storage)

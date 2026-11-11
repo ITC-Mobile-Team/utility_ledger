@@ -1,5 +1,5 @@
 import { storage } from '@/storage';
-import { createLocalAuthService } from './local-auth-service';
+import { createFirebaseAuthService } from './firebase-auth-service';
 export * from './types';
 
-export const authService = createLocalAuthService(storage);
+export const authService = createFirebaseAuthService(storage);

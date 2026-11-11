@@ -13,6 +13,7 @@
 - **Decision**: `expo-build-properties` з `ios.useFrameworks: "dynamic"`; у плагіні Google Sign-In `iosDependencyManager: "spm"`.
 - **Rationale**: RNFirebase 27 (Firebase iOS 13+) лише SPM; плагін `@react-native-firebase/app` кидає помилку на `ios.disableSPM` і прямо вимагає `useFrameworks: "dynamic"`. Firebase і Google Sign-In мають використовувати один менеджер залежностей, а плагін Google Sign-In за замовчуванням ставить CocoaPods.
 - **Risk**: динамічні фреймворки можуть зламати збірку інших нативних модулів (Reanimated/Worklets, keyboard-controller, screens). Перевіряється першою збіркою; при збої — шукати фікс конкретного модуля, а не вертатися на RNFirebase 26.
+- **Outcome (реалізація)**: precompiled modules Expo SDK 58 все одно збирають 90 pod-ів статично (зокрема `RNGoogleSignin`, `RNFBAuth`); через це спільні SPM-продукти GoogleSignIn і Firebase (`GTMSessionFetcherCore`, `GULUserDefaults`) не лінкувались у застосунок. Вимкнення precompiled modules (`ios.usePrecompiledModules: false`) неможливе — Swift 6.4.2 падає на `ExpoModulesCore`. Рішення — config plugin `plugins/with-google-signin-spm-link.js`, що в `post_install` додає ці продукти до таргета застосунку. При оновленні GoogleSignIn чи Firebase перевіряти, чи не зʼявились нові неслінковані продукти (симптом — `Undefined symbol` з `libRNGoogleSignin.a`).
 
 ## R3. Apple на iOS
 

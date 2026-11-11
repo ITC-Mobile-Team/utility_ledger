@@ -9,7 +9,7 @@ import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { AppHeader, InfoBanner, LegalNotice } from '@/views';
 import { useAuth } from '@/providers/auth-provider';
-import type { SignInMethod } from '@/services/auth';
+import { AuthError, type SignInMethod } from '@/services/auth';
 import { useState } from 'react';
 
 export default function SignIn() {
@@ -21,7 +21,9 @@ export default function SignIn() {
     setPendingMethod(method);
     try {
       await signIn(method);
-    } catch {
+    } catch (error) {
+      // Закрите вікно провайдера — не помилка: лишаємось на екрані
+      if (error instanceof AuthError && error.kind === 'cancelled') return;
       router.push({ pathname: '/auth-error', params: { method } });
     } finally {
       setPendingMethod(null);

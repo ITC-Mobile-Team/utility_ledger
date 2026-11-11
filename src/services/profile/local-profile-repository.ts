@@ -7,6 +7,9 @@ import {
 
 export const PROFILE_KEY = 'userProfile';
 
+// Ідентифікатори користувачів імітованого входу до Firebase
+const MOCK_USER_PREFIX = 'preview-id-';
+
 export function createLocalProfileRepository(
   storage: KeyValueStorage,
 ): ProfileRepository {
@@ -47,16 +50,24 @@ export function createLocalProfileRepository(
     async syncFromAuth(user) {
       const method = user.method ?? null;
       if (!profile || profile.userId !== user.id) {
+        // Імʼя, змінене за часів імітації входу, переходить у справжній акаунт
+        const keepsMockName =
+          profile?.userId.startsWith(MOCK_USER_PREFIX) &&
+          profile.nameSource === 'user';
         await write({
           userId: user.id,
-          name: user.name,
-          nameSource: 'provider',
+          name: keepsMockName ? profile!.name : user.name,
+          nameSource: keepsMockName ? 'user' : 'provider',
           email: user.email,
           method,
         });
         return;
       }
-      const name = profile.nameSource === 'provider' ? user.name : profile.name;
+      // Провайдер може не повернути імʼя (повторний вхід Apple): лишаємо наявне
+      const name =
+        profile.nameSource === 'provider'
+          ? (user.name ?? profile.name)
+          : profile.name;
       if (
         profile.email === user.email &&
         profile.method === method &&

@@ -17,6 +17,7 @@ type AuthContextValue = {
   isSignedIn: boolean;
   signIn: (method: SignInMethod) => Promise<AuthUser>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -40,6 +41,7 @@ export function AuthProvider({ service = authService, children }: Props) {
         isSignedIn: user !== null,
         signIn: (method) => service.signIn(method),
         signOut: () => service.signOut(),
+        deleteAccount: () => service.deleteAccount(),
       }}
     >
       {children}

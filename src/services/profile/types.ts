@@ -17,7 +17,9 @@ export interface ProfileRepository {
   load(): Promise<void>;
   getSnapshot(): UserProfile | null;
   subscribe(listener: () => void): () => void;
-  // Створити або оновити профіль з даних входу; імʼя від користувача не чіпає
+  // Створити або оновити профіль з даних входу; імʼя від користувача не чіпає,
+  // порожнє імʼя від провайдера не затирає наявне, змінене за часів імітації
+  // імʼя переходить у профіль справжнього акаунта
   syncFromAuth(user: AuthUser): Promise<void>;
   // trim, 1–NAME_MAX_LENGTH символів; при помилці знімок не змінюється
   setName(name: string): Promise<void>;

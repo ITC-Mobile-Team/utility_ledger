@@ -7,6 +7,7 @@ import {
 } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import { useAuth } from '@/providers/auth-provider';
+import { AuthError } from '@/services/auth';
 import {
   useOutageNotificationToggle,
   useOutageSettings,
@@ -35,17 +36,17 @@ import {
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useRef } from 'react';
-import { StyleSheet, Switch } from 'react-native';
+import { Alert, StyleSheet, Switch } from 'react-native';
 
 export default function ProfileScreen() {
   const profile = useProfile();
-  const { signOut } = useAuth();
+  const { signOut, deleteAccount } = useAuth();
   const { theme, startTab, setStartTab } = usePreferences();
   const notifications = useOutageNotificationToggle();
   const setupStatus = getOutageSetupStatus(useOutageSettings());
   const switchOn = useThemeColor('green');
-  // Підтвердження приходить із системного діалогу, тож повторний вихід
-  // блокуємо самі
+  // Підтвердження приходить із системного діалогу, тож повторний вихід чи
+  // видалення блокуємо самі
   const isSigningOut = useRef(false);
 
   const name = getDisplayName(profile);
@@ -58,8 +59,8 @@ export default function ProfileScreen() {
   // налаштування вже відкриті там
   const openOutageSettings = () => router.navigate('/outage-settings');
 
-  // Вихід лише знімає сесію: `Stack.Protected` сам відкриває `(auth)`, а дані
-  // й налаштування лишаються на пристрої, доки їх не замінить Firebase
+  // Вихід завершує сесію Firebase і Google: `Stack.Protected` сам відкриває
+  // `(auth)`, а дані й налаштування лишаються на пристрої
   const leave = async () => {
     if (isSigningOut.current) return;
     isSigningOut.current = true;
@@ -77,13 +78,36 @@ export default function ProfileScreen() {
       onConfirm: leave,
     });
 
+  // Видалення назавжди прибирає акаунт (за потреби спершу просить підтвердити
+  // вхід); дані на пристрої лишаються, доки вони не зберігаються в хмарі.
+  // Закрите вікно провайдера нічого не показує, невдача — системний Alert
+  const removeAccount = async () => {
+    if (isSigningOut.current) return;
+    isSigningOut.current = true;
+    try {
+      await deleteAccount();
+    } catch (error) {
+      if (error instanceof AuthError && error.kind === 'cancelled') return;
+      Alert.alert(
+        'Не вдалося видалити акаунт',
+        'Перевірте інтернет і спробуйте ще раз.',
+        [
+          { text: 'Скасувати', style: 'cancel' },
+          { text: 'Спробувати ще', onPress: removeAccount },
+        ],
+      );
+    } finally {
+      isSigningOut.current = false;
+    }
+  };
+
   const confirmDelete = () =>
     confirmDestructive({
       title: 'Видалити акаунт?',
       message:
-        'Поки що це лише вихід з акаунта. Видалення даних зʼявиться згодом.',
+        'Акаунт і всі ваші дані буде видалено назавжди. Цю дію не можна скасувати.',
       confirmText: 'Видалити акаунт',
-      onConfirm: leave,
+      onConfirm: removeAccount,
     });
 
   return (

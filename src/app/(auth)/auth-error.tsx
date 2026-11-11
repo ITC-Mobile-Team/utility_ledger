@@ -32,7 +32,8 @@ export default function AuthError() {
     try {
       await signIn(method);
     } catch {
-      // Лишаємося на цьому екрані, щоб користувач спробував ще раз
+      // І закрите вікно провайдера (AuthError 'cancelled'), і справжня невдача
+      // лишають користувача тут з доступною кнопкою повторної спроби
     } finally {
       setIsRetrying(false);
     }
