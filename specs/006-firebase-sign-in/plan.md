@@ -41,7 +41,7 @@
 | V. Українська | ✅ | Артефакти й тексти українською; повідомлення про невдачу видалення — українською. |
 | VI. Lint і typecheck | ✅ | Остання задача `tasks.md`. |
 
-**Gate**: пройдено. Одне відхилення від spec (R5, Android) винесено в Complexity Tracking.
+**Gate**: пройдено. Обмеження відкликання Apple на Android погоджене й відображене у FR-018 (Complexity Tracking).
 
 ## Project Structure
 
@@ -97,4 +97,4 @@ docs/patterns/account-actions.md      # справжній вхід/вихід/�
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| FR-018 на Android виконується частково: свіже підтвердження Apple є, відкликання доступу до Apple ID — ні | RNFirebase 27 не прокидає відкликання на Android (`revokeToken` — no-op, `revokeAccessToken` лише Web) | Повне виконання потребує Cloud Function з Apple REST `/auth/revoke` (план Blaze, приватний ключ Apple на сервері) — окрема серверна частина поза обсягом. Варіанти для рішення користувача: (a) прийняти обмеження й уточнити FR-018 «на iOS»; (b) додати Cloud Function у цю фічу. |
+| Відкликання доступу до Apple ID при видаленні лише на iOS (FR-018 уточнено 2026-11-11 за рішенням користувача) | RNFirebase 27 не прокидає відкликання на Android (`revokeToken` — no-op, `revokeAccessToken` лише Web) | Cloud Function з Apple REST `/auth/revoke` (план Blaze, приватний ключ Apple на сервері) — окрема серверна частина; користувач обрав не додавати її в цю фічу. На Android свіже підтвердження Apple перед видаленням лишається. |

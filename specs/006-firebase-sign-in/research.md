@@ -32,7 +32,7 @@
 
 - **Decision**: iOS — `revokeToken(auth, authorizationCode)` зі свіжого входу Apple перед `deleteUser`. Android — відкликання клієнтом неможливе.
 - **Finding**: у RNFirebase 27 `revokeToken` «Supported on iOS… On Android and Web the bridge resolves without performing revocation (no-op)», а `revokeAccessToken` кидає «only supported on Web». Нативний Android SDK має `revokeAccessToken(accessToken)`, але RNFirebase його не прокидає.
-- **Consequence**: FR-018 виконується повністю на iOS (саме там App Store перевіряє вимогу Apple). На Android свіже підтвердження Apple перед видаленням усе одно запитується, але доступ до Apple ID не відкликається. Повне виконання на Android потребує серверної функції з Apple REST `/auth/revoke` (Cloud Functions, план Blaze) — **відхилення від spec, потребує рішення користувача** (див. plan.md → Complexity Tracking).
+- **Consequence**: FR-018 виконується повністю на iOS (саме там App Store перевіряє вимогу Apple). На Android свіже підтвердження Apple перед видаленням усе одно запитується, але доступ до Apple ID не відкликається. Повне виконання на Android потребує серверної функції з Apple REST `/auth/revoke` (Cloud Functions, план Blaze) — користувач вирішив (2026-11-11) прийняти обмеження: FR-018 уточнено «відкликання лише на iOS», Cloud Function поза обсягом.
 
 ## R6. Google
 
