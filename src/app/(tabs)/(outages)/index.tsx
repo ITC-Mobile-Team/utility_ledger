@@ -102,6 +102,7 @@ export default function Outages() {
           actionTitle='Змінити місто'
           actionType='secondary'
           onAction={openSettings}
+          pulse
         />
       </NavigationView>
     );
@@ -125,6 +126,7 @@ export default function Outages() {
           onAction={openSettings}
           linkTitle='Як дізнатися свою чергу?'
           onLink={openSettings}
+          pulse
         />
       </NavigationView>
     );

@@ -2,12 +2,16 @@ import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
+  PulseCore,
+  PulseRings,
   ThemedText,
   ThemedView,
   VStack,
 } from '@/components';
 import type { AppIcon } from '@/constants/app-icons';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+const ART_SIZE = 168;
 
 type EmptyStateViewProps = {
   icon: AppIcon;
@@ -29,16 +33,22 @@ export function EmptyStateView({
 }: EmptyStateViewProps) {
   return (
     <VStack spacing={24} align='center' style={styles.container}>
-      <ThemedView backgroundColor='blueSoft' style={styles.outerCircle}>
-        <ThemedView backgroundColor='blueSoft2' style={styles.innerCircle}>
-          <ThemedView backgroundColor='surface' style={styles.tile}>
-            <AppImage icon={icon} container={iconTiles.empty} />
+      {/* Кільця пульсації під колами ілюстрації (docs/patterns/empty-state-pulse.md) */}
+      <View style={styles.art}>
+        <PulseRings color='blueSoft2' size={ART_SIZE} />
+        <ThemedView backgroundColor='blueSoft' style={styles.outerCircle}>
+          <ThemedView backgroundColor='blueSoft2' style={styles.innerCircle}>
+            <PulseCore>
+              <ThemedView backgroundColor='surface' style={styles.tile}>
+                <AppImage icon={icon} container={iconTiles.empty} />
+              </ThemedView>
+            </PulseCore>
           </ThemedView>
         </ThemedView>
         <ThemedView backgroundColor='plusSoft' style={styles.badge}>
           <AppImage icon='plus' container={iconTiles.menu} />
         </ThemedView>
-      </ThemedView>
+      </View>
 
       <VStack spacing={10} align='center'>
         <ThemedText font='emptyStateTitle' align='center'>
@@ -67,10 +77,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 32,
   },
+  art: {
+    width: ART_SIZE,
+    height: ART_SIZE,
+  },
   outerCircle: {
-    width: 168,
-    height: 168,
-    borderRadius: 84,
+    ...StyleSheet.absoluteFill,
+    borderRadius: ART_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -8,7 +8,7 @@
     "scheme": "utilityledger",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/app.icon",
       "bundleIdentifier": "com.bogdanpoh.utility-ledger",
       "appleTeamId": "3S8AVD2TKW",
       "usesAppleSignIn": true,
@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#14213A",
         "foregroundImage": "./assets/images/app/android-icon-foreground.png",
         "backgroundImage": "./assets/images/app/android-icon-background.png",
         "monochromeImage": "./assets/images/app/android-icon-monochrome.png"
@@ -34,9 +34,14 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#14213A",
           "image": "./assets/images/app/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 288,
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#14213A",
+            "image": "./assets/images/app/splash-icon.png"
+          }
         }
       ],
       [

@@ -43,12 +43,13 @@ export function usePulseActive(): boolean;
 export function AppSplash(): ReactNode;
 
 // Чи можна згасати: мінімум 1000 мс від показу і (не увійшов ||
-// status !== 'loading' || минуло 3000 мс)
-export function useSplashGate(shownAt: number): boolean;
+// status !== 'loading' || минуло 3000 мс). shownAt — момент, коли накладку
+// показано й системний splash сховано; null — ще не показано (не згасати)
+export function useSplashGate(shownAt: number | null): boolean;
 ```
 
 Гарантії:
-- На `onLayout` першого кадру викликає `SplashScreen.hide()`; `PreferencesProvider` більше не ховає системний splash (лишається лише глобальний `preventAutoHideAsync()`).
+- Викликає `SplashScreen.hide()`, коли накладка розмічена (`onLayout`) **і** знак показано (`expo-image` `onDisplay`, запасний таймер 500 мс) — інакше на мить видно фон без знака; `PreferencesProvider` більше не ховає системний splash (лишається лише глобальний `preventAutoHideAsync()`).
 - Перший кадр: фон `#14213A`, знак 132×132 по центру екрана — піксель у піксель із системним splash.
 - Після згасання (300 мс) рендерить `null` і ставить модульний `splashFinished = true`; наступні монтування в тому ж процесі одразу `null`.
 - Поки видимий — `StatusBar style="light"`, накладка перехоплює дотики; під час згасання `pointerEvents="none"`.

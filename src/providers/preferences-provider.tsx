@@ -38,9 +38,10 @@ const defaults: Preferences = {
 
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
 
-// Splash тримається, поки налаштування не прочитані: без цього між splash і
-// першим кадром застосунку видно порожнє вікно в системній (світлій) темі,
-// навіть якщо вибрана темна
+// Системний splash тримається, поки налаштування не прочитані й поки не
+// зʼявиться перший кадр анімованого splash (AppSplash його й ховає,
+// docs/patterns/splash.md): без цього між splash і першим кадром застосунку
+// видно порожнє вікно в системній (світлій) темі, навіть якщо вибрана темна
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 type Props = PropsWithChildren<{ storage?: KeyValueStorage }>;
@@ -70,13 +71,6 @@ export function PreferencesProvider({
       active = false;
     };
   }, [storage]);
-
-  // Ефекти дітей (зокрема фон вікна в AppProviders) спрацьовують раніше за
-  // батьківські, тож до цього моменту перший кадр уже має вибрану тему
-  const isLoaded = preferences !== null;
-  useEffect(() => {
-    if (isLoaded) SplashScreen.hideAsync().catch(() => {});
-  }, [isLoaded]);
 
   const setTheme = useCallback(
     async (next: ThemePreference) => {

@@ -2,13 +2,17 @@ import { iconTiles } from '@/constants/icon-sizes';
 import {
   ActionButton,
   AppImage,
+  PulseCore,
+  PulseRings,
   TextButton,
   ThemedText,
   ThemedView,
   VStack,
 } from '@/components';
 import type { AppIcon } from '@/constants/app-icons';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+const ART_SIZE = 176;
 
 type OutageMessageProps = {
   icon: AppIcon;
@@ -22,6 +26,9 @@ type OutageMessageProps = {
   onAction?: () => void;
   linkTitle?: string;
   onLink?: () => void;
+  // Пульсація ілюстрації — лише для порожніх станів з канвасу (20, 20c), не
+  // для помилок (docs/patterns/empty-state-pulse.md)
+  pulse?: boolean;
 };
 
 // Повноекранний стан вкладки «Світло»: черги не обрано, місто без
@@ -37,16 +44,33 @@ export function OutageMessage({
   onAction,
   linkTitle,
   onLink,
+  pulse = false,
 }: OutageMessageProps) {
   const isPower = tone === 'power';
   return (
     <VStack spacing={24} align='center' style={styles.container}>
-      <ThemedView
-        backgroundColor={isPower ? 'powerOnSoft' : 'surface2'}
-        style={styles.outer}
-      >
-        <ThemedView backgroundColor='surface' style={styles.tile}>
-          <AppImage icon={icon} container={iconTiles.xlarge} />
+      <View style={styles.art}>
+        {pulse && (
+          <PulseRings
+            color={isPower ? 'powerOnSoft' : 'line'}
+            size={ART_SIZE}
+          />
+        )}
+        <ThemedView
+          backgroundColor={isPower ? 'powerOnSoft' : 'surface2'}
+          style={styles.outer}
+        >
+          {pulse ? (
+            <PulseCore>
+              <ThemedView backgroundColor='surface' style={styles.tile}>
+                <AppImage icon={icon} container={iconTiles.xlarge} />
+              </ThemedView>
+            </PulseCore>
+          ) : (
+            <ThemedView backgroundColor='surface' style={styles.tile}>
+              <AppImage icon={icon} container={iconTiles.xlarge} />
+            </ThemedView>
+          )}
         </ThemedView>
         {badge && (
           <ThemedView backgroundColor='powerOff' style={styles.badge}>
@@ -55,7 +79,7 @@ export function OutageMessage({
             </ThemedText>
           </ThemedView>
         )}
-      </ThemedView>
+      </View>
 
       <VStack spacing={10} align='center'>
         <ThemedText font='emptyStateTitle' align='center'>
@@ -85,10 +109,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 32,
   },
+  art: {
+    width: ART_SIZE,
+    height: ART_SIZE,
+  },
   outer: {
-    width: 176,
-    height: 176,
-    borderRadius: 88,
+    ...StyleSheet.absoluteFill,
+    borderRadius: ART_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

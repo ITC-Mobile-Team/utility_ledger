@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs><linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1024" y2="1024"><stop offset="0" stop-color="#2B3A52"/><stop offset="1" stop-color="#0B1424"/></linearGradient>
+<radialGradient id="sheen" cx="0.28" cy="0.22" r="0.75"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.10"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="shadow" x1="0.25" y1="0.25" x2="1" y2="1"><stop offset="0" stop-color="#000000" stop-opacity="0.38"/><stop offset="1" stop-color="#000000" stop-opacity="0"/></linearGradient></defs>
+<rect width="1024" height="1024" fill="url(#bg)"/>
+<rect width="1024" height="1024" fill="url(#sheen)"/>
+<polygon points="717.69,474.54 1305.36,1062.21 888.11,1479.46 306.31,708.14" fill="url(#shadow)"/>
+<path fill="url(#bg)" d="M547.77 450.82 A8.82 8.82 0 0 0 531.87 443.90 L439.31 581.27 A8.82 8.82 0 0 0 446.62 595.01 L492.70 595.01 L474.05 671.52 A8.82 8.82 0 0 0 489.96 678.49 L584.72 535.98 A8.82 8.82 0 0 0 577.38 522.28 L531.18 522.28 L547.77 450.82 Z"/>
+</svg>

@@ -3,6 +3,7 @@ import { useOnboarding } from '@/providers/onboarding-provider';
 import { PreferencesProvider } from '@/providers/preferences-provider';
 import { configureOutageNotifications } from '@/services/outages';
 import { AppProviders } from '@/views/app-providers';
+import { AppSplash } from '@/views/splash';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -34,6 +35,7 @@ export default function RootLayout() {
       <PreferencesProvider>
         <AppProviders>
           <RootNavigator />
+          <AppSplash />
         </AppProviders>
       </PreferencesProvider>
     </GestureHandlerRootView>

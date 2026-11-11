@@ -6,3 +6,4 @@ export { ObjectCard } from './object-card';
 export * from './objects';
 export { StatusLine } from './status-line';
 export * from './outages';
+export * from './splash';

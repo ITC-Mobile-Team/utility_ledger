@@ -1,0 +1,6 @@
+# Холодний запуск: накладка splash зникає (≥ 1 с анімації, згасання 300 мс)
+# і видно стартову вкладку. Потрібен увійдений користувач.
+launch
+gone id=splash timeout=15
+wait id=objects.screen timeout=10
+check role=tab&label=Обʼєкти value=1

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs><linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1024" y2="1024"><stop offset="0" stop-color="#2B3A52"/><stop offset="1" stop-color="#0B1424"/></linearGradient>
+<radialGradient id="sheen" cx="0.28" cy="0.22" r="0.75"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.10"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="shadow" x1="0.25" y1="0.25" x2="1" y2="1"><stop offset="0" stop-color="#000000" stop-opacity="0.38"/><stop offset="1" stop-color="#000000" stop-opacity="0"/></linearGradient></defs>
+<rect width="1024" height="1024" fill="url(#bg)"/>
+<rect width="1024" height="1024" fill="url(#sheen)"/>
+<polygon points="792.00,474.00 1592.00,1274.00 1024.00,1842.00 232.00,792.00" fill="url(#shadow)"/>
+<path fill="#FFFFFF" d="M498.56 240.58 A22.00 22.00 0 0 1 525.44 240.58 L805.44 456.58 A22.00 22.00 0 0 1 814.00 474.00 L814.00 792.00 A22.00 22.00 0 0 1 792.00 814.00 L232.00 814.00 A22.00 22.00 0 0 1 210.00 792.00 L210.00 474.00 A22.00 22.00 0 0 1 218.56 456.58 L498.56 240.58 Z"/>
+<path fill="url(#bg)" d="M555.82 440.58 A7.00 7.00 0 0 0 543.19 435.09 L417.19 622.09 A7.00 7.00 0 0 0 423.00 633.00 L492.09 633.00 L465.20 743.34 A7.00 7.00 0 0 0 477.83 748.88 L606.83 554.88 A7.00 7.00 0 0 0 601.00 544.00 L531.81 544.00 L555.82 440.58 Z"/>
+</svg>

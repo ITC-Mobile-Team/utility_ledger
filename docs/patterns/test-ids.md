@@ -28,7 +28,13 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 
 ## Префікси екранів
 
-`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `theme`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`.
+`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `theme`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`, `splash`.
+
+## Splash
+
+- `splash` — накладка анімованого splash (`role=progressbar`, label «Utility Ledger, завантаження»); після згасання її немає в дереві — сценарій чекає `gone id=splash` перед перевірками першого екрана.
+- `splash.progress` — нативний індикатор завантаження. Накладка — один accessible-елемент, тож дочірні елементи в дереві iOS можуть не показуватися окремо.
+- Кільця пульсації порожніх станів приховані від доступності й testID не мають — їх перевіряють скріншотом.
 
 ## Профіль і тема
 
