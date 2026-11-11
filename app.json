@@ -128,7 +128,8 @@
           }
         }
       ],
-      "./plugins/with-gradle-memory"
+      "./plugins/with-gradle-memory",
+      "./plugins/with-force-dark-disabled"
     ],
     "experiments": {
       "typedRoutes": true,
