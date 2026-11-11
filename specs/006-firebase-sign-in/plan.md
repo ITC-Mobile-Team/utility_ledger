@@ -18,7 +18,7 @@
 
 **Testing**: `npx expo lint`, `npx tsc --noEmit`; ручна перевірка входу/виходу/видалення користувачем за [quickstart.md](quickstart.md); `ui-check` лише для частин без провайдера
 
-**Target Platform**: iOS 15.1+ і Android (development build, CNG)
+**Target Platform**: iOS 15.1+ і Android (development build, CNG); web поза обсягом (заглушка сервісу)
 
 **Project Type**: mobile-app (Expo, Continuous Native Generation)
 
@@ -68,6 +68,8 @@ src/services/auth/
 ├── types.ts                          # + deleteAccount(), AuthError (cancelled | failed)
 ├── index.ts                          # authService = createFirebaseAuthService(storage)
 ├── firebase-auth-service.ts          # новий: onAuthStateChanged, signIn, signOut, deleteAccount
+├── firebase-auth-service.web.ts      # заглушка для web (завжди «не увійшов»), щоб веб-бандл не тягнув нативні модулі
+├── errors.ts                         # toAuthError: cancelled | failed
 ├── local-auth-service.ts             # видаляється
 └── providers/
     ├── apple.ios.ts                  # expo-apple-authentication + nonce, reauth, revokeToken
@@ -75,7 +77,8 @@ src/services/auth/
     ├── apple.ts                      # заглушка для web (кидає failed)
     └── google.ts                     # GoogleSignin.configure/signIn/signOut/revokeAccess
 src/providers/auth-provider.tsx       # + deleteAccount у контексті
-src/services/profile/local-profile-repository.ts  # syncFromAuth не затирає імʼя null-ом
+src/services/profile/local-profile-repository.ts  # syncFromAuth не затирає імʼя null-ом; переносить змінене імʼя з профілю імітації
+.claude/skills/ui-check/SKILL.md                  # flow з увійденим користувачем — після ручного входу
 src/app/(auth)/sign-in.tsx            # скасування → без екрана помилки
 src/app/(auth)/auth-error.tsx         # скасування → лишаємося на екрані
 src/app/(tabs)/profile/index.tsx      # справжнє видалення, новий текст, Alert про невдачу, блок повторного запуску

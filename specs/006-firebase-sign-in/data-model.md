@@ -38,6 +38,7 @@ signedIn ──сесію відкликано/акаунт видалено д�
 ## UserProfile (`src/services/profile/types.ts`) — зміна правила
 
 - `syncFromAuth(user)` для того самого `userId`: якщо `nameSource === 'provider'` і `user.name === null`, імʼя **не** змінюється (FR-012). Решта правил без змін.
+- `syncFromAuth(user)` для нового `userId`: якщо попередній профіль належав імітації (`userId` починається з `preview-id-`) і `nameSource === 'user'`, його `name` переноситься з `nameSource: 'user'` (FR-013).
 - `clear()` при видаленні акаунта **не** викликається (FR-022); профіль з новим `userId` створиться при наступному вході.
 
 ## Що не змінюється
