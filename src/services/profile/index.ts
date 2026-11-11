@@ -1,9 +1,8 @@
 import { storage } from '@/storage';
-import { createLocalProfileRepository } from './local-profile-repository';
+import { createFirestoreProfileRepository } from './firestore-profile-repository';
 export * from './types';
 export * from './format';
 export { PROFILE_KEY } from './local-profile-repository';
 
-// Після переходу на Firebase тут підставиться Firestore-реалізація
-// ProfileRepository; екрани й провайдер не зміняться
-export const profileRepository = createLocalProfileRepository(storage);
+// Профіль акаунта — Firestore (`users/{uid}`); на web — локальний (index.web.ts)
+export const profileRepository = createFirestoreProfileRepository(storage);

@@ -30,3 +30,4 @@ export {
 } from './pressable';
 export type { PressableProps, GesturePressableProps } from './pressable';
 export { ThemeTransition } from './theme-transition';
+export { SkeletonBone, useSkeletonShine } from './skeleton';

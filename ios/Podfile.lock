@@ -2162,6 +2162,30 @@ PODS:
     - ReactNativeDependencies
     - RNFBApp
     - Yoga
+  - RNFBFirestore (27.1.1):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-cxxstableapi
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - RNFBApp
+    - Yoga
   - RNGestureHandler (3.3.0):
     - hermes-engine
     - RCTRequired
@@ -2568,6 +2592,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
+  - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -2828,6 +2853,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
     :path: "../node_modules/@react-native-firebase/auth"
+  RNFBFirestore:
+    :path: "../node_modules/@react-native-firebase/firestore"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -2969,6 +2996,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: a9c7c7992c85d8073707286fb59a857bc786cbd5
   RNFBApp: d1b3fd24f876a6054f6d7c1cdd7f979bfc6bd2f4
   RNFBAuth: 6e87780bcffaa21f1a10f8e7a2ae111955d13c8b
+  RNFBFirestore: 8349692b68236355ab47cff299365d0336c26786
   RNGestureHandler: ddbdf3f293a498368803f8181ff157271ac05c48
   RNGoogleSignin: 4a71f197011a5d6c7c045a8628a6d31b720b001e
   RNReanimated: 5c641cc430b7255eae87c8039204eb0f816ea1b8

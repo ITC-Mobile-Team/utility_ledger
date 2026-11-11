@@ -1,61 +1,41 @@
 import type { KeyValueStorage } from '@/storage';
-import { outageProviders } from './registry';
 import type { OutageSchedule, OutageSettings } from './types';
 
-const SETTINGS_KEY = 'outageSettings';
+// На пристрої: у локальній реалізації — усі налаштування, у хмарній — лише
+// сповіщення (залежать від дозволу конкретного пристрою)
+export const OUTAGE_SETTINGS_KEY = 'outageSettings';
 const scheduleKey = (providerId: string) => `outageSchedule:${providerId}`;
 
-const emptySettings: OutageSettings = { queues: [] };
+export const emptyOutageSettings: OutageSettings = { queues: [] };
 
 export type OutageSettingsRepository = {
-  load(): Promise<void>;
+  // Привʼязка до акаунта: null — вийшли (без міста й черг), uid — налаштування
+  // цього акаунта; проміс завершується після першого знімка з локальної копії
+  setUser(uid: string | null): Promise<void>;
   getSnapshot(): OutageSettings;
   subscribe(listener: () => void): () => void;
   save(settings: OutageSettings): Promise<void>;
   // Останній отриманий графік — щоб показати його без мережі
   loadCachedSchedule(providerId: string): Promise<OutageSchedule | undefined>;
   cacheSchedule(schedule: OutageSchedule): Promise<void>;
-  // Стерти налаштування й кеш графіків усіх постачальників
-  clear(): Promise<void>;
 };
 
-export function createOutageSettingsRepository(
+export async function readStoredOutageSettings(
   storage: KeyValueStorage,
-): OutageSettingsRepository {
-  let settings = emptySettings;
-  const listeners = new Set<() => void>();
+): Promise<OutageSettings> {
+  const raw = await storage.getItem(OUTAGE_SETTINGS_KEY);
+  if (!raw) return emptyOutageSettings;
+  try {
+    return { ...emptyOutageSettings, ...JSON.parse(raw) };
+  } catch {
+    return emptyOutageSettings;
+  }
+}
 
+// Кеш графіків постачальників — завжди на пристрої
+export function createScheduleCache(storage: KeyValueStorage) {
   return {
-    async load() {
-      const raw = await storage.getItem(SETTINGS_KEY);
-      if (!raw) return;
-      try {
-        settings = { ...emptySettings, ...JSON.parse(raw) };
-      } catch {
-        settings = emptySettings;
-      }
-    },
-    getSnapshot: () => settings,
-    subscribe(listener) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    async save(next) {
-      settings = next;
-      listeners.forEach((listener) => listener());
-      await storage.setItem(SETTINGS_KEY, JSON.stringify(next));
-    },
-    async clear() {
-      settings = emptySettings;
-      listeners.forEach((listener) => listener());
-      await Promise.all([
-        storage.removeItem(SETTINGS_KEY),
-        ...outageProviders.map((provider) =>
-          storage.removeItem(scheduleKey(provider.id)),
-        ),
-      ]);
-    },
-    async loadCachedSchedule(providerId) {
+    async loadCachedSchedule(providerId: string) {
       const raw = await storage.getItem(scheduleKey(providerId));
       if (!raw) return undefined;
       try {
@@ -64,11 +44,40 @@ export function createOutageSettingsRepository(
         return undefined;
       }
     },
-    async cacheSchedule(schedule) {
+    async cacheSchedule(schedule: OutageSchedule) {
       await storage.setItem(
         scheduleKey(schedule.providerId),
         JSON.stringify(schedule),
       );
     },
+  };
+}
+
+// Усе на пристрої (web)
+export function createLocalOutageSettingsRepository(
+  storage: KeyValueStorage,
+): OutageSettingsRepository {
+  let settings = emptyOutageSettings;
+  const listeners = new Set<() => void>();
+  const emit = () => listeners.forEach((listener) => listener());
+
+  return {
+    async setUser(uid) {
+      settings = uid
+        ? await readStoredOutageSettings(storage)
+        : emptyOutageSettings;
+      emit();
+    },
+    getSnapshot: () => settings,
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    async save(next) {
+      settings = next;
+      emit();
+      await storage.setItem(OUTAGE_SETTINGS_KEY, JSON.stringify(next));
+    },
+    ...createScheduleCache(storage),
   };
 }

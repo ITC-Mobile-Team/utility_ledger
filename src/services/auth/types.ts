@@ -29,7 +29,10 @@ export interface AuthService {
   signIn(method: SignInMethod): Promise<AuthUser>;
   // Завершує сесію Firebase і Google; помилку Google не прокидає
   signOut(): Promise<void>;
-  // Повторне підтвердження за потреби, відкликання Apple (iOS), видалення
-  // акаунта. Відхиляється лише AuthError; тоді акаунт і сесія без змін
-  deleteAccount(): Promise<void>;
+  // Повторне підтвердження за потреби, видалення даних (deleteData), потім
+  // відкликання Apple (iOS) і видалення акаунта. deleteData викликається після
+  // перепідтвердження Apple і до відкликання доступу; якщо він відхилився,
+  // акаунт не видаляється. Відхиляється лише AuthError; тоді акаунт і сесія
+  // без змін
+  deleteAccount(deleteData: () => Promise<void>): Promise<void>;
 }

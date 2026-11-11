@@ -35,4 +35,5 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 - `profile.card` — інформаційна картка, **не інтерактивна** (дотик нічого не відкриває); `profile.name` — рядок «Імʼя», єдиний перехід у «Ваше імʼя».
 - `profile.outageStatus` і `profile.outageSetup` — статус «Світла» та кнопка «Налаштувати» у «Сповіщеннях» (є лише поки «Світло» не налаштоване); `profile.notify` — перемикач.
 - `profile.startTab` і `profile.theme` — рядки розділу «Застосунок». На iOS `profile.startTab` — `accessibilityIdentifier` нативного меню (`@expo/ui` не підтримує `testID`), пункти меню без id: шукай `role=button&label=Світло`.
+- `objects.skeleton`, `outages.skeleton`, `profile.skeleton` — скелетони першого завантаження даних акаунта (не інтерактивні); `accountData.offline` і `accountData.offline.retry` — стан «Немає інтернету» і кнопка «Спробувати ще» (див. [user-data.md](user-data.md)).
 - `theme.screen` і `theme.option.system|light|dark` — екран «Тема» та його картки (`role=radio`, стан у `value`: `radio button, checked`).

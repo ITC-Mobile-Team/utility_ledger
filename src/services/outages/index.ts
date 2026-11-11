@@ -1,12 +1,15 @@
 import { storage } from '@/storage';
-import { createOutageSettingsRepository } from './settings-repository';
+import { createFirestoreOutageSettingsRepository } from './firestore-settings-repository';
 export * from './types';
 export * from './schedule';
 export * from './registry';
 export * from './setup-status';
 export type { OutageSettingsRepository } from './settings-repository';
 
-export const outageSettingsRepository = createOutageSettingsRepository(storage);
+// Місто й черги — в акаунті (Firestore), сповіщення й кеш графіків — на
+// пристрої; на web усе локально (index.web.ts)
+export const outageSettingsRepository =
+  createFirestoreOutageSettingsRepository(storage);
 export {
   cancelOutageNotifications,
   configureOutageNotifications,

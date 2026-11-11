@@ -32,6 +32,7 @@ export const appIcons = {
   electricity: '⚡',
   water: '💧',
   network: '🌐',
+  offline: '📡',
   gas: '🔥',
   heating: '🌡️',
 } as const;

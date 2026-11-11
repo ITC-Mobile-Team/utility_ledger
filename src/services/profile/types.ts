@@ -11,10 +11,12 @@ export type UserProfile = {
   method: SignInMethod | null;
 };
 
-// Шар між екранами й сховищем профілю. Зараз — локальне сховище на пристрої,
-// пізніше — Firestore (`users/{uid}`) з тим самим інтерфейсом
+// Шар між екранами й сховищем профілю: Firestore (`users/{uid}`) на iOS і
+// Android, локальне сховище на web
 export interface ProfileRepository {
-  load(): Promise<void>;
+  // Привʼязка до акаунта: null — вийшли (знімок null); uid — профіль цього
+  // акаунта, проміс завершується після першого знімка з локальної копії
+  setUser(uid: string | null): Promise<void>;
   getSnapshot(): UserProfile | null;
   subscribe(listener: () => void): () => void;
   // Створити або оновити профіль з даних входу; імʼя від користувача не чіпає,
@@ -23,5 +25,13 @@ export interface ProfileRepository {
   syncFromAuth(user: AuthUser): Promise<void>;
   // trim, 1–NAME_MAX_LENGTH символів; при помилці знімок не змінюється
   setName(name: string): Promise<void>;
-  clear(): Promise<void>;
+}
+
+// trim, 1–NAME_MAX_LENGTH символів за кодовими точками
+export function validateName(value: string): string {
+  const name = value.trim();
+  if (!name || Array.from(name).length > NAME_MAX_LENGTH) {
+    throw new Error('Некоректне імʼя');
+  }
+  return name;
 }

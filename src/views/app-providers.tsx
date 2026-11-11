@@ -1,5 +1,6 @@
 import { ThemeTransition } from '@/components';
 import { useNavigationTheme } from '@/hooks/use-navigation-theme';
+import { AccountDataProvider } from '@/providers/account-data-provider';
 import { AuthProvider } from '@/providers/auth-provider';
 import { LedgerProvider } from '@/providers/ledger-provider';
 import { OnboardingProvider } from '@/providers/onboarding-provider';
@@ -20,11 +21,13 @@ export function AppProviders({ children }: PropsWithChildren) {
         <KeyboardProvider>
           <AuthProvider>
             <OnboardingProvider>
-              <LedgerProvider>
-                <OutageProvider>
-                  <ProfileProvider>{children}</ProfileProvider>
-                </OutageProvider>
-              </LedgerProvider>
+              <AccountDataProvider>
+                <LedgerProvider>
+                  <OutageProvider>
+                    <ProfileProvider>{children}</ProfileProvider>
+                  </OutageProvider>
+                </LedgerProvider>
+              </AccountDataProvider>
             </OnboardingProvider>
           </AuthProvider>
         </KeyboardProvider>

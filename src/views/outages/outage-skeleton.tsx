@@ -1,77 +1,32 @@
-import { HStack, ThemedText, ThemedView, VStack } from '@/components';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect } from 'react';
-import { StyleSheet, useColorScheme, type ViewStyle } from 'react-native';
-import Animated, {
-  Easing,
-  type SharedValue,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
-
-const AnimatedGradient = Animated.createAnimatedComponent(LinearGradient);
-
-// Відблиск, що пробігає блоком зліва направо, як `.skel::after` у дизайні
-const shine = {
-  light: [
-    'rgba(255,255,255,0)',
-    'rgba(255,255,255,0.55)',
-    'rgba(255,255,255,0)',
-  ],
-  dark: [
-    'rgba(255,255,255,0)',
-    'rgba(255,255,255,0.08)',
-    'rgba(255,255,255,0)',
-  ],
-} as const;
-
-type BoneProps = {
-  style: ViewStyle;
-  progress: SharedValue<number>;
-};
-
-const Bone = ({ style, progress }: BoneProps) => {
-  const scheme = useColorScheme() ?? 'light';
-  const shineStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: `${-100 + 200 * progress.get()}%` }],
-  }));
-  return (
-    <ThemedView backgroundColor='track' style={[styles.bone, style]}>
-      <AnimatedGradient
-        colors={shine[scheme]}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 1, y: 0.5 }}
-        style={[StyleSheet.absoluteFill, shineStyle]}
-      />
-    </ThemedView>
-  );
-};
+import {
+  HStack,
+  SkeletonBone as Bone,
+  ThemedText,
+  ThemedView,
+  useSkeletonShine,
+  VStack,
+} from '@/components';
+import { StyleSheet } from 'react-native';
 
 type OutageSkeletonProps = {
-  providerName: string;
+  // Без постачальника — перше завантаження даних акаунта
+  providerName?: string;
 };
 
 // Заглушка на час першого завантаження графіка: повторює форму картки
 // статусу, смуги доби й списку вимкнень; блоками пробігає відблиск (1,3 с)
 export function OutageSkeleton({ providerName }: OutageSkeletonProps) {
-  const progress = useSharedValue(0);
-  useEffect(() => {
-    progress.set(
-      withRepeat(
-        withTiming(1, { duration: 1300, easing: Easing.inOut(Easing.ease) }),
-        -1,
-      ),
-    );
-  }, [progress]);
+  const progress = useSkeletonShine();
 
   return (
     <VStack
       spacing={14}
       accessible
       accessibilityRole='progressbar'
-      accessibilityLabel='Завантажуємо графік'
+      accessibilityLabel={
+        providerName ? 'Завантажуємо графік' : 'Завантажуємо дані'
+      }
+      testID='outages.skeleton'
     >
       <VStack spacing={14}>
         <ThemedView backgroundColor='surface' style={styles.card}>
@@ -127,17 +82,15 @@ export function OutageSkeleton({ providerName }: OutageSkeletonProps) {
         </ThemedView>
       </VStack>
       <ThemedText font='footnote' color='muted' align='center'>
-        Завантажуємо графік {providerName}…
+        {providerName
+          ? `Завантажуємо графік ${providerName}…`
+          : 'Завантажуємо дані…'}
       </ThemedText>
     </VStack>
   );
 }
 
 const styles = StyleSheet.create({
-  bone: {
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
   // У дизайні margin: 4px 0 -4px 4px — ближче до списку під ним
   sectionTitle: {
     height: 12,

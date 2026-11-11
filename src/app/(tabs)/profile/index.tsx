@@ -6,6 +6,7 @@ import {
   VStack,
 } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
+import { useAccountDataStatus } from '@/providers/account-data-provider';
 import { useAuth } from '@/providers/auth-provider';
 import { AuthError } from '@/services/auth';
 import {
@@ -26,6 +27,10 @@ import {
 } from '@/services/profile';
 import { ListCard, ListRow, SectionHeader } from '@/views';
 import {
+  AccountDataOffline,
+  ProfileHeaderSkeleton,
+} from '@/views/account-data';
+import {
   confirmDestructive,
   OutageSetupNotice,
   ProfileCard,
@@ -40,6 +45,7 @@ import { Alert, StyleSheet, Switch } from 'react-native';
 
 export default function ProfileScreen() {
   const profile = useProfile();
+  const { status: dataStatus, retry: retryData } = useAccountDataStatus();
   const { signOut, deleteAccount } = useAuth();
   const { theme, startTab, setStartTab } = usePreferences();
   const notifications = useOutageNotificationToggle();
@@ -60,7 +66,9 @@ export default function ProfileScreen() {
   const openOutageSettings = () => router.navigate('/outage-settings');
 
   // Вихід завершує сесію Firebase і Google: `Stack.Protected` сам відкриває
-  // `(auth)`, а дані й налаштування лишаються на пристрої
+  // `(auth)`. Дані акаунта лишаються на пристрої прихованими (повторний вхід
+  // покаже їх одразу), а незбережені без інтернету зміни не блокують вихід —
+  // вони відправляться при наступному вході цим акаунтом
   const leave = async () => {
     if (isSigningOut.current) return;
     isSigningOut.current = true;
@@ -78,9 +86,10 @@ export default function ProfileScreen() {
       onConfirm: leave,
     });
 
-  // Видалення назавжди прибирає акаунт (за потреби спершу просить підтвердити
-  // вхід); дані на пристрої лишаються, доки вони не зберігаються в хмарі.
-  // Закрите вікно провайдера нічого не показує, невдача — системний Alert
+  // Видалення спершу назавжди видаляє всі дані акаунта в хмарі й на пристрої,
+  // потім сам акаунт (за потреби спершу просить підтвердити вхід). Без
+  // інтернету нічого не видаляється. Закрите вікно провайдера нічого не
+  // показує, невдача — системний Alert
   const removeAccount = async () => {
     if (isSigningOut.current) return;
     isSigningOut.current = true;
@@ -119,11 +128,19 @@ export default function ProfileScreen() {
       contentInsets={{ bottom: 32 }}
     >
       <VStack spacing={14}>
-        <ProfileCard
-          name={name}
-          email={formatProfileEmail(profile?.email)}
-          initial={getInitial(profile?.name)}
-        />
+        {/* Поки дані акаунта не отримані вперше — скелетон; вихід і
+            видалення лишаються доступними й без інтернету */}
+        {dataStatus === 'loading' && <ProfileHeaderSkeleton />}
+        {dataStatus === 'offline' && (
+          <AccountDataOffline compact onRetry={retryData} />
+        )}
+        {dataStatus === 'ready' && (
+          <ProfileCard
+            name={name}
+            email={formatProfileEmail(profile?.email)}
+            initial={getInitial(profile?.name)}
+          />
+        )}
 
         <VStack spacing={8} style={styles.section}>
           <SectionHeader title='Акаунт' variant='overline' />
@@ -132,7 +149,7 @@ export default function ProfileScreen() {
               leading={<RowIcon icon='person' background='purpleSoft' />}
               trailing={
                 <ThemedText style={styles.value} numberOfLines={1}>
-                  {name}
+                  {dataStatus === 'ready' ? name : ''}
                 </ThemedText>
               }
               testID='profile.name'
@@ -165,7 +182,7 @@ export default function ProfileScreen() {
                 testID='profile.notify'
               />
             </HStack>
-            {setupStatus !== 'ready' && (
+            {dataStatus === 'ready' && setupStatus !== 'ready' && (
               <>
                 <ThemedView backgroundColor='line' style={styles.divider} />
                 <OutageSetupNotice

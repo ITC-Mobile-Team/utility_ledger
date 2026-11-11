@@ -102,20 +102,25 @@ export function createFirebaseAuthService(
       await signOut(auth);
     },
 
-    async deleteAccount() {
+    async deleteAccount(deleteData) {
       try {
         const current = currentUser();
         const method = methodOf(current);
         if (method === 'apple') {
-          // Apple завжди просить свіже підтвердження; на iOS відкликаємо
-          // доступ застосунку до Apple ID (на Android RNFirebase не вміє)
+          // Apple завжди просить свіже підтвердження; дані видаляються до
+          // відкликання доступу, щоб невдача не лишала акаунт з відкликаним
+          // Apple ID. На iOS відкликаємо доступ застосунку до Apple ID (на
+          // Android RNFirebase не вміє)
           const authorizationCode = await reauthenticateApple(current);
+          await deleteData();
           if (Platform.OS === 'ios' && authorizationCode) {
             await revokeToken(auth, authorizationCode);
           }
           await deleteUser(current);
           return;
         }
+        // Правила Firestore пускають лише власника, тож дані — до акаунта
+        await deleteData();
         try {
           await deleteUser(current);
         } catch (error) {

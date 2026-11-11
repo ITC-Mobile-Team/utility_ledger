@@ -35,6 +35,8 @@ import {
   QueueChips,
   SectionHeader,
 } from '@/views';
+import { AccountDataGate } from '@/views/account-data';
+import { useAccountDataStatus } from '@/providers/account-data-provider';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
@@ -54,6 +56,7 @@ const settingsButton = (
 );
 
 export default function Outages() {
+  const { status } = useAccountDataStatus();
   const settings = useOutageSettings();
   const provider = getProviderForCity(settings.city);
   const queues = provider
@@ -66,6 +69,21 @@ export default function Outages() {
     : settings.city
       ? `${settings.city} · графік погодинних відключень`
       : 'Графік погодинних відключень';
+
+  // Місто й черги акаунта ще не отримані вперше: без пропозиції налаштувати
+  if (status !== 'ready') {
+    return (
+      <NavigationView
+        title='Відсутність світла'
+        subtitle='Графік погодинних відключень'
+        barType='power'
+        contentInsets={{ bottom: 32 }}
+        headerTrailing={settingsButton}
+      >
+        <AccountDataGate skeleton={<OutageSkeleton />}>{null}</AccountDataGate>
+      </NavigationView>
+    );
+  }
 
   if (settings.city && !provider) {
     return (

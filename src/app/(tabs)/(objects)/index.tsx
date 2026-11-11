@@ -12,6 +12,8 @@ import {
   pluralForms,
   pluralize,
 } from '@/services/ledger';
+import { useAccountDataStatus } from '@/providers/account-data-provider';
+import { AccountDataGate, ObjectsSkeleton } from '@/views/account-data';
 import { EmptyStateView, ObjectCard, SectionHeader } from '@/views';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
@@ -36,14 +38,18 @@ const objectsNavigationButtons: NavigationBarButtonItem[] = [
 const addObject = () => router.push('/object-form');
 
 export default function Index() {
+  const { status } = useAccountDataStatus();
   const state = useLedgerState();
   const month = getCurrentMonth();
   const count = state.objects.length;
-  const isEmpty = count === 0;
+  const isReady = status === 'ready';
+  const isEmpty = isReady && count === 0;
 
-  const subtitle = isEmpty
-    ? 'Ще немає жодної адреси'
-    : `${count} ${pluralize(count, pluralForms.address)} · ${formatMonthTitle(month).toLocaleLowerCase('uk')}`;
+  const subtitle = !isReady
+    ? formatMonthTitle(month)
+    : isEmpty
+      ? 'Ще немає жодної адреси'
+      : `${count} ${pluralize(count, pluralForms.address)} · ${formatMonthTitle(month).toLocaleLowerCase('uk')}`;
 
   return (
     <NavigationView
@@ -52,7 +58,7 @@ export default function Index() {
       testID='objects.screen'
       barType='blue'
       contentInsets={{ bottom: 32 }}
-      navigationBarButtons={isEmpty ? [] : objectsNavigationButtons}
+      navigationBarButtons={isReady && !isEmpty ? objectsNavigationButtons : []}
       onNavigationButtonPress={(id) => {
         if (id === 'add') addObject();
         if (id === 'archive') {
@@ -60,36 +66,38 @@ export default function Index() {
         }
       }}
     >
-      {isEmpty ? (
-        <EmptyStateView
-          icon='house'
-          title='Додайте першу адресу'
-          message='Квартира, будинок чи офіс — після цього можна додати послуги та вносити показники щомісяця.'
-          actionTitle='Додати адресу'
-          actionTestID='objects.empty.add'
-          onAction={addObject}
-        />
-      ) : (
-        <VStack spacing={12}>
-          <SectionHeader title='Ваші адреси' />
-          {state.objects.map((object, index) => (
-            <ObjectCard
-              key={object.id}
-              testID={`objects.card.${index}`}
-              object={object}
-              services={getObjectServices(state, object.id)}
-              month={month}
-              status={getMonthStatus(state, object.id, month)}
-              onPress={() =>
-                router.push({
-                  pathname: '/[objectId]',
-                  params: { objectId: object.id },
-                })
-              }
-            />
-          ))}
-        </VStack>
-      )}
+      <AccountDataGate skeleton={<ObjectsSkeleton />}>
+        {isEmpty ? (
+          <EmptyStateView
+            icon='house'
+            title='Додайте першу адресу'
+            message='Квартира, будинок чи офіс — після цього можна додати послуги та вносити показники щомісяця.'
+            actionTitle='Додати адресу'
+            actionTestID='objects.empty.add'
+            onAction={addObject}
+          />
+        ) : (
+          <VStack spacing={12}>
+            <SectionHeader title='Ваші адреси' />
+            {state.objects.map((object, index) => (
+              <ObjectCard
+                key={object.id}
+                testID={`objects.card.${index}`}
+                object={object}
+                services={getObjectServices(state, object.id)}
+                month={month}
+                status={getMonthStatus(state, object.id, month)}
+                onPress={() =>
+                  router.push({
+                    pathname: '/[objectId]',
+                    params: { objectId: object.id },
+                  })
+                }
+              />
+            ))}
+          </VStack>
+        )}
+      </AccountDataGate>
     </NavigationView>
   );
 }

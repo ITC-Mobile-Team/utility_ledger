@@ -1,3 +1,4 @@
+import { useAccountDataStatus } from '@/providers/account-data-provider';
 import { useAuth } from '@/providers/auth-provider';
 import {
   type ProfileRepository,
@@ -8,7 +9,6 @@ import {
   createContext,
   use,
   useEffect,
-  useState,
   useSyncExternalStore,
   type PropsWithChildren,
 } from 'react';
@@ -22,20 +22,16 @@ export function ProfileProvider({
   children,
 }: Props) {
   const { user } = useAuth();
-  const [loaded, setLoaded] = useState<ProfileRepository | null>(null);
-
-  useEffect(() => {
-    repository.load().then(() => setLoaded(repository));
-  }, [repository]);
+  const { status } = useAccountDataStatus();
 
   // Після входу профіль заповнюється з даних провайдера; змінене
-  // користувачем імʼя лишається
+  // користувачем імʼя лишається. Лише коли дані акаунта отримані: до
+  // серверного читання порожня локальна копія нового пристрою виглядає як
+  // «профілю немає», і новий профіль затер би хмарний
   useEffect(() => {
-    if (loaded !== repository || !user) return;
+    if (status !== 'ready' || !user) return;
     repository.syncFromAuth(user).catch(() => {});
-  }, [loaded, repository, user]);
-
-  if (loaded !== repository) return null;
+  }, [status, repository, user]);
 
   return <ProfileContext value={repository}>{children}</ProfileContext>;
 }

@@ -10,7 +10,7 @@ import type {
   ObjectMonth,
 } from './types';
 
-const KEY = 'ledgerState';
+export const LEDGER_KEY = 'ledgerState';
 
 const emptyState: LedgerState = {
   objects: [],
@@ -50,40 +50,41 @@ const legacyMonths = (state: LedgerState): ObjectMonth[] => {
   });
 };
 
+// Стан, збережений на пристрої (локальна реалізація і дані попередньої
+// версії для перенесення в акаунт)
+export function parseLedgerState(raw: string | null): LedgerState {
+  if (!raw) return emptyState;
+  const stored: Partial<LedgerState> = JSON.parse(raw);
+  const state = { ...emptyState, ...stored };
+  return stored.months ? state : { ...state, months: legacyMonths(state) };
+}
+
 export function createLocalLedgerRepository(
   storage: KeyValueStorage,
 ): LedgerRepository {
   // Стан незмінний: кожна мутація створює новий обʼєкт, щоб useSyncExternalStore бачив зміни
   let state = emptyState;
-  let loading: Promise<void> | null = null;
   const listeners = new Set<() => void>();
 
   const update = async (next: LedgerState) => {
     state = next;
     listeners.forEach((listener) => listener());
-    await storage.setItem(KEY, JSON.stringify(next));
+    await storage.setItem(LEDGER_KEY, JSON.stringify(next));
   };
 
   return {
-    load() {
-      loading ??= storage
-        .getItem(KEY)
-        .then((value) => {
-          if (!value) return;
-          const stored: Partial<LedgerState> = JSON.parse(value);
-          state = { ...emptyState, ...stored };
-          if (!stored.months) state = { ...state, months: legacyMonths(state) };
-        })
-        .catch(() => {})
-        .then(() => listeners.forEach((listener) => listener()));
-      return loading;
+    async setUser(uid) {
+      state = emptyState;
+      if (uid) {
+        try {
+          state = parseLedgerState(await storage.getItem(LEDGER_KEY));
+        } catch {
+          state = emptyState;
+        }
+      }
+      listeners.forEach((listener) => listener());
     },
     getSnapshot: () => state,
-    async clear() {
-      state = emptyState;
-      listeners.forEach((listener) => listener());
-      await storage.removeItem(KEY);
-    },
     subscribe(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);

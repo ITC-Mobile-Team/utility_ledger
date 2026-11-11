@@ -90,10 +90,10 @@ export type ObjectInput = Omit<LedgerObject, 'id' | 'createdAt'>;
 export type ServiceInput = Omit<LedgerService, 'id' | 'createdAt'>;
 
 export interface LedgerRepository {
-  // Читає збережений стан зі сховища; повторні виклики повертають той самий проміс
-  load(): Promise<void>;
-  // Стерти всі дані (вихід / видалення акаунта)
-  clear(): Promise<void>;
+  // Привʼязка до акаунта. null — вийшли: знімок порожній (локальна копія
+  // акаунта на диску лишається). uid — читати дані цього акаунта; проміс
+  // завершується, коли є перший знімок з локального сховища (і без інтернету)
+  setUser(uid: string | null): Promise<void>;
   getSnapshot(): LedgerState;
   subscribe(listener: () => void): () => void;
   addObject(input: ObjectInput): Promise<LedgerObject>;

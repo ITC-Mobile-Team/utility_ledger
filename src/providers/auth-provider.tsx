@@ -4,6 +4,7 @@ import {
   type AuthService,
   authService,
 } from '@/services/auth';
+import { deleteAccountData } from '@/services/account-data';
 import {
   createContext,
   use,
@@ -41,7 +42,11 @@ export function AuthProvider({ service = authService, children }: Props) {
         isSignedIn: user !== null,
         signIn: (method) => service.signIn(method),
         signOut: () => service.signOut(),
-        deleteAccount: () => service.deleteAccount(),
+        // Спершу всі дані акаунта в хмарі й на пристрої, потім сам акаунт
+        deleteAccount: () =>
+          service.deleteAccount(() =>
+            user ? deleteAccountData(user.id) : Promise.resolve(),
+          ),
       }}
     >
       {children}

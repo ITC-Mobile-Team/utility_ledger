@@ -21,6 +21,7 @@ import {
   useSyncExternalStore,
   type PropsWithChildren,
 } from 'react';
+import { useAccountDataStatus } from '@/providers/account-data-provider';
 import { useFocusEffect } from 'expo-router';
 import { AppState } from 'react-native';
 
@@ -32,15 +33,47 @@ export function OutageProvider({
   repository = outageSettingsRepository,
   children,
 }: Props) {
-  const [loaded, setLoaded] = useState<OutageSettingsRepository | null>(null);
+  // Привʼязку до акаунта й готовність знімка забезпечує AccountDataProvider
+  useAccountNotificationSync(repository);
+  return <OutageContext value={repository}>{children}</OutageContext>;
+}
+
+// Попередження плануються на пристрої, а місто й черги належать акаунту: коли
+// вони змінюються не кнопкою на цьому екрані (вхід іншим акаунтом, вихід,
+// зміна з іншого пристрою), попередження переплановуються за кешованим
+// графіком; черги з фільтра сповіщень, яких немає в акаунті, відкидаються
+function useAccountNotificationSync(repository: OutageSettingsRepository) {
+  const { status } = useAccountDataStatus();
+  const settings = useSyncExternalStore(
+    repository.subscribe,
+    repository.getSnapshot,
+  );
+  const lastKey = useRef<string | null>(null);
+  const key = `${settings.city ?? ''}|${settings.queues
+    .map((queue) => queue.id)
+    .join(',')}`;
 
   useEffect(() => {
-    repository.load().then(() => setLoaded(repository));
-  }, [repository]);
-
-  if (loaded !== repository) return null;
-
-  return <OutageContext value={repository}>{children}</OutageContext>;
+    // Під час першого завантаження знімок порожній — не чіпаємо
+    if (status !== 'ready') return;
+    const previous = lastKey.current;
+    lastKey.current = key;
+    if (previous === null || previous === key) return;
+    const current = repository.getSnapshot();
+    const ids = new Set(current.queues.map((queue) => queue.id));
+    const notifications = current.notifications && {
+      ...current.notifications,
+      queues: current.notifications.queues?.filter((id) => ids.has(id)),
+    };
+    const next = { ...current, notifications };
+    const provider = getProviderForCity(next.city);
+    void (async () => {
+      const cached = provider
+        ? await repository.loadCachedSchedule(provider.id)
+        : undefined;
+      await syncOutageNotifications(next, cached);
+    })().catch(() => {});
+  }, [status, key, repository]);
 }
 
 export function useOutageRepository() {

@@ -1,14 +1,14 @@
 import type { KeyValueStorage } from '@/storage';
 import {
-  NAME_MAX_LENGTH,
   type ProfileRepository,
   type UserProfile,
+  validateName,
 } from './types';
 
 export const PROFILE_KEY = 'userProfile';
 
 // Ідентифікатори користувачів імітованого входу до Firebase
-const MOCK_USER_PREFIX = 'preview-id-';
+export const MOCK_USER_PREFIX = 'preview-id-';
 
 export function createLocalProfileRepository(
   storage: KeyValueStorage,
@@ -33,12 +33,15 @@ export function createLocalProfileRepository(
   };
 
   return {
-    async load() {
-      try {
-        const raw = await storage.getItem(PROFILE_KEY);
-        profile = raw ? (JSON.parse(raw) as UserProfile) : null;
-      } catch {
-        profile = null;
+    async setUser(uid) {
+      profile = null;
+      if (uid) {
+        try {
+          const raw = await storage.getItem(PROFILE_KEY);
+          profile = raw ? (JSON.parse(raw) as UserProfile) : null;
+        } catch {
+          profile = null;
+        }
       }
       emit();
     },
@@ -78,17 +81,9 @@ export function createLocalProfileRepository(
       await write({ ...profile, email: user.email, method, name });
     },
     async setName(value) {
-      const name = value.trim();
       if (!profile) throw new Error('Профіль ще не створено');
-      if (!name || Array.from(name).length > NAME_MAX_LENGTH) {
-        throw new Error('Некоректне імʼя');
-      }
+      const name = validateName(value);
       await write({ ...profile, name, nameSource: 'user' });
-    },
-    async clear() {
-      profile = null;
-      emit();
-      await storage.removeItem(PROFILE_KEY);
     },
   };
 }
