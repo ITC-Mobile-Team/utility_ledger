@@ -5,7 +5,7 @@
 ## 1. Налаштування Firebase і провайдерів (один раз)
 
 1. Firebase → Authentication → Sign-in method: увімкнути **Google** і **Apple**.
-2. **Android, Google**: Project settings → Android-застосунок `com.bogdanpoh.utilityledger` → додати SHA-1 і SHA-256 debug-ключа (`cd android && ./gradlew signingReport` після prebuild, або `keytool -list -v -keystore android/app/debug.keystore -alias androiddebugkey -storepass android`) і release/EAS-ключа (`npx eas-cli@latest credentials`). Завантажити новий `google-services.json` у корінь проєкту — у ньому має зʼявитися `oauth_client` з `client_type: 1`.
+2. **Android, Google**: SHA-1 debug-ключа (`5E:8F:16:06:…:F6:25`) уже додано, оновлений `google-services.json` з OAuth-клієнтом типу 1 кладеться в корінь проєкту під час реалізації. Перед release/EAS-збіркою: додати SHA-1 і SHA-256 ключа EAS (`npx eas-cli@latest credentials`) у Firebase і знову завантажити `google-services.json`. Якщо після `prebuild --clean` SHA-1 debug-ключа інший (`keytool -list -v -keystore android/app/debug.keystore -alias androiddebugkey -storepass android`), додати і його.
 3. **iOS, Apple**: Apple Developer → App ID `com.bogdanpoh.utility-ledger` → увімкнути Sign in with Apple.
 4. **Android, Apple**: Apple Developer → Services ID, повʼязаний з App ID; return URL `https://utility-ledger-4b1aa.firebaseapp.com/__/auth/handler`; ключ Sign in with Apple. У Firebase → Apple: Services ID, Team ID `3S8AVD2TKW`, key ID, приватний ключ.
 

@@ -24,7 +24,7 @@
 
 **Performance Goals**: вхід < 15 с за нормального інтернету (SC-001); відновлення сесії при старті без миготіння екрана входу
 
-**Constraints**: офлайн-відновлення сесії; ручне редагування `ios/` і `android/` заборонене; конфіги Firebase у репозиторії
+**Constraints**: офлайн-відновлення сесії; ручне редагування `ios/` і `android/` заборонене; конфіги Firebase у репозиторії (Android — оновлений файл з SHA-1 debug-ключа; SHA-1 EAS/release додається перед release-збіркою)
 
 **Scale/Scope**: 2 провайдери × 2 платформи; зачеплені екрани — `(auth)/sign-in.tsx`, `(auth)/auth-error.tsx`, `(tabs)/profile/index.tsx`
 
@@ -62,7 +62,7 @@ specs/006-firebase-sign-in/
 
 ```text
 GoogleService-Info.plist              # новий, з ~/Downloads (iOS-конфіг Firebase)
-google-services.json                  # новий, з ~/Downloads (Android-конфіг Firebase, після додавання SHA-1)
+google-services.json                  # новий, з ~/Downloads/google-services (1).json (Android-конфіг з OAuth-клієнтом типу 1, SHA-1 debug-ключа)
 app.json                              # googleServicesFile, usesAppleSignIn, плагіни
 src/services/auth/
 ├── types.ts                          # + deleteAccount(), AuthError (cancelled | failed)
@@ -82,6 +82,14 @@ src/app/(tabs)/profile/index.tsx      # справжнє видалення, н�
 docs/patterns/account-actions.md      # справжній вхід/вихід/видалення
 .claude/skills/ui-check/flows/sign-out.flow       # без імітованого повторного входу
 ```
+
+**Додавання конфігів Firebase** (перша задача реалізації, до встановлення пакетів):
+
+1. Скопіювати `~/Downloads/GoogleService-Info.plist` → `GoogleService-Info.plist` у корені проєкту.
+2. Скопіювати `~/Downloads/google-services (1).json` → `google-services.json` у корені проєкту (саме оновлений файл, не перший `google-services.json` без Android-клієнта).
+3. Перевірити, що в `google-services.json` є `oauth_client` з `client_type: 1`, `package_name` `com.bogdanpoh.utilityledger` і `certificate_hash`, що збігається з SHA-1 `android/app/debug.keystore`; `package_name` = `android.package` в `app.json`, `BUNDLE_ID` у plist = `ios.bundleIdentifier`.
+4. В `app.json`: `ios.googleServicesFile: "./GoogleService-Info.plist"`, `android.googleServicesFile: "./google-services.json"`. Плагін `@react-native-firebase/app` при prebuild копіює їх у `ios/` і `android/app/` та підключає Gradle-плагін `google-services`.
+5. `npx expo prebuild --clean` → нова development build. `prebuild --clean` відтворює `android/app/debug.keystore` зі стандартного шаблону, тож SHA-1 лишається тим самим (перевірити `keytool` після prebuild; якщо змінився — додати новий SHA-1 у Firebase).
 
 **Structure Decision**: мобільний застосунок Expo з наявною розкладкою `src/`; платформна різниця Apple — через розширення `.ios.ts` / `.android.ts`, решта коду спільна.
 
