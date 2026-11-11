@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -15,6 +16,7 @@ import Animated, {
   useReducedMotion,
   useSharedValue,
   withRepeat,
+  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -25,11 +27,22 @@ const BACKGROUND = '#14213A';
 // splash-icon.png: полотно 288, знак у ньому 132 (як imageWidth у app.json)
 const MARK_CANVAS = 288;
 const MARK_SIZE = 132;
+// На iOS системний splash — повноекранне splash-full-ios.png (402×874 pt) з
+// градієнтом накладки й знаком, показане з `cover`; перший кадр накладки —
+// те саме зображення з тією самою геометрією
+const IS_IOS = Platform.OS === 'ios';
+const FULL_WIDTH = 402;
+const FULL_HEIGHT = 874;
+// iOS: сонце, тінь і текст проявляються м'якше, бо градієнт уже на екрані
+const APPEAR = IS_IOS
+  ? { duration: 500, easing: Easing.inOut(Easing.ease) }
+  : { duration: 300 };
 const SUN_SIZE = 960;
 const SHADOW_WIDTH = 220;
 const SHADOW_HEIGHT = 1000;
 
 const markSource = require('@/assets/images/app/splash-icon.png');
+const fullSource = require('@/assets/images/app/splash-full-ios.png');
 
 // Накладка показується один раз за процес: при вході/виході дерево під
 // AccountDataProvider перемонтовується, і splash не має зʼявитися знову
@@ -51,9 +64,9 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
   // від нього рахуються мінімальна секунда й чекання даних
   const [shownAt, setShownAt] = useState<number | null>(null);
   const canHide = useSplashGate(shownAt);
-  // Системний splash ховаємо, коли накладка розмічена і знак уже
-  // намальований: expo-image вантажить картинку асинхронно, і без цього на
-  // мить видно фон без знака
+  // Системний splash ховаємо, коли накладка розмічена і перший кадр уже
+  // намальований (знак, на iOS — повноекранне зображення): expo-image вантажить
+  // картинку асинхронно, і без цього на мить видно фон без знака
   const firstFrame = useRef({ laidOut: false, markShown: false, done: false });
 
   const appear = useSharedValue(0);
@@ -65,12 +78,14 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
       sun.set(0.5);
       return;
     }
-    sun.set(0);
+    // Сонце стартує з вершини дуги — світла пляма проявляється над будинком,
+    // а не збоку, — далі цикл 7 с туди й назад
+    const easing = Easing.inOut(Easing.ease);
+    sun.set(0.5);
     sun.set(
-      withRepeat(
-        withTiming(1, { duration: 7000, easing: Easing.inOut(Easing.ease) }),
-        -1,
-        true,
+      withSequence(
+        withTiming(1, { duration: 3500, easing }),
+        withRepeat(withTiming(0, { duration: 7000, easing }), -1, true),
       ),
     );
   }, [reduceMotion, sun]);
@@ -94,7 +109,7 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
     if (frame.done || !frame.laidOut || !frame.markShown) return;
     frame.done = true;
     SplashScreen.hide();
-    appear.set(withTiming(1, { duration: 300 }));
+    appear.set(withTiming(1, APPEAR));
     setShownAt(Date.now());
   };
   const revealFallback = useEffectEvent(() => revealIfReady('markShown'));
@@ -124,8 +139,11 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
 
   const centerX = width / 2;
   const centerY = height / 2;
+  // Масштаб знака: на iOS як у `cover` повноекранного зображення, на Android 1
+  const scale = IS_IOS ? Math.max(width / FULL_WIDTH, height / FULL_HEIGHT) : 1;
+  const markCanvas = MARK_CANVAS * scale;
   // Низ знака: будинок у полотні 132 закінчується на y = 127
-  const markBottom = centerY - MARK_SIZE / 2 + 127;
+  const markBottom = centerY + (127 - MARK_SIZE / 2) * scale;
 
   return (
     <Animated.View
@@ -139,20 +157,31 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
       style={[styles.root, rootStyle]}
     >
       <StatusBar style='light' />
+      {IS_IOS && (
+        <Image
+          source={fullSource}
+          contentFit='cover'
+          onDisplay={() => revealIfReady('markShown')}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <Animated.View
         pointerEvents='none'
         accessibilityElementsHidden
         importantForAccessibility='no-hide-descendants'
         style={[StyleSheet.absoluteFill, appearStyle]}
       >
-        <LinearGradient
-          colors={['#2B3A52', '#14213A', '#0B1424']}
-          locations={[0, 0.48, 1]}
-          // 160°: зверху трохи ліворуч донизу трохи праворуч
-          start={{ x: 0.32, y: 0 }}
-          end={{ x: 0.68, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+        {/* На iOS градієнт уже в повноекранному зображенні */}
+        {!IS_IOS && (
+          <LinearGradient
+            colors={['#2B3A52', '#14213A', '#0B1424']}
+            locations={[0, 0.48, 1]}
+            // 160°: зверху трохи ліворуч донизу трохи праворуч
+            start={{ x: 0.32, y: 0 }}
+            end={{ x: 0.68, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
         <Animated.View
           style={[
             styles.sun,
@@ -173,15 +202,18 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
         />
       </Animated.View>
 
+      {/* Знак над тінню; на iOS точно накриває знак повноекранного зображення */}
       <Image
         source={markSource}
         contentFit='contain'
-        onDisplay={() => revealIfReady('markShown')}
+        onDisplay={IS_IOS ? undefined : () => revealIfReady('markShown')}
         style={[
           styles.mark,
           {
-            left: centerX - MARK_CANVAS / 2,
-            top: centerY - MARK_CANVAS / 2,
+            width: markCanvas,
+            height: markCanvas,
+            left: centerX - markCanvas / 2,
+            top: centerY - markCanvas / 2,
           },
         ]}
       />
@@ -232,8 +264,6 @@ const styles = StyleSheet.create({
   },
   mark: {
     position: 'absolute',
-    width: MARK_CANVAS,
-    height: MARK_CANVAS,
   },
   title: {
     position: 'absolute',

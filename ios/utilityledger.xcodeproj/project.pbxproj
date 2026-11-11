@@ -7,50 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09C939CAD196459FAEFBDE09 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42EECD57B3AE409B8FE6EC59 /* GoogleService-Info.plist */; };
-		0B66A5823565B8D345C23064 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5D43CACB2A41C1D05B8DAFE6 /* PrivacyInfo.xcprivacy */; };
+		04D29E1549517B14A063E762 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EAA6350D7F07F5EDF41279 /* ExpoModulesProvider.swift */; };
+		10862034605543D39799CCF9 /* Onest-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38BB19B428FD4555B7869515 /* Onest-Bold.ttf */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		24CE435547784B978ED79A2A /* Onest-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4964A83F71B43A5B59DC7CD /* Onest-Black.ttf */; };
-		353F60AFD27445D196BF5A35 /* Onest-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BDEE981BD90D46809E5C5A2F /* Onest-SemiBold.ttf */; };
+		290598FFAE08400FB30A670B /* Onest-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09ED8AB00C3A43EC82AB5537 /* Onest-Medium.ttf */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		522B8756D2A5F7E0AFDDE264 /* GTMSessionFetcherCore in Frameworks */ = {isa = PBXBuildFile; productRef = A3230E3A52D2CC53FA001112 /* GTMSessionFetcherCore */; };
+		51A0B3DAA2EB45148D74EE61 /* Onest-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38DBC57CD4F14191BC73681F /* Onest-Regular.ttf */; };
 		5BB01E66A18465F38B2628A3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = B9A64F35DD6FCE33DB7C8D77 /* FirebaseCore */; };
-		6B455BCD6649CC28A3BCAD19 /* Pods_utilityledger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB8B8B61823240A00F03F404 /* Pods_utilityledger.framework */; };
-		94F587AF52F14E78BCBD1404 /* app.icon in Resources */ = {isa = PBXBuildFile; fileRef = 89C7B3490D6D462593E8F976 /* app.icon */; };
-		967491A3DB8DE17F96A63FAF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4144A3479E42EC40C1C7E9AE /* ExpoModulesProvider.swift */; };
-		A1731FE5E3724CCEB76A6BD5 /* Onest-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6BD19C4808A24B5E8F5D2C35 /* Onest-Medium.ttf */; };
-		A7779CF3163E4DB7BD46080E /* Onest-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C41B6A6F44F844B5B08DAF83 /* Onest-Bold.ttf */; };
+		6500157A038C418D8CC1D43A /* app.icon in Resources */ = {isa = PBXBuildFile; fileRef = 79950C62D9BB4FC8A8712E01 /* app.icon */; };
+		6FE62432B7451308F3D331B0 /* GTMSessionFetcherCore in Frameworks */ = {isa = PBXBuildFile; productRef = B21713D140F82FF02B386C87 /* GTMSessionFetcherCore */; };
+		7371DB3BF3A156DC78193333 /* GULUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 7405BF7B0A5B23E9F1DAE60B /* GULUserDefaults */; };
+		9F14E3F8E4316A88C8093DCA /* Pods_utilityledger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE02C529220C6144E10D78E /* Pods_utilityledger.framework */; };
+		A1E662AA20CF4915B985B52B /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2A9488D482F430C819EA41E /* JetBrainsMono-Regular.ttf */; };
+		B52F3D8D315D4667856EF708 /* Onest-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D42D211829E84511A6603B14 /* Onest-SemiBold.ttf */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C26A82E4240ED66A7663664A /* GULUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = B0EA081687D3B482F33D061F /* GULUserDefaults */; };
-		C4BB87C8E97A408D80468E61 /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C001E58FA62342FBAE1357DA /* JetBrainsMono-Regular.ttf */; };
-		C9A10486A7834D55A3C486BF /* Onest-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5AC396C4775B43DFA53DD21B /* Onest-Regular.ttf */; };
+		BF25CCA320AF44E99ECDC682 /* Onest-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7C1A8A85EBD49E8A3561B9A /* Onest-Black.ttf */; };
+		C99715723C204195B09F9226 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 584DD026E91F4AE089992829 /* GoogleService-Info.plist */; };
+		DD33226D07930AAB52FF48E1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2560436AA4ADBB0AC34B3000 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		F11748442D0307B40044C1D9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748432D0307B40044C1D9 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09ED8AB00C3A43EC82AB5537 /* Onest-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Medium.ttf"; path = "../assets/fonts/Onest/Onest-Medium.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* utilityledger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = utilityledger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = utilityledger/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = utilityledger/Info.plist; sourceTree = "<group>"; };
-		4144A3479E42EC40C1C7E9AE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-utilityledger/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		42EECD57B3AE409B8FE6EC59 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "utilityledger/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		5AC396C4775B43DFA53DD21B /* Onest-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Regular.ttf"; path = "../assets/fonts/Onest/Onest-Regular.ttf"; sourceTree = "<group>"; };
-		5D43CACB2A41C1D05B8DAFE6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = utilityledger/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6BD19C4808A24B5E8F5D2C35 /* Onest-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Medium.ttf"; path = "../assets/fonts/Onest/Onest-Medium.ttf"; sourceTree = "<group>"; };
-		7FC79454343A0309BD5E4492 /* Pods-utilityledger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-utilityledger.release.xcconfig"; path = "Target Support Files/Pods-utilityledger/Pods-utilityledger.release.xcconfig"; sourceTree = "<group>"; };
-		89C7B3490D6D462593E8F976 /* app.icon */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = app.icon; path = utilityledger/app.icon; sourceTree = "<group>"; };
+		2560436AA4ADBB0AC34B3000 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = utilityledger/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		38BB19B428FD4555B7869515 /* Onest-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Bold.ttf"; path = "../assets/fonts/Onest/Onest-Bold.ttf"; sourceTree = "<group>"; };
+		38DBC57CD4F14191BC73681F /* Onest-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Regular.ttf"; path = "../assets/fonts/Onest/Onest-Regular.ttf"; sourceTree = "<group>"; };
+		55EAA6350D7F07F5EDF41279 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-utilityledger/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		584DD026E91F4AE089992829 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "utilityledger/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		66005FCCAD376EC83B246E55 /* Pods-utilityledger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-utilityledger.debug.xcconfig"; path = "Target Support Files/Pods-utilityledger/Pods-utilityledger.debug.xcconfig"; sourceTree = "<group>"; };
+		79950C62D9BB4FC8A8712E01 /* app.icon */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = app.icon; path = utilityledger/app.icon; sourceTree = "<group>"; };
+		8EE02C529220C6144E10D78E /* Pods_utilityledger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_utilityledger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		97095121EE421B4BE429DE71 /* Pods-utilityledger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-utilityledger.release.xcconfig"; path = "Target Support Files/Pods-utilityledger/Pods-utilityledger.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = utilityledger/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B2A9488D482F430C819EA41E /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "JetBrainsMono-Regular.ttf"; path = "../assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		BDEE981BD90D46809E5C5A2F /* Onest-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-SemiBold.ttf"; path = "../assets/fonts/Onest/Onest-SemiBold.ttf"; sourceTree = "<group>"; };
-		C001E58FA62342FBAE1357DA /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "JetBrainsMono-Regular.ttf"; path = "../assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
-		C41B6A6F44F844B5B08DAF83 /* Onest-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Bold.ttf"; path = "../assets/fonts/Onest/Onest-Bold.ttf"; sourceTree = "<group>"; };
-		DA3D5FF99F9AF8898D3582D8 /* Pods-utilityledger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-utilityledger.debug.xcconfig"; path = "Target Support Files/Pods-utilityledger/Pods-utilityledger.debug.xcconfig"; sourceTree = "<group>"; };
+		D42D211829E84511A6603B14 /* Onest-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-SemiBold.ttf"; path = "../assets/fonts/Onest/Onest-SemiBold.ttf"; sourceTree = "<group>"; };
+		D7C1A8A85EBD49E8A3561B9A /* Onest-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Black.ttf"; path = "../assets/fonts/Onest/Onest-Black.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = utilityledger/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748432D0307B40044C1D9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = utilityledger/SceneDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* utilityledger-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "utilityledger-Bridging-Header.h"; path = "utilityledger/utilityledger-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4964A83F71B43A5B59DC7CD /* Onest-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Onest-Black.ttf"; path = "../assets/fonts/Onest/Onest-Black.ttf"; sourceTree = "<group>"; };
-		FB8B8B61823240A00F03F404 /* Pods_utilityledger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_utilityledger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				522B8756D2A5F7E0AFDDE264 /* GTMSessionFetcherCore in Frameworks */,
-				C26A82E4240ED66A7663664A /* GULUserDefaults in Frameworks */,
-				6B455BCD6649CC28A3BCAD19 /* Pods_utilityledger.framework in Frameworks */,
+				6FE62432B7451308F3D331B0 /* GTMSessionFetcherCore in Frameworks */,
+				7371DB3BF3A156DC78193333 /* GULUserDefaults in Frameworks */,
+				9F14E3F8E4316A88C8093DCA /* Pods_utilityledger.framework in Frameworks */,
 				5BB01E66A18465F38B2628A3 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,20 +68,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		026E9B22FEA04421BEE1E7EA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5AC396C4775B43DFA53DD21B /* Onest-Regular.ttf */,
-				6BD19C4808A24B5E8F5D2C35 /* Onest-Medium.ttf */,
-				BDEE981BD90D46809E5C5A2F /* Onest-SemiBold.ttf */,
-				C41B6A6F44F844B5B08DAF83 /* Onest-Bold.ttf */,
-				F4964A83F71B43A5B59DC7CD /* Onest-Black.ttf */,
-				C001E58FA62342FBAE1357DA /* JetBrainsMono-Regular.ttf */,
-			);
-			name = Resources;
-			path = "";
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* utilityledger */ = {
 			isa = PBXGroup;
 			children = (
@@ -92,9 +78,9 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				89C7B3490D6D462593E8F976 /* app.icon */,
-				42EECD57B3AE409B8FE6EC59 /* GoogleService-Info.plist */,
-				5D43CACB2A41C1D05B8DAFE6 /* PrivacyInfo.xcprivacy */,
+				79950C62D9BB4FC8A8712E01 /* app.icon */,
+				584DD026E91F4AE089992829 /* GoogleService-Info.plist */,
+				2560436AA4ADBB0AC34B3000 /* PrivacyInfo.xcprivacy */,
 			);
 			name = utilityledger;
 			sourceTree = "<group>";
@@ -103,32 +89,32 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FB8B8B61823240A00F03F404 /* Pods_utilityledger.framework */,
+				8EE02C529220C6144E10D78E /* Pods_utilityledger.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		347D7FF1ACE87D8DC101D7AD /* utilityledger */ = {
+		4F617EC79313AE172A7A4BF4 /* utilityledger */ = {
 			isa = PBXGroup;
 			children = (
-				4144A3479E42EC40C1C7E9AE /* ExpoModulesProvider.swift */,
+				55EAA6350D7F07F5EDF41279 /* ExpoModulesProvider.swift */,
 			);
 			name = utilityledger;
 			sourceTree = "<group>";
 		};
-		61B5A51105F8C65C8A01B4E8 /* ExpoModulesProviders */ = {
+		5FBB1E37514B6A63DFD6F6FC /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				347D7FF1ACE87D8DC101D7AD /* utilityledger */,
+				4F617EC79313AE172A7A4BF4 /* utilityledger */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		82CC152F92B61C179BA4507C /* Pods */ = {
+		6DCCAD84ABD819AB6BF56E42 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DA3D5FF99F9AF8898D3582D8 /* Pods-utilityledger.debug.xcconfig */,
-				7FC79454343A0309BD5E4492 /* Pods-utilityledger.release.xcconfig */,
+				66005FCCAD376EC83B246E55 /* Pods-utilityledger.debug.xcconfig */,
+				97095121EE421B4BE429DE71 /* Pods-utilityledger.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -148,9 +134,9 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				026E9B22FEA04421BEE1E7EA /* Resources */,
-				82CC152F92B61C179BA4507C /* Pods */,
-				61B5A51105F8C65C8A01B4E8 /* ExpoModulesProviders */,
+				EA8207A48EDF4D5A9CF99C6D /* Resources */,
+				6DCCAD84ABD819AB6BF56E42 /* Pods */,
+				5FBB1E37514B6A63DFD6F6FC /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -174,6 +160,20 @@
 			path = utilityledger/Supporting;
 			sourceTree = "<group>";
 		};
+		EA8207A48EDF4D5A9CF99C6D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				38DBC57CD4F14191BC73681F /* Onest-Regular.ttf */,
+				09ED8AB00C3A43EC82AB5537 /* Onest-Medium.ttf */,
+				D42D211829E84511A6603B14 /* Onest-SemiBold.ttf */,
+				38BB19B428FD4555B7869515 /* Onest-Bold.ttf */,
+				D7C1A8A85EBD49E8A3561B9A /* Onest-Black.ttf */,
+				B2A9488D482F430C819EA41E /* JetBrainsMono-Regular.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -182,17 +182,17 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "utilityledger" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				74247FE5FDC48EC188B87457 /* [Expo] Configure project */,
+				750F4688B8A60F04B492D3D0 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				326D166E84B1453EB179C27F /* [Expo Dev Launcher] Strip Local Network Keys for Release */,
-				3ACFB3097113AF2DF162D671 /* [CP] Embed Pods Frameworks */,
-				0361F4546CC47E493876F635 /* [CP-User] [RNFB] Core Configuration */,
-				551DE055DC87A2ADFC40DFC0 /* [RNFB] Embed Firebase SPM Frameworks */,
-				3C79ECAAC35641A7FFB53E7A /* [RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files */,
+				4B2D83FBF84643789F9FB64B /* [Expo Dev Launcher] Strip Local Network Keys for Release */,
+				5FC0E2F75507941FFD85FC1F /* [CP] Embed Pods Frameworks */,
+				0ABC3CD54473970E32D56E91 /* [CP-User] [RNFB] Core Configuration */,
+				B81906EC8351AE88A7E077C8 /* [RNFB] Embed Firebase SPM Frameworks */,
+				7A7DF5F396A79BBC6361ADDC /* [RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files */,
 			);
 			buildRules = (
 			);
@@ -200,8 +200,8 @@
 			);
 			name = utilityledger;
 			packageProductDependencies = (
-				A3230E3A52D2CC53FA001112 /* GTMSessionFetcherCore */,
-				B0EA081687D3B482F33D061F /* GULUserDefaults */,
+				B21713D140F82FF02B386C87 /* GTMSessionFetcherCore */,
+				7405BF7B0A5B23E9F1DAE60B /* GULUserDefaults */,
 				B9A64F35DD6FCE33DB7C8D77 /* FirebaseCore */,
 			);
 			productName = utilityledger;
@@ -231,8 +231,8 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				4FE10789561D5F8EF01EE1D7 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */,
-				F644F5A73A3849855AB82170 /* XCRemoteSwiftPackageReference "GoogleUtilities" */,
+				C4A16B5A5778BC7BFFA9D9B5 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */,
+				AF8EA323C1BC65A05A6A58D7 /* XCRemoteSwiftPackageReference "GoogleUtilities" */,
 				ECB02FC8EBFEE4AD838F1A71 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -252,15 +252,15 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				94F587AF52F14E78BCBD1404 /* app.icon in Resources */,
-				09C939CAD196459FAEFBDE09 /* GoogleService-Info.plist in Resources */,
-				C9A10486A7834D55A3C486BF /* Onest-Regular.ttf in Resources */,
-				A1731FE5E3724CCEB76A6BD5 /* Onest-Medium.ttf in Resources */,
-				353F60AFD27445D196BF5A35 /* Onest-SemiBold.ttf in Resources */,
-				A7779CF3163E4DB7BD46080E /* Onest-Bold.ttf in Resources */,
-				24CE435547784B978ED79A2A /* Onest-Black.ttf in Resources */,
-				C4BB87C8E97A408D80468E61 /* JetBrainsMono-Regular.ttf in Resources */,
-				0B66A5823565B8D345C23064 /* PrivacyInfo.xcprivacy in Resources */,
+				6500157A038C418D8CC1D43A /* app.icon in Resources */,
+				C99715723C204195B09F9226 /* GoogleService-Info.plist in Resources */,
+				51A0B3DAA2EB45148D74EE61 /* Onest-Regular.ttf in Resources */,
+				290598FFAE08400FB30A670B /* Onest-Medium.ttf in Resources */,
+				B52F3D8D315D4667856EF708 /* Onest-SemiBold.ttf in Resources */,
+				10862034605543D39799CCF9 /* Onest-Bold.ttf in Resources */,
+				BF25CCA320AF44E99ECDC682 /* Onest-Black.ttf in Resources */,
+				A1E662AA20CF4915B985B52B /* JetBrainsMono-Regular.ttf in Resources */,
+				DD33226D07930AAB52FF48E1 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,19 +284,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [[ -f \"$SRCROOT/.xcode.env\" ]]; then\n  source \"$SRCROOT/.xcode.env\"\nfi\nif [[ -f \"$SRCROOT/.xcode.env.local\" ]]; then\n  source \"$SRCROOT/.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$SRCROOT/.xcode.env.updates\" ]]; then\n  source \"$SRCROOT/.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$SRCROOT/.xcode.env.local\" ]]; then\n  source \"$SRCROOT/.xcode.env.local\"\nfi\n\n\"`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\"\n\n";
 		};
-		0361F4546CC47E493876F635 /* [CP-User] [RNFB] Core Configuration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = "[CP-User] [RNFB] Core Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\n##########################################################################\n##########################################################################\n#\n#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS\n#\n#  This file is installed as an Xcode build script in the project file\n#  by cocoapods, and you will not see your changes until you pod install\n#\n##########################################################################\n##########################################################################\n\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT='react-native'\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"note:      setting plist entry '$1' of type '$2' in file '$4'\"\n  # PlistBuddy is macOS-only (Xcode builds). Fall back to python3 plistlib so\n  # unit tests can exercise this script on Linux CI (ubuntu-latest).\n  if [[ -x \"${_PLIST_BUDDY}\" ]]; then\n    ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"note:      '$1' already exists\"\n  else\n    python3 - \"$1\" \"$2\" \"$3\" \"$4\" <<'PY' || echo \"note:      failed to set '$1'\"\nimport plistlib\nimport sys\n\nkey, typ, value, path = sys.argv[1:5]\nwith open(path, \"rb\") as handle:\n    data = plistlib.load(handle)\nif key in data:\n    sys.exit(0)\nif typ == \"bool\":\n    data[key] = value in (\"YES\", \"true\", \"1\")\nelse:\n    data[key] = value\nwith open(path, \"wb\") as handle:\n    plistlib.dump(data, handle)\nPY\n  fi\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -rjson -e 'output=JSON.parse(File.read(ARGV.fetch(0))); puts output[ARGV.fetch(1)][ARGV.fetch(2)]' \"$_SEARCH_RESULT\" \"$_JSON_ROOT\" \"$1\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"note: -> RNFB build script started\"\necho \"note: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"note:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"note:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  if ! _RN_ROOT_EXISTS=$(ruby -rjson -e 'output=JSON.parse(File.read(ARGV.fetch(0))); puts output[ARGV.fetch(1)]' \"$_SEARCH_RESULT\" \"$_JSON_ROOT\"); then\n    echo \"error: Failed to parse firebase.json, check for syntax errors.\"\n    exit 1\n  fi\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    if ! python3 --version >/dev/null 2>&1; then echo \"error: python3 not found, firebase.json file processing error.\" && exit 1; fi\n    _JSON_OUTPUT_BASE64=$(python3 -c 'import base64,json,sys; print(base64.b64encode(json.dumps(json.load(open(sys.argv[1], \"rb\"))[\"react-native\"]).encode()).decode())' \"$_SEARCH_RESULT\" || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.app_data_collection_default_enabled\n  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"app_data_collection_default_enabled\")\n  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")\n  fi\n\n  # config.analytics_auto_collection_enabled\n  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"analytics_auto_collection_enabled\")\n  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")\n  fi\n\n  # config.analytics_collection_deactivated\n  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"analytics_collection_deactivated\")\n  if [[ $_ANALYTICS_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")\n  fi\n\n  # config.analytics_idfv_collection_enabled\n  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"analytics_idfv_collection_enabled\")\n  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")\n  fi\n\n  # config.analytics_default_allow_analytics_storage\n  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue \"analytics_default_allow_analytics_storage\")\n  if [[ $_ANALYTICS_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_storage\n  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_storage\")\n  if [[ $_ANALYTICS_AD_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_user_data\n  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_user_data\")\n  if [[ $_ANALYTICS_AD_USER_DATA ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_USER_DATA\")\")\n  fi\n\n  # config.analytics_default_allow_ad_personalization_signals\n  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_personalization_signals\")\n  if [[ $_ANALYTICS_PERSONALIZATION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")\n  fi\n\n  # config.analytics_registration_with_ad_network_enabled\n  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue \"google_analytics_registration_with_ad_network_enabled\")\n  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK\")\")\n  fi\n\n  # config.google_analytics_automatic_screen_reporting_enabled\n  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"google_analytics_automatic_screen_reporting_enabled\")\n  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")\n  fi\n\n  # config.perf_auto_collection_enabled\n  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"perf_auto_collection_enabled\")\n  if [[ $_PERF_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")\n  fi\n\n  # config.perf_collection_deactivated\n  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"perf_collection_deactivated\")\n  if [[ $_PERF_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")\n  fi\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.messaging_installation_id_enabled\n  _MESSAGING_INSTALLATION_ID=$(getFirebaseJsonKeyValue \"messaging_installation_id_enabled\")\n  if [[ $_MESSAGING_INSTALLATION_ID ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingInstallationIdEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_INSTALLATION_ID\")\")\n  fi\n\n  # config.in_app_messaging_auto_colllection_enabled\n  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"in_app_messaging_auto_collection_enabled\")\n  if [[ $_FIAM_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")\n  fi\n\n  # config.app_check_token_auto_refresh\n  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"app_check_token_auto_refresh\")\n  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"note: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"note: <- RNFB build script finished\"\n";
-		};
 		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -319,7 +306,20 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		326D166E84B1453EB179C27F /* [Expo Dev Launcher] Strip Local Network Keys for Release */ = {
+		0ABC3CD54473970E32D56E91 /* [CP-User] [RNFB] Core Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "[CP-User] [RNFB] Core Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\n##########################################################################\n##########################################################################\n#\n#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS\n#\n#  This file is installed as an Xcode build script in the project file\n#  by cocoapods, and you will not see your changes until you pod install\n#\n##########################################################################\n##########################################################################\n\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT='react-native'\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"note:      setting plist entry '$1' of type '$2' in file '$4'\"\n  # PlistBuddy is macOS-only (Xcode builds). Fall back to python3 plistlib so\n  # unit tests can exercise this script on Linux CI (ubuntu-latest).\n  if [[ -x \"${_PLIST_BUDDY}\" ]]; then\n    ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"note:      '$1' already exists\"\n  else\n    python3 - \"$1\" \"$2\" \"$3\" \"$4\" <<'PY' || echo \"note:      failed to set '$1'\"\nimport plistlib\nimport sys\n\nkey, typ, value, path = sys.argv[1:5]\nwith open(path, \"rb\") as handle:\n    data = plistlib.load(handle)\nif key in data:\n    sys.exit(0)\nif typ == \"bool\":\n    data[key] = value in (\"YES\", \"true\", \"1\")\nelse:\n    data[key] = value\nwith open(path, \"wb\") as handle:\n    plistlib.dump(data, handle)\nPY\n  fi\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -rjson -e 'output=JSON.parse(File.read(ARGV.fetch(0))); puts output[ARGV.fetch(1)][ARGV.fetch(2)]' \"$_SEARCH_RESULT\" \"$_JSON_ROOT\" \"$1\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"note: -> RNFB build script started\"\necho \"note: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"note:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"note:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  if ! _RN_ROOT_EXISTS=$(ruby -rjson -e 'output=JSON.parse(File.read(ARGV.fetch(0))); puts output[ARGV.fetch(1)]' \"$_SEARCH_RESULT\" \"$_JSON_ROOT\"); then\n    echo \"error: Failed to parse firebase.json, check for syntax errors.\"\n    exit 1\n  fi\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    if ! python3 --version >/dev/null 2>&1; then echo \"error: python3 not found, firebase.json file processing error.\" && exit 1; fi\n    _JSON_OUTPUT_BASE64=$(python3 -c 'import base64,json,sys; print(base64.b64encode(json.dumps(json.load(open(sys.argv[1], \"rb\"))[\"react-native\"]).encode()).decode())' \"$_SEARCH_RESULT\" || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.app_data_collection_default_enabled\n  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"app_data_collection_default_enabled\")\n  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")\n  fi\n\n  # config.analytics_auto_collection_enabled\n  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"analytics_auto_collection_enabled\")\n  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")\n  fi\n\n  # config.analytics_collection_deactivated\n  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"analytics_collection_deactivated\")\n  if [[ $_ANALYTICS_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")\n  fi\n\n  # config.analytics_idfv_collection_enabled\n  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"analytics_idfv_collection_enabled\")\n  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")\n  fi\n\n  # config.analytics_default_allow_analytics_storage\n  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue \"analytics_default_allow_analytics_storage\")\n  if [[ $_ANALYTICS_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_storage\n  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_storage\")\n  if [[ $_ANALYTICS_AD_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_user_data\n  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_user_data\")\n  if [[ $_ANALYTICS_AD_USER_DATA ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_USER_DATA\")\")\n  fi\n\n  # config.analytics_default_allow_ad_personalization_signals\n  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"analytics_default_allow_ad_personalization_signals\")\n  if [[ $_ANALYTICS_PERSONALIZATION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")\n  fi\n\n  # config.analytics_registration_with_ad_network_enabled\n  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue \"google_analytics_registration_with_ad_network_enabled\")\n  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK\")\")\n  fi\n\n  # config.google_analytics_automatic_screen_reporting_enabled\n  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"google_analytics_automatic_screen_reporting_enabled\")\n  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")\n  fi\n\n  # config.perf_auto_collection_enabled\n  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"perf_auto_collection_enabled\")\n  if [[ $_PERF_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")\n  fi\n\n  # config.perf_collection_deactivated\n  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"perf_collection_deactivated\")\n  if [[ $_PERF_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")\n  fi\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.messaging_installation_id_enabled\n  _MESSAGING_INSTALLATION_ID=$(getFirebaseJsonKeyValue \"messaging_installation_id_enabled\")\n  if [[ $_MESSAGING_INSTALLATION_ID ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingInstallationIdEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_INSTALLATION_ID\")\")\n  fi\n\n  # config.in_app_messaging_auto_colllection_enabled\n  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"in_app_messaging_auto_collection_enabled\")\n  if [[ $_FIAM_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")\n  fi\n\n  # config.app_check_token_auto_refresh\n  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"app_check_token_auto_refresh\")\n  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"note: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"note: <- RNFB build script finished\"\n";
+		};
+		4B2D83FBF84643789F9FB64B /* [Expo Dev Launcher] Strip Local Network Keys for Release */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -333,7 +333,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Strip dev-launcher-specific local network permission keys from release builds.\n# This only removes _expo._tcp Bonjour services and the dev-launcher usage description.\n# Other Bonjour services and custom descriptions are preserved for production use.\n#\n# Detect debug builds via the DEBUG compile condition rather than the configuration name,\n# so custom debug configurations (e.g. \"Dev\", \"Staging\") that define DEBUG keep the keys.\ncase \" $SWIFT_ACTIVE_COMPILATION_CONDITIONS \" in\n  *\" DEBUG \"*) IS_DEBUG_BUILD=1 ;;\n  *) IS_DEBUG_BUILD=0 ;;\nesac\n\nif [ \"$IS_DEBUG_BUILD\" != \"1\" ]; then\n  PLIST_PATH=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n  if [ -f \"$PLIST_PATH\" ]; then\n    # Check if NSBonjourServices exists\n    if /usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" >/dev/null 2>&1; then\n      # Get the count of services\n      COUNT=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null | grep \"^    \" | wc -l | tr -d ' ')\n\n      # Remove _expo._tcp\n      for ((i=COUNT-1; i>=0; i--)); do\n        SERVICE=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices:$i\" \"$PLIST_PATH\" 2>/dev/null || echo \"\")\n        if echo \"$SERVICE\" | grep -q \"_expo._tcp\"; then\n          /usr/libexec/PlistBuddy -c \"Delete :NSBonjourServices:$i\" \"$PLIST_PATH\" 2>/dev/null || true\n        fi\n      done\n\n      # If the array is now empty, remove it entirely\n      REMAINING=$(/usr/libexec/PlistBuddy -c \"Print :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null | grep \"^    \" | wc -l | tr -d ' ')\n      if [ \"$REMAINING\" -eq \"0\" ]; then\n        /usr/libexec/PlistBuddy -c \"Delete :NSBonjourServices\" \"$PLIST_PATH\" 2>/dev/null || true\n      fi\n    fi\n\n    # Only delete the description if it matches the dev-launcher default text\n    DESC=$(/usr/libexec/PlistBuddy -c \"Print :NSLocalNetworkUsageDescription\" \"$PLIST_PATH\" 2>/dev/null || echo \"\")\n    if echo \"$DESC\" | grep -q \"Expo Dev Launcher\"; then\n      /usr/libexec/PlistBuddy -c \"Delete :NSLocalNetworkUsageDescription\" \"$PLIST_PATH\" 2>/dev/null || true\n    fi\n  fi\nfi\n";
 		};
-		3ACFB3097113AF2DF162D671 /* [CP] Embed Pods Frameworks */ = {
+		5FC0E2F75507941FFD85FC1F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -383,47 +383,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-utilityledger/Pods-utilityledger-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3C79ECAAC35641A7FFB53E7A /* [RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "rm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurement.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurement.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurementIdentitySupport.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurementIdentitySupport.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAdsOnDeviceConversion.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAdsOnDeviceConversion.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseAnalytics.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseAnalytics.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseFirestoreInternal.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseFirestoreInternal.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/absl.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/absl.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpc.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpc.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpcpp.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpcpp.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/openssl_grpc.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/openssl_grpc.xcframework-ios-simulator.signature\n";
-		};
-		551DE055DC87A2ADFC40DFC0 /* [RNFB] Embed Firebase SPM Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${BUILT_PRODUCTS_DIR}/PackageFrameworks",
-			);
-			name = "[RNFB] Embed Firebase SPM Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "set -euo pipefail\n\napp_frameworks_dir=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nmkdir -p \"${app_frameworks_dir}\"\n\nembed_frameworks_from() {\n  local source_dir=\"$1\"\n  [ -d \"${source_dir}\" ] || return 0\n\n  find \"${source_dir}\" -maxdepth 1 -type d -name \"*.framework\" -print0 | while IFS= read -r -d '' framework; do\n    framework_name=\"$(basename \"${framework}\")\"\n    destination=\"${app_frameworks_dir}/${framework_name}\"\n\n    if [ -e \"${destination}\" ]; then\n      continue\n    fi\n\n    # Xcode's Archive action writes EVERY SKIP_INSTALL=YES product into\n    # ${OBJROOT}/UninstalledProducts/${PLATFORM_NAME} -- not just Swift\n    # Package products. With CocoaPods + `use_frameworks!` (required for\n    # SPM mode), that folder also contains every pod's .framework,\n    # including STATIC ones (Expo modules, the Pods_<target> umbrella,\n    # ...). Embedding a static framework into the app bundle makes App\n    # Store validation fail with \"Invalid bundle structure ... binary\n    # file is not permitted\". Only ever embed real dynamic libraries.\n    #\n    # Internal binary name matches the .framework folder name minus the\n    # extension for every CocoaPods/SPM-built framework (all this script\n    # handles).\n    binary_name=\"${framework_name%.framework}\"\n    # Deliberate tradeoff: match `file -b` prose for \"dynamically linked\"\n    # rather than inspecting Mach-O magic bytes. Locale-independent in\n    # practice on Apple's `file`, but still a CLI string match.\n    file_description=\"\"\n    if [ -f \"${framework}/${binary_name}\" ]; then\n      file_description=\"$(file -b \"${framework}/${binary_name}\")\"\n    fi\n    # Do not use `file ... | grep -q` here. Under this script's\n    # `set -o pipefail`, `grep -q` exits after the first matching line of\n    # a multi-line universal-binary description, `file` receives SIGPIPE,\n    # and the otherwise-successful pipeline becomes false.\n    if [[ \"${file_description}\" != *\"dynamically linked\"* ]]; then\n      echo \"Skipping ${framework_name}: binary missing or not dynamically linked\"\n      continue\n    fi\n\n    echo \"Embedding Firebase SPM framework ${framework_name} (from ${source_dir})\"\n    rsync -av --delete \\\n      --filter \"- Headers\" \\\n      --filter \"- PrivateHeaders\" \\\n      --filter \"- Modules\" \\\n      \"${framework}\" \\\n      \"${app_frameworks_dir}\"\n\n    if [ -n \"${EXPANDED_CODE_SIGN_IDENTITY:-}\" ] && [ \"${CODE_SIGNING_REQUIRED:-}\" != \"NO\" ] && [ \"${CODE_SIGNING_ALLOWED:-}\" != \"NO\" ]; then\n      /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" ${OTHER_CODE_SIGN_FLAGS:-} --preserve-metadata=identifier,entitlements \"${destination}\"\n    fi\n  done\n}\n\n# Regular (simulator/device) builds put every Swift Package product for\n# the whole scheme's dependency graph into one shared folder.\nembed_frameworks_from \"${BUILT_PRODUCTS_DIR}/PackageFrameworks\"\n\n# Xcode's Archive action (ONLY_ACTIVE_ARCH=NO, DEPLOYMENT_POSTPROCESSING=YES)\n# never populates PackageFrameworks. It stages build products under\n# ${OBJROOT}/UninstalledProducts/${PLATFORM_NAME} instead -- and that\n# folder is NOT SPM-only: Archive writes every SKIP_INSTALL=YES product\n# there, which under CocoaPods + use_frameworks! (required for SPM mode)\n# includes every pod .framework (dynamic Firebase SPM products and static\n# pods alike). Without this fallback, Archive embeds zero Firebase SPM\n# frameworks and the app crashes at launch (missing-library dyld). The\n# filter inside embed_frameworks_from keeps only dynamically linked\n# binaries so static CocoaPods frameworks are not copied into the app\n# bundle (App Store \"Invalid bundle structure\").\nembed_frameworks_from \"${OBJROOT}/UninstalledProducts/${PLATFORM_NAME}\"\n";
-		};
-		74247FE5FDC48EC188B87457 /* [Expo] Configure project */ = {
+		750F4688B8A60F04B492D3D0 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -446,6 +406,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-utilityledger/expo-configure-project.sh\"\n";
+		};
+		7A7DF5F396A79BBC6361ADDC /* [RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[RNFB] Remove duplicate Firebase/Google SPM binary xcframework signature files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurement.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurement.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurementIdentitySupport.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAppMeasurementIdentitySupport.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAdsOnDeviceConversion.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/GoogleAdsOnDeviceConversion.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseAnalytics.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseAnalytics.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseFirestoreInternal.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/FirebaseFirestoreInternal.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/absl.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/absl.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpc.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpc.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpcpp.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/grpcpp.xcframework-ios-simulator.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/openssl_grpc.xcframework-ios.signature\nrm -f \"${CONFIGURATION_BUILD_DIR}\"/openssl_grpc.xcframework-ios-simulator.signature\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -487,6 +466,27 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-utilityledger/Pods-utilityledger-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B81906EC8351AE88A7E077C8 /* [RNFB] Embed Firebase SPM Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${BUILT_PRODUCTS_DIR}/PackageFrameworks",
+			);
+			name = "[RNFB] Embed Firebase SPM Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -euo pipefail\n\napp_frameworks_dir=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nmkdir -p \"${app_frameworks_dir}\"\n\nembed_frameworks_from() {\n  local source_dir=\"$1\"\n  [ -d \"${source_dir}\" ] || return 0\n\n  find \"${source_dir}\" -maxdepth 1 -type d -name \"*.framework\" -print0 | while IFS= read -r -d '' framework; do\n    framework_name=\"$(basename \"${framework}\")\"\n    destination=\"${app_frameworks_dir}/${framework_name}\"\n\n    if [ -e \"${destination}\" ]; then\n      continue\n    fi\n\n    # Xcode's Archive action writes EVERY SKIP_INSTALL=YES product into\n    # ${OBJROOT}/UninstalledProducts/${PLATFORM_NAME} -- not just Swift\n    # Package products. With CocoaPods + `use_frameworks!` (required for\n    # SPM mode), that folder also contains every pod's .framework,\n    # including STATIC ones (Expo modules, the Pods_<target> umbrella,\n    # ...). Embedding a static framework into the app bundle makes App\n    # Store validation fail with \"Invalid bundle structure ... binary\n    # file is not permitted\". Only ever embed real dynamic libraries.\n    #\n    # Internal binary name matches the .framework folder name minus the\n    # extension for every CocoaPods/SPM-built framework (all this script\n    # handles).\n    binary_name=\"${framework_name%.framework}\"\n    # Deliberate tradeoff: match `file -b` prose for \"dynamically linked\"\n    # rather than inspecting Mach-O magic bytes. Locale-independent in\n    # practice on Apple's `file`, but still a CLI string match.\n    file_description=\"\"\n    if [ -f \"${framework}/${binary_name}\" ]; then\n      file_description=\"$(file -b \"${framework}/${binary_name}\")\"\n    fi\n    # Do not use `file ... | grep -q` here. Under this script's\n    # `set -o pipefail`, `grep -q` exits after the first matching line of\n    # a multi-line universal-binary description, `file` receives SIGPIPE,\n    # and the otherwise-successful pipeline becomes false.\n    if [[ \"${file_description}\" != *\"dynamically linked\"* ]]; then\n      echo \"Skipping ${framework_name}: binary missing or not dynamically linked\"\n      continue\n    fi\n\n    echo \"Embedding Firebase SPM framework ${framework_name} (from ${source_dir})\"\n    rsync -av --delete \\\n      --filter \"- Headers\" \\\n      --filter \"- PrivateHeaders\" \\\n      --filter \"- Modules\" \\\n      \"${framework}\" \\\n      \"${app_frameworks_dir}\"\n\n    if [ -n \"${EXPANDED_CODE_SIGN_IDENTITY:-}\" ] && [ \"${CODE_SIGNING_REQUIRED:-}\" != \"NO\" ] && [ \"${CODE_SIGNING_ALLOWED:-}\" != \"NO\" ]; then\n      /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" ${OTHER_CODE_SIGN_FLAGS:-} --preserve-metadata=identifier,entitlements \"${destination}\"\n    fi\n  done\n}\n\n# Regular (simulator/device) builds put every Swift Package product for\n# the whole scheme's dependency graph into one shared folder.\nembed_frameworks_from \"${BUILT_PRODUCTS_DIR}/PackageFrameworks\"\n\n# Xcode's Archive action (ONLY_ACTIVE_ARCH=NO, DEPLOYMENT_POSTPROCESSING=YES)\n# never populates PackageFrameworks. It stages build products under\n# ${OBJROOT}/UninstalledProducts/${PLATFORM_NAME} instead -- and that\n# folder is NOT SPM-only: Archive writes every SKIP_INSTALL=YES product\n# there, which under CocoaPods + use_frameworks! (required for SPM mode)\n# includes every pod .framework (dynamic Firebase SPM products and static\n# pods alike). Without this fallback, Archive embeds zero Firebase SPM\n# frameworks and the app crashes at launch (missing-library dyld). The\n# filter inside embed_frameworks_from keeps only dynamically linked\n# binaries so static CocoaPods frameworks are not copied into the app\n# bundle (App Store \"Invalid bundle structure\").\nembed_frameworks_from \"${OBJROOT}/UninstalledProducts/${PLATFORM_NAME}\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -496,7 +496,7 @@
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
 				F11748442D0307B40044C1D9 /* SceneDelegate.swift in Sources */,
-				967491A3DB8DE17F96A63FAF /* ExpoModulesProvider.swift in Sources */,
+				04D29E1549517B14A063E762 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,7 +505,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA3D5FF99F9AF8898D3582D8 /* Pods-utilityledger.debug.xcconfig */;
+			baseConfigurationReference = 66005FCCAD376EC83B246E55 /* Pods-utilityledger.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = app;
 				CLANG_ENABLE_EXPLICIT_MODULES = NO;
@@ -546,7 +546,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7FC79454343A0309BD5E4492 /* Pods-utilityledger.release.xcconfig */;
+			baseConfigurationReference = 97095121EE421B4BE429DE71 /* Pods-utilityledger.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = app;
 				CLANG_ENABLE_EXPLICIT_MODULES = NO;
@@ -783,7 +783,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4FE10789561D5F8EF01EE1D7 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */ = {
+		AF8EA323C1BC65A05A6A58D7 /* XCRemoteSwiftPackageReference "GoogleUtilities" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleUtilities.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+		C4A16B5A5778BC7BFFA9D9B5 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/gtm-session-fetcher.git";
 			requirement = {
@@ -799,26 +807,18 @@
 				version = 13.1.1;
 			};
 		};
-		F644F5A73A3849855AB82170 /* XCRemoteSwiftPackageReference "GoogleUtilities" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleUtilities.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A3230E3A52D2CC53FA001112 /* GTMSessionFetcherCore */ = {
+		7405BF7B0A5B23E9F1DAE60B /* GULUserDefaults */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4FE10789561D5F8EF01EE1D7 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */;
-			productName = GTMSessionFetcherCore;
-		};
-		B0EA081687D3B482F33D061F /* GULUserDefaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F644F5A73A3849855AB82170 /* XCRemoteSwiftPackageReference "GoogleUtilities" */;
+			package = AF8EA323C1BC65A05A6A58D7 /* XCRemoteSwiftPackageReference "GoogleUtilities" */;
 			productName = GULUserDefaults;
+		};
+		B21713D140F82FF02B386C87 /* GTMSessionFetcherCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4A16B5A5778BC7BFFA9D9B5 /* XCRemoteSwiftPackageReference "gtm-session-fetcher" */;
+			productName = GTMSessionFetcherCore;
 		};
 		B9A64F35DD6FCE33DB7C8D77 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;

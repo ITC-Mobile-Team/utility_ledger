@@ -41,6 +41,16 @@
           "dark": {
             "backgroundColor": "#14213A",
             "image": "./assets/images/app/splash-icon.png"
+          },
+          "ios": {
+            "image": "./assets/images/app/splash-full-ios.png",
+            "resizeMode": "cover",
+            "enableFullScreenImage_legacy": true,
+            "backgroundColor": "#14213A",
+            "dark": {
+              "image": "./assets/images/app/splash-full-ios.png",
+              "backgroundColor": "#14213A"
+            }
           }
         }
       ],
