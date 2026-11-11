@@ -1,9 +1,11 @@
 import {
   getDocFromServer,
   getDocsFromServer,
+  waitForPendingWrites,
 } from '@react-native-firebase/firestore';
 import { storage } from '@/storage';
 import {
+  db,
   isUnavailable,
   outageSettingsDoc,
   USER_COLLECTIONS,
@@ -49,11 +51,33 @@ export async function fetchFromServer(uid: string) {
 
 const DELETE_TIMEOUT_MS = 20_000;
 
+async function withTimeout<T>(promise: Promise<T>, message: string) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), DELETE_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Видаляє всі дані акаунта в хмарі й у локальній копії. Відхиляється без
 // звʼязку (тоді нічого не видалено) або якщо сервер не підтвердив видалення
 // вчасно (повторний виклик довидаляє решту)
 export async function deleteAccountData(uid: string) {
+  // Без звʼязку відхиляється одразу
   await getDocFromServer(userDoc(uid));
+  // Записи, зроблені офлайн, спершу мають дійти до сервера: інакше їхніх
+  // документів не буде в серверному списку нижче, і після видалення акаунта
+  // вони лишилися б у хмарі
+  await withTimeout(
+    waitForPendingWrites(db),
+    'Незбережені зміни не відправлено',
+  );
   const snapshots = await Promise.all(
     USER_COLLECTIONS.map((name) =>
       getDocsFromServer(userCollection(uid, name)),
@@ -69,19 +93,6 @@ export async function deleteAccountData(uid: string) {
     { kind: 'delete', ref: outageSettingsDoc(uid) },
     { kind: 'delete', ref: userDoc(uid) },
   ];
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  try {
-    await Promise.race([
-      commitInChunks(ops),
-      new Promise<never>((_, reject) => {
-        timer = setTimeout(
-          () => reject(new Error('Видалення даних не підтверджено')),
-          DELETE_TIMEOUT_MS,
-        );
-      }),
-    ]);
-  } finally {
-    clearTimeout(timer);
-  }
+  await withTimeout(commitInChunks(ops), 'Видалення даних не підтверджено');
   await unmarkSynced(uid).catch(() => {});
 }

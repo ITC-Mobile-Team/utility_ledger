@@ -6,7 +6,7 @@ import {
   withoutUndefined,
 } from '@/services/firestore/batch';
 import type { KeyValueStorage } from '@/storage';
-import { PROFILE_KEY } from './local-profile-repository';
+import { MOCK_USER_PREFIX, PROFILE_KEY } from './local-profile-repository';
 import {
   type ProfileRepository,
   type UserProfile,
@@ -90,10 +90,14 @@ export function createFirestoreProfileRepository(
       if (uid !== user.id) return;
       const method = user.method ?? null;
       if (!profile) {
-        // Імʼя, змінене в застосунку до хмари (у т.ч. за часів імітації
-        // входу), переходить у профіль акаунта
+        // Імʼя, змінене в застосунку до хмари цим самим акаунтом (або за
+        // часів імітації входу), переходить у профіль акаунта; імʼя
+        // локального профілю іншого акаунта — ні
         const legacy = await readLegacyProfile(storage);
-        const keepsName = legacy?.nameSource === 'user';
+        const isOwnLegacy =
+          legacy?.userId === user.id ||
+          Boolean(legacy?.userId.startsWith(MOCK_USER_PREFIX));
+        const keepsName = isOwnLegacy && legacy?.nameSource === 'user';
         if (uid !== user.id) return;
         write({
           userId: user.id,
