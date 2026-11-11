@@ -107,9 +107,13 @@
         {
           "ios": {
             "useFrameworks": "dynamic"
+          },
+          "android": {
+            "kotlinVersion": "2.4.0"
           }
         }
-      ]
+      ],
+      "./plugins/with-gradle-memory"
     ],
     "experiments": {
       "typedRoutes": true,

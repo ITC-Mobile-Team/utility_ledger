@@ -126,8 +126,8 @@ description: "Tasks: справжній вхід, вихід і видаленн
 
 - [X] T027 [P] Переписати розділи «Дані профілю» і «Вихід і видалення акаунта» в `docs/patterns/account-actions.md`: сесія — Firebase (`src/services/auth/firebase-auth-service.ts`, провайдери в `src/services/auth/providers/`), скасування (`AuthError('cancelled')`) не показує помилок; «Вийти» завершує сесію Firebase і Google; «Видалити акаунт» — справжнє видалення з повторним підтвердженням (Apple завжди, відкликання лише на iOS; Google на `requires-recent-login`), фінальний текст підтвердження, `Alert` при невдачі, дані на пристрої лишаються до хмарного зберігання; прибрати згадки про імітацію й «поки це лише вихід» (FR-015, Constitution IV)
 - [X] T028 [P] Оновити рядок про профіль/акаунт у `docs/patterns/README.md`, якщо його опис згадує імітацію чи «вихід без видалення»
-- [ ] T029 Передати користувачу ручну перевірку за [quickstart.md](quickstart.md) (сценарії 1–14, налаштування Apple Developer і Firebase з розділу 1); після його підтвердження поставити в `spec.md` **Status**: Implemented і короткий підсумок українською
-- [ ] T030 Запустити `npx expo lint` і `npx tsc --noEmit`, виправити всі помилки (Constitution VI: остання задача)
+- [X] T029 Передати користувачу ручну перевірку за [quickstart.md](quickstart.md) (сценарії 1–14, налаштування Apple Developer і Firebase з розділу 1); після його підтвердження поставити в `spec.md` **Status**: Implemented і короткий підсумок українською
+- [X] T030 Запустити `npx expo lint` і `npx tsc --noEmit`, виправити всі помилки (Constitution VI: остання задача)
 
 ---
 

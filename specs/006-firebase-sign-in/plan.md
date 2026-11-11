@@ -65,6 +65,7 @@ GoogleService-Info.plist              # новий, з ~/Downloads (iOS-конф
 google-services.json                  # новий, з ~/Downloads/google-services (1).json (Android-конфіг з OAuth-клієнтом типу 1, SHA-1 debug-ключа)
 app.json                              # googleServicesFile, usesAppleSignIn, плагіни
 plugins/with-google-signin-spm-link.js # config plugin: лінкує спільні SPM-продукти GoogleSignIn/Firebase у застосунок (research R2)
+plugins/with-gradle-memory.js         # config plugin: памʼять Gradle-демона для release-збірки з R8 (research R2a)
 src/services/auth/
 ├── types.ts                          # + deleteAccount(), AuthError (cancelled | failed)
 ├── index.ts                          # authService = createFirebaseAuthService(storage)

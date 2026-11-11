@@ -15,6 +15,12 @@
 - **Risk**: динамічні фреймворки можуть зламати збірку інших нативних модулів (Reanimated/Worklets, keyboard-controller, screens). Перевіряється першою збіркою; при збої — шукати фікс конкретного модуля, а не вертатися на RNFirebase 26.
 - **Outcome (реалізація)**: precompiled modules Expo SDK 58 все одно збирають 90 pod-ів статично (зокрема `RNGoogleSignin`, `RNFBAuth`); через це спільні SPM-продукти GoogleSignIn і Firebase (`GTMSessionFetcherCore`, `GULUserDefaults`) не лінкувались у застосунок. Вимкнення precompiled modules (`ios.usePrecompiledModules: false`) неможливе — Swift 6.4.2 падає на `ExpoModulesCore`. Рішення — config plugin `plugins/with-google-signin-spm-link.js`, що в `post_install` додає ці продукти до таргета застосунку. При оновленні GoogleSignIn чи Firebase перевіряти, чи не зʼявились нові неслінковані продукти (симптом — `Undefined symbol` з `libRNGoogleSignin.a`).
 
+## R2a. Збірка Android
+
+- **Kotlin**: Firebase Auth 25 (BoM 35.0.2, типовий для RNFirebase 27.1.1) скомпільований Kotlin 2.4, а Expo SDK 58 за замовчуванням бере Kotlin 2.2.10 — `compileReleaseKotlin` падав з «binary version of its metadata is 2.4.0, expected version is 2.2.0». Рішення — `expo-build-properties` `android.kotlinVersion: "2.4.0"` (саме на неї розрахований RNFirebase 27); для Kotlin 2.4 Expo бере незалежний від версії KSP 2.3.7.
+- **Памʼять Gradle**: release-збірка з R8 (`android.enableMinifyInReleaseBuilds=true`) не вміщалась у типові 2 ГБ heap / 512 МБ metaspace демона. `plugins/with-gradle-memory.js` задає `org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m`.
+- **Результат**: `./gradlew assembleRelease` дає `app-release.apk` (~100 МБ), підписаний debug-ключем, SHA-1 якого додано у Firebase.
+
 ## R3. Apple на iOS
 
 - **Decision**: `expo-apple-authentication` (`signInAsync` з `FULL_NAME`, `EMAIL` і хешованим nonce) + `expo-crypto` (випадковий nonce і SHA-256). Firebase отримує `OAuthProvider('apple.com').credential({ idToken, rawNonce, fullName })`.

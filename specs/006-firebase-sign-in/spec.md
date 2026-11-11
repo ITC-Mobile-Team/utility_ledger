@@ -1,10 +1,12 @@
 # Feature Specification: Справжній вхід, вихід і видалення акаунта через Apple і Google (Firebase)
 
-**Feature Branch**: `feature/outages-tab`
+**Feature Branch**: `auth-firebase`
 
 **Created**: 2026-11-11
 
-**Status**: Draft
+**Status**: Implemented
+
+**Підсумок**: імітацію входу замінено справжнім Firebase Auth (React Native Firebase 27). «Продовжити з Apple» — системне вікно Apple з nonce на iOS і сторінка Apple у Custom Tab на Android; «Продовжити з Google» — Google Sign-In на обох платформах; закрите вікно провайдера не відкриває екран помилки, інші невдачі — «Не вдалося увійти». Сесія переживає перезапуск. «Вийти» завершує сесію Firebase і Google; «Видалити акаунт» назавжди видаляє акаунт: Apple завжди просить свіже підтвердження й на iOS відкликає токен, Google перепитує лише на `requires-recent-login`, невдача лишає акаунт і показує повідомлення; дані на пристрої не стираються. Текст підтвердження фінальний, артборд 16b у канвасі оновлено. Профіль не втрачає імʼя, коли провайдер його не повертає, і переносить імʼя, змінене за часів імітації. Збірки: iOS — SPM з динамічними фреймворками і config plugin, що лінкує спільні SPM-продукти Google Sign-In і Firebase (precompiled modules Expo інакше їх губили); Android — Kotlin 2.4.0 і більше памʼяті Gradle для R8. Користувач перевірив вхід, вихід і видалення вручну на iOS і Android (Apple на Android налаштовано окремо); відкликання доступу Apple на Android свідомо не робиться (FR-018).
 
 **Input**: User description: "додай firebase sign in with apple та google але тестувати буду я сам" ; уточнення: "також треба повноцінно реалізувати вихід з акаунта та видалення акаунта; видалення акаунта призводить до видалення даних (в майбутньому, коли дані будуть зберігатись на Firebase)" (конфіги Firebase: `GoogleService-Info.plist` для iOS, bundle `com.bogdanpoh.utility-ledger`; `google-services.json` для Android, package `com.bogdanpoh.utilityledger`; проєкт `utility-ledger-4b1aa`)
 
