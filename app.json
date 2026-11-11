@@ -10,7 +10,9 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.bogdanpoh.utility-ledger",
-      "appleTeamId": "3S8AVD2TKW"
+      "appleTeamId": "3S8AVD2TKW",
+      "usesAppleSignIn": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +22,8 @@
         "monochromeImage": "./assets/images/app/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.bogdanpoh.utilityledger"
+      "package": "com.bogdanpoh.utilityledger",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "server",
@@ -86,6 +89,24 @@
                 ]
               }
             ]
+          }
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosDependencyManager": "spm"
+        }
+      ],
+      "./plugins/with-google-signin-spm-link",
+      "expo-apple-authentication",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "dynamic"
           }
         }
       ]

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "776268107209",
+    "project_id": "utility-ledger-4b1aa",
+    "storage_bucket": "utility-ledger-4b1aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776268107209:android:4787d42d7dac5e2d9aac18",
+        "android_client_info": {
+          "package_name": "com.bogdanpoh.utilityledger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776268107209-nic21lsl7gf769gqdj58e6ua6hq00a8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bogdanpoh.utilityledger",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "776268107209-1h1v9f12hj34j4ha1p4v6crsvvsva1ne.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBULvue3FcAFlb5Iotx5ZHE9nlcTyt9HOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776268107209-1h1v9f12hj34j4ha1p4v6crsvvsva1ne.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776268107209-uabk2tuujenh2vdvi1nqsjgivc1nhnbm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bogdanpoh.utility-ledger"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
