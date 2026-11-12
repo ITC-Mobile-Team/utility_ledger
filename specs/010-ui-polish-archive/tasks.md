@@ -249,13 +249,13 @@ description: "Задачі для архівування обʼєктів, ба�
 **Independent Test**: quickstart.md, розділ «Візуальні правки (US5) і профіль (US6)», пункт «Профіль».
 
 - [ ] T049 [US6] Оновити канвас: артборди 16 і 16a «Профіль» — рядок «Змінити імʼя» без значення праворуч, підпис «Utility Ledger · версія 1.0.0 (42)».
-- [ ] T050 [US6] У `src/app/(tabs)/profile/index.tsx`:
+- [X] T050 [US6] У `src/app/(tabs)/profile/index.tsx`:
   - рядок `profile.name`: заголовок «Змінити імʼя», прибрати `trailing` з іменем і стиль `value`, якщо він більше ніде не використовується;
   - версія: `import * as Application from 'expo-application'`, `version = Application.nativeApplicationVersion ?? Constants.expoConfig?.version`, `build = Application.nativeBuildVersion`;
   - текст `Utility Ledger · версія ${version}${build ? ` (${build})` : ''}`;
   - `testID='profile.version'` лишити;
   - прибрати імпорт `Constants`, якщо він більше не потрібен.
-- [ ] T051 [US6] Оновити `.claude/skills/ui-check/flows/profile.flow`: текст «Змінити імʼя» замість «Імʼя», версія з дужками. Пройти в iOS Simulator.
+- [X] T051 [US6] Оновити `.claude/skills/ui-check/flows/profile.flow`: текст «Змінити імʼя» замість «Імʼя», версія з дужками. Пройти в iOS Simulator.
 
 **Checkpoint**: профіль звірено з артбордом.
 

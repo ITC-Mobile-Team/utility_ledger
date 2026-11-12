@@ -38,6 +38,7 @@ import {
   SignInMethodRow,
   StartTabRow,
 } from '@/views/profile';
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useRef } from 'react';
@@ -57,7 +58,11 @@ export default function ProfileScreen() {
 
   const name = getDisplayName(profile);
   const method = profile?.method ?? null;
-  const version = Constants.expoConfig?.version;
+  // Версія й номер білда встановленої збірки (iOS — build number, Android —
+  // version code); у вебі їх немає — тоді версія з app.json без білда
+  const version =
+    Application.nativeApplicationVersion ?? Constants.expoConfig?.version;
+  const build = Application.nativeBuildVersion;
 
   const openEditName = () => router.push('/profile/edit-name');
 
@@ -147,15 +152,11 @@ export default function ProfileScreen() {
           <ListCard>
             <ListRow
               leading={<RowIcon icon='person' background='purpleSoft' />}
-              trailing={
-                <ThemedText style={styles.value} numberOfLines={1}>
-                  {dataStatus === 'ready' ? name : ''}
-                </ThemedText>
-              }
               testID='profile.name'
               onPress={openEditName}
             >
-              <ThemedText font='rowTitle'>Імʼя</ThemedText>
+              {/* Імʼя видно в картці профілю — тут лише дія, без повтору */}
+              <ThemedText font='rowTitle'>Змінити імʼя</ThemedText>
             </ListRow>
             <SignInMethodRow method={method} />
           </ListCard>
@@ -270,7 +271,7 @@ export default function ProfileScreen() {
             style={styles.version}
             testID='profile.version'
           >
-            Utility Ledger · версія {version}
+            {`Utility Ledger · версія ${version}${build ? ` (${build})` : ''}`}
           </ThemedText>
         )}
       </VStack>
@@ -302,10 +303,6 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: 16,
-  },
-  value: {
-    maxWidth: 96,
-    fontSize: 15,
   },
   valueWide: {
     maxWidth: 140,
