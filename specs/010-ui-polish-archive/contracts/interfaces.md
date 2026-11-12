@@ -48,7 +48,7 @@ formatReading(value: number, fractionDigits: number): string; // «123,45»
 
 ## testID (за `docs/patterns/test-ids.md`)
 
-- `object.nav.archive`, `object.nav.restore`
+- `object.nav.archive`, `object.nav.restore` (поруч із наявним `object.nav.delete`)
 - `archive.screen`, `archive.card.{index}`, `archive.analytics.{index}`, `archive.empty`
 - `outageSettings.startQueue`
 - `theme.option.{system|light|dark}` (наявні лишаються)
