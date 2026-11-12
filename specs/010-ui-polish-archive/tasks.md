@@ -317,3 +317,7 @@ description: "Задачі для архівування обʼєктів, ба�
 ## Phase 11: Convergence
 
 - [X] T066 Узгодити артефакти з фактичним рішенням переходу теми: `plan.md` (Performance Goals: «знімок ≤ 150 мс») і `research.md` R6 (корінь знімка в `src/app/_layout.tsx`, ліміти 150/100 мс) розходяться з кодом — корінь зареєстровано в `src/views/app-providers.tsx` (`setThemeSnapshotRoot`), ліміти `CAPTURE_TIMEOUT_MS = 400` / `DISPLAY_TIMEOUT_MS = 250` у `src/components/theme-transition.tsx`, знімок понад 2x кодується в 2x, розчинення стартує після нової схеми + 2 кадри; записати виміри (iOS Simulator 85/17 мс, Android-емулятор ~180/100 мс) і причину зміни в R6 і Performance Goals per plan: Performance Goals, research R6 (contradicts)
+
+## Phase 12: Convergence
+
+- [ ] T067 У `plan.md`, розділ Project Structure, виправити touch-point кореня знімка: дерево каже `src/app/_layout.tsx  # кореневий View з ref для знімка теми`, а корінь зареєстровано в `src/views/app-providers.tsx` (`setThemeSnapshotRoot`), `src/app/_layout.tsx` у фічі не змінювався — прибрати рядок `_layout.tsx` з цим коментарем і додати `views/app-providers.tsx  # кореневий View для знімка теми` per plan: Project Structure, research R6 (contradicts)
