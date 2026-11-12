@@ -81,7 +81,7 @@ export function OutageMessage({
         )}
       </View>
 
-      <VStack spacing={10} align='center'>
+      <VStack spacing={10} align='stretch'>
         <ThemedText font='emptyStateTitle' align='center'>
           {title}
         </ThemedText>

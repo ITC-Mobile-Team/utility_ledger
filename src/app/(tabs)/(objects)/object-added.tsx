@@ -35,7 +35,7 @@ export default function ObjectAdded() {
             <AppImage icon='check' role='heroLarge' />
           </ThemedView>
 
-          <VStack spacing={10} align='center'>
+          <VStack spacing={10} align='stretch'>
             <ThemedText font='emptyStateTitle' align='center'>
               Адресу додано
             </ThemedText>

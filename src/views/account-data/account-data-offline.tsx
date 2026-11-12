@@ -39,7 +39,7 @@ export function AccountDataOffline({ onRetry, compact }: Props) {
           </ThemedView>
         </PulseCore>
       </View>
-      <VStack spacing={10} align='center'>
+      <VStack spacing={10} align='stretch'>
         <ThemedText font='emptyStateTitle' align='center'>
           Немає інтернету
         </ThemedText>

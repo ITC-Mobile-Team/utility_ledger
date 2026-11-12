@@ -62,7 +62,8 @@ export function EmptyStateView({
         )}
       </View>
 
-      <VStack spacing={10} align='center'>
+      {/* На всю ширину, а не fit-content — інакше на Android заголовок обрізається (docs/patterns/centered-text.md) */}
+      <VStack spacing={10} align='stretch'>
         <ThemedText font='emptyStateTitle' align='center'>
           {title}
         </ThemedText>
