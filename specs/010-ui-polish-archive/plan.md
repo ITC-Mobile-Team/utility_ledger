@@ -89,7 +89,6 @@ specs/010-ui-polish-archive/
 ```text
 src/
 ├── app/
-│   ├── _layout.tsx                              # кореневий View з ref для знімка теми
 │   └── (tabs)/
 │       ├── _layout.tsx                          # кольори NativeTabs на Android
 │       ├── (objects)/
@@ -130,6 +129,7 @@ src/
 │       ├── types.ts                             # startQueue
 │       └── firestore-settings-repository.ts     # читання/запис startQueue
 └── views/
+    ├── app-providers.tsx                        # кореневий View для знімка теми (setThemeSnapshotRoot)
     ├── object-card.tsx                          # усі послуги, перенос
     ├── brand/logo-scene.tsx                     # НОВИЙ: сцена логотипу (зі splash)
     ├── splash/app-splash.tsx                    # використовує LogoScene

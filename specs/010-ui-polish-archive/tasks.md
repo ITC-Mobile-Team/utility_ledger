@@ -320,4 +320,4 @@ description: "Задачі для архівування обʼєктів, ба�
 
 ## Phase 12: Convergence
 
-- [ ] T067 У `plan.md`, розділ Project Structure, виправити touch-point кореня знімка: дерево каже `src/app/_layout.tsx  # кореневий View з ref для знімка теми`, а корінь зареєстровано в `src/views/app-providers.tsx` (`setThemeSnapshotRoot`), `src/app/_layout.tsx` у фічі не змінювався — прибрати рядок `_layout.tsx` з цим коментарем і додати `views/app-providers.tsx  # кореневий View для знімка теми` per plan: Project Structure, research R6 (contradicts)
+- [X] T067 У `plan.md`, розділ Project Structure, виправити touch-point кореня знімка: дерево каже `src/app/_layout.tsx  # кореневий View з ref для знімка теми`, а корінь зареєстровано в `src/views/app-providers.tsx` (`setThemeSnapshotRoot`), `src/app/_layout.tsx` у фічі не змінювався — прибрати рядок `_layout.tsx` з цим коментарем і додати `views/app-providers.tsx  # кореневий View для знімка теми` per plan: Project Structure, research R6 (contradicts)
