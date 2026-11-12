@@ -9,7 +9,7 @@
 
 ## Кольори на Android
 
-`NativeTabs` на Android бере кольори дизайн-системи замість Material за замовчуванням: фон — `surface` (лише Android, на iOS фон малює система), неактивні іконки й підписи — `tabInk`, активні — колір вкладки (`blue`, `powerOnInk`, `greenInk`, `purpleInk`), індикатор вибраної вкладки — її мʼякий тон на `NativeTabs.Trigger` (`blueSoft`, `powerOnSoft`, `greenSoft`, `purpleSoft`), ripple — `line`, `labelVisibilityMode='labeled'`. Кольори з `useThemeColor`, тож змінюються разом із темою; чи підхоплює їх Android на льоту, перевіряється на пристрої.
+`NativeTabs` на Android бере кольори дизайн-системи замість Material за замовчуванням: фон — `surface` (лише Android, на iOS фон малює система), неактивні іконки й підписи — `tabInk`, активні — колір вкладки (`blue`, `powerOnInk`, `greenInk`, `purpleInk`), індикатор вибраної вкладки — її мʼякий тон на `NativeTabs.Trigger` (`blueSoft`, `powerOnSoft`, `greenSoft`, `purpleSoft`), ripple — `line`, `labelVisibilityMode='labeled'`. Кольори з `useThemeColor`, тож змінюються разом із темою; Android-емулятор (Pixel 9 Pro) перефарбовує таб-бар на льоту разом із темою, без перезапуску.
 
 ## Стартова вкладка
 
