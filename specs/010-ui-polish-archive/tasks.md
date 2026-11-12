@@ -263,10 +263,10 @@ description: "Задачі для архівування обʼєктів, ба�
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T052 Звірити `docs/patterns/README.md` з усіма файлами патернів, зміненими в історіях (задачі оновлення патернів у кожній фазі): кожен файл є в індексі, опис відповідає новому змісту; нічого не лишилось неоновленим
+- [X] T052 Звірити `docs/patterns/README.md` з усіма файлами патернів, зміненими в історіях (задачі оновлення патернів у кожній фазі): кожен файл є в індексі, опис відповідає новому змісту; нічого не лишилось неоновленим
 - [ ] T053 Пройти весь [quickstart.md](quickstart.md) в iOS Simulator і на Android-емуляторі, включно з офлайн-архівуванням (режим польоту) і `ui-check` `smoke.flow`, `navbar.flow`, `start-tab.flow`.
-- [ ] T054 У `specs/010-ui-polish-archive/spec.md` поставити **Status**: Implemented і коротко українською підсумувати, що змінилося і що не перевірено.
-- [ ] T055 Запустити `npx expo lint` і `npx tsc --noEmit`, виправити всі помилки (Constitution VI).
+- [X] T054 У `specs/010-ui-polish-archive/spec.md` поставити **Status**: Implemented і коротко українською підсумувати, що змінилося і що не перевірено.
+- [X] T055 Запустити `npx expo lint` і `npx tsc --noEmit`, виправити всі помилки (Constitution VI).
 
 ---
 
