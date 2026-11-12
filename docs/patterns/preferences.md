@@ -14,7 +14,11 @@
 - Нативні елементи (таб-бар, `Alert`, системні меню) йдуть за вибором самі; `app.json` лишає `userInterfaceStyle: "automatic"`.
 - На Android `AppTheme` має `android:forceDarkAllowed=false` (config plugin `plugins/with-force-dark-disabled.js`). Без цього MIUI та інші оболонки в системній темній темі самі перефарбовують світлу тему: після вибору «Світла» застосунок на мить світлий, а потім знову темніє. На емуляторі цього не видно, перевіряти на пристрої.
 - Колір читаємо лише через `useThemeColor()` / `useColorScheme()` і не кешуємо в модулі: схема змінюється в роботі застосунку, зокрема коли система перемикається при «Як у системі».
-- Зміну теми згладжує `ThemeTransition` (`src/components/theme-transition.tsx`): на мить фон попередньої схеми накриває застосунок і розчиняється за 250 мс. Анімація — CSS-keyframes Reanimated, що стартують у кадрі зміни, тож кадру з новою темою без накриття немає.
+- Зміну теми згладжує `ThemeTransition` (`src/components/theme-transition.tsx`), обидва шляхи — CSS-keyframes Reanimated за 350 мс:
+  - **вибір користувача** — `setTheme` спершу викликає `captureBeforeThemeChange()`: `captureRef` (`react-native-view-shot`) знімає корінь (`View` у `AppProviders`, зареєстрований `setThemeSnapshotRoot`, `collapsable={false}`), знімок лягає поверх усього (`expo-image`), і лише після його показу `Appearance.setColorScheme` змінює схему, а `finishThemeChange()` розчиняє знімок — справжнє перетікання старого вигляду в новий, включно з таб-баром. Знімок має вкластися в 150 мс, показ — у 100 мс; інакше (а також без нативного модуля в старій development build) тема змінюється з накриттям, а в dev-лозі `[theme] snapshot fallback <причина> <мс>`;
+  - **зміна системою** в режимі «Як у системі» (знімок до неї зробити неможливо) — пом'якшений перехід: на мить фон попередньої схеми накриває застосунок і розчиняється;
+  - «Зменшити рух» — без знімка й накриття.
+- `react-native-view-shot` — нативний модуль: після додавання потрібна нова development build. TypeScript бере його типи з `lib/index.d.ts` (`paths` у `tsconfig.json`), бо умова `react-native` вказує на вихідний `src/`, який не проходить `verbatimModuleSyntax`.
 - Екран «Тема» лишається відкритим після вибору — див. [pickers.md](pickers.md).
 
 ## Стартова вкладка

@@ -13,13 +13,11 @@ import {
 import Animated, {
   Easing,
   useAnimatedStyle,
-  useReducedMotion,
   useSharedValue,
-  withRepeat,
-  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
+import { useSunCycle } from '../brand/use-sun-cycle';
 import { useSplashGate } from './use-splash-gate';
 
 // Колір системного splash (app.json) — перший кадр накладки той самий
@@ -59,7 +57,6 @@ export function AppSplash() {
 
 function SplashOverlay({ onFinish }: { onFinish: () => void }) {
   const { width, height } = useWindowDimensions();
-  const reduceMotion = useReducedMotion();
   // Момент, коли накладка справді показана (системний splash сховано):
   // від нього рахуються мінімальна секунда й чекання даних
   const [shownAt, setShownAt] = useState<number | null>(null);
@@ -71,24 +68,9 @@ function SplashOverlay({ onFinish }: { onFinish: () => void }) {
 
   const appear = useSharedValue(0);
   const opacity = useSharedValue(1);
-  const sun = useSharedValue(0.5);
-
-  useEffect(() => {
-    if (reduceMotion) {
-      sun.set(0.5);
-      return;
-    }
-    // Сонце стартує з вершини дуги — світла пляма проявляється над будинком,
-    // а не збоку, — далі цикл 7 с туди й назад
-    const easing = Easing.inOut(Easing.ease);
-    sun.set(0.5);
-    sun.set(
-      withSequence(
-        withTiming(1, { duration: 3500, easing }),
-        withRepeat(withTiming(0, { duration: 7000, easing }), -1, true),
-      ),
-    );
-  }, [reduceMotion, sun]);
+  // Сонце стартує з вершини дуги — світла пляма проявляється над будинком,
+  // а не збоку, — далі цикл 7 с туди й назад (спільний зі сценами теми)
+  const sun = useSunCycle();
 
   useEffect(() => {
     if (!canHide) return;

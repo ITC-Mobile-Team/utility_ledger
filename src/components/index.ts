@@ -29,6 +29,11 @@ export {
   PRESS_LOCK_MS,
 } from './pressable';
 export type { PressableProps, GesturePressableProps } from './pressable';
-export { ThemeTransition } from './theme-transition';
+export {
+  captureBeforeThemeChange,
+  finishThemeChange,
+  setThemeSnapshotRoot,
+  ThemeTransition,
+} from './theme-transition';
 export { SkeletonBone, useSkeletonShine } from './skeleton';
 export { PulseRings, PulseCore, usePulseActive } from './pulse';

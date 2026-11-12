@@ -1,4 +1,5 @@
-# Екран «Тема»: вибір темної перефарбовує застосунок і лишає на екрані, у профілі видно «Темна»;
+# Екран «Тема»: картки зі сценою логотипу без галочки — вибір видно зі стану radio (checked);
+# вибір темної перефарбовує застосунок і лишає на екрані, у профілі видно «Темна»;
 # наприкінці повертається «Як у системі».
 # Потрібен вхід. Запуск з кореня проєкту:
 # .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/theme.flow
@@ -22,9 +23,12 @@ see Оформлення застосунку
 check id=theme.option.system "label~=Як у системі"
 check id=theme.option.light label~=Світла
 check id=theme.option.dark label~=Темна
+check id=theme.option.system "value~=checked"
 tap id=theme.option.dark
-sleep 0.6
+sleep 0.8
 wait id=theme.screen
+check id=theme.option.dark "value=radio button, checked"
+check id=theme.option.system "value~=unchecked"
 shot name=theme-dark scale=0.6
 tap id=navigationBar.back
 wait id=profile.screen

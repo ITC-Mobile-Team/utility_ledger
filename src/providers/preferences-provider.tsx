@@ -20,6 +20,10 @@ import {
   type PropsWithChildren,
 } from 'react';
 import { Appearance } from 'react-native';
+import {
+  captureBeforeThemeChange,
+  finishThemeChange,
+} from '@/components/theme-transition';
 
 type Preferences = { theme: ThemePreference; startTab: StartTab };
 
@@ -74,7 +78,11 @@ export function PreferencesProvider({
 
   const setTheme = useCallback(
     async (next: ThemePreference) => {
+      // Знімок поточного вигляду до зміни схеми — він розчиниться в новій
+      // темі (ThemeTransition). Сама функція не довше ~250 мс і не кидає
+      await captureBeforeThemeChange();
       Appearance.setColorScheme(toColorScheme(next));
+      finishThemeChange();
       setPreferences((current) => current && { ...current, theme: next });
       // Збій запису не скасовує вибір: він діє до перезапуску
       await storage.setItem(THEME_KEY, next).catch(() => {});

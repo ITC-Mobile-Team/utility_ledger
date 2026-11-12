@@ -175,7 +175,7 @@ description: "Задачі для архівування обʼєктів, ба�
 **Independent Test**: quickstart.md, розділ «Тема (US4)».
 
 - [ ] T031 [US4] Оновити канвас: артборд «Тема» (16d–16g) — три картки зі сценою знака застосунку («Світла» — денне небо, сонце високо, коротка тінь; «Темна» — нічне небо, місяць, зірки; «Як у системі» — навпіл), вибрана з рамкою `blue` 2 pt, невибрані приглушені (opacity 0.6), без позначки-радіо.
-- [ ] T032 [US4] Створити `src/views/brand/logo-scene.tsx` (і `src/views/brand/index.ts`), винісши з `src/views/splash/app-splash.tsx` малювання сцени:
+- [X] T032 [US4] Створити `src/views/brand/logo-scene.tsx` (і `src/views/brand/index.ts`), винісши з `src/views/splash/app-splash.tsx` малювання сцени:
   - знак `splash-icon.png`, «сонце» дугою за `x = −170 + 340·p`, `y = 40 − 100·sin(π·p)` у масштабі `size`;
   - тінь будинку з поворотом `−38° + 76°·p`.
 
@@ -187,8 +187,8 @@ description: "Задачі для архівування обʼєктів, ба�
   - shared values лише через `get()`/`set()` (`docs/patterns/reanimated.md`).
 
   Сцени декоративні: `accessibilityElementsHidden` / `importantForAccessibility='no-hide-descendants'`.
-- [ ] T033 [US4] Перевести `src/views/splash/app-splash.tsx` на `LogoScene` (`variant='day'`, `animated`, розмір знака як зараз). Перевірити, що перший кадр splash піксель у піксель збігається з системним (`docs/patterns/splash.md`). Пройти `.claude/skills/ui-check/flows/splash.flow`.
-- [ ] T034 [US4] Переробити `src/views/profile/theme-option-card.tsx`:
+- [X] T033 [US4] Перевести `src/views/splash/app-splash.tsx` на `LogoScene` (`variant='day'`, `animated`, розмір знака як зараз). Перевірити, що перший кадр splash піксель у піксель збігається з системним (`docs/patterns/splash.md`). Пройти `.claude/skills/ui-check/flows/splash.flow`.
+- [X] T034 [US4] Переробити `src/views/profile/theme-option-card.tsx`:
   - замість `ThemePreview` рендерити `LogoScene` (`system` → `split`, `light` → `day`, `dark` → `night`; `animated={selected}`);
   - прибрати круглу позначку з `check` і стилі радіо;
   - рамка `blue` при виборі (як зараз, `borderWidth: 2`), невибрана — колір рамки = фон, `opacity: 0.6` на сцені;
@@ -196,7 +196,7 @@ description: "Задачі для архівування обʼєктів, ба�
   - `accessibilityRole='radio'` і `accessibilityState={{ checked: selected }}` лишити.
 
   Видалити `src/views/profile/theme-preview.tsx` і його експорт з `src/views/profile/index.ts`.
-- [ ] T035 [US4] Перехід теми знімком (research R6):
+- [X] T035 [US4] Перехід теми знімком (research R6):
   - (a) у `src/app/_layout.tsx` обгорнути навігатор у `View` з `ref`, `collapsable={false}`, `style={{ flex: 1 }}` і передати ref у новий контекст `ThemeSnapshotContext` (у `src/components/theme-transition.tsx`);
   - (b) у `ThemeTransition` додати функцію `captureBeforeThemeChange(): Promise<void>`:
     - `captureRef(rootRef, { format: 'jpg', quality: 0.9, result: 'tmpfile' })` з `react-native-view-shot`, імпорт ліниво з перевіркою наявності нативного модуля (стара development build без нього → запасний шлях);
@@ -205,11 +205,11 @@ description: "Задачі для архівування обʼєктів, ба�
     - після завершення файл видалити (`expo-file-system`, якщо вже є в залежностях, інакше лишити тимчасовим);
   - (c) зміна схеми без знімка (система в режимі «Як у системі», помилка знімка) — теперішнє накриття фоном, але 350 мс;
   - (d) `useReducedMotion()` — без накриття й без знімка.
-- [ ] T036 [US4] У `src/providers/preferences-provider.tsx` у `setTheme` перед `Appearance.setColorScheme(...)` дочекатися `captureBeforeThemeChange()` (з таймаутом 150 мс, щоб тема не затримувалась, якщо знімок повільний). Якщо спрацював таймаут чи знімок упав — у `__DEV__` писати `console.warn('[theme] snapshot fallback', причина, мс)`, щоб тихий перехід на накриття було видно). Повторний виклик під час анімації бере новий знімок поточного кадру. API `usePreferences().setTheme` не змінюється.
-- [ ] T037 [US4] Оновити `.claude/skills/ui-check/flows/theme.flow` під картки без позначки: перевірка вибору через `accessibilityState`/`selected` замість іконки галочки. Пройти в iOS Simulator.
+- [X] T036 [US4] У `src/providers/preferences-provider.tsx` у `setTheme` перед `Appearance.setColorScheme(...)` дочекатися `captureBeforeThemeChange()` (з таймаутом 150 мс, щоб тема не затримувалась, якщо знімок повільний). Якщо спрацював таймаут чи знімок упав — у `__DEV__` писати `console.warn('[theme] snapshot fallback', причина, мс)`, щоб тихий перехід на накриття було видно). Повторний виклик під час анімації бере новий знімок поточного кадру. API `usePreferences().setTheme` не змінюється.
+- [X] T037 [US4] Оновити `.claude/skills/ui-check/flows/theme.flow` під картки без позначки: перевірка вибору через `accessibilityState`/`selected` замість іконки галочки. Пройти в iOS Simulator.
 - [ ] T038 [US4] Зібрати нову development build з `react-native-view-shot` (`npx expo run:ios` і `npx expo run:android` або `bunx`/`npx eas-cli@latest build --profile development`). Перевірити перемикання теми на обох платформах: увесь екран, навбар і таб-бар перетікають ≤ 0,5 с, без кадру з різкою зміною (SC-004). Окремо: (1) виміряти час `captureRef` на iOS Simulator і Android-емуляторі (10 перемикань, у лозі немає `[theme] snapshot fallback`, медіана < 150 мс); (2) таб-бар є на знімку на обох платформах (тимчасово не розчиняти знімок і порівняти скріншот). Якщо на Android таб-бар на знімок не потрапляє — повідомити користувача й записати обмеження в `docs/patterns/preferences.md`.
 
-- [ ] T039 [US4] Оновити патерни в тому ж коміті, що й код US4: `docs/patterns/preferences.md` — перехід теми знімком кореня (`captureRef`, 350 мс), пом'якшене накриття для системної зміни й без нативного модуля, «Зменшити рух» без анімації; `docs/patterns/pickers.md` — екран «Тема» зі сценами логотипу без позначки, вибраний — рамка й анімація; `docs/patterns/splash.md` — сцена винесена в `LogoScene` (`src/views/brand/`); рядки індексу `docs/patterns/README.md`
+- [X] T039 [US4] Оновити патерни в тому ж коміті, що й код US4: `docs/patterns/preferences.md` — перехід теми знімком кореня (`captureRef`, 350 мс), пом'якшене накриття для системної зміни й без нативного модуля, «Зменшити рух» без анімації; `docs/patterns/pickers.md` — екран «Тема» зі сценами логотипу без позначки, вибраний — рамка й анімація; `docs/patterns/splash.md` — сцена винесена в `LogoScene` (`src/views/brand/`); рядки індексу `docs/patterns/README.md`
 
 **Checkpoint**: тема перемикається плавно, екран вибору — з логотипом.
 

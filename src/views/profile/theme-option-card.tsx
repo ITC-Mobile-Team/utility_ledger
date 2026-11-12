@@ -1,4 +1,4 @@
-import { AppImage, Pressable, ThemedText, VStack } from '@/components';
+import { Pressable, ThemedText, VStack } from '@/components';
 import { useThemeColor } from '@/hooks/use-theme-colors';
 import type { ThemePreference } from '@/services/preferences';
 import { getThemeLabel } from '@/services/preferences';
@@ -7,7 +7,13 @@ import { StyleSheet, View } from 'react-native';
 import Animated, {
   type CSSTransitionProperties,
 } from 'react-native-reanimated';
-import { ThemePreview } from './theme-preview';
+import { LogoScene, type LogoSceneVariant } from '../brand';
+
+const scenes: Record<ThemePreference, LogoSceneVariant> = {
+  system: 'split',
+  light: 'day',
+  dark: 'night',
+};
 
 const descriptions: Record<ThemePreference, string> = {
   system: 'Іде за темою телефону',
@@ -15,10 +21,17 @@ const descriptions: Record<ThemePreference, string> = {
   dark: 'Завжди темна, береже очі ввечері',
 };
 
-// Рамка й фон картки та позначки перетікають, натиснута картка стискається
+// Рамка й фон картки перетікають, натиснута картка стискається
 const transition: CSSTransitionProperties = {
   transitionProperty: ['backgroundColor', 'borderColor', 'transform'],
-  transitionDuration: 200,
+  transitionDuration: 250,
+  transitionTimingFunction: 'ease-out',
+};
+
+// Невибрана сцена приглушується, вибрана — проявляється
+const sceneTransition: CSSTransitionProperties = {
+  transitionProperty: ['opacity'],
+  transitionDuration: 250,
   transitionTimingFunction: 'ease-out',
 };
 
@@ -36,7 +49,6 @@ export function ThemeOptionCard({
   const [isPressed, setPressed] = useState(false);
   const surface = useThemeColor('surface');
   const blue = useThemeColor('blue');
-  const line = useThemeColor('line');
   const label = getThemeLabel(value);
 
   return (
@@ -62,7 +74,12 @@ export function ThemeOptionCard({
           transition,
         ]}
       >
-        <ThemePreview preference={value} />
+        {/* Вибір видно з рамки й «живої» сцени, без галочки */}
+        <Animated.View
+          style={[{ opacity: selected ? 1 : 0.6 }, sceneTransition]}
+        >
+          <LogoScene variant={scenes[value]} animated={selected} />
+        </Animated.View>
         <View style={styles.footer}>
           <VStack spacing={2} style={styles.copy}>
             <ThemedText font='rowTitle'>{label}</ThemedText>
@@ -70,16 +87,6 @@ export function ThemeOptionCard({
               {descriptions[value]}
             </ThemedText>
           </VStack>
-          <Animated.View
-            style={[
-              styles.mark,
-              selected ? { backgroundColor: blue } : { borderColor: line },
-              !selected && styles.markEmpty,
-              transition,
-            ]}
-          >
-            {selected && <AppImage icon='check' role='badge' />}
-          </Animated.View>
         </View>
       </Animated.View>
     </Pressable>
@@ -103,15 +110,5 @@ const styles = StyleSheet.create({
   },
   copy: {
     flex: 1,
-  },
-  mark: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  markEmpty: {
-    borderWidth: 2,
   },
 });
