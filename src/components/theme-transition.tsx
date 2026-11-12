@@ -3,6 +3,8 @@ import { Image } from 'expo-image';
 import { type ComponentRef, useEffect, useState } from 'react';
 import {
   AccessibilityInfo,
+  Dimensions,
+  PixelRatio,
   StyleSheet,
   TurboModuleRegistry,
   useColorScheme,
@@ -17,8 +19,10 @@ type Scheme = 'light' | 'dark';
 
 const FADE_MS = 350;
 // Скільки чекаємо знімок і його показ, перш ніж змінити тему без нього
-const CAPTURE_TIMEOUT_MS = 150;
-const DISPLAY_TIMEOUT_MS = 100;
+// Виміряно на Android-емуляторі: знімок ~170 мс, показ ~100 мс — ліміти з
+// запасом, щоб не падати на накриття фоном
+const CAPTURE_TIMEOUT_MS = 400;
+const DISPLAY_TIMEOUT_MS = 250;
 
 const fadeOut = css.keyframes({
   from: { opacity: 1 },
@@ -35,6 +39,18 @@ let currentBackground: string | null = null;
 export function setThemeSnapshotRoot(view: RootView | null) {
   snapshotRoot = view;
 }
+
+// Знімок не більший за щільність 2x: на екранах 3x+ кодування повного
+// розміру в JPEG займає основний час, а за 350 мс перетікання різниці не видно
+const snapshotSize = () => {
+  const scale = PixelRatio.get();
+  if (scale <= 2) return {};
+  const { width, height } = Dimensions.get('window');
+  return {
+    width: Math.round((width * 2) / scale),
+    height: Math.round((height * 2) / scale),
+  };
+};
 
 const hasViewShot = () => TurboModuleRegistry.get('RNViewShot') !== null;
 
@@ -84,8 +100,9 @@ export async function captureBeforeThemeChange() {
     const uri = await withTimeout(
       captureRef(snapshotRoot, {
         format: 'jpg',
-        quality: 0.9,
+        quality: 0.8,
         result: 'tmpfile',
+        ...snapshotSize(),
       }),
       CAPTURE_TIMEOUT_MS,
       'capture',
