@@ -46,7 +46,7 @@ description: "Задачі для архівування обʼєктів, ба�
 - [ ] T003 [US1] У `src/services/ledger/types.ts`:
   - до `LedgerObject` додати `archived?: boolean` (немає поля = `false`), `archivedAt?: number` (ms, час останнього архівування; після повернення не видаляється), `includeInAnalytics?: boolean` (немає поля = `true`; має значення лише при `archived === true`), з коментарями українською (data-model.md);
   - до `LedgerRepository` додати `setObjectArchive(id: string, patch: { archived: boolean; includeInAnalytics?: boolean }): Promise<void>` (contracts/interfaces.md);
-  - `ObjectInput` лишити як є (`Omit<LedgerObject, 'id' | 'createdAt'>`), але виключити з нього три нові поля, щоб форма їх не перезаписувала.
+  - `ObjectInput` змінити на `Omit<LedgerObject, 'id' | 'createdAt' | 'archived' | 'archivedAt' | 'includeInAnalytics'>`, щоб форма не перезаписувала архівні поля.
 - [ ] T004 [US1] Реалізувати `setObjectArchive` у `src/services/ledger/firestore-ledger-repository.ts` за зразком `updateObject`: знайти обʼєкт, зібрати новий і викликати `commit` з `set('objects', id, object)`.
   - `archived: true` → `archivedAt: Date.now()`, `includeInAnalytics: patch.includeInAnalytics ?? true`.
   - `archived: false` → `archived: false`, `includeInAnalytics: true`.
@@ -81,7 +81,7 @@ description: "Задачі для архівування обʼєктів, ба�
   - рядки послуг не відкривають `reading`, `amount` і `services`;
   - свайп «Скинути» (`SwipeableRow`, рядки 174–186) вимкнено;
   - перехід до розрахунку `bill` лишити доступним.
-- [ ] T011 [P] [US1] Захист глибоких екранів редагування: у `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx`, `src/app/(tabs)/(objects)/[objectId]/service-form.tsx`, `src/app/(tabs)/(objects)/[objectId]/services.tsx` і `src/app/(tabs)/(objects)/object-form.tsx` (лише режим редагування з `objectId`) при `isObjectReadOnly(object)` одразу виконати `router.back()` в ефекті й рендерити `null`. У `services.tsx` замість цього можна показувати список без кнопок навбару й без переходу в `service-form`.
+- [ ] T011 [P] [US1] Захист глибоких екранів редагування: у `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx`, `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` і `src/app/(tabs)/(objects)/object-form.tsx` (лише режим редагування з `objectId`) при `isObjectReadOnly(object)` одразу виконати `router.back()` в ефекті й рендерити `null`. `src/app/(tabs)/(objects)/[objectId]/services.tsx` для архівованого показує список послуг для перегляду: без кнопок навбару, рядки не відкривають `service-form`, свайп видалення вимкнено.
 - [ ] T012 [US1] Додати сценарій `.claude/skills/ui-check/flows/archive.flow` у форматі наявних flow (див. `.claude/skills/ui-check/SKILL.md`): відкрити `objects.card.0`, натиснути `object.nav.archive`, підтвердити «Архівувати», перевірити, що в списку немає цієї адреси; `objects.nav.archive` → `archive.screen` і `archive.card.0`; відкрити картку → є `object.nav.restore` і `object.nav.delete`, немає `object.nav.addMonth` і `object.nav.archive`; `object.nav.restore` → назад до списку → адреса повернулась. Пройти сценарій в iOS Simulator.
 
 - [ ] T013 [US1] Оновити патерни в тому ж коміті, що й код US1 (Constitution IV, «Процес»): `docs/patterns/user-data.md` — поля `archived`/`archivedAt`/`includeInAnalytics`, `setObjectArchive`, архівований обʼєкт лише для перегляду (крім «Повернути з архіву» й «Видалити»), обʼєкти для «Аналітики» — лише через `getAnalyticsObjects`; `docs/patterns/tab-bar.md` — екран «Архів» у стеку «Обʼєктів» без таб-бару; опис цих файлів в індексі `docs/patterns/README.md`, якщо змінився зміст
@@ -205,9 +205,9 @@ description: "Задачі для архівування обʼєктів, ба�
     - після завершення файл видалити (`expo-file-system`, якщо вже є в залежностях, інакше лишити тимчасовим);
   - (c) зміна схеми без знімка (система в режимі «Як у системі», помилка знімка) — теперішнє накриття фоном, але 350 мс;
   - (d) `useReducedMotion()` — без накриття й без знімка.
-- [ ] T036 [US4] У `src/providers/preferences-provider.tsx` у `setTheme` перед `Appearance.setColorScheme(...)` дочекатися `captureBeforeThemeChange()` (з таймаутом 150 мс, щоб тема не затримувалась, якщо знімок повільний). Повторний виклик під час анімації бере новий знімок поточного кадру. API `usePreferences().setTheme` не змінюється.
+- [ ] T036 [US4] У `src/providers/preferences-provider.tsx` у `setTheme` перед `Appearance.setColorScheme(...)` дочекатися `captureBeforeThemeChange()` (з таймаутом 150 мс, щоб тема не затримувалась, якщо знімок повільний). Якщо спрацював таймаут чи знімок упав — у `__DEV__` писати `console.warn('[theme] snapshot fallback', причина, мс)`, щоб тихий перехід на накриття було видно). Повторний виклик під час анімації бере новий знімок поточного кадру. API `usePreferences().setTheme` не змінюється.
 - [ ] T037 [US4] Оновити `.claude/skills/ui-check/flows/theme.flow` під картки без позначки: перевірка вибору через `accessibilityState`/`selected` замість іконки галочки. Пройти в iOS Simulator.
-- [ ] T038 [US4] Зібрати нову development build з `react-native-view-shot` (`npx expo run:ios` і `npx expo run:android` або `bunx`/`npx eas-cli@latest build --profile development`). Перевірити перемикання теми на обох платформах: увесь екран, навбар і таб-бар перетікають ≤ 0,5 с, без кадру з різкою зміною (SC-004).
+- [ ] T038 [US4] Зібрати нову development build з `react-native-view-shot` (`npx expo run:ios` і `npx expo run:android` або `bunx`/`npx eas-cli@latest build --profile development`). Перевірити перемикання теми на обох платформах: увесь екран, навбар і таб-бар перетікають ≤ 0,5 с, без кадру з різкою зміною (SC-004). Окремо: (1) виміряти час `captureRef` на iOS Simulator і Android-емуляторі (10 перемикань, у лозі немає `[theme] snapshot fallback`, медіана < 150 мс); (2) таб-бар є на знімку на обох платформах (тимчасово не розчиняти знімок і порівняти скріншот). Якщо на Android таб-бар на знімок не потрапляє — повідомити користувача й записати обмеження в `docs/patterns/preferences.md`.
 
 - [ ] T039 [US4] Оновити патерни в тому ж коміті, що й код US4: `docs/patterns/preferences.md` — перехід теми знімком кореня (`captureRef`, 350 мс), пом'якшене накриття для системної зміни й без нативного модуля, «Зменшити рух» без анімації; `docs/patterns/pickers.md` — екран «Тема» зі сценами логотипу без позначки, вибраний — рамка й анімація; `docs/patterns/splash.md` — сцена винесена в `LogoScene` (`src/views/brand/`); рядки індексу `docs/patterns/README.md`
 
@@ -222,7 +222,7 @@ description: "Задачі для архівування обʼєктів, ба�
 **Independent Test**: quickstart.md, розділ «Візуальні правки (US5) і профіль (US6)», у світлій і темній темах на iOS і Android.
 
 - [ ] T040 [US5] Оновити канвас: рядок заповненого місяця (лише галочка), клітинки доданих місяців у «Оберіть місяць» (лише галочка), коло під плюсом «Додати адресу» в новому кольорі, картка обʼєкта з > 5 послугами (перенос на другий рядок), таб-бар Android у кольорах дизайн-системи.
-- [ ] T041 [P] [US5] У `src/app/(tabs)/(objects)/[objectId]/index.tsx` у `trailing` рядка місяця замість `ThemedView backgroundColor='greenSoft'` з `AppImage` рендерити лише `AppImage icon='check'` з більшою роллю зі шкали `docs/patterns/icons.md`. Підібрати роль, за якою гліф не дрібніший за 20 pt. Прибрати стиль `check`.
+- [ ] T041 [US5] У `src/app/(tabs)/(objects)/[objectId]/index.tsx` у `trailing` рядка місяця замість `ThemedView backgroundColor='greenSoft'` з `AppImage` рендерити лише `AppImage icon='check'` з роллю `role='inline'` (16 pt) зі шкали `docs/patterns/icons.md` замість `badge` (12 pt, для галочок у кружечках). Прибрати стиль `check`.
 - [ ] T042 [P] [US5] У `src/views/objects/month-picker-sheet.tsx` у `MonthCell` замінити `ThemedView backgroundColor='greenSoft' style={styles.addedMark}` на `View` з тим самим позиціонуванням (`position: 'absolute', top: 6, right: 6`) без фону й радіуса, з `AppImage icon='check' role='badge'` усередині.
 - [ ] T043 [P] [US5] У `src/constants/colors.ts` змінити `plusSoft`: світла тема `#D3E3F8`, темна — непрозорий світло-синій `#C9DBF7` (research R9; точне значення — з канвасу T040). Перевірити, що ➕ контрастний у `objects/index.tsx`, `[objectId]/index.tsx`, `services.tsx`, `empty-state-view.tsx`, `addresses-illustration.tsx`.
 - [ ] T044 [P] [US5] У `src/views/object-card.tsx` прибрати `.slice(0, 5)`, а `HStack` з іконками послуг зробити з `flexWrap: 'wrap'` і `rowGap: 6`. Якщо `HStack` не пропускає стиль, використати `View` з `flexDirection: 'row'`, `flexWrap: 'wrap'`, `gap: 6`.
@@ -289,7 +289,7 @@ description: "Задачі для архівування обʼєктів, ба�
 - **US1**: T005 (локальний репозиторій) паралельно з T004; T011 (захист п'яти екранів) паралельно з T009/T010 після T006.
 - **US2**: T015, потім T020 і T021 паралельно з T016–T018.
 - **US3**: T027 (рядок-меню) паралельно з T025–T026.
-- **US5**: T041–T046 одночасно (різні файли).
+- **US5**: T042–T046 одночасно (різні файли); T041 — після T009 (той самий файл).
 - **Між історіями**: US5 і US6 можна робити паралельно з US1–US4, з урахуванням спільних файлів вище.
 
 ## Implementation Strategy

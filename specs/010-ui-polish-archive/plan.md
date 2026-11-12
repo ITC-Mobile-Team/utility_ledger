@@ -50,7 +50,7 @@
 
 **Constraints**: офлайн-мутації як у решти даних; зворотна сумісність збережених показників і обʼєктів без міграції; «Зменшити рух» вимикає анімації; лише `get()`/`set()` для shared values
 
-**Scale/Scope**: ~25 файлів у `src/`, 1 новий екран, 3 нові компоненти (`LogoScene`, `StartQueueRow`, `archive.tsx`), 6 файлів патернів
+**Scale/Scope**: ~25 файлів у `src/`, 1 новий екран, 3 нові компоненти (`LogoScene`, `StartQueueRow`, `archive.tsx`), 9 файлів патернів
 
 **Прийнятий ризик**: у світла 5/2 лише 3 цілі цифри (≤ 999,99 кВт·год). Користувач підтвердив цей формат 2026-11-12 (research R4).
 
@@ -63,7 +63,7 @@
 | I. Expo за документацією версії | ✅ | Звірено з v58: `captureRef` (`react-native-view-shot`), `expo-application` (`nativeBuildVersion`, `nativeApplicationVersion`), Android-пропси `NativeTabs` (`backgroundColor`, `indicatorColor`, `rippleColor`, `labelVisibilityMode`). Залежності — лише через `npx expo install`. `react-native-view-shot` — сторонній, але його документує Expo як `captureRef`; модуля Expo для знімка View немає |
 | II. Expo Router і структура `src/` | ✅ | Новий маршрут `src/app/(tabs)/(objects)/archive.tsx`; компоненти в `src/views/brand/`, `src/views/outages/`; селектори й формат лічильника в `src/services/ledger/` |
 | III. Нативне через CNG | ✅ | `ios/` і `android/` руками не змінюються. **Потрібна нова development build** через `react-native-view-shot`. Решта JS-only, OTA. До нової збірки тема працює з запасним накриттям (перевірка наявності нативного модуля) |
-| IV. Дизайн і патерни | ✅ | Артборди оновлюються в канвасі (`docs/design.md`): «Обʼєкти» (коло плюса, усі послуги), «Обʼєкт» (кнопка «Архівувати», галочка), новий «Архів» (зі станом порожнього), «Оберіть місяць», «Введення показника» (5/6/8 клітинок), налаштування «Світла» (стартова черга), «Профіль», «Тема» (сцени логотипу). Патерни, що змінюються: `meter-reading.md`, `pickers.md` (тема, вибір місяця, стартова черга), `navigation-bar-title.md` (шрифти, без індикаторів), `tab-bar.md` (кольори Android, архів у стеку), `preferences.md` (перехід теми знімком), `user-data.md` (архів, `getAnalyticsObjects`), `icons.md` (галочка без фону), індекс `README.md`. Окрема задача в `tasks.md` |
+| IV. Дизайн і патерни | ✅ | Артборди оновлюються в канвасі (`docs/design.md`): «Обʼєкти» (коло плюса, усі послуги), «Обʼєкт» (кнопка «Архівувати», галочка), новий «Архів» (зі станом порожнього), «Оберіть місяць», «Введення показника» (5/6/8 клітинок), налаштування «Світла» (стартова черга), «Профіль», «Тема» (сцени логотипу). Патерни, що змінюються: `meter-reading.md`, `pickers.md` (тема, вибір місяця, стартова черга), `navigation-bar-title.md` (шрифти, без індикаторів), `tab-bar.md` (кольори Android, архів у стеку), `preferences.md` (перехід теми знімком), `user-data.md` (архів, `getAnalyticsObjects`), `icons.md` (галочка без фону), `splash.md` (сцена в `LogoScene`), `outage-providers.md` (`startQueue`), індекс `README.md`. Окрема задача на патерни в кожній фазі `tasks.md` |
 | V. Українська мова | ✅ | Артефакти й тексти інтерфейсу українською |
 | VI. Lint і typecheck | ✅ | Остання задача — `npx expo lint` і `npx tsc --noEmit` |
 
