@@ -321,3 +321,9 @@ description: "Задачі для архівування обʼєктів, ба�
 ## Phase 12: Convergence
 
 - [X] T067 У `plan.md`, розділ Project Structure, виправити touch-point кореня знімка: дерево каже `src/app/_layout.tsx  # кореневий View з ref для знімка теми`, а корінь зареєстровано в `src/views/app-providers.tsx` (`setThemeSnapshotRoot`), `src/app/_layout.tsx` у фічі не змінювався — прибрати рядок `_layout.tsx` з цим коментарем і додати `views/app-providers.tsx  # кореневий View для знімка теми` per plan: Project Structure, research R6 (contradicts)
+
+## Phase 13: Convergence
+
+- [ ] T068 Узгодити `plan.md` (Project Structure: `splash/app-splash.tsx  # використовує LogoScene`), `research.md` R7 (сцену splash винести в `LogoScene`) і `contracts/interfaces.md` (`LogoScene` «спільний з `AppSplash`») з фактичним рішенням T063: splash малює власну сцену й бере лише спільний цикл `useSunCycle` (`src/views/brand/use-sun-cycle.ts`), бо перший кадр мусить піксель у піксель збігатися з системним splash; додати `use-sun-cycle.ts` у дерево плану й контракт per plan: R7, T063 (contradicts)
+- [ ] T069 У `contracts/interfaces.md` виправити пропси `LogoScene`: у коді `variant`, `animated`, `height?` (типово 132), а не `size` per contracts: UI-компоненти (contradicts)
+- [ ] T070 У `contracts/interfaces.md` виправити пропси `MeterDigit`: у коді `isFraction` (червона клітинка) і наявний `isDeletable` (підсвічування «стерти»), а не новий `isLast` per contracts: UI-компоненти (contradicts)
