@@ -15,7 +15,8 @@ import {
   calculateMonth,
   formatMoney,
   formatMonthTitle,
-  formatNumber,
+  formatReading,
+  getMeterFormat,
   formatShortAddress,
   formatTariff,
   getMonthName,
@@ -41,27 +42,33 @@ type BillRow = {
   lines: DetailLine[];
 };
 
-const range = (previous: number, current: number) =>
-  `${formatNumber(previous)} → ${formatNumber(current)}`;
+const range = (
+  previous: number,
+  current: number,
+  format: (value: number) => string,
+) => `${format(previous)} → ${format(current)}`;
 
 const describe = (item: ServiceBill, month: MonthKey): BillRow => {
   const { service } = item;
   const unit = service.unit;
   switch (service.mode) {
     case 'meter': {
+      // Показники з дробовою частиною за форматом барабана послуги
+      const { fractionDigits } = getMeterFormat(service);
+      const fmt = (value: number) => formatReading(value, fractionDigits);
       const previous = item.previous ?? 0;
       if (item.current === undefined) {
         return {
           subtitle: 'Показник ще не внесено',
           lines: [
             item.night
-              ? { label: '☀️ День, попередній', value: formatNumber(previous) }
-              : { label: 'Попередній показник', value: formatNumber(previous) },
+              ? { label: '☀️ День, попередній', value: fmt(previous) }
+              : { label: 'Попередній показник', value: fmt(previous) },
             ...(item.night
               ? [
                   {
                     label: '🌙 Ніч, попередній',
-                    value: formatNumber(item.night.previous),
+                    value: fmt(item.night.previous),
                   },
                 ]
               : []),
@@ -76,21 +83,25 @@ const describe = (item: ServiceBill, month: MonthKey): BillRow => {
         const nightConsumption = night.consumption ?? 0;
         const nightTariff = service.nightTariff ?? 0;
         return {
-          subtitle: `${formatNumber(consumption + nightConsumption)} ${unit} · день / ніч`,
+          subtitle: `${fmt(consumption + nightConsumption)} ${unit} · день / ніч`,
           lines: [
-            { label: '☀️ День', value: range(previous, item.current) },
+            { label: '☀️ День', value: range(previous, item.current, fmt) },
             {
               label: '🌙 Ніч',
-              value: range(night.previous, night.current ?? night.previous),
+              value: range(
+                night.previous,
+                night.current ?? night.previous,
+                fmt,
+              ),
             },
             'divider',
             {
-              label: `${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
-              value: formatMoney(consumption * service.tariff),
+              label: `${fmt(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+              value: formatMoney(Math.round(consumption * service.tariff)),
             },
             {
-              label: `${formatNumber(nightConsumption)} ${unit} × ${formatMoney(nightTariff)}`,
-              value: formatMoney(nightConsumption * nightTariff),
+              label: `${fmt(nightConsumption)} ${unit} × ${formatMoney(nightTariff)}`,
+              value: formatMoney(Math.round(nightConsumption * nightTariff)),
             },
           ],
         };
@@ -98,16 +109,16 @@ const describe = (item: ServiceBill, month: MonthKey): BillRow => {
       if (item.water) {
         const { water } = item;
         return {
-          subtitle: `${formatNumber(consumption)} ${unit} · вода і стоки`,
+          subtitle: `${fmt(consumption)} ${unit} · вода і стоки`,
           lines: [
-            { label: 'Показники', value: range(previous, item.current) },
+            { label: 'Показники', value: range(previous, item.current, fmt) },
             'divider',
             {
-              label: `Вода · ${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+              label: `Вода · ${fmt(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
               value: formatMoney(water.supply),
             },
             {
-              label: `Стоки · ${formatNumber(consumption)} ${unit} × ${formatMoney(service.sewageTariff ?? 0)}`,
+              label: `Стоки · ${fmt(consumption)} ${unit} × ${formatMoney(service.sewageTariff ?? 0)}`,
               value: formatMoney(water.sewage),
             },
             ...(water.fees > 0
@@ -117,12 +128,12 @@ const describe = (item: ServiceBill, month: MonthKey): BillRow => {
         };
       }
       return {
-        subtitle: `${formatNumber(consumption)} ${unit} спожито`,
+        subtitle: `${fmt(consumption)} ${unit} спожито`,
         lines: [
-          { label: 'Показники', value: range(previous, item.current) },
+          { label: 'Показники', value: range(previous, item.current, fmt) },
           'divider',
           {
-            label: `${formatNumber(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
+            label: `${fmt(consumption)} ${unit} × ${formatMoney(service.tariff)}`,
             value: formatMoney(item.amount ?? 0),
           },
         ],

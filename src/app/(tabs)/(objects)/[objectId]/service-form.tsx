@@ -23,8 +23,12 @@ import {
 import {
   formatAddress,
   formatMoneyInput,
+  formatReadingInput,
+  getMeterFormat,
   type MeterZones,
   parseMoney,
+  parseReadingInput,
+  sanitizeReadingInput,
   type ServiceInput,
 } from '@/services/ledger';
 import {
@@ -86,12 +90,12 @@ export default function ServiceForm() {
   const [zones, setZones] = useState<MeterZones>(existing?.zones ?? 'single');
   const [initialReading, setInitialReading] = useState(
     existing?.initialReading !== undefined
-      ? String(existing.initialReading)
+      ? formatReadingInput(existing.initialReading)
       : '',
   );
   const [initialNightReading, setInitialNightReading] = useState(
     existing?.initialNightReading !== undefined
-      ? String(existing.initialNightReading)
+      ? formatReadingInput(existing.initialNightReading)
       : '',
   );
   const [tariff, setTariff] = useState(
@@ -114,6 +118,8 @@ export default function ServiceForm() {
   const isDayNight = mode === 'meter' && zones === 'dayNight';
   const isWater = mode === 'meter' && zones === 'water';
   const isGas = mode === 'meter' && zones === 'gas';
+  // Початковий показник у форматі барабана послуги (дробова частина з комою)
+  const meterFormat = getMeterFormat({ zones });
   // Сума з рахунку вноситься щомісяця, тарифу немає
   const isInvoice = mode === 'invoice';
   const tariffValue = parseMoney(tariff);
@@ -155,11 +161,13 @@ export default function ServiceForm() {
       unit: mode === 'meter' ? unit.trim() : '',
       tariff: isInvoice ? 0 : (tariffValue ?? 0),
       initialReading:
-        mode === 'meter' ? Number(initialReading) || 0 : undefined,
+        mode === 'meter'
+          ? parseReadingInput(initialReading, meterFormat)
+          : undefined,
       zones,
       nightTariff: isDayNight ? (nightTariffValue ?? 0) : undefined,
       initialNightReading: isDayNight
-        ? Number(initialNightReading) || 0
+        ? parseReadingInput(initialNightReading, meterFormat)
         : undefined,
       sewageTariff: isWater ? (sewageTariffValue ?? 0) : undefined,
       waterFee: isWater ? (waterFeeValue ?? 0) : undefined,
@@ -265,11 +273,10 @@ export default function ServiceForm() {
                   testID='serviceForm.initialReading'
                   value={initialReading}
                   onChangeText={(text) =>
-                    setInitialReading(text.replace(/\D/g, ''))
+                    setInitialReading(sanitizeReadingInput(text, meterFormat))
                   }
                   placeholder='0'
-                  keyboardType='number-pad'
-                  maxLength={5}
+                  keyboardType='decimal-pad'
                 />
               )}
             </VStack>
@@ -288,11 +295,12 @@ export default function ServiceForm() {
                       testID='serviceForm.initialReading.day'
                       value={initialReading}
                       onChangeText={(text) =>
-                        setInitialReading(text.replace(/\D/g, ''))
+                        setInitialReading(
+                          sanitizeReadingInput(text, meterFormat),
+                        )
                       }
                       placeholder='0'
-                      keyboardType='number-pad'
-                      maxLength={5}
+                      keyboardType='decimal-pad'
                     />
                   </View>
                   <View style={styles.flex}>
@@ -301,11 +309,12 @@ export default function ServiceForm() {
                       testID='serviceForm.initialReading.night'
                       value={initialNightReading}
                       onChangeText={(text) =>
-                        setInitialNightReading(text.replace(/\D/g, ''))
+                        setInitialNightReading(
+                          sanitizeReadingInput(text, meterFormat),
+                        )
                       }
                       placeholder='0'
-                      keyboardType='number-pad'
-                      maxLength={5}
+                      keyboardType='decimal-pad'
                     />
                   </View>
                 </HStack>

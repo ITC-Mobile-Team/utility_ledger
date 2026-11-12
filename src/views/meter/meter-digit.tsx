@@ -17,8 +17,8 @@ export type MeterDigitState = 'display' | 'filled' | 'active' | 'blank';
 type MeterDigitProps = {
   digit: string;
   state: MeterDigitState;
-  // Остання (дробова) цифра лічильника — червона
-  isLast: boolean;
+  // Дробова цифра лічильника — червона клітинка
+  isFraction: boolean;
   isError?: boolean;
   // Заповнена клітинка, яку прибере наступне «стерти» (усі цифри введено)
   isDeletable?: boolean;
@@ -39,14 +39,14 @@ const ENTRY = {
 export function MeterDigit({
   digit,
   state,
-  isLast,
+  isFraction,
   isError = false,
   isDeletable = false,
 }: MeterDigitProps) {
   if (state === 'display') {
     return (
       <ThemedView
-        backgroundColor={isLast ? 'coral' : 'meterDigit'}
+        backgroundColor={isFraction ? 'coral' : 'meterDigit'}
         style={[styles.displayCell, !digit && styles.empty]}
       >
         <ThemedText color='onPrimary' font='meterDigit'>
@@ -59,15 +59,15 @@ export function MeterDigit({
   if (state === 'filled') {
     return (
       <ThemedView
-        backgroundColor={isLast ? 'coral' : undefined}
+        backgroundColor={isFraction ? 'coral' : undefined}
         style={[
           styles.entryCell,
-          !isLast && { backgroundColor: ENTRY.filled },
+          !isFraction && { backgroundColor: ENTRY.filled },
           isError && styles.errorCell,
           isDeletable &&
             (isError
               ? styles.deletableError
-              : isLast
+              : isFraction
                 ? styles.activeLast
                 : styles.activeDefault),
           isDeletable && styles.deletableCell,
@@ -86,7 +86,7 @@ export function MeterDigit({
         style={[
           styles.entryCell,
           styles.activeCell,
-          isLast ? styles.activeLast : styles.activeDefault,
+          isFraction ? styles.activeLast : styles.activeDefault,
         ]}
       >
         <Caret />
@@ -99,7 +99,7 @@ export function MeterDigit({
       style={[
         styles.entryCell,
         styles.blankCell,
-        { borderColor: isLast ? ENTRY.blankRimLast : ENTRY.blankRim },
+        { borderColor: isFraction ? ENTRY.blankRimLast : ENTRY.blankRim },
       ]}
     />
   );
@@ -136,8 +136,10 @@ const styles = StyleSheet.create({
   empty: {
     opacity: 0.35,
   },
+  // До 46 pt; 8 клітинок газу стискаються під ширину екрана
   entryCell: {
-    width: 46,
+    flex: 1,
+    maxWidth: 46,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',

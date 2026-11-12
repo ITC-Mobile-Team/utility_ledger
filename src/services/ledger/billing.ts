@@ -1,4 +1,5 @@
 import { toMonthKey } from './format';
+import { getMeterFormat, subtractReadings } from './meter-format';
 import type {
   LedgerObject,
   LedgerService,
@@ -119,8 +120,9 @@ export const calculateWater = (
   >,
   consumption: number,
 ): WaterBill => ({
-  supply: consumption * service.tariff,
-  sewage: consumption * (service.sewageTariff ?? 0),
+  // Споживання дробове (3 знаки), тож суми округлюємо до цілих копійок
+  supply: Math.round(consumption * service.tariff),
+  sewage: Math.round(consumption * (service.sewageTariff ?? 0)),
   fees: (service.waterFee ?? 0) + (service.sewageFee ?? 0),
 });
 
@@ -229,7 +231,8 @@ export const calculateService = (
           }),
         };
       }
-      const consumption = reading.value - previous;
+      const format = getMeterFormat(service);
+      const consumption = subtractReadings(reading.value, previous, format);
       if (isWater(service)) {
         const water = calculateWater(service, consumption);
         return {
@@ -241,7 +244,7 @@ export const calculateService = (
           water,
         };
       }
-      const dayAmount = consumption * service.tariff;
+      const dayAmount = Math.round(consumption * service.tariff);
       if (nightPrevious === undefined || reading.night === undefined) {
         return {
           service,
@@ -251,10 +254,15 @@ export const calculateService = (
           consumption,
         };
       }
-      const nightConsumption = reading.night - nightPrevious;
+      const nightConsumption = subtractReadings(
+        reading.night,
+        nightPrevious,
+        format,
+      );
       return {
         service,
-        amount: dayAmount + nightConsumption * (service.nightTariff ?? 0),
+        amount:
+          dayAmount + Math.round(nightConsumption * (service.nightTariff ?? 0)),
         previous,
         current: reading.value,
         consumption,

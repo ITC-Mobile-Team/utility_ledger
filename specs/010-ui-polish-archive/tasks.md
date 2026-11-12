@@ -97,23 +97,23 @@ description: "Задачі для архівування обʼєктів, ба�
 **Independent Test**: quickstart.md, розділ «Лічильники (US2)».
 
 - [ ] T014 [US2] Оновити канвас: артборди «Введення показника» (10–10d) для світла (5 клітинок, 2 червоні), води (6, 3 червоні) і газу (8, 3 червоні; перевірити, що 8 клітинок вміщаються в ширину 375 pt — за потреби зменшити клітинку й проміжок); підказки «Введіть N цифр…», «Цифра N з M», «Усі M цифр введено».
-- [ ] T015 [P] [US2] Створити `src/services/ledger/meter-format.ts` і експортувати його з `src/services/ledger/index.ts`:
+- [X] T015 [P] [US2] Створити `src/services/ledger/meter-format.ts` і експортувати його з `src/services/ledger/index.ts`:
   - `getMeterFormat(service)`: `zones` `'single' | 'dayNight'` → `{ length: 5, fractionDigits: 2 }`, `'water'` → `{ length: 6, fractionDigits: 3 }`, `'gas'` → `{ length: 8, fractionDigits: 3 }` (data-model.md, таблиця MeterFormat);
   - `digitsToReading(digits, format)` = `Number(digits) / 10 ** fractionDigits`, округлене до `fractionDigits` знаків;
   - `readingToDigits(value, format)` = `''`, якщо `value === undefined`, інакше `String(Math.round(value * 10 ** fractionDigits)).padStart(length, '0').slice(-length)`;
   - `formatReading(value, fractionDigits)` — групування тисяч як у `formatNumber`, кома як десятковий роздільник, рівно `fractionDigits` знаків (`123,45`);
   - коментарі українською: червоні клітинки — дробова частина; старі цілі значення валідні; показник світла понад 999,99 показується останніми 5 цифрами (рішення користувача, spec Edge Cases).
-- [ ] T016 [US2] У `src/views/meter/meter-digit.tsx` розділити `isLast` на два пропси:
+- [X] T016 [US2] У `src/views/meter/meter-digit.tsx` розділити `isLast` на два пропси:
   - `isFraction` — червоне фарбування: фон `coral`, рамка порожньої `blankRimLast`, стиль `activeLast`;
   - `isLast` — лише підсвічування «що прибере стерти», коли введено всі цифри.
 
   Усі місця, де зараз `isLast` вибирає колір (рядки ~49–102), перевести на `isFraction`.
-- [ ] T017 [US2] У `src/views/meter/meter-reading-input.tsx`:
+- [X] T017 [US2] У `src/views/meter/meter-reading-input.tsx`:
   - додати проп `fractionDigits: number`;
   - передавати в `MeterDigit` `isFraction={index >= length - fractionDigits}` і `isLast={index === length - 1}`;
   - режим `readOnly` (онбординг) лишається з `fractionDigits={1}` за замовчуванням;
   - `showsHorizontalScrollIndicator={false}` / `showsVerticalScrollIndicator={false}` на внутрішньому скролі (FR-019).
-- [ ] T018 [US2] У `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`:
+- [X] T018 [US2] У `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`:
   - прибрати `METER_LENGTH = 5`, брати `const format = getMeterFormat(service)`;
   - `toDigits` → `readingToDigits(saved, format)`;
   - у `toZone`: `value.length < format.length`, `current = digitsToReading(value, format)`, `consumption` округлювати до `fractionDigits`;
@@ -121,15 +121,15 @@ description: "Задачі для архівування обʼєктів, ба�
   - `MeterReadingInput` отримує `length={format.length}` і `fractionDigits={format.fractionDigits}`;
   - плитки «Попередній» і «Спожито» показують `formatReading(…, format.fractionDigits)`;
   - збереження — значення в одиницях; для день/ніч обидві секції з тим самим форматом.
-- [ ] T019 [US2] У `src/services/ledger/billing.ts`:
+- [X] T019 [US2] У `src/services/ledger/billing.ts`:
   - кожну грошову позицію (`supply`, `sewage`, `dayAmount`, нічна сума, газ, однозонна) округлювати до цілих копійок `Math.round(...)` перед підсумком `total`;
   - поля `current`, `previous` і `consumption` лишаються в одиницях з дробом;
   - перевірити, що для старих цілих показників суми не змінюються.
-- [ ] T020 [P] [US2] Замінити показ показників і споживання на `formatReading(value, getMeterFormat(service).fractionDigits)` там, де зараз `formatNumber` показує показник чи спожите: `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/bill.tsx` і будь-які інші місця, які знайде `grep -rn "formatNumber" src`. Гроші лишаються на `formatMoney`.
-- [ ] T021 [P] [US2] У `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` поле «Початковий показник» (і нічний): приймати кому або крапку, обмежити дробову частину `getMeterFormat` для вибраних `zones`, зберігати `Number(value.replace(',', '.'))`, округлене до `fractionDigits`; при редагуванні показувати з комою.
-- [ ] T022 [US2] Додати `.claude/skills/ui-check/flows/meter.flow`: внести показник світла (5 клітинок, підказка «Цифра 1 з 5»), води (6) і газу (8); перевірити тексти підказок і що «Зберегти» активна лише після всіх цифр. Пройти в iOS Simulator.
+- [X] T020 [P] [US2] Замінити показ показників і споживання на `formatReading(value, getMeterFormat(service).fractionDigits)` там, де зараз `formatNumber` показує показник чи спожите: `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/bill.tsx` і будь-які інші місця, які знайде `grep -rn "formatNumber" src`. Гроші лишаються на `formatMoney`.
+- [X] T021 [P] [US2] У `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` поле «Початковий показник» (і нічний): приймати кому або крапку, обмежити дробову частину `getMeterFormat` для вибраних `zones`, зберігати `Number(value.replace(',', '.'))`, округлене до `fractionDigits`; при редагуванні показувати з комою.
+- [X] T022 [US2] Додати `.claude/skills/ui-check/flows/meter.flow`: внести показник світла (5 клітинок, підказка «Цифра 1 з 5»), води (6) і газу (8); перевірити тексти підказок і що «Зберегти» активна лише після всіх цифр. Пройти в iOS Simulator.
 
-- [ ] T023 [US2] Оновити `docs/patterns/meter-reading.md` у тому ж коміті, що й код US2: формати 5/2 (світло), 6/3 (вода), 8/3 (газ) через `getMeterFormat`, червоні клітинки — дробова частина, значення в одиницях з дробом, старі цілі значення валідні, показник світла понад 999,99 показується останніми 5 цифрами, підказки «Введіть N цифр…» / «Цифра N з M» / «Усі M цифр введено»; рядок індексу `docs/patterns/README.md`
+- [X] T023 [US2] Оновити `docs/patterns/meter-reading.md` у тому ж коміті, що й код US2: формати 5/2 (світло), 6/3 (вода), 8/3 (газ) через `getMeterFormat`, червоні клітинки — дробова частина, значення в одиницях з дробом, старі цілі значення валідні, показник світла понад 999,99 показується останніми 5 цифрами, підказки «Введіть N цифр…» / «Цифра N з M» / «Усі M цифр введено»; рядок індексу `docs/patterns/README.md`
 
 **Checkpoint**: показники вносяться цифра в цифру для всіх трьох типів.
 

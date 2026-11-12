@@ -8,6 +8,8 @@ type MeterReadingInputProps = {
   value: string;
   onChangeValue: (value: string) => void;
   length: number;
+  // Скільки останніх клітинок червоні (дробова частина)
+  fractionDigits?: number;
   // Статичний барабан без введення (ілюстрації)
   readOnly?: boolean;
   // Усі цифри введено, але значення некоректне — підсвічуємо заповнені клітинки
@@ -27,6 +29,7 @@ export function MeterReadingInput({
   value,
   onChangeValue,
   length,
+  fractionDigits = 1,
   readOnly = false,
   isError = false,
   accessibilityLabel,
@@ -54,7 +57,7 @@ export function MeterReadingInput({
     >
       <VStack spacing={10}>
         <HStack
-          spacing={readOnly ? 4 : 8}
+          spacing={readOnly ? 4 : length > 6 ? 4 : 8}
           style={[
             { backgroundColor: bg },
             styles.container,
@@ -66,7 +69,7 @@ export function MeterReadingInput({
               key={index}
               digit={value[index] ?? ''}
               state={stateAt(index)}
-              isLast={index === length - 1}
+              isFraction={index >= length - fractionDigits}
               isError={isError}
               // Усі цифри введено й клавіатура відкрита — підсвічуємо останню
               // клітинку: саме її прибере наступне натискання «стерти»

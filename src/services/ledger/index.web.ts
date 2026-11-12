@@ -3,6 +3,7 @@ import { createLocalLedgerRepository } from './local-ledger-repository';
 export * from './types';
 export * from './billing';
 export * from './format';
+export * from './meter-format';
 
 // Web поза обсягом хмарного зберігання: дані лишаються локальними
 export const ledgerRepository = createLocalLedgerRepository(storage);

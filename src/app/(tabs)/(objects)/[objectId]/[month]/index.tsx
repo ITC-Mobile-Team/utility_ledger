@@ -16,7 +16,8 @@ import {
   calculateService,
   formatMoney,
   formatMonthTitle,
-  formatNumber,
+  formatReading,
+  getMeterFormat,
   formatShortAddress,
   getDaysInMonth,
   getMonthName,
@@ -75,19 +76,21 @@ const meterSubtitle = (
   month: MonthKey,
   { service, previous = 0, current, consumption, night }: ServiceBill,
 ) => {
+  const { fractionDigits } = getMeterFormat(service);
+  const fmt = (value: number) => formatReading(value, fractionDigits);
   if (current !== undefined) {
     return night
-      ? `☀️ +${formatNumber(consumption ?? 0)} · 🌙 +${formatNumber(night.consumption ?? 0)} ${service.unit}`
-      : `+${formatNumber(consumption ?? 0)} ${service.unit}`;
+      ? `☀️ +${fmt(consumption ?? 0)} · 🌙 +${fmt(night.consumption ?? 0)} ${service.unit}`
+      : `+${fmt(consumption ?? 0)} ${service.unit}`;
   }
   const last = calculateService(state, service, getPreviousMonth(month));
   if (last.consumption !== undefined) {
     const total = last.consumption + (last.night?.consumption ?? 0);
-    return `Минулого місяця ${formatNumber(total)} ${service.unit}`;
+    return `Минулого місяця ${fmt(total)} ${service.unit}`;
   }
   return night
-    ? `Попередній: ☀️ ${formatNumber(previous)} · 🌙 ${formatNumber(night.previous)} ${service.unit}`
-    : `Попередній: ${formatNumber(previous)} ${service.unit}`;
+    ? `Попередній: ☀️ ${fmt(previous)} · 🌙 ${fmt(night.previous)} ${service.unit}`
+    : `Попередній: ${fmt(previous)} ${service.unit}`;
 };
 
 // Чи внесено за місяць значення, яке можна скинути

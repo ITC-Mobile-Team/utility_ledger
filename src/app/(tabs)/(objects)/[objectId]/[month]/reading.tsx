@@ -18,7 +18,12 @@ import {
 import { useReadOnlyGuard } from '@/hooks/use-read-only-guard';
 import {
   formatMonthTitle,
-  formatNumber,
+  digitsToReading,
+  formatReading,
+  getMeterFormat,
+  type MeterFormat,
+  readingToDigits,
+  subtractReadings,
   formatTariff,
   getPreviousNightReading,
   getPreviousReading,
@@ -38,8 +43,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-const METER_LENGTH = 5;
-
 export default function Reading() {
   const { objectId, month, serviceId } = useLocalSearchParams<{
     objectId: string;
@@ -55,8 +58,12 @@ export default function Reading() {
     service && validMonth
       ? getReading(state, service.id, validMonth)
       : undefined;
-  const [value, setValue] = useState(toDigits(saved?.value));
-  const [nightValue, setNightValue] = useState(toDigits(saved?.night));
+  // Формат барабана послуги: світло 5/2, вода 6/3, газ 8/3
+  const format = getMeterFormat(service ?? { zones: 'single' });
+  const [value, setValue] = useState(readingToDigits(saved?.value, format));
+  const [nightValue, setNightValue] = useState(
+    readingToDigits(saved?.night, format),
+  );
   const [isSaving, setSaving] = useState(false);
   const keyboardInsets = useFormFooterKeyboardInsets(
     false,
@@ -67,10 +74,15 @@ export default function Reading() {
 
   const dayNight = isDayNight(service);
   const isEditing = saved !== undefined;
-  const day = toZone(value, getPreviousReading(state, service, validMonth));
+  const day = toZone(
+    value,
+    getPreviousReading(state, service, validMonth),
+    format,
+  );
   const night = toZone(
     nightValue,
     getPreviousNightReading(state, service, validMonth),
+    format,
   );
   const isValid = (zone: Zone) => zone.isComplete && !zone.isTooSmall;
   const isChanged =
@@ -129,6 +141,7 @@ export default function Reading() {
                 value={value}
                 onChangeValue={setValue}
                 zone={day}
+                format={format}
               />
               <ZoneSection
                 title='🌙 НІЧ'
@@ -137,6 +150,7 @@ export default function Reading() {
                 value={nightValue}
                 onChangeValue={setNightValue}
                 zone={night}
+                format={format}
               />
             </>
           ) : (
@@ -147,6 +161,7 @@ export default function Reading() {
               value={value}
               onChangeValue={setValue}
               zone={day}
+              format={format}
             />
           )}
 
@@ -185,14 +200,6 @@ export default function Reading() {
   );
 }
 
-// Збережене значення у вигляді барабана: доповнюємо нулями зліва до 5 цифр
-const toDigits = (saved?: number) =>
-  saved === undefined
-    ? ''
-    : String(Math.round(saved))
-        .padStart(METER_LENGTH, '0')
-        .slice(-METER_LENGTH);
-
 type Zone = {
   previous: number;
   current?: number;
@@ -202,12 +209,13 @@ type Zone = {
 };
 
 // Показник рахується лише коли введено всі цифри барабана
-const toZone = (value: string, previous: number): Zone => {
-  if (value.length < METER_LENGTH) {
+// Червоні клітинки — дробова частина: значення зберігається в одиницях
+const toZone = (value: string, previous: number, format: MeterFormat): Zone => {
+  if (value.length < format.length) {
     return { previous, isComplete: false, isTooSmall: false };
   }
-  const current = Number(value);
-  const consumption = current - previous;
+  const current = digitsToReading(value, format);
+  const consumption = subtractReadings(current, previous, format);
   return {
     previous,
     current,
@@ -217,10 +225,10 @@ const toZone = (value: string, previous: number): Zone => {
   };
 };
 
-const hintFor = (value: string, zone: Zone) => {
+const hintFor = (value: string, zone: Zone, { length }: MeterFormat) => {
   if (value.length === 0) {
     return {
-      text: `Введіть ${METER_LENGTH} цифр зліва направо, як на лічильнику`,
+      text: `Введіть ${length} цифр зліва направо, як на лічильнику`,
       color: 'muted',
       font: 'caption',
     } as const;
@@ -234,13 +242,13 @@ const hintFor = (value: string, zone: Zone) => {
   }
   if (zone.isComplete) {
     return {
-      text: `Усі ${METER_LENGTH} цифр введено`,
+      text: `Усі ${length} цифр введено`,
       color: 'greenInk',
       font: 'status',
     } as const;
   }
   return {
-    text: `Цифра ${value.length + 1} з ${METER_LENGTH}`,
+    text: `Цифра ${value.length + 1} з ${length}`,
     color: 'muted',
     font: 'status',
   } as const;
@@ -252,6 +260,7 @@ type ZoneSectionProps = {
   value: string;
   onChangeValue: (value: string) => void;
   zone: Zone;
+  format: MeterFormat;
   testID: string;
 };
 
@@ -262,14 +271,15 @@ function ZoneSection({
   value,
   onChangeValue,
   zone,
+  format,
   testID,
 }: ZoneSectionProps) {
-  const hint = hintFor(value, zone);
+  const hint = hintFor(value, zone, format);
   const consumption = !zone.isComplete
     ? '—'
     : zone.isTooSmall
       ? 'Менше попереднього'
-      : `+${formatNumber(zone.consumption ?? 0)} ${unit}`;
+      : `+${formatReading(zone.consumption ?? 0, format.fractionDigits)} ${unit}`;
   return (
     <VStack spacing={10}>
       <HStack>
@@ -284,7 +294,8 @@ function ZoneSection({
       <MeterReadingInput
         value={value}
         onChangeValue={onChangeValue}
-        length={METER_LENGTH}
+        length={format.length}
+        fractionDigits={format.fractionDigits}
         isError={zone.isTooSmall}
         accessibilityLabel={`${title}, ${unit}`}
         testID={testID}
@@ -298,7 +309,10 @@ function ZoneSection({
           {hint.text}
         </ThemedText>
         <HStack spacing={10}>
-          <StatTile title='Попередній' value={formatNumber(zone.previous)} />
+          <StatTile
+            title='Попередній'
+            value={formatReading(zone.previous, format.fractionDigits)}
+          />
           <StatTile
             title='Спожито'
             value={consumption}
