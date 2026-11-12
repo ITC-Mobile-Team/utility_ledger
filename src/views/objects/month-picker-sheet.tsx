@@ -171,10 +171,11 @@ function MonthCell({
       >
         <EmojiGlyph emoji={emoji} size={glyphSizeFor(iconTiles.large)} />
         <ThemedText font='segment'>{name}</ThemedText>
+        {/* Уже доданий місяць — лише галочка, без підкладки */}
         {isAdded && (
-          <ThemedView backgroundColor='greenSoft' style={styles.addedMark}>
+          <View style={styles.addedMark}>
             <AppImage icon='check' role='badge' />
-          </ThemedView>
+          </View>
         )}
       </Animated.View>
     </Pressable>
@@ -262,11 +263,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     right: 6,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   disabled: {
     opacity: 0.35,

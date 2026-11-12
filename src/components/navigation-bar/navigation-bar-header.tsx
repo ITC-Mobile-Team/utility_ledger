@@ -41,13 +41,10 @@ const BACK_ICON_SIZE = 22;
 // headline 17 pt × 1.5 ще вміщується в рядок 44 pt
 const SHORT_TITLE_MAX_FONT_SCALE = 1.5;
 
-const getTitleFont = (
-  isTransparent: boolean,
-  type: NavigationBarVariant,
-): AppFont => {
-  if (type === 'short') return 'headline';
-  return isTransparent ? 'display' : 'title';
-};
+// Однаковий розмір на всіх екранах, як на вкладці «Світло»: розгорнутий
+// заголовок — title (28), короткий і згорнутий — headline (22)
+const getTitleFont = (type: NavigationBarVariant): AppFont =>
+  type === 'short' ? 'headline' : 'title';
 
 export const NavigationBarHeader = ({
   type = 'full',
@@ -87,7 +84,7 @@ export const NavigationBarHeader = ({
   const shortTitleLabel = (
     <ThemedText
       color={titleColor}
-      font={getTitleFont(isTransparent, 'short')}
+      font={getTitleFont('short')}
       numberOfLines={1}
       // Рядок «назад» фіксованої висоти: з найбільшим системним шрифтом
       // короткий заголовок інакше вилазить за нього (як і системний навбар,
@@ -125,7 +122,7 @@ export const NavigationBarHeader = ({
               <View style={styles.titleRow}>
                 <ThemedText
                   color={titleColor}
-                  font={getTitleFont(isTransparent, 'full')}
+                  font={getTitleFont('full')}
                   style={styles.titleText}
                 >
                   {title}

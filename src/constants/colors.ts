@@ -25,7 +25,8 @@ const light = {
   coral: '#D2392F',
   coralSoft: '#FDECEA',
   // Підкладки для темних emoji (➕, ➖): у темній темі світлі, щоб гліф читався
-  plusSoft: '#FDECEA',
+  // Коло під плюсом «Додати»: синя гама навбару, контраст ➕ ≥ 3:1
+  plusSoft: '#D3E3F8',
   glyphLight: '#FFFFFF',
   coralInk: '#A82A22',
   green: '#17804F',
@@ -111,7 +112,8 @@ const dark: Record<AppColor, string> = {
   blueInk: '#8DB8F5',
   coral: '#D2392F',
   coralSoft: 'rgba(235,85,75,0.18)',
-  plusSoft: '#F2A49C',
+  // Непрозорий світлий: темний ➕ на напівпрозорому темному фоні губиться
+  plusSoft: '#C9DBF7',
   glyphLight: '#D5D9E0',
   coralInk: '#FF8E86',
   green: '#4CC285',

@@ -69,6 +69,7 @@ export function CityPickerSheet({
       <ThemedView backgroundColor='surface2' style={styles.list}>
         <FlatList
           data={filtered}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(city) => `${city.name}-${city.region}`}
           keyboardShouldPersistTaps='handled'
           keyboardDismissMode='on-drag'

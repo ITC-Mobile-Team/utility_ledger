@@ -36,6 +36,7 @@ export const NavigationBarButtonsRow = ({
       automaticallyAdjustContentInsets={false}
       contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING }}
       showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
     >
       <HStack spacing={12} style={{ flex: 1 }}>
         {buttons.map((button) => (

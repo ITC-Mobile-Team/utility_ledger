@@ -15,6 +15,7 @@ export function QueueChips({ queues, selected, onSelect }: QueueChipsProps) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
       accessibilityRole='tablist'
       accessibilityLabel='Черги'
       contentContainerStyle={styles.row}

@@ -273,6 +273,9 @@ export const NavigationView = ({
         {/* Скролить до поля у фокусі, коли відкривається клавіатура */}
         <KeyboardAwareScrollView
           ref={scrollRef}
+          // Індикаторів прокрутки в застосунку немає (navigation-bar-title.md)
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           onScroll={onScroll}
           onScrollBeginDrag={() => {
             isSnapping.current = false;

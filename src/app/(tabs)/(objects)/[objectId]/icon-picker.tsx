@@ -55,7 +55,10 @@ export default function IconPicker() {
         />
       </Pressable>
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         <HStack spacing={16} align='center'>
           <ServiceIcon icon={selected} size={64} />
           <VStack spacing={4} style={styles.flex}>

@@ -24,16 +24,29 @@ export default function TabsLayout() {
   const outagesColor = useThemeColor('powerOnInk');
   const analyticsColor = useThemeColor('greenInk');
   const profileColor = useThemeColor('purpleInk');
+  // Android: таб-бар у кольорах дизайн-системи, а не Material за замовчуванням
+  // (на iOS фон малює система — Liquid Glass, тож лише Android)
+  const isAndroid = Platform.OS === 'android';
+  const tabBarBg = useThemeColor('surface');
+  const ripple = useThemeColor('line');
+  const objectsIndicator = useThemeColor('blueSoft');
+  const outagesIndicator = useThemeColor('powerOnSoft');
+  const analyticsIndicator = useThemeColor('greenSoft');
+  const profileIndicator = useThemeColor('purpleSoft');
 
   return (
     <NativeTabs
       hidden={isTabBarHidden}
       iconColor={tabInk}
       labelStyle={{ color: tabInk }}
+      backgroundColor={isAndroid ? tabBarBg : undefined}
+      rippleColor={ripple}
+      labelVisibilityMode='labeled'
     >
       <NativeTabs.Trigger
         name='(objects)'
         disableAutomaticContentInsets={ownsInsets}
+        indicatorColor={objectsIndicator}
       >
         <NativeTabs.Trigger.Label selectedStyle={{ color: objectsColor }}>
           Обʼєкти
@@ -47,6 +60,7 @@ export default function TabsLayout() {
       <NativeTabs.Trigger
         name='(outages)'
         disableAutomaticContentInsets={ownsInsets}
+        indicatorColor={outagesIndicator}
       >
         <NativeTabs.Trigger.Label selectedStyle={{ color: outagesColor }}>
           Світло
@@ -57,7 +71,7 @@ export default function TabsLayout() {
           selectedColor={outagesColor}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='analytics'>
+      <NativeTabs.Trigger name='analytics' indicatorColor={analyticsIndicator}>
         <NativeTabs.Trigger.Label selectedStyle={{ color: analyticsColor }}>
           Аналітика
         </NativeTabs.Trigger.Label>
@@ -70,6 +84,7 @@ export default function TabsLayout() {
       <NativeTabs.Trigger
         name='profile'
         disableAutomaticContentInsets={ownsInsets}
+        indicatorColor={profileIndicator}
       >
         <NativeTabs.Trigger.Label selectedStyle={{ color: profileColor }}>
           Профіль

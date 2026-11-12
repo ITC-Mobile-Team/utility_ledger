@@ -4,7 +4,6 @@ import {
   NavigationView,
   ThemedBadge,
   ThemedText,
-  ThemedView,
   VStack,
 } from '@/components';
 import { monthAppearance } from '@/constants/month-emoji';
@@ -35,7 +34,7 @@ import {
 } from '@/views';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 
 const deleteButton: NavigationBarButtonItem = {
   id: 'delete',
@@ -288,12 +287,8 @@ export default function ObjectMonths() {
                           status === 'new' ? (
                             <ThemedBadge text='Новий' type='red' />
                           ) : (
-                            <ThemedView
-                              backgroundColor='greenSoft'
-                              style={styles.check}
-                            >
-                              <AppImage icon='check' role='badge' />
-                            </ThemedView>
+                            // Заповнений місяць — лише галочка, без фону
+                            <AppImage icon='check' role='inline' />
                           )
                         }
                         testID={`object.month.${month}`}
@@ -336,13 +331,3 @@ export default function ObjectMonths() {
     </NavigationView>
   );
 }
-
-const styles = StyleSheet.create({
-  check: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

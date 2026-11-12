@@ -29,7 +29,12 @@ export function ScreenView({
       {...rest}
     >
       {scrollable ? (
-        <ScrollView contentContainerStyle={padding}>{children}</ScrollView>
+        <ScrollView
+          contentContainerStyle={padding}
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
       ) : (
         <View style={[styles.fill, padding]}>{children}</View>
       )}
