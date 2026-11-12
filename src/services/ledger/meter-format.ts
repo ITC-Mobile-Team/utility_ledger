@@ -7,20 +7,18 @@ export type MeterFormat = {
   fractionDigits: number;
 };
 
-// Світло (однозонний і день/ніч) — 5 клітинок, 2 червоні. Лише 3 цілі цифри,
-// тобто до 999,99 кВт·год — так вирішив користувач (spec 010); більший
-// збережений показник показується останніми 5 цифрами.
-// Вода — 6 клітинок, 3 червоні; газ — 8 клітинок, 3 червоні
+// Світло (однозонний і день/ніч) — 7 клітинок, 2 червоні: 5 цілих цифр,
+// до 99 999,99 кВт·год (spec 011). Вода — 8 клітинок, 3 червоні: 5 цілих,
+// до 99 999,999 м³; газ — 8 клітинок, 3 червоні
 export const getMeterFormat = (
   service: Pick<LedgerService, 'zones'>,
 ): MeterFormat => {
   switch (service.zones) {
     case 'water':
-      return { length: 6, fractionDigits: 3 };
     case 'gas':
       return { length: 8, fractionDigits: 3 };
     default:
-      return { length: 5, fractionDigits: 2 };
+      return { length: 7, fractionDigits: 2 };
   }
 };
 

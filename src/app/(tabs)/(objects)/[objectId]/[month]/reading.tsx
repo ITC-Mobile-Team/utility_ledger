@@ -58,7 +58,7 @@ export default function Reading() {
     service && validMonth
       ? getReading(state, service.id, validMonth)
       : undefined;
-  // Формат барабана послуги: світло 5/2, вода 6/3, газ 8/3
+  // Формат барабана послуги: світло 7/2, вода 8/3, газ 8/3
   const format = getMeterFormat(service ?? { zones: 'single' });
   const [value, setValue] = useState(readingToDigits(saved?.value, format));
   const [nightValue, setNightValue] = useState(
