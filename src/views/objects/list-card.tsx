@@ -74,6 +74,8 @@ export function ListRow({
           {children}
         </VStack>
         {trailing}
+        {/* Рядок без дії (напр. в архівованому обʼєкті) — без шеврона.
+            Інші рядки без onPress і так задають showsChevron={false} */}
         {showsChevron && onPress && <Chevron direction='right' />}
       </HStack>
     </GesturePressable>

@@ -17,6 +17,7 @@ import {
   formatMonthTitle,
   formatReading,
   getMeterFormat,
+  isObjectReadOnly,
   formatShortAddress,
   formatTariff,
   getMonthName,
@@ -322,15 +323,18 @@ export default function Bill() {
             onPress={() => router.back()}
           />
         ) : (
-          <ActionButton
-            title='+  Додати послугу'
-            onPress={() =>
-              router.push({
-                pathname: '/[objectId]/service-form',
-                params: { objectId: object.id },
-              })
-            }
-          />
+          // Архівований обʼєкт лише для перегляду — послугу не додати
+          !isObjectReadOnly(object) && (
+            <ActionButton
+              title='+  Додати послугу'
+              onPress={() =>
+                router.push({
+                  pathname: '/[objectId]/service-form',
+                  params: { objectId: object.id },
+                })
+              }
+            />
+          )
         )}
       </VStack>
     </NavigationView>

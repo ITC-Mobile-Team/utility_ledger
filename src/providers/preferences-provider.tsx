@@ -16,6 +16,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -76,13 +77,22 @@ export function PreferencesProvider({
     };
   }, [storage]);
 
+  // Номер останнього вибору теми: швидкі дотики по картках запускають кілька
+  // знімків паралельно, і застосовується лише найновіший вибір
+  const themeRequest = useRef(0);
+
   const setTheme = useCallback(
     async (next: ThemePreference) => {
+      const request = ++themeRequest.current;
       // Знімок поточного вигляду до зміни схеми — він розчиниться в новій
       // темі (ThemeTransition). Сама функція не довше ~250 мс і не кидає
       await captureBeforeThemeChange();
-      Appearance.setColorScheme(toColorScheme(next));
-      finishThemeChange();
+      if (request !== themeRequest.current) return;
+      const scheme = toColorScheme(next);
+      Appearance.setColorScheme(scheme);
+      // «Як у системі» — схема, яку зараз має система
+      const resolved = scheme === 'auto' ? Appearance.getColorScheme() : scheme;
+      finishThemeChange(resolved === 'dark' ? 'dark' : 'light');
       setPreferences((current) => current && { ...current, theme: next });
       // Збій запису не скасовує вибір: він діє до перезапуску
       await storage.setItem(THEME_KEY, next).catch(() => {});
