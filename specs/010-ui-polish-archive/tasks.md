@@ -324,6 +324,6 @@ description: "Задачі для архівування обʼєктів, ба�
 
 ## Phase 13: Convergence
 
-- [ ] T068 Узгодити `plan.md` (Project Structure: `splash/app-splash.tsx  # використовує LogoScene`), `research.md` R7 (сцену splash винести в `LogoScene`) і `contracts/interfaces.md` (`LogoScene` «спільний з `AppSplash`») з фактичним рішенням T063: splash малює власну сцену й бере лише спільний цикл `useSunCycle` (`src/views/brand/use-sun-cycle.ts`), бо перший кадр мусить піксель у піксель збігатися з системним splash; додати `use-sun-cycle.ts` у дерево плану й контракт per plan: R7, T063 (contradicts)
-- [ ] T069 У `contracts/interfaces.md` виправити пропси `LogoScene`: у коді `variant`, `animated`, `height?` (типово 132), а не `size` per contracts: UI-компоненти (contradicts)
-- [ ] T070 У `contracts/interfaces.md` виправити пропси `MeterDigit`: у коді `isFraction` (червона клітинка) і наявний `isDeletable` (підсвічування «стерти»), а не новий `isLast` per contracts: UI-компоненти (contradicts)
+- [X] T068 Узгодити `plan.md` (Project Structure: `splash/app-splash.tsx  # використовує LogoScene`), `research.md` R7 (сцену splash винести в `LogoScene`) і `contracts/interfaces.md` (`LogoScene` «спільний з `AppSplash`») з фактичним рішенням T063: splash малює власну сцену й бере лише спільний цикл `useSunCycle` (`src/views/brand/use-sun-cycle.ts`), бо перший кадр мусить піксель у піксель збігатися з системним splash; додати `use-sun-cycle.ts` у дерево плану й контракт per plan: R7, T063 (contradicts)
+- [X] T069 У `contracts/interfaces.md` виправити пропси `LogoScene`: у коді `variant`, `animated`, `height?` (типово 132), а не `size` per contracts: UI-компоненти (contradicts)
+- [X] T070 У `contracts/interfaces.md` виправити пропси `MeterDigit`: у коді `isFraction` (червона клітинка) і наявний `isDeletable` (підсвічування «стерти»), а не новий `isLast` per contracts: UI-компоненти (contradicts)

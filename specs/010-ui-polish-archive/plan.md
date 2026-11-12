@@ -131,8 +131,9 @@ src/
 └── views/
     ├── app-providers.tsx                        # кореневий View для знімка теми (setThemeSnapshotRoot)
     ├── object-card.tsx                          # усі послуги, перенос
-    ├── brand/logo-scene.tsx                     # НОВИЙ: сцена логотипу (зі splash)
-    ├── splash/app-splash.tsx                    # використовує LogoScene
+    ├── brand/logo-scene.tsx                     # НОВИЙ: сцена логотипу для карток теми
+    ├── brand/use-sun-cycle.ts                   # НОВИЙ: спільний цикл руху сонця (splash і LogoScene)
+    ├── splash/app-splash.tsx                    # бере useSunCycle; сцену малює сам (перший кадр = системний splash)
     ├── meter/meter-reading-input.tsx, meter-digit.tsx  # fractionDigits
     ├── objects/month-picker-sheet.tsx, city-picker-sheet.tsx
     ├── outages/start-queue-row{,.ios,.android}.tsx     # НОВИЙ

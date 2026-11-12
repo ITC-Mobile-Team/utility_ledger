@@ -33,10 +33,11 @@ formatReading(value: number, fractionDigits: number): string; // «123,45»
 | Компонент | Зміна пропсів |
 |---|---|
 | `MeterReadingInput` (`src/views/meter/`) | `+ fractionDigits: number`; червоні — останні `fractionDigits` клітинок; `length` вже є |
-| `MeterDigit` | `isLast` → `isFraction` (фарбування) + `isLast` (підсвічування «стерти») |
+| `MeterDigit` | `isLast` → `isFraction` (червона клітинка дробової частини); підсвічування «що прибере стерти» лишається наявним пропом `isDeletable` |
 | `ObjectCard` | без змін API; показує всі `services` з переносом |
 | `ThemeOptionCard` | без змін API; усередині `LogoScene` замість `ThemePreview`, без позначки-радіо |
-| `LogoScene` (новий, `src/views/brand/`) | `variant: 'day' \| 'night' \| 'split'`, `animated: boolean`, `size`; спільний з `AppSplash` |
+| `LogoScene` (новий, `src/views/brand/`) | `variant: 'day' \| 'night' \| 'split'`, `animated: boolean`, `height?: number` (типово 132); лише для карток теми |
+| `useSunCycle(animated = true)` (новий, `src/views/brand/use-sun-cycle.ts`) | shared value положення сонця на дузі (0–1, старт із 0.5); спільний для `AppSplash` і `LogoScene`; без анімації чи при «Зменшити рух» — 0.5 |
 | `StartQueueRow` (новий, `src/views/outages/start-queue-row{,.ios,.android}.tsx`) | `queues: QueueSettings[]`, `value: QueueId`, `onChange(id)` — нативне меню як `StartTabRow` |
 | `ThemeTransition` | знімок кореня (`captureRef`) з запасним накриттям фоном; API `usePreferences().setTheme` не змінюється |
 
