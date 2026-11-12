@@ -142,27 +142,27 @@ description: "Задачі для архівування обʼєктів, ба�
 **Independent Test**: quickstart.md, розділ «Стартова черга (US3)».
 
 - [ ] T024 [US3] Оновити канвас: артборд налаштувань «Світла» — рядок «Стартова черга» зі значенням під секцією «Мої черги» (лише коли обрано ≥ 2 черги).
-- [ ] T025 [US3] У `src/services/outages/types.ts` до `OutageSettings` додати `startQueue?: QueueId` з коментарем: «Черга, вибрана при холодному запуску вкладки «Світло». Валідна лише якщо є в `queues`; інакше ігнорується, а при збереженні налаштувань скидається» (data-model.md).
-- [ ] T026 [US3] У `src/services/outages/firestore-settings-repository.ts`:
+- [X] T025 [US3] У `src/services/outages/types.ts` до `OutageSettings` додати `startQueue?: QueueId` з коментарем: «Черга, вибрана при холодному запуску вкладки «Світло». Валідна лише якщо є в `queues`; інакше ігнорується, а при збереженні налаштувань скидається» (data-model.md).
+- [X] T026 [US3] У `src/services/outages/firestore-settings-repository.ts`:
   - тип `AccountOutageSettings` (рядок 18) доповнити `startQueue?: string`;
   - читання (рядок ~55) — `startQueue: data.startQueue`, лише якщо це рядок;
   - запис (рядок ~76) — додавати `startQueue`, лише коли він визначений (без `undefined` у документі).
 
   Перевірити `src/services/outages/settings-repository.ts` і `index.web.ts` на потребу тієї самої зміни.
-- [ ] T027 [P] [US3] Створити `src/views/outages/start-queue-row-content.tsx`, `start-queue-row.tsx`, `start-queue-row.ios.tsx`, `start-queue-row.android.tsx` за зразком `src/views/profile/start-tab-row*.tsx`:
+- [X] T027 [P] [US3] Створити `src/views/outages/start-queue-row-content.tsx`, `start-queue-row.tsx`, `start-queue-row.ios.tsx`, `start-queue-row.android.tsx` за зразком `src/views/profile/start-tab-row*.tsx`:
   - пропси `queues: QueueSettings[]`, `value: QueueId`, `onChange(id: QueueId)`;
   - рядок «Стартова черга» зі значенням (назва черги, якщо задана, інакше «Черга {id}»);
   - iOS — `Menu` + `Picker` inline з `@expo/ui/swift-ui`, Android — той самий підхід, що в `start-tab-row.android.tsx`;
   - `accessibilityIdentifier` / `testID` `outageSettings.startQueue`;
   - підпис для читача екрана — «Стартова черга, {назва}».
-- [ ] T028 [US3] У `src/app/(tabs)/(outages)/outage-settings.tsx`:
+- [X] T028 [US3] У `src/app/(tabs)/(outages)/outage-settings.tsx`:
   - стан форми `startQueue` (початково `settings.startQueue`);
   - під сіткою «Мої черги» рендерити `StartQueueRow`, коли `pickedQueues.length >= 2`; значення — `startQueue`, якщо він серед обраних, інакше перша обрана;
   - при збереженні (місце, де збирається `queues: pickedQueues.map(...)`, рядок ~143) записати `startQueue`, лише якщо він серед `pickedQueues`, інакше не записувати;
   - `showsVerticalScrollIndicator={false}` на скролі екрана (FR-019).
-- [ ] T029 [US3] У `src/app/(tabs)/(outages)/index.tsx` у `ScheduleScreen` отримувати `startQueue` з `useOutageSettings()` (або передати пропом з батьківського компонента) і ініціалізувати `useState` значенням `queues.some((q) => q.id === startQueue) ? startQueue : firstQueue`. Наявний запасний варіант `queue = … ? selectedQueue : firstQueue` лишити. Ручне перемикання не змінює налаштувань.
+- [X] T029 [US3] У `src/app/(tabs)/(outages)/index.tsx` у `ScheduleScreen` отримувати `startQueue` з `useOutageSettings()` (або передати пропом з батьківського компонента) і ініціалізувати `useState` значенням `queues.some((q) => q.id === startQueue) ? startQueue : firstQueue`. Наявний запасний варіант `queue = … ? selectedQueue : firstQueue` лишити. Ручне перемикання не змінює налаштувань.
 
-- [ ] T030 [US3] Оновити патерни в тому ж коміті, що й код US3: `docs/patterns/pickers.md` — «Стартова черга» як нативне меню від рядка (як «Стартова вкладка»); `docs/patterns/outage-providers.md` — `OutageSettings.startQueue` в акаунті, скидання при прибиранні черги, застосування лише при холодному запуску
+- [X] T030 [US3] Оновити патерни в тому ж коміті, що й код US3: `docs/patterns/pickers.md` — «Стартова черга» як нативне меню від рядка (як «Стартова вкладка»); `docs/patterns/outage-providers.md` — `OutageSettings.startQueue` в акаунті, скидання при прибиранні черги, застосування лише при холодному запуску
 
 **Checkpoint**: холодний запуск відкриває стартову чергу.
 

@@ -15,9 +15,13 @@ import {
 } from './settings-repository';
 import type { OutageSettings, QueueSettings } from './types';
 
-type AccountOutageSettings = { city?: string; queues: QueueSettings[] };
+type AccountOutageSettings = {
+  city?: string;
+  queues: QueueSettings[];
+  startQueue?: string;
+};
 
-// Місто й черги — в акаунті (Firestore), сповіщення — на пристрої, бо
+// Місто, черги й стартова черга — в акаунті (Firestore), сповіщення — на пристрої, бо
 // залежать від дозволу саме цього пристрою
 export function createFirestoreOutageSettingsRepository(
   storage: KeyValueStorage,
@@ -52,7 +56,13 @@ export function createFirestoreOutageSettingsRepository(
             const data = snapshot.data() as
               Partial<AccountOutageSettings> | undefined;
             account = data
-              ? { city: data.city, queues: data.queues ?? [] }
+              ? {
+                  city: data.city,
+                  queues: data.queues ?? [],
+                  ...(typeof data.startQueue === 'string' && {
+                    startQueue: data.startQueue,
+                  }),
+                }
               : emptyOutageSettings;
             rebuild();
             resolve();
@@ -72,8 +82,14 @@ export function createFirestoreOutageSettingsRepository(
     async save(next) {
       if (!uid) throw new Error('Користувач не ввійшов');
       const changedAccount =
-        next.city !== account.city || next.queues !== account.queues;
-      account = { city: next.city, queues: next.queues };
+        next.city !== account.city ||
+        next.queues !== account.queues ||
+        next.startQueue !== account.startQueue;
+      account = {
+        city: next.city,
+        queues: next.queues,
+        startQueue: next.startQueue,
+      };
       notifications = next.notifications;
       rebuild();
       if (changedAccount) {

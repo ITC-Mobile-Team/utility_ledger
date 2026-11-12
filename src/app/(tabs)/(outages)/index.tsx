@@ -17,6 +17,7 @@ import {
   formatDuration,
   formatShortDate,
   getOffMinutes,
+  getInitialQueue,
   getOutageIntervals,
   getPowerStatus,
   getOutageSetupStatus,
@@ -148,7 +149,13 @@ function ScheduleScreen({
     useOutageSchedule(provider);
   const now = useZonedNow(provider.timeZone);
   const firstQueue = queues[0]?.id ?? '';
-  const [selectedQueue, setSelectedQueue] = useState(firstQueue);
+  // Стартова черга з налаштувань — лише початковий стан: екран вкладки живе,
+  // поки застосунок відкритий, тож вона діє при холодному запуску, а ручне
+  // перемикання налаштувань не змінює
+  const { startQueue } = useOutageSettings();
+  const [selectedQueue, setSelectedQueue] = useState(
+    () => getInitialQueue({ queues, startQueue }) ?? firstQueue,
+  );
   const [day, setDay] = useState<Day>('today');
   const tint = useThemeColor('powerOnInk');
   const queue = queues.some((item) => item.id === selectedQueue)

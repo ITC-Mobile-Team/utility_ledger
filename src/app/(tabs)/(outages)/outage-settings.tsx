@@ -35,6 +35,7 @@ import {
   ListRow,
   OutageCitySheet,
   SectionHeader,
+  StartQueueRow,
   useFormFooterKeyboardInsets,
 } from '@/views';
 import { router } from 'expo-router';
@@ -80,6 +81,8 @@ export default function OutageSettingsScreen() {
       settings.queues.map((queue) => [queue.id, queue.name ?? '']),
     ),
   );
+  // Черга, вибрана при холодному запуску «Світла» (з-поміж обраних)
+  const [startQueue, setStartQueue] = useState(settings.startQueue);
   const [isCitySheetVisible, setCitySheetVisible] = useState(false);
   const [isSaving, setSaving] = useState(false);
   const [notifications, setNotifications] = useState(() =>
@@ -106,6 +109,9 @@ export default function OutageSettingsScreen() {
     ? provider.queues.filter((id) => picked.includes(id))
     : [];
   const canSave = Boolean(city) && (!provider || pickedQueues.length > 0);
+  // Прибрана з обраних стартова черга не зберігається — відкриється перша
+  const validStartQueue =
+    startQueue && pickedQueues.includes(startQueue) ? startQueue : undefined;
 
   // Нова черга одразу потрапляє і в попередження, прибрана — зникає з них
   const toggle = (id: string) => {
@@ -145,6 +151,7 @@ export default function OutageSettingsScreen() {
           name: names[id]?.trim() || undefined,
         })),
         notifications: { ...notifications, queues: notifyPicked },
+        startQueue: validStartQueue,
       };
       await repository.save(next);
       // Попередження переплановуються за збереженим графіком; свіжий
@@ -247,6 +254,18 @@ export default function OutageSettingsScreen() {
                   ))}
                 </View>
               </ThemedView>
+              {pickedQueues.length >= 2 && (
+                <ListCard>
+                  <StartQueueRow
+                    queues={pickedQueues.map((id) => ({
+                      id,
+                      name: names[id],
+                    }))}
+                    value={validStartQueue ?? pickedQueues[0] ?? ''}
+                    onChange={setStartQueue}
+                  />
+                </ListCard>
+              )}
               {provider.lookupUrl && (
                 <ListCard>
                   <ListRow

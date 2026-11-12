@@ -78,4 +78,18 @@ export type OutageSettings = {
   city?: string;
   queues: QueueSettings[];
   notifications?: OutageNotificationSettings;
+  // Черга, вибрана при холодному запуску вкладки «Світло». Валідна лише якщо
+  // є в queues; інакше ігнорується, а при збереженні налаштувань скидається
+  startQueue?: QueueId;
 };
+
+// Черга, з якої відкривається графік: стартова, якщо вона серед обраних,
+// інакше перша обрана
+export function getInitialQueue(
+  settings: Pick<OutageSettings, 'queues' | 'startQueue'>,
+): QueueId | undefined {
+  const { queues, startQueue } = settings;
+  return queues.some((queue) => queue.id === startQueue)
+    ? startQueue
+    : queues[0]?.id;
+}
