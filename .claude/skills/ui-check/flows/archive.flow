@@ -1,0 +1,52 @@
+# Архів обʼєктів (spec 010, US1): архівувати першу адресу з її деталей, знайти її на екрані «Архів»
+# з перемикачем «Враховувати в аналітиці», переконатися, що архівований обʼєкт лише для перегляду
+# (є «Повернути з архіву» і «Видалити», немає «Додати місяць» і «Архівувати»), і повернути його.
+# Сценарій лишає дані як були. Запуск з кореня проєкту:
+# .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/archive.flow
+launch
+tap label=Обʼєкти
+wait id=objects.screen
+tap id=objects.card.0
+wait id=object.screen
+# Ряд кнопок навбару гортається вбік лише drag-ом за координатами
+drag 340,155 40,155
+sleep 0.5
+drag 340,155 40,155
+sleep 0.5
+tap id=object.nav.archive
+sleep 0.8
+see "Архівувати адресу?"
+tap role=button&label=Архівувати#2
+wait id=objects.screen
+# Адреса зникла зі списку, кнопка «Архів» лишилась
+check id=objects.nav.archive
+tap id=objects.nav.archive
+wait id=archive.screen
+check id=archive.card.0
+check id=archive.analytics.0 value=1
+# Перемикач окремий від картки: вимикається й вмикається назад
+tap id=archive.analytics.0
+sleep 1.5
+check id=archive.analytics.0 value=0
+tap id=archive.analytics.0
+sleep 1.5
+check id=archive.analytics.0 value=1
+tap id=archive.card.0
+wait id=object.screen
+check id=object.nav.restore
+check id=object.nav.delete
+gone id=object.nav.addMonth
+gone id=object.nav.archive
+tap id=object.nav.restore
+sleep 1
+# Ряд кнопок навбару гортається вбік лише drag-ом за координатами
+drag 340,155 40,155
+sleep 0.5
+drag 340,155 40,155
+sleep 0.5
+tap id=navigationBar.back
+wait id=archive.screen
+see "Архів порожній"
+tap id=navigationBar.back
+wait id=objects.screen
+check id=objects.card.0

@@ -20,6 +20,7 @@ import {
   getMonthStatus,
   getObjectMonths,
   getObjectServices,
+  isObjectReadOnly,
   type MonthKey,
   parseMonthKey,
 } from '@/services/ledger';
@@ -36,8 +37,16 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 
+const deleteButton: NavigationBarButtonItem = {
+  id: 'delete',
+  title: 'Видалити',
+  icon: 'trash',
+  iconBackground: 'coralSoft',
+  testID: 'object.nav.delete',
+};
+
 // Набір кнопок однаковий для нового й заповненого обʼєкта
-const objectButtons: NavigationBarButtonItem[] = [
+const activeObjectButtons: NavigationBarButtonItem[] = [
   {
     id: 'add-month',
     title: 'Додати місяць',
@@ -67,12 +76,25 @@ const objectButtons: NavigationBarButtonItem[] = [
     testID: 'object.nav.edit',
   },
   {
-    id: 'delete',
-    title: 'Видалити',
-    icon: 'trash',
-    iconBackground: 'coralSoft',
-    testID: 'object.nav.delete',
+    id: 'archive',
+    title: 'Архівувати',
+    icon: 'archive',
+    iconBackground: 'surface2',
+    testID: 'object.nav.archive',
   },
+  deleteButton,
+];
+
+// Архівований обʼєкт лише для перегляду: повернути з архіву або видалити
+const archivedObjectButtons: NavigationBarButtonItem[] = [
+  {
+    id: 'restore',
+    title: 'Повернути з архіву',
+    icon: 'archive',
+    iconBackground: 'greenSoft',
+    testID: 'object.nav.restore',
+  },
+  deleteButton,
 ];
 
 // Групує місяці за роками зі збереженням порядку (найновіші першими)
@@ -95,6 +117,7 @@ export default function ObjectMonths() {
 
   if (!object) return null;
 
+  const isReadOnly = isObjectReadOnly(object);
   const months = getObjectMonths(state, object.id);
   const hasServices = getObjectServices(state, object.id).length > 0;
 
@@ -122,6 +145,22 @@ export default function ObjectMonths() {
           onPress: async () => {
             router.back();
             await ledger.deleteObject(object.id);
+          },
+        },
+      ],
+    );
+
+  const confirmArchive = () =>
+    Alert.alert(
+      'Архівувати адресу?',
+      'Адреса зникне зі списку, а вся історія збережеться в архіві.',
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Архівувати',
+          onPress: () => {
+            router.back();
+            ledger.setObjectArchive(object.id, { archived: true });
           },
         },
       ],
@@ -161,6 +200,12 @@ export default function ObjectMonths() {
           params: { objectId: object.id },
         });
         break;
+      case 'archive':
+        confirmArchive();
+        break;
+      case 'restore':
+        ledger.setObjectArchive(object.id, { archived: false });
+        break;
       case 'delete':
         confirmDelete();
         break;
@@ -174,10 +219,19 @@ export default function ObjectMonths() {
       barType='blue'
       testID='object.screen'
       contentInsets={{ bottom: 32 }}
-      navigationBarButtons={objectButtons}
+      navigationBarButtons={
+        isReadOnly ? archivedObjectButtons : activeObjectButtons
+      }
       onNavigationButtonPress={onButtonPress}
     >
-      {months.length === 0 && !hasServices ? (
+      {months.length === 0 && isReadOnly ? (
+        <EmptyStateView
+          icon='calendar'
+          title='Місяців немає'
+          message='Адреса в архіві. Поверніть її з архіву, щоб додати місяці й послуги.'
+          showsPlusBadge={false}
+        />
+      ) : months.length === 0 && !hasServices ? (
         <EmptyStateView
           icon='calendar'
           title='Ще немає місяців'
@@ -210,6 +264,7 @@ export default function ObjectMonths() {
                 return (
                   <ListCard key={month}>
                     <SwipeableRow
+                      enabled={!isReadOnly}
                       actions={[
                         {
                           title: 'Видалити',

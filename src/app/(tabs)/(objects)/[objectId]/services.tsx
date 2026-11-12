@@ -9,6 +9,7 @@ import {
   formatAddress,
   formatTariff,
   getObjectServices,
+  isObjectReadOnly,
   type LedgerService,
 } from '@/services/ledger';
 import {
@@ -29,6 +30,9 @@ export default function ObjectServices() {
   const object = useLedgerObject(objectId);
 
   if (!object) return null;
+
+  // Архівований обʼєкт: послуги лише для перегляду
+  const isReadOnly = isObjectReadOnly(object);
 
   const services = getObjectServices(state, object.id);
 
@@ -61,15 +65,19 @@ export default function ObjectServices() {
       barType='blue'
       testID='services.screen'
       contentInsets={{ bottom: 32 }}
-      navigationBarButtons={[
-        {
-          id: 'add',
-          title: 'Додати послугу',
-          icon: 'plus',
-          iconBackground: 'plusSoft',
-          testID: 'services.nav.add',
-        },
-      ]}
+      navigationBarButtons={
+        isReadOnly
+          ? []
+          : [
+              {
+                id: 'add',
+                title: 'Додати послугу',
+                icon: 'plus',
+                iconBackground: 'plusSoft',
+                testID: 'services.nav.add',
+              },
+            ]
+      }
       onNavigationButtonPress={() => openForm()}
     >
       {services.length === 0 ? (
@@ -77,7 +85,7 @@ export default function ObjectServices() {
           icon='electricity'
           title='Послуг ще немає'
           message='Обліковуйте за показником лічильника, фіксованою сумою або ставкою за день. Тариф вказується одразу при створенні.'
-          actionTitle='Додати послугу'
+          actionTitle={isReadOnly ? undefined : 'Додати послугу'}
           actionTestID='services.empty.add'
           onAction={() => openForm()}
         />
@@ -94,6 +102,7 @@ export default function ObjectServices() {
             {services.map((service, index) => (
               <SwipeableRow
                 key={service.id}
+                enabled={!isReadOnly}
                 actions={[
                   {
                     title: 'Редагувати',
@@ -114,7 +123,7 @@ export default function ObjectServices() {
                 <ListRow
                   leading={<ServiceIcon icon={service.icon} />}
                   testID={`services.row.${index}`}
-                  onPress={() => openForm(service.id)}
+                  onPress={isReadOnly ? undefined : () => openForm(service.id)}
                 >
                   <ThemedText font='rowTitle'>{service.name}</ThemedText>
                   <ThemedText color='muted' font='caption'>

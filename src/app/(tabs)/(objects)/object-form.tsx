@@ -17,6 +17,7 @@ import {
   FormFooter,
   useFormFooterKeyboardInsets,
 } from '@/views';
+import { useReadOnlyGuard } from '@/hooks/use-read-only-guard';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
@@ -27,6 +28,7 @@ export default function ObjectForm() {
   const { objectId } = useLocalSearchParams<{ objectId?: string }>();
   const ledger = useLedger();
   const existing = useLedgerObject(objectId);
+  const isReadOnly = useReadOnlyGuard(existing);
   const isEditing = Boolean(existing);
   const keyboardInsets = useFormFooterKeyboardInsets();
 
@@ -66,6 +68,8 @@ export default function ObjectForm() {
       setSaving(false);
     }
   };
+
+  if (isReadOnly) return null;
 
   return (
     <KeyboardDismissView>

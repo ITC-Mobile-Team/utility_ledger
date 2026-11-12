@@ -10,7 +10,12 @@ import {
   ThemedView,
   VStack,
 } from '@/components';
-import { useLedger, useLedgerState } from '@/providers/ledger-provider';
+import {
+  useLedger,
+  useLedgerObject,
+  useLedgerState,
+} from '@/providers/ledger-provider';
+import { useReadOnlyGuard } from '@/hooks/use-read-only-guard';
 import {
   formatMonthTitle,
   formatNumber,
@@ -36,13 +41,14 @@ import { StyleSheet } from 'react-native';
 const METER_LENGTH = 5;
 
 export default function Reading() {
-  const { month, serviceId } = useLocalSearchParams<{
+  const { objectId, month, serviceId } = useLocalSearchParams<{
     objectId: string;
     month: string;
     serviceId: string;
   }>();
   const ledger = useLedger();
   const state = useLedgerState();
+  const isReadOnly = useReadOnlyGuard(useLedgerObject(objectId));
   const service = state.services.find((s) => s.id === serviceId);
   const validMonth = isMonthKey(month) ? month : undefined;
   const saved =
@@ -57,7 +63,7 @@ export default function Reading() {
     saved !== undefined,
   );
 
-  if (!service || !validMonth) return null;
+  if (!service || !validMonth || isReadOnly) return null;
 
   const dayNight = isDayNight(service);
   const isEditing = saved !== undefined;

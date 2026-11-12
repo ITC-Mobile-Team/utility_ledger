@@ -6,6 +6,8 @@ import {
 import { useLedgerState } from '@/providers/ledger-provider';
 import {
   formatMonthTitle,
+  getActiveObjects,
+  getArchivedObjects,
   getCurrentMonth,
   getMonthStatus,
   getObjectServices,
@@ -16,24 +18,22 @@ import { useAccountDataStatus } from '@/providers/account-data-provider';
 import { AccountDataGate, ObjectsSkeleton } from '@/views/account-data';
 import { EmptyStateView, ObjectCard, SectionHeader } from '@/views';
 import { router } from 'expo-router';
-import { Alert } from 'react-native';
 
-const objectsNavigationButtons: NavigationBarButtonItem[] = [
-  {
-    id: 'add',
-    title: 'Додати адресу',
-    icon: 'plus',
-    iconBackground: 'plusSoft',
-    testID: 'objects.nav.add',
-  },
-  {
-    id: 'archive',
-    title: 'Архів',
-    icon: 'archive',
-    iconBackground: 'surface2',
-    testID: 'objects.nav.archive',
-  },
-];
+const addButton: NavigationBarButtonItem = {
+  id: 'add',
+  title: 'Додати адресу',
+  icon: 'plus',
+  iconBackground: 'plusSoft',
+  testID: 'objects.nav.add',
+};
+
+const archiveButton: NavigationBarButtonItem = {
+  id: 'archive',
+  title: 'Архів',
+  icon: 'archive',
+  iconBackground: 'surface2',
+  testID: 'objects.nav.archive',
+};
 
 const addObject = () => router.push('/object-form');
 
@@ -41,9 +41,19 @@ export default function Index() {
   const { status } = useAccountDataStatus();
   const state = useLedgerState();
   const month = getCurrentMonth();
-  const count = state.objects.length;
+  const objects = getActiveObjects(state);
+  const hasArchived = getArchivedObjects(state).length > 0;
+  const count = objects.length;
   const isReady = status === 'ready';
   const isEmpty = isReady && count === 0;
+  // Коли всі адреси в архіві, лишається кнопка «Архів» — інакше до них не дійти
+  const navigationButtons = !isReady
+    ? []
+    : !isEmpty
+      ? [addButton, archiveButton]
+      : hasArchived
+        ? [archiveButton]
+        : [];
 
   const subtitle = !isReady
     ? formatMonthTitle(month)
@@ -58,12 +68,10 @@ export default function Index() {
       testID='objects.screen'
       barType='blue'
       contentInsets={{ bottom: 32 }}
-      navigationBarButtons={isReady && !isEmpty ? objectsNavigationButtons : []}
+      navigationBarButtons={navigationButtons}
       onNavigationButtonPress={(id) => {
         if (id === 'add') addObject();
-        if (id === 'archive') {
-          Alert.alert('Архів', 'Архів адрес зʼявиться згодом.');
-        }
+        if (id === 'archive') router.push('/archive');
       }}
     >
       <AccountDataGate skeleton={<ObjectsSkeleton />}>
@@ -79,7 +87,7 @@ export default function Index() {
         ) : (
           <VStack spacing={12}>
             <SectionHeader title='Ваші адреси' />
-            {state.objects.map((object, index) => (
+            {objects.map((object, index) => (
               <ObjectCard
                 key={object.id}
                 testID={`objects.card.${index}`}

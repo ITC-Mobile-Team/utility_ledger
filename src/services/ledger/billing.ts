@@ -1,7 +1,9 @@
 import { toMonthKey } from './format';
 import type {
+  LedgerObject,
   LedgerService,
   LedgerState,
+  ObjectArchivePatch,
   MeterReading,
   MonthKey,
 } from './types';
@@ -46,6 +48,52 @@ export const getCurrentMonth = () => toMonthKey(new Date());
 
 export const getObjectServices = (state: LedgerState, objectId: string) =>
   state.services.filter((service) => service.objectId === objectId);
+
+// Архівований обʼєкт доступний лише для перегляду
+export const isObjectReadOnly = (object: Pick<LedgerObject, 'archived'>) =>
+  object.archived === true;
+
+// Обʼєкти списку «Обʼєкти» — без архівованих
+export const getActiveObjects = (state: LedgerState) =>
+  state.objects.filter((object) => !isObjectReadOnly(object));
+
+// Обʼєкти екрана «Архів», останні заархівовані першими
+export const getArchivedObjects = (state: LedgerState) =>
+  state.objects
+    .filter(isObjectReadOnly)
+    .sort((a, b) => (b.archivedAt ?? 0) - (a.archivedAt ?? 0));
+
+// Єдине джерело обʼєктів для «Аналітики»: активні та архівовані з
+// увімкненим «Враховувати в аналітиці»
+export const getAnalyticsObjects = (state: LedgerState) =>
+  state.objects.filter(
+    (object) =>
+      !isObjectReadOnly(object) || object.includeInAnalytics !== false,
+  );
+
+// Нові значення архівних полів обʼєкта для setObjectArchive
+export const applyArchivePatch = (
+  object: LedgerObject,
+  patch: ObjectArchivePatch,
+): LedgerObject => {
+  if (!patch.archived) {
+    return { ...object, archived: false, includeInAnalytics: true };
+  }
+  // Уже в архіві — змінюється лише перемикач аналітики
+  if (isObjectReadOnly(object)) {
+    return {
+      ...object,
+      includeInAnalytics:
+        patch.includeInAnalytics ?? object.includeInAnalytics ?? true,
+    };
+  }
+  return {
+    ...object,
+    archived: true,
+    archivedAt: Date.now(),
+    includeInAnalytics: patch.includeInAnalytics ?? true,
+  };
+};
 
 // Додані місяці обʼєкта, найновіший першим
 export const getObjectMonths = (

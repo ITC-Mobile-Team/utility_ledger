@@ -380,6 +380,18 @@ def cmd_swipe(selector, direction, distance=0.6):
     return "swipe %s %s" % (selector, direction)
 
 
+def cmd_drag(start, end, duration=0.3):
+    """Swipe by points: `drag 300,140 60,140`. For containers XCUITest can't
+    swipe within (horizontal RN ScrollView in the navbar buttons row)."""
+    (x1, y1), (x2, y2) = [tuple(float(v) for v in p.split(",")) for p in (start, end)]
+    r = run([_axe(), "swipe", "--start-x", str(x1), "--start-y", str(y1),
+             "--end-x", str(x2), "--end-y", str(y2), "--duration", str(duration),
+             "--udid", simulator()], 30)
+    if r.returncode:
+        raise Blocked("axe swipe failed: " + (r.stderr or r.stdout).strip()[:160])
+    return "drag %s %s" % (start, end)
+
+
 def cmd_scroll_to(target, within, direction="up", max_swipes=8):
     for i in range(max_swipes + 1):
         elements = snapshot()
@@ -606,6 +618,8 @@ def step(line):
         return cmd_key(pos[0], int(opt.get("count", 1)))
     if verb == "swipe":
         return cmd_swipe(pos[0], pos[1] if len(pos) > 1 else "up", float(opt.get("distance", 0.6)))
+    if verb == "drag":
+        return cmd_drag(pos[0], pos[1], float(opt.get("duration", 0.3)))
     if verb == "scrollto":
         return cmd_scroll_to(pos[0], opt.get("within", pos[1] if len(pos) > 1 else "role=scroll-view"),
                              opt.get("dir", "up"), int(opt.get("max", 8)))

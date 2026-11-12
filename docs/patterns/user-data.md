@@ -4,16 +4,16 @@
 
 ## Де що лежить
 
-| Дані | Де | Шлях |
-|---|---|---|
-| Профіль (імʼя, email, спосіб входу) | Firestore | `users/{uid}` |
-| Обʼєкти, послуги | Firestore | `users/{uid}/objects/{id}`, `users/{uid}/services/{id}` |
-| Місяці обʼєкта | Firestore | `users/{uid}/months/{objectId}_{YYYY-MM}` |
-| Показники, дні, суми | Firestore | `users/{uid}/readings|dayCounts|amounts/{serviceId}_{YYYY-MM}` |
-| Місто й черги «Світла» | Firestore | `users/{uid}/settings/outages` |
-| Сповіщення «Світла», кеш графіків | пристрій (`KeyValueStorage`) | `outageSettings` (лише `notifications`), `outageSchedule:{providerId}` |
-| Тема, стартова вкладка, онбординг | пристрій | див. [preferences.md](preferences.md) |
-| «Пристрій уже отримав дані акаунта» | пристрій | `accountDataSynced:{uid}` |
+| Дані                                | Де                           | Шлях                                                                   |
+| ----------------------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| Профіль (імʼя, email, спосіб входу) | Firestore                    | `users/{uid}`                                                          |
+| Обʼєкти, послуги                    | Firestore                    | `users/{uid}/objects/{id}`, `users/{uid}/services/{id}`                |
+| Місяці обʼєкта                      | Firestore                    | `users/{uid}/months/{objectId}_{YYYY-MM}`                              |
+| Показники, дні, суми                | Firestore                    | `users/{uid}/readings                                                  | dayCounts | amounts/{serviceId}_{YYYY-MM}` |
+| Місто й черги «Світла»              | Firestore                    | `users/{uid}/settings/outages`                                         |
+| Сповіщення «Світла», кеш графіків   | пристрій (`KeyValueStorage`) | `outageSettings` (лише `notifications`), `outageSchedule:{providerId}` |
+| Тема, стартова вкладка, онбординг   | пристрій                     | див. [preferences.md](preferences.md)                                  |
+| «Пристрій уже отримав дані акаунта» | пристрій                     | `accountDataSynced:{uid}`                                              |
 
 Шляхи й хелпери — `src/services/firestore/index.ts` (`userDoc`, `userCollection`, `outageSettingsDoc`, `entryId`). Природний ключ «сутність + місяць» робить повторний запис за той самий місяць заміною. Правила безпеки — `firestore.rules` у корені (кожен акаунт бачить лише `users/{свій uid}/**`), публікуються в консолі Firebase або `firebase deploy --only firestore:rules`.
 
@@ -27,6 +27,13 @@ Web поза обсягом: `index.web.ts` у `src/services/ledger`, `profile`,
 - Каскади (видалення обʼєкта, послуги, місяця, скидання, перенесення місяця) — список операцій з поточного знімка, батчами ≤ 500. Перенесення місяця — видалення `…_{from}` і запис `…_{to}`.
 - Знімок відкидає сиріт (послуги без обʼєкта, показники без послуги тощо), що могли лишитися після одночасних змін на двох пристроях. Конфлікти — «пізніший запис перемагає».
 - `undefined` Firestore не приймає: дані перед записом проходять `withoutUndefined`.
+
+## Архів обʼєктів
+
+- Обʼєкт має необовʼязкові поля `archived` (немає = ні), `archivedAt` (час останнього архівування, для сортування; після повернення не стирається) і `includeInAnalytics` (немає = так; має значення лише для архівованого). Старі документи без полів — звичайні активні обʼєкти, міграції немає.
+- Змінюються лише через `setObjectArchive(id, { archived, includeInAnalytics? })` (логіка полів — `applyArchivePatch` у `billing.ts`). Повернення з архіву пише явні `archived: false`, `includeInAnalytics: true` — без `undefined`. `ObjectInput` (форма) архівних полів не містить, тож редагування їх не перезаписує.
+- Селектори: `getActiveObjects` — список «Обʼєкти»; `getArchivedObjects` — екран «Архів» (`(objects)/archive.tsx`); `isObjectReadOnly`. **«Аналітика» бере обʼєкти лише через `getAnalyticsObjects`** (активні + архівовані з увімкненим «Враховувати в аналітиці»).
+- Архівований обʼєкт — лише перегляд: у навбарі деталей «Повернути з архіву» і «Видалити»; немає додавання місяців, свайпів видалення/скидання, внесення показників і сум, редагування обʼєкта й послуг. Екрани редагування (`reading`, `amount`, `service-form`, `object-form`) викликають `useReadOnlyGuard(object)`: для архівованого одразу `router.back()` і нічого не рендерять. Рядки без дії (`ListRow` без `onPress`) показуються без шеврона.
 
 ## Офлайн і локальна копія
 

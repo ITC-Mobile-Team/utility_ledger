@@ -33,6 +33,7 @@ import {
   useFormFooterKeyboardInsets,
   ServiceIcon,
 } from '@/views';
+import { useReadOnlyGuard } from '@/hooks/use-read-only-guard';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -75,6 +76,7 @@ export default function ServiceForm() {
   const ledger = useLedger();
   const state = useLedgerState();
   const object = useLedgerObject(objectId);
+  const isReadOnly = useReadOnlyGuard(object);
   const existing = state.services.find((service) => service.id === serviceId);
 
   const icon = pickedIcon ?? existing?.icon ?? defaultServiceIcon;
@@ -131,7 +133,7 @@ export default function ServiceForm() {
           sewageFeeValue !== null)));
   const keyboardInsets = useFormFooterKeyboardInsets(!hasTariff);
 
-  if (!object) return null;
+  if (!object || isReadOnly) return null;
 
   const canSave = name.trim().length > 0 && hasTariff;
 

@@ -24,6 +24,7 @@ import {
   getPreviousMonth,
   getReading,
   isMonthKey,
+  isObjectReadOnly,
   type LedgerService,
   type LedgerState,
   type MonthKey,
@@ -132,6 +133,9 @@ export default function MonthServices() {
 
   if (!object || !isMonthKey(month)) return null;
 
+  // Архівований обʼєкт: лише перегляд, без внесення й скидання
+  const isReadOnly = isObjectReadOnly(object);
+
   const { items, total } = calculateMonth(state, object.id, month);
   const meters = items.filter((item) => item.service.mode === 'meter');
   const byDays = items.filter((item) => item.service.mode === 'day');
@@ -173,6 +177,7 @@ export default function MonthServices() {
     hasEntry(state, service.id, month) ? (
       <SwipeableRow
         key={service.id}
+        enabled={!isReadOnly}
         actions={[
           {
             title: 'Скинути',
@@ -187,9 +192,11 @@ export default function MonthServices() {
     ) : (
       <View key={service.id}>{row}</View>
     );
-  const canResetAny = [...meters, ...invoices, ...byDays].some((item) =>
-    hasEntry(state, item.service.id, month),
-  );
+  const canResetAny =
+    !isReadOnly &&
+    [...meters, ...invoices, ...byDays].some((item) =>
+      hasEntry(state, item.service.id, month),
+    );
 
   const openBill = () =>
     router.push({
@@ -221,21 +228,23 @@ export default function MonthServices() {
         title={formatMonthTitle(month)}
         subtitle={formatShortAddress(object)}
         headerAccessory={
-          <NavigationBarChip
-            title='Місяць'
-            icon='calendar'
-            accessibilityLabel='Змінити місяць'
-            testID='month.change'
-            onPress={() => {
-              setMonthSheetKey((key) => key + 1);
-              setMonthSheetVisible(true);
-            }}
-          />
+          !isReadOnly && (
+            <NavigationBarChip
+              title='Місяць'
+              icon='calendar'
+              accessibilityLabel='Змінити місяць'
+              testID='month.change'
+              onPress={() => {
+                setMonthSheetKey((key) => key + 1);
+                setMonthSheetVisible(true);
+              }}
+            />
+          )
         }
         barType='blue'
         contentInsets={{ bottom: 32 }}
         testID='month.screen'
-        navigationBarButtons={monthButtons}
+        navigationBarButtons={isReadOnly ? [] : monthButtons}
         onNavigationButtonPress={(id) => {
           if (id === 'bill') openBill();
           if (id === 'services') openServices();
@@ -246,7 +255,7 @@ export default function MonthServices() {
             icon='gauge'
             title='Нічого вносити'
             message='За цей місяць немає послуг. Додайте послугу обʼєкта, щоб вносити показники й бачити суму до сплати.'
-            actionTitle='Додати послугу'
+            actionTitle={isReadOnly ? undefined : 'Додати послугу'}
             actionTestID='month.empty.addService'
             onAction={() =>
               router.push({
@@ -304,7 +313,11 @@ export default function MonthServices() {
                           />
                         }
                         trailing={<RowValue amount={item.amount} />}
-                        onPress={() => openReading(item.service.id)}
+                        onPress={
+                          isReadOnly
+                            ? undefined
+                            : () => openReading(item.service.id)
+                        }
                       >
                         <ThemedText font='rowTitle'>
                           {item.service.name}
@@ -334,7 +347,11 @@ export default function MonthServices() {
                           />
                         }
                         trailing={<RowValue amount={item.amount} />}
-                        onPress={() => openAmount(item.service.id)}
+                        onPress={
+                          isReadOnly
+                            ? undefined
+                            : () => openAmount(item.service.id)
+                        }
                       >
                         <ThemedText font='rowTitle'>
                           {item.service.name}
@@ -365,11 +382,15 @@ export default function MonthServices() {
                           />
                         }
                         trailing={<RowValue amount={item.amount} />}
-                        onPress={() => {
-                          setDaysServiceId(item.service.id);
-                          setDaysSheetKey((key) => key + 1);
-                          setDaysSheetVisible(true);
-                        }}
+                        onPress={
+                          isReadOnly
+                            ? undefined
+                            : () => {
+                                setDaysServiceId(item.service.id);
+                                setDaysSheetKey((key) => key + 1);
+                                setDaysSheetVisible(true);
+                              }
+                        }
                       >
                         <ThemedText font='rowTitle'>
                           {item.service.name}

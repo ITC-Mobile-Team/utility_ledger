@@ -18,7 +18,8 @@ import {
   type MonthKey,
   type MonthStatus,
 } from '@/services/ledger';
-import { StyleSheet } from 'react-native';
+import type { ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { EmojiTile } from './objects/emoji-tile';
 import { StatusLine } from './status-line';
 
@@ -30,6 +31,8 @@ type ObjectCardProps = {
   status?: MonthStatus;
   testID?: string;
   onPress?: () => void;
+  // Нижній рядок у тій самій поверхні (перемикач на екрані «Архів»)
+  footer?: ReactNode;
 };
 
 export function ObjectCard({
@@ -39,17 +42,18 @@ export function ObjectCard({
   status,
   testID,
   onPress,
+  footer,
 }: ObjectCardProps) {
   const subtitle = formatObjectSubtitle(object);
   const showsFooter = services.length > 0;
   return (
-    <Pressable
-      disabled={!onPress}
-      testID={testID}
-      onPress={onPress}
-      style={(state) => state.pressed && styles.pressed}
-    >
-      <ThemedView backgroundColor='surface' style={styles.container}>
+    <ThemedView backgroundColor='surface' style={styles.container}>
+      <Pressable
+        disabled={!onPress}
+        testID={testID}
+        onPress={onPress}
+        style={(state) => state.pressed && styles.pressed}
+      >
         <VStack spacing={12} style={styles.content}>
           <HStack align='center' spacing={12}>
             <IconView
@@ -77,8 +81,9 @@ export function ObjectCard({
             <>
               <ThemedView backgroundColor='line' style={styles.divider} />
 
-              <HStack spacing={6} align='center'>
-                {services.slice(0, 5).map((service) => (
+              {/* Усі послуги обʼєкта; що не вміщається — переноситься */}
+              <View style={styles.services}>
+                {services.map((service) => (
                   <EmojiTile
                     key={service.id}
                     emoji={service.icon}
@@ -86,12 +91,21 @@ export function ObjectCard({
                     size={iconTiles.compact}
                   />
                 ))}
-              </HStack>
+              </View>
             </>
           )}
         </VStack>
-      </ThemedView>
-    </Pressable>
+      </Pressable>
+
+      {/* Поза Pressable: власні елементи керування (перемикач) лишаються
+          окремими для дотику й VoiceOver */}
+      {footer && (
+        <VStack spacing={12} style={styles.footer}>
+          <ThemedView backgroundColor='line' style={styles.divider} />
+          {footer}
+        </VStack>
+      )}
+    </ThemedView>
   );
 }
 
@@ -134,6 +148,15 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: StyleSheet.hairlineWidth,
+  },
+  services: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   pressed: {
     opacity: 0.7,

@@ -21,6 +21,9 @@ type EmptyStateViewProps = {
   // testID кнопки дії
   actionTestID?: string;
   onAction?: () => void;
+  // Плитка «+» біля ілюстрації — для станів, де можна щось додати
+  showsPlusBadge?: boolean;
+  testID?: string;
 };
 
 export function EmptyStateView({
@@ -30,9 +33,16 @@ export function EmptyStateView({
   actionTitle,
   actionTestID,
   onAction,
+  showsPlusBadge = true,
+  testID,
 }: EmptyStateViewProps) {
   return (
-    <VStack spacing={24} align='center' style={styles.container}>
+    <VStack
+      spacing={24}
+      align='center'
+      style={styles.container}
+      testID={testID}
+    >
       {/* Кільця пульсації під колами ілюстрації (docs/patterns/empty-state-pulse.md) */}
       <View style={styles.art}>
         <PulseRings color='blueSoft2' size={ART_SIZE} />
@@ -45,9 +55,11 @@ export function EmptyStateView({
             </PulseCore>
           </ThemedView>
         </ThemedView>
-        <ThemedView backgroundColor='plusSoft' style={styles.badge}>
-          <AppImage icon='plus' container={iconTiles.menu} />
-        </ThemedView>
+        {showsPlusBadge && (
+          <ThemedView backgroundColor='plusSoft' style={styles.badge}>
+            <AppImage icon='plus' container={iconTiles.menu} />
+          </ThemedView>
+        )}
       </View>
 
       <VStack spacing={10} align='center'>

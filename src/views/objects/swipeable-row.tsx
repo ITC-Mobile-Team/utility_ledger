@@ -14,12 +14,21 @@ export type SwipeAction = {
   onPress: () => void;
 };
 
-type SwipeableRowProps = PropsWithChildren<{ actions: SwipeAction[] }>;
+type SwipeableRowProps = PropsWithChildren<{
+  actions: SwipeAction[];
+  // false — свайп вимкнено (архівований обʼєкт лише для перегляду)
+  enabled?: boolean;
+}>;
 
 // Рядок, що при свайпі вліво відкриває кнопки дій
-export function SwipeableRow({ actions, children }: SwipeableRowProps) {
+export function SwipeableRow({
+  actions,
+  enabled = true,
+  children,
+}: SwipeableRowProps) {
   return (
     <ReanimatedSwipeable
+      enabled={enabled}
       friction={2}
       rightThreshold={40}
       overshootRight={false}

@@ -1,4 +1,5 @@
 import type { KeyValueStorage } from '@/storage';
+import { applyArchivePatch } from './billing';
 import { toMonthKey } from './format';
 import type {
   LedgerRepository,
@@ -99,6 +100,14 @@ export function createLocalLedgerRepository(
         ...state,
         objects: state.objects.map((object) =>
           object.id === id ? { ...object, ...input } : object,
+        ),
+      });
+    },
+    async setObjectArchive(id, patch) {
+      await update({
+        ...state,
+        objects: state.objects.map((object) =>
+          object.id === id ? applyArchivePatch(object, patch) : object,
         ),
       });
     },

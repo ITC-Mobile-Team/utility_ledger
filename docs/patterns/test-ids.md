@@ -15,20 +15,22 @@ UI-сценарії (`.claude/skills/ui-check`) знаходять елемен�
 
 ## Як передати testID у спільні компоненти
 
-| Компонент | Як |
-|---|---|
-| `ActionButton`, `TextButton`, `TransparentActionButton`, `ThemedTextInput`, `Pressable` | проп `testID` |
-| Кнопки навбару | поле `testID` у `NavigationBarButtonItem` (`екран.nav.<id>`); кнопки входять у великий блок навбару: коли він згорнутий більше ніж наполовину (`p ≥ 0.5`), блок прибраний з дерева доступності, тож у згорнутому навбарі testID кнопок немає, а в розгорнутому кожен трапляється один раз |
-| `NavigationBarIconButton`, `NavigationBarChip`, `ListRow`, `ObjectCard` | проп `testID` |
-| `Segment`, `RadioGroup` | проп-префікс `testID` → варіанти `${testID}.${value}` |
-| `SwipeAction` | поле `testID` (`…row.0.delete`) |
-| `EmptyStateView` | `actionTestID` для кнопки дії |
-| `MeterReadingInput`, `AmountInput` | проп `testID` на видимому блоці |
-| Кнопка «Назад» у навбарі | завжди `navigationBar.back` |
+| Компонент                                                                               | Як                                                                                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ActionButton`, `TextButton`, `TransparentActionButton`, `ThemedTextInput`, `Pressable` | проп `testID`                                                                                                                                                                                                                                                                             |
+| Кнопки навбару                                                                          | поле `testID` у `NavigationBarButtonItem` (`екран.nav.<id>`); кнопки входять у великий блок навбару: коли він згорнутий більше ніж наполовину (`p ≥ 0.5`), блок прибраний з дерева доступності, тож у згорнутому навбарі testID кнопок немає, а в розгорнутому кожен трапляється один раз |
+| `NavigationBarIconButton`, `NavigationBarChip`, `ListRow`, `ObjectCard`                 | проп `testID`                                                                                                                                                                                                                                                                             |
+| `Segment`, `RadioGroup`                                                                 | проп-префікс `testID` → варіанти `${testID}.${value}`                                                                                                                                                                                                                                     |
+| `SwipeAction`                                                                           | поле `testID` (`…row.0.delete`)                                                                                                                                                                                                                                                           |
+| `EmptyStateView`                                                                        | `actionTestID` для кнопки дії                                                                                                                                                                                                                                                             |
+| `MeterReadingInput`, `AmountInput`                                                      | проп `testID` на видимому блоці                                                                                                                                                                                                                                                           |
+| Кнопка «Назад» у навбарі                                                                | завжди `navigationBar.back`                                                                                                                                                                                                                                                               |
+| Ряд великих кнопок навбару                                                              | `navigationBar.buttons` (горизонтальний `ScrollView`; XCUITest не гортає його свайпом — у `.flow` крок `drag` за координатами)                                                                                                                                                            |
+| `EmptyStateView` без кнопки                                                             | проп `testID` на всьому блоці (`archive.empty`)                                                                                                                                                                                                                                           |
 
 ## Префікси екранів
 
-`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `outages`, `outageSettings`, `profile`, `theme`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`, `splash`.
+`welcome`, `signIn`, `onboarding`, `objects`, `objectForm`, `objectAdded`, `object`, `month`, `reading`, `amount`, `services`, `serviceForm`, `monthPicker`, `cityPicker`, `archive`, `outages`, `outageSettings`, `profile`, `theme`, `editName`, `privacy`, `terms`, `undoToast`, `navigationBar`, `splash`.
 
 ## Splash
 

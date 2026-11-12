@@ -11,6 +11,7 @@ import {
   withoutUndefined,
   type WriteOp,
 } from '@/services/firestore/batch';
+import { applyArchivePatch } from './billing';
 import type {
   DayCount,
   LedgerObject,
@@ -164,6 +165,19 @@ export function createFirestoreLedgerRepository(): LedgerRepository {
       const existing = source.objects.find((object) => object.id === id);
       if (!existing) return;
       const object: LedgerObject = { ...existing, ...input };
+      commit(
+        {
+          objects: source.objects.map((item) =>
+            item.id === id ? object : item,
+          ),
+        },
+        [set('objects', id, object)],
+      );
+    },
+    async setObjectArchive(id, patch) {
+      const existing = source.objects.find((object) => object.id === id);
+      if (!existing) return;
+      const object = applyArchivePatch(existing, patch);
       commit(
         {
           objects: source.objects.map((item) =>

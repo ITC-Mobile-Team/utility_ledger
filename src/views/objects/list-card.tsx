@@ -74,7 +74,7 @@ export function ListRow({
           {children}
         </VStack>
         {trailing}
-        {showsChevron && <Chevron direction='right' />}
+        {showsChevron && onPress && <Chevron direction='right' />}
       </HStack>
     </GesturePressable>
   );

@@ -29,6 +29,7 @@ export const NavigationBarButtonsRow = ({
   const row = (
     <ScrollView
       horizontal
+      testID='navigationBar.buttons'
       // Ряд лежить у навбарі, а не під системними барами: автоматичні інсети
       // iOS тут зайві
       contentInsetAdjustmentBehavior='never'

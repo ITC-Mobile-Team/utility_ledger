@@ -10,7 +10,12 @@ import {
   VStack,
   Pressable,
 } from '@/components';
-import { useLedger, useLedgerState } from '@/providers/ledger-provider';
+import {
+  useLedger,
+  useLedgerObject,
+  useLedgerState,
+} from '@/providers/ledger-provider';
+import { useReadOnlyGuard } from '@/hooks/use-read-only-guard';
 import {
   formatMoney,
   formatMoneyInput,
@@ -40,13 +45,14 @@ const KEYBOARD_GAP = 12;
 
 // Сума з рахунку за місяць для послуги з режимом 'invoice' (макети 10e, 10f, 10g)
 export default function Amount() {
-  const { month, serviceId } = useLocalSearchParams<{
+  const { objectId, month, serviceId } = useLocalSearchParams<{
     objectId: string;
     month: string;
     serviceId: string;
   }>();
   const ledger = useLedger();
   const state = useLedgerState();
+  const isReadOnly = useReadOnlyGuard(useLedgerObject(objectId));
   const { bottom } = useSafeAreaInsets();
   const isKeyboardVisible = useKeyboardState((s) => s.isVisible);
   const service = state.services.find((s) => s.id === serviceId);
@@ -60,7 +66,7 @@ export default function Amount() {
   );
   const [isSaving, setSaving] = useState(false);
 
-  if (!service || !validMonth) return null;
+  if (!service || !validMonth || isReadOnly) return null;
 
   const isEditing = saved !== undefined;
   const monthName = getMonthName(validMonth).toLocaleLowerCase('uk');

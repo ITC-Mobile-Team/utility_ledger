@@ -22,7 +22,7 @@ description: "Задачі для архівування обʼєктів, ба�
 
 ## Phase 1: Setup
 
-- [ ] T001 Додати залежності через `npx expo install expo-application react-native-view-shot` (research R6, R14). Перевірити, що `package.json` має обидва пакети з версіями, які підібрав Expo: `expo-application` ~58.1.2, `react-native-view-shot` — рекомендований для SDK 58. `ios/` і `android/` руками не чіпати
+- [X] T001 Додати залежності через `npx expo install expo-application react-native-view-shot` (research R6, R14). Перевірити, що `package.json` має обидва пакети з версіями, які підібрав Expo: `expo-application` ~58.1.2, `react-native-view-shot` — рекомендований для SDK 58. `ios/` і `android/` руками не чіпати
 
 ---
 
@@ -43,48 +43,48 @@ description: "Задачі для архівування обʼєктів, ба�
   - новий артборд «Архів» у світлій і темній темах: картки обʼєктів без статусу місяця, під кожною рядок із перемикачем «Враховувати в аналітиці»;
   - стан порожнього архіву: заголовок «Архів порожній», пояснення «Архівуйте адресу в її деталях, щоб прибрати зі списку, не втрачаючи історії»;
   - стан архівованого обʼєкта з єдиною кнопкою «Повернути з архіву».
-- [ ] T003 [US1] У `src/services/ledger/types.ts`:
+- [X] T003 [US1] У `src/services/ledger/types.ts`:
   - до `LedgerObject` додати `archived?: boolean` (немає поля = `false`), `archivedAt?: number` (ms, час останнього архівування; після повернення не видаляється), `includeInAnalytics?: boolean` (немає поля = `true`; має значення лише при `archived === true`), з коментарями українською (data-model.md);
   - до `LedgerRepository` додати `setObjectArchive(id: string, patch: { archived: boolean; includeInAnalytics?: boolean }): Promise<void>` (contracts/interfaces.md);
   - `ObjectInput` змінити на `Omit<LedgerObject, 'id' | 'createdAt' | 'archived' | 'archivedAt' | 'includeInAnalytics'>`, щоб форма не перезаписувала архівні поля.
-- [ ] T004 [US1] Реалізувати `setObjectArchive` у `src/services/ledger/firestore-ledger-repository.ts` за зразком `updateObject`: знайти обʼєкт, зібрати новий і викликати `commit` з `set('objects', id, object)`.
+- [X] T004 [US1] Реалізувати `setObjectArchive` у `src/services/ledger/firestore-ledger-repository.ts` за зразком `updateObject`: знайти обʼєкт, зібрати новий і викликати `commit` з `set('objects', id, object)`.
   - `archived: true` → `archivedAt: Date.now()`, `includeInAnalytics: patch.includeInAnalytics ?? true`.
   - `archived: false` → `archived: false`, `includeInAnalytics: true`.
   - Лише зміна перемикача → `{ archived: true, includeInAnalytics }` без зміни `archivedAt`.
   - Явні булеві значення, ніякого `undefined` у документі (research R1).
-- [ ] T005 [P] [US1] Реалізувати той самий `setObjectArchive` у `src/services/ledger/local-ledger-repository.ts` з тією ж логікою полів, що в T004.
-- [ ] T006 [US1] Додати селектори поруч із `getObjectServices` (у тому самому файлі `src/services/ledger/`, де він оголошений) і експортувати їх з `src/services/ledger/index.ts`:
+- [X] T005 [P] [US1] Реалізувати той самий `setObjectArchive` у `src/services/ledger/local-ledger-repository.ts` з тією ж логікою полів, що в T004.
+- [X] T006 [US1] Додати селектори поруч із `getObjectServices` (у тому самому файлі `src/services/ledger/`, де він оголошений) і експортувати їх з `src/services/ledger/index.ts`:
   - `getActiveObjects(state)` — `!object.archived`;
   - `getArchivedObjects(state)` — `object.archived`, сортування за `archivedAt` спадно;
   - `getAnalyticsObjects(state)` — активні разом з архівованими, у яких `includeInAnalytics !== false`; коментар: «єдине джерело обʼєктів для Аналітики»;
   - `isObjectReadOnly(object)` — `object.archived === true`.
-- [ ] T007 [US1] У `src/app/(tabs)/(objects)/index.tsx`:
+- [X] T007 [US1] У `src/app/(tabs)/(objects)/index.tsx`:
   - список і лічильник адрес у підзаголовку — з `getActiveObjects(state)`;
   - `isEmpty` рахувати за активними;
   - кнопки навбару: коли активних немає, але є архівовані, показувати лише кнопку `archive`; коли немає жодних, як зараз — `[]`;
   - дія `archive` замість `Alert.alert('Архів', …)` виконує `router.push('/archive')`;
   - прибрати невикористаний імпорт `Alert`.
-- [ ] T008 [US1] Створити `src/app/(tabs)/(objects)/archive.tsx`:
+- [X] T008 [US1] Створити `src/app/(tabs)/(objects)/archive.tsx`:
   - `NavigationView` з `type='short'`, `title='Архів'`, `barType='blue'`, `testID='archive.screen'`, `contentInsets={{ bottom: 32 }}`;
   - список `getArchivedObjects(state)`: кожен `ObjectCard` (`testID` `archive.card.{index}`, без `month`/`status`, `services` з `getObjectServices`, `onPress` → `/[objectId]`) у `VStack`;
   - під карткою, у тій самій поверхні, рядок «Враховувати в аналітиці» з `Switch` з `react-native`, як перемикач у `src/app/(tabs)/profile/index.tsx`: `value={object.includeInAnalytics !== false}`, `onValueChange={(v) => ledger.setObjectArchive(object.id, { archived: true, includeInAnalytics: v })}`, `testID` `archive.analytics.{index}`;
   - порожній стан — `EmptyStateView` з іконкою `archive`, текстами з T002, `testID` `archive.empty`, без кнопки дії.
 
   Стек «Обʼєктів» уже ховає таб-бар на вкладених екранах (`docs/patterns/tab-bar.md`); перевірити, що `(objects)/_layout.tsx` не потребує реєстрації маршруту, а якщо Stack перелічує екрани явно — додати `archive`.
-- [ ] T009 [US1] У `src/app/(tabs)/(objects)/[objectId]/index.tsx`:
+- [X] T009 [US1] У `src/app/(tabs)/(objects)/[objectId]/index.tsx`:
   - (a) для активного обʼєкта в `objectButtons` перед `delete` додати `{ id: 'archive', title: 'Архівувати', icon: 'archive', iconBackground: 'surface2', testID: 'object.nav.archive' }`;
   - (b) `confirmArchive`: `Alert.alert('Архівувати адресу?', 'Адреса зникне зі списку, а вся історія збережеться в архіві.', [Скасувати (cancel), Архівувати])`; після підтвердження — `router.back()`, потім `ledger.setObjectArchive(object.id, { archived: true })`;
   - (c) для `isObjectReadOnly(object)` кнопки навбару — `{ id: 'restore', title: 'Повернути з архіву', icon: 'archive', iconBackground: 'greenSoft', testID: 'object.nav.restore' }` і наявна `delete` (з тим самим `confirmDelete`; видалення архівованого обʼєкта лишається, spec «Поза обсягом»). Дія `restore` → `ledger.setObjectArchive(object.id, { archived: false })` без підтвердження, користувач лишається на екрані;
   - (d) для архівованого вимкнути `SwipeableRow` видалення місяця (рендерити `ListRow` без свайпа або передати `enabled={false}`, якщо компонент це підтримує) і не відкривати `MonthPickerSheet`.
-- [ ] T010 [US1] У `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx` для `isObjectReadOnly(object)`:
+- [X] T010 [US1] У `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx` для `isObjectReadOnly(object)`:
   - сховати кнопки навбару (`navigationBarButtons=[]`);
   - рядки послуг не відкривають `reading`, `amount` і `services`;
   - свайп «Скинути» (`SwipeableRow`, рядки 174–186) вимкнено;
   - перехід до розрахунку `bill` лишити доступним.
-- [ ] T011 [P] [US1] Захист глибоких екранів редагування: у `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx`, `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` і `src/app/(tabs)/(objects)/object-form.tsx` (лише режим редагування з `objectId`) при `isObjectReadOnly(object)` одразу виконати `router.back()` в ефекті й рендерити `null`. `src/app/(tabs)/(objects)/[objectId]/services.tsx` для архівованого показує список послуг для перегляду: без кнопок навбару, рядки не відкривають `service-form`, свайп видалення вимкнено.
-- [ ] T012 [US1] Додати сценарій `.claude/skills/ui-check/flows/archive.flow` у форматі наявних flow (див. `.claude/skills/ui-check/SKILL.md`): відкрити `objects.card.0`, натиснути `object.nav.archive`, підтвердити «Архівувати», перевірити, що в списку немає цієї адреси; `objects.nav.archive` → `archive.screen` і `archive.card.0`; відкрити картку → є `object.nav.restore` і `object.nav.delete`, немає `object.nav.addMonth` і `object.nav.archive`; `object.nav.restore` → назад до списку → адреса повернулась. Пройти сценарій в iOS Simulator.
+- [X] T011 [P] [US1] Захист глибоких екранів редагування: у `src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx`, `src/app/(tabs)/(objects)/[objectId]/[month]/amount.tsx`, `src/app/(tabs)/(objects)/[objectId]/service-form.tsx` і `src/app/(tabs)/(objects)/object-form.tsx` (лише режим редагування з `objectId`) при `isObjectReadOnly(object)` одразу виконати `router.back()` в ефекті й рендерити `null`. `src/app/(tabs)/(objects)/[objectId]/services.tsx` для архівованого показує список послуг для перегляду: без кнопок навбару, рядки не відкривають `service-form`, свайп видалення вимкнено.
+- [X] T012 [US1] Додати сценарій `.claude/skills/ui-check/flows/archive.flow` у форматі наявних flow (див. `.claude/skills/ui-check/SKILL.md`): відкрити `objects.card.0`, натиснути `object.nav.archive`, підтвердити «Архівувати», перевірити, що в списку немає цієї адреси; `objects.nav.archive` → `archive.screen` і `archive.card.0`; відкрити картку → є `object.nav.restore` і `object.nav.delete`, немає `object.nav.addMonth` і `object.nav.archive`; `object.nav.restore` → назад до списку → адреса повернулась. Пройти сценарій в iOS Simulator.
 
-- [ ] T013 [US1] Оновити патерни в тому ж коміті, що й код US1 (Constitution IV, «Процес»): `docs/patterns/user-data.md` — поля `archived`/`archivedAt`/`includeInAnalytics`, `setObjectArchive`, архівований обʼєкт лише для перегляду (крім «Повернути з архіву» й «Видалити»), обʼєкти для «Аналітики» — лише через `getAnalyticsObjects`; `docs/patterns/tab-bar.md` — екран «Архів» у стеку «Обʼєктів» без таб-бару; опис цих файлів в індексі `docs/patterns/README.md`, якщо змінився зміст
+- [X] T013 [US1] Оновити патерни в тому ж коміті, що й код US1 (Constitution IV, «Процес»): `docs/patterns/user-data.md` — поля `archived`/`archivedAt`/`includeInAnalytics`, `setObjectArchive`, архівований обʼєкт лише для перегляду (крім «Повернути з архіву» й «Видалити»), обʼєкти для «Аналітики» — лише через `getAnalyticsObjects`; `docs/patterns/tab-bar.md` — екран «Архів» у стеку «Обʼєктів» без таб-бару; опис цих файлів в індексі `docs/patterns/README.md`, якщо змінився зміст
 
 **Checkpoint**: архів працює незалежно від решти історій — MVP.
 

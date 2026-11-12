@@ -17,6 +17,14 @@ export type LedgerObject = {
   apartment?: string;
   building?: string;
   createdAt: number;
+  // В архіві: прихований зі списку «Обʼєкти», лише перегляд. Немає поля — ні
+  archived?: boolean;
+  // Час останнього архівування (ms) — сортування на екрані «Архів».
+  // Після повернення з архіву не видаляється
+  archivedAt?: number;
+  // Чи враховувати архівований обʼєкт в «Аналітиці». Немає поля — так;
+  // для обʼєкта не в архіві не має значення (він враховується завжди)
+  includeInAnalytics?: boolean;
 };
 
 // 'water' — лічильник води з водовідведенням (стоками) та абонплатами
@@ -85,7 +93,17 @@ export type LedgerState = {
   amounts: MonthAmount[];
 };
 
-export type ObjectInput = Omit<LedgerObject, 'id' | 'createdAt'>;
+// Поля форми обʼєкта. Архівних полів тут немає, тож редагування їх не
+// перезаписує — вони змінюються лише через setObjectArchive
+export type ObjectInput = Omit<
+  LedgerObject,
+  'id' | 'createdAt' | 'archived' | 'archivedAt' | 'includeInAnalytics'
+>;
+
+export type ObjectArchivePatch = {
+  archived: boolean;
+  includeInAnalytics?: boolean;
+};
 
 export type ServiceInput = Omit<LedgerService, 'id' | 'createdAt'>;
 
@@ -100,6 +118,9 @@ export interface LedgerRepository {
   updateObject(id: string, input: ObjectInput): Promise<void>;
   // Видаляє обʼєкт разом з послугами, місяцями, показниками, днями й сумами
   deleteObject(id: string): Promise<void>;
+  // Архівує (archived: true), повертає з архіву (archived: false) або змінює
+  // «враховувати в аналітиці» архівованого обʼєкта. Без очікування сервера
+  setObjectArchive(id: string, patch: ObjectArchivePatch): Promise<void>;
   addService(input: ServiceInput): Promise<LedgerService>;
   updateService(id: string, input: ServiceInput): Promise<void>;
   deleteService(id: string): Promise<void>;

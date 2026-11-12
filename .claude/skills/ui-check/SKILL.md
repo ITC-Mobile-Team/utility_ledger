@@ -80,6 +80,7 @@ tap id=reading.value | keys 01234    # набір у поле з фокусом 
 key 42 count=4                       # натиснути клавішу за HID-кодом (42 — Backspace, 40 — Return) 4 рази в полі з фокусом; HID симулятора може зависати — перевіряй результат `check`-ом, `axe key` на ньому не завжди спрацьовує
 swipe id=object.screen up distance=0.6
 scrollto id=object.month.2026-01 within=id=object.screen dir=up max=8
+drag 340,150 60,150              # свайп за координатами в points (ряд великих кнопок навбару: XCUITest не гортає горизонтальний ScrollView RN)
 wait id=outageSettings.screen timeout=10
 gone label~=Завантаження
 see Ваші адреси              # текст на екрані (nosee — відсутній)

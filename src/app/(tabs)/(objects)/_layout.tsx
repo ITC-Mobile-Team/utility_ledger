@@ -6,6 +6,7 @@ export default function ObjectsLayout() {
       <Stack.Screen name='index' />
       <Stack.Screen name='object-form' />
       <Stack.Screen name='object-added' options={{ gestureEnabled: false }} />
+      <Stack.Screen name='archive' />
       <Stack.Screen name='[objectId]/index' />
       <Stack.Screen name='[objectId]/services' />
       <Stack.Screen name='[objectId]/service-form' />
