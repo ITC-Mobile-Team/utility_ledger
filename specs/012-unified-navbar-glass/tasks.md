@@ -73,7 +73,7 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
     - короткий заголовок на 8 pt після кнопки (`afterBack: { marginStart: 8 }`), `flex: 1`, `numberOfLines={1}`, `maxFontSizeMultiplier` 1,5;
     - правий край `accessory` на `HORIZONTAL_PADDING`, проміжок до заголовка 8 pt, заголовок не налазить на праву кнопку.
   - Прибрати константи `BACK_TAP_SIZE`/`BACK_ICON_SIZE` і стиль `pressed`, якщо вони більше не потрібні.
-- [ ] T004 [P] [US1] У `src/app/(tabs)/(outages)/index.tsx` оновити `settingsButton` під нові пропи: `content={{ icon: 'gear' }}`, `tone='colored'` (навбар `power`). `accessibilityLabel='Налаштування графіка'` і `testID='outages.settings'` без змін. FR-001.
+- [ ] T004 [US1] У `src/app/(tabs)/(outages)/index.tsx` оновити `settingsButton` під нові пропи: `content={{ icon: 'gear' }}`, `tone='colored'` (навбар `power`). `accessibilityLabel='Налаштування графіка'` і `testID='outages.settings'` без змін. FR-001.
 - [ ] T005 [US1] У `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx` замінити `NavigationBarChip` «Місяць» у `headerAccessory` на `NavigationBarIconButton`.
   - Пропи: `content={{ icon: 'calendar' }}`, `tone='colored'`, `accessibilityLabel='Змінити місяць'`, `testID='month.change'`; той самий `onPress` (шторка місяців).
   - Умова `!isReadOnly` лишається: для архівного обʼєкта кнопки немає (spec Edge Cases).
@@ -164,6 +164,8 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
 - [ ] T023 [US2] Запустити `navbar.flow`, `theme.flow`, `profile.flow`, `meter.flow`, `archive.flow`, `smoke.flow`. Пройти quickstart, кроки 5–7:
   - без згортання;
   - клавіатура на «Додати показник» і «Ваше імʼя» — поле не ховається під навбаром;
+  - найбільший системний шрифт (Accessibility Inspector / «Більший текст»): скляні кнопки лишаються 44×44, короткий заголовок обрізається трикрапкою й не налазить на «Назад» чи 📅 (spec Edge Cases);
+  - прогорнути довгий контент до кінця на «Обʼєктах», «Місяці» й «Профілі»: останній блок видно повністю над таб-баром / home indicator (spec Edge Cases);
   - висоти рядка 44 на вкладених однакові ±1 pt за скріншотами (SC-002);
   - «потягни, щоб оновити» на «Світлі» — індикатор під навбаром.
   - Виправити знайдене.
@@ -242,7 +244,7 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
 
 ## Dependencies & Execution Order
 
-- **US1** (T001–T007): T001 → T002 → T003. T004, T005 — після T002. T006 — після T005. T007 — останнім.
+- **US1** (T001–T007): T001 → T002 → T003. T004, T005 — після T002 (без [P]: до T002 нові пропи не існують і typecheck падає). T006 — після T005. T007 — останнім.
 - **US2** (T008–T023):
   - T008 → T009 (після T003) → T010 → T011 → T012;
   - T013–T019 від компонентів не залежать: `type='short'` і без `subtitle` вони працюють і зі старим навбаром. T016 — після T005;
@@ -257,7 +259,7 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
 # US1 старт:
 T001 use-liquid-glass.ts   ‖  T013–T015, T017–T019 (екрани → short)  ‖  T024 канвас ui.css
 
-# Після T002:
+# Після T002 (різні файли, можна разом, але лише після T002):
 T004 (outages)/index.tsx   ‖  T005 [month]/index.tsx
 
 # Документація:
