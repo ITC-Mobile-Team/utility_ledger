@@ -47,13 +47,13 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
 
 **Independent Test**: quickstart, кроки 1–4 і 8–10. На iOS 26 «Назад» на екрані адреси і ⚙️ на «Світлі» — круглі скляні кнопки однакового розміру. На Android і з «Зменшити прозорість» — напівпрозорі кола того самого розміру.
 
-- [ ] T001 [P] [US1] Створити `src/hooks/use-liquid-glass.ts`: `useLiquidGlass(): boolean` за contracts/interfaces.md.
+- [X] T001 [P] [US1] Створити `src/hooks/use-liquid-glass.ts`: `useLiquidGlass(): boolean` за contracts/interfaces.md.
   - Повертає `true` лише якщо `Platform.OS === 'ios'`, `isGlassEffectAPIAvailable()`, `isLiquidGlassAvailable()` (обидві з `expo-glass-effect`) і `AccessibilityInfo.isReduceTransparencyEnabled()` дав `false`.
   - Підписатися на `AccessibilityInfo.addEventListener('reduceTransparencyChanged', …)` і відписатися при розмонтуванні.
   - Початкове значення `false`, доки асинхронна перевірка не завершилась.
   - У коментарі пояснити, чому окремо перевіряється «Зменшити прозорість»: `isLiquidGlassAvailable()` може повернути `true` і за увімкненого налаштування (research R1).
   - FR-002, FR-003.
-- [ ] T002 [US1] Переписати `src/components/navigation-bar/navigation-bar-icon-button.tsx` за contracts/interfaces.md.
+- [X] T002 [US1] Переписати `src/components/navigation-bar/navigation-bar-icon-button.tsx` за contracts/interfaces.md.
   - **Пропи**: `content: { icon: AppIcon } | { kind: 'back' }`, `tone: 'colored' | 'plain'`, `accessibilityLabel`, `testID?`, `onPress`.
   - **Розмір**: коло 44×44 (`iconTiles.touch`, `borderRadius: 22`).
   - **Вміст**:
@@ -66,20 +66,20 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
   - **Натискання**: `Pressable` з `@/components` (замок 500 мс, `docs/patterns/buttons.md`). На склі без зміни opacity; у запасному вигляді `pressed` дає `opacity: 0.7`.
   - Ні кнопка, ні її предки не отримують `opacity < 1`: за малої прозорості скло не малюється (research R2).
   - FR-001, FR-002, FR-003, FR-007.
-- [ ] T003 [US1] У `src/components/navigation-bar/navigation-bar-header.tsx` замінити `Pressable` + `Image` кнопки «Назад» на `NavigationBarIconButton`.
+- [X] T003 [US1] У `src/components/navigation-bar/navigation-bar-header.tsx` замінити `Pressable` + `Image` кнопки «Назад» на `NavigationBarIconButton`.
   - Пропи: `content={{ kind: 'back' }}`, `tone={isTransparent ? 'plain' : 'colored'}`, `accessibilityLabel='Назад'`, `testID='navigationBar.back'`, `onPress={() => router.back()}`.
   - Вирівнювання (FR-004, research R4):
     - лівий край кола «Назад» на `HORIZONTAL_PADDING` (`marginStart: HORIZONTAL_PADDING` замість зсуву на половину різниці);
     - короткий заголовок на 8 pt після кнопки (`afterBack: { marginStart: 8 }`), `flex: 1`, `numberOfLines={1}`, `maxFontSizeMultiplier` 1,5;
     - правий край `accessory` на `HORIZONTAL_PADDING`, проміжок до заголовка 8 pt, заголовок не налазить на праву кнопку.
   - Прибрати константи `BACK_TAP_SIZE`/`BACK_ICON_SIZE` і стиль `pressed`, якщо вони більше не потрібні.
-- [ ] T004 [US1] У `src/app/(tabs)/(outages)/index.tsx` оновити `settingsButton` під нові пропи: `content={{ icon: 'gear' }}`, `tone='colored'` (навбар `power`). `accessibilityLabel='Налаштування графіка'` і `testID='outages.settings'` без змін. FR-001.
-- [ ] T005 [US1] У `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx` замінити `NavigationBarChip` «Місяць» у `headerAccessory` на `NavigationBarIconButton`.
+- [X] T004 [US1] У `src/app/(tabs)/(outages)/index.tsx` оновити `settingsButton` під нові пропи: `content={{ icon: 'gear' }}`, `tone='colored'` (навбар `power`). `accessibilityLabel='Налаштування графіка'` і `testID='outages.settings'` без змін. FR-001.
+- [X] T005 [US1] У `src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx` замінити `NavigationBarChip` «Місяць» у `headerAccessory` на `NavigationBarIconButton`.
   - Пропи: `content={{ icon: 'calendar' }}`, `tone='colored'`, `accessibilityLabel='Змінити місяць'`, `testID='month.change'`; той самий `onPress` (шторка місяців).
   - Умова `!isReadOnly` лишається: для архівного обʼєкта кнопки немає (spec Edge Cases).
   - Прибрати імпорт `NavigationBarChip`.
   - FR-005b.
-- [ ] T006 [US1] Видалити `src/components/navigation-bar/navigation-bar-chip.tsx` і його експорт з `src/components/navigation-bar/index.ts`, перевірити `src/components/index.ts`. Інших використань немає (research R4).
+- [X] T006 [US1] Видалити `src/components/navigation-bar/navigation-bar-chip.tsx` і його експорт з `src/components/navigation-bar/index.ts`, перевірити `src/components/index.ts`. Інших використань немає (research R4).
 - [ ] T007 [US1] Перевірити скло в iOS Simulator з iOS 26 (quickstart, кроки 1–4, 8–10; світла й темна тема):
   - вигляд «Назад» на кольоровому і прозорому навбарі (екран суми з рахунку), ⚙️, 📅;
   - відгук `isInteractive` під `Pressable` (ризик research R2). Якщо відгуку немає — зробити `GlassView` коренем кнопки, а `Pressable` покласти всередину на всю площу (`StyleSheet.absoluteFill`) і зафіксувати рішення в `research.md` R2;

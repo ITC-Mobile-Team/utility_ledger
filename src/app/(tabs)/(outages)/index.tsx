@@ -49,7 +49,8 @@ const openSettings = () => router.push('/outage-settings');
 // Шестерня праворуч від заголовка — налаштування графіка
 const settingsButton = (
   <NavigationBarIconButton
-    icon='gear'
+    content={{ icon: 'gear' }}
+    tone='colored'
     accessibilityLabel='Налаштування графіка'
     testID='outages.settings'
     onPress={openSettings}

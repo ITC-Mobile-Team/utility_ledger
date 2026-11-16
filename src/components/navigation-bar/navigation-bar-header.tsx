@@ -1,12 +1,9 @@
 import { type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Pressable } from '../pressable';
-import { Image } from 'expo-image';
 import { useRouter, useRoute } from 'expo-router';
 import { useNavigationState } from 'expo-router/build/react-navigation/index.js';
 import Animated from 'react-native-reanimated';
 import { type AppColor } from '@/constants/colors';
-import { useThemeColor } from '@/hooks/use-theme-colors';
 import { type AppFont, ThemedText } from '../themed-text';
 import { VStack } from '../stack';
 import {
@@ -15,6 +12,7 @@ import {
   HORIZONTAL_PADDING,
   SHORT_TITLE_ROW_HEIGHT,
 } from './constants';
+import { NavigationBarIconButton } from './navigation-bar-icon-button';
 import { type NavigationBarVariant } from './types';
 import { type NavigationBarProgress } from './use-navigation-bar-progress';
 
@@ -36,8 +34,6 @@ type NavigationBarHeaderProps = {
   progress: NavigationBarProgress;
 };
 
-const BACK_TAP_SIZE = 44;
-const BACK_ICON_SIZE = 22;
 // headline 17 pt × 1.5 ще вміщується в рядок 44 pt
 const SHORT_TITLE_MAX_FONT_SCALE = 1.5;
 
@@ -69,9 +65,6 @@ export const NavigationBarHeader = ({
     );
   });
   const subtitleColor: AppColor = isTransparent ? 'muted' : heroSubtitleColor;
-  const backIconTintColor = useThemeColor(
-    isTransparent ? 'coral' : 'onPrimary',
-  );
   const titleColor: AppColor = isTransparent ? 'ink' : 'onPrimary';
   const isFull = type === 'full';
   const hasButtons = Boolean(buttons);
@@ -147,22 +140,17 @@ export const NavigationBarHeader = ({
         style={[styles.row, { top: safeAreaTop }, progress.pinnedRowStyle]}
       >
         {canGoBack && (
-          <Pressable
-            accessibilityRole='button'
-            accessibilityLabel='Назад'
-            testID='navigationBar.back'
-            style={(state) => [state.pressed && styles.pressed, styles.back]}
-            onPress={() => {
-              router.back();
-            }}
-          >
-            <Image
-              source={require('@/assets/images/icons/arrow-back.svg')}
-              contentFit='contain'
-              tintColor={backIconTintColor}
-              style={styles.backIcon}
+          // Скляне коло «Назад» починається на HORIZONTAL_PADDING — на одній
+          // лінії із заголовком і контентом
+          <View style={styles.back}>
+            <NavigationBarIconButton
+              content={{ kind: 'back' }}
+              tone={isTransparent ? 'plain' : 'colored'}
+              accessibilityLabel='Назад'
+              testID='navigationBar.back'
+              onPress={() => router.back()}
             />
-          </Pressable>
+          </View>
         )}
         {isFull ? (
           <Animated.View
@@ -201,7 +189,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   afterBack: {
-    marginStart: 6,
+    marginStart: 8,
   },
   inset: {
     marginStart: 15,
@@ -225,19 +213,7 @@ const styles = StyleSheet.create({
   buttons: {
     paddingTop: BUTTONS_TOP_GAP,
   },
-  // 44x44 tap area; the centred 22px icon starts at HORIZONTAL_PADDING like the title
   back: {
-    width: BACK_TAP_SIZE,
-    height: BACK_TAP_SIZE,
-    marginStart: HORIZONTAL_PADDING - (BACK_TAP_SIZE - BACK_ICON_SIZE) / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backIcon: {
-    width: BACK_ICON_SIZE,
-    height: BACK_ICON_SIZE,
-  },
-  pressed: {
-    opacity: 0.5,
+    marginStart: HORIZONTAL_PADDING,
   },
 });

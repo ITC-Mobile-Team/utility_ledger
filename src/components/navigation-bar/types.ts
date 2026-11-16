@@ -12,7 +12,7 @@ export type ThemedNavigationBarProps = {
   barType?: NavigationBarType;
   title: string;
   subtitle?: string;
-  // Елемент праворуч у рядку з кнопкою «Назад», напр. NavigationBarChip
+  // Скляна кнопка праворуч у рядку з «Назад» (NavigationBarIconButton)
   headerAccessory?: ReactNode;
   // Довільний вміст під великим заголовком і підзаголовком (напр. чипи);
   // згортається разом із ними. Лише для type='full'

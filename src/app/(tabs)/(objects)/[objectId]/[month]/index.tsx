@@ -1,7 +1,7 @@
 import { iconTiles } from '@/constants/icon-sizes';
 import {
   type NavigationBarButtonItem,
-  NavigationBarChip,
+  NavigationBarIconButton,
   NavigationView,
   ThemedText,
   VStack,
@@ -16,9 +16,9 @@ import {
   calculateService,
   formatMoney,
   formatMonthTitle,
+  formatShortAddress,
   formatReading,
   getMeterFormat,
-  formatShortAddress,
   getDaysInMonth,
   getMonthName,
   getObjectMonths,
@@ -232,9 +232,9 @@ export default function MonthServices() {
         subtitle={formatShortAddress(object)}
         headerAccessory={
           !isReadOnly && (
-            <NavigationBarChip
-              title='Місяць'
-              icon='calendar'
+            <NavigationBarIconButton
+              content={{ icon: 'calendar' }}
+              tone='colored'
               accessibilityLabel='Змінити місяць'
               testID='month.change'
               onPress={() => {
