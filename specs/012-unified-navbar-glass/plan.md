@@ -6,78 +6,44 @@
 
 ## Summary
 
-Три зміни в навбарі (`src/components/navigation-bar/`, `src/components/navigation-view.tsx`).
+Кнопки рядка навбару — «Назад», ⚙️ на «Світлі», 📅 на екрані місяця — стають одним компонентом `NavigationBarIconButton`. На iOS 26+ він малює системне рідке скло (`GlassView` з `expo-glass-effect`), деінде — однакову напівпрозору підкладку. Чип «Місяць» замінюється скляною 📅, `NavigationBarChip` видаляється. Поведінка навбару (згортання, розміри, шрифти, поділ на великий заголовок і короткий рядок) не змінюється.
 
-**1. Згортання немає.** Навбар лишається накладкою над скролом, але має фіксовану висоту — ту, з якою відкрився екран. Хук прогресу видаляється. З `NavigationView` прибираються:
-- доводка;
-- розпірка;
-- згортання клавіатурою.
+У тій самій зміні: патерн `navigation-bar-icon-buttons.md` і індекс, правки згадок чипа в інших патернах, канвас (`ui.css` і артборди з «Назад», ⚙️, «Місяць»).
 
-Кути шторки завжди 28.
-
-**2. Одна структура.**
-- Корені вкладок («Обʼєкти», «Світло», «Профіль») — `full`: великий заголовок 28, підзаголовок.
-- Усі інші екрани — `short`: один рядок, скляна «Назад», короткий заголовок 22, необовʼязкова скляна кнопка праворуч, без підзаголовка.
-
-Сім вкладених екранів переходять з `full` на `short`. На екрані місяця чип «Місяць» стає скляною кнопкою 📅.
-
-**3. Скляні кнопки.**
-- `NavigationBarIconButton` малює системне рідке скло (`GlassView` з `expo-glass-effect`) на iOS 26+.
-- Якщо скла немає (Android, iOS < 26, «Зменшити прозорість»), він малює однакову напівпрозору підкладку.
-- «Назад» рендериться тим самим компонентом.
-
-У тій самій зміні оновлюються:
-- канвас: `ui.css` і артборди;
-- патерни `navigation-bar-title.md` і `navigation-bar-buttons.md`, новий `navigation-bar-icon-buttons.md`, індекс;
-- флоу `ui-check`.
-
-Деталі — у [research.md](research.md).
+Перша редакція плану прибирала згортання навбару (research R3, R4, R6 у старій формі) — це скасовано уточненням користувача; див. [research.md](research.md).
 
 ## Technical Context
 
 **Language/Version**: TypeScript ~6.0, React 19.3, React Native 0.88, Expo SDK 58
 
-**Primary Dependencies**: `expo-glass-effect` ~58.0.4 (уже в `package.json`, досі не використовувався), `react-native-reanimated`, `react-native-keyboard-controller`, `expo-router`; нових залежностей немає
+**Primary Dependencies**: `expo-glass-effect` ~58.0.4 (уже в `package.json` і нативному проєкті), `expo-image`, `react-native-reanimated`; нових немає
 
 **Storage**: N/A
 
-**Testing**: `ui-check` (`.claude/skills/ui-check/flows/navbar.flow`, `theme.flow`; iOS Simulator з iOS 26), скріншоти Android-емулятора для запасного вигляду, `npx expo lint`, `npx tsc --noEmit`
+**Testing**: `ui-check` (`navbar.flow` без змін, скріншоти кнопок), iOS Simulator з iOS 26+, `npx expo lint`, `npx tsc --noEmit`
 
-**Target Platform**: iOS (скло на 26+, запасний вигляд нижче) і Android (запасний вигляд)
+**Target Platform**: iOS (скло на 26+) і Android (запасний вигляд)
 
 **Project Type**: mobile-app
 
-**Performance Goals**:
-- скрол без перерахунку розкладки навбару: тепер навбар не анімується зовсім;
-- до 2 `GlassView` на екрані.
+**Performance Goals**: до 2 `GlassView` на екрані
 
-**Constraints**:
-- на `GlassView` і його предках немає opacity < 1;
-- зона тапа 44×44;
-- короткий заголовок обрізається трикрапкою й масштабується не більше ніж у 1,5 раза.
+**Constraints**: без opacity < 1 на склі та його предках (крім згортання великого блоку, що й так ховає ⚙️); зона тапа 44×44
 
-**Scale/Scope**:
-- компоненти: `navigation-view.tsx` і 6 файлів `navigation-bar/` (один видаляється — хук прогресу, ще один — `navigation-bar-chip.tsx`);
-- 1 новий хук;
-- 7 екранів переходять на `short`, 1 екран отримує нову праву кнопку;
-- 3 патерни, 2 флоу, `ui.css` і близько 40 артбордів.
+**Scale/Scope**: 1 новий хук, 1 переписаний компонент, шапка навбару, 2 екрани, 1 видалений компонент, патерни, канвас
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-
 | Принцип | Статус | Як дотримано |
 |---|---|---|
-| I. Expo за документацією версії | ✅ | `GlassView`, `isLiquidGlassAvailable`, `isGlassEffectAPIAvailable` і обмеження opacity звірено з документацією v58 (research R1–R2). Нових залежностей немає: `expo-glass-effect` — це модуль Expo, а не сторонній |
-| II. Expo Router і `src/` | ✅ | Хук `useLiquidGlass` у `src/hooks/`, компоненти в `src/components/navigation-bar/`. Екрани в `src/app/` змінюють лише пропи `NavigationView` |
-| III. CNG | ✅ | `ExpoGlassEffect` уже в нативному проєкті (`Podfile.lock`) і в Expo Go. **Development build не потрібна**, доставка OTA (`eas update`) |
-| IV. Дизайн і патерни | ✅ | Артборди: 05/05b, 08/08b, 09*, 10*, 12*/12b, 13*, 16/16d/16e, 17–19, 20/20s, 21*, 06*, 07, 02, 04 (research R6). Канвас оновлюється окремими задачами. Патерни `navigation-bar-title.md` і `navigation-bar-buttons.md` переписуються, додається `navigation-bar-icon-buttons.md`, оновлюється `README.md` — окрема задача, той самий коміт |
-| V. Українська мова | ✅ | Артефакти українською; підписи «Назад», «Налаштування графіка», «Змінити місяць» |
-| VI. Lint і typecheck | ✅ | Остання задача — `npx expo lint` і `npx tsc --noEmit` |
+| I. Expo за документацією версії | ✅ | `GlassView`, `isLiquidGlassAvailable`, `isGlassEffectAPIAvailable` звірено з документацією v58 (research R1–R2); нових залежностей немає |
+| II. Expo Router і `src/` | ✅ | хук у `src/hooks/`, компонент у `src/components/navigation-bar/` |
+| III. CNG | ✅ | `ExpoGlassEffect` уже в нативному проєкті й Expo Go; **development build не потрібна**, доставка OTA |
+| IV. Дизайн і патерни | ✅ | артборди з «Назад», ⚙️ (20*) і «Місяць» (09*) оновлюються (US2); `navigation-bar-icon-buttons.md` і `README.md` — у тій самій зміні |
+| V. Українська мова | ✅ | підписи «Назад», «Налаштування графіка», «Змінити місяць» |
+| VI. Lint і typecheck | ✅ | остання задача |
 
 Порушень немає.
-
-**Повторна перевірка після Phase 1**: дизайн додав хук `useLiquidGlass` і контракт пропів (contracts/interfaces.md). Нових залежностей і нативних змін немає, нові патерни задокументовано. Гейти пройдено.
 
 ## Project Structure
 
@@ -85,45 +51,27 @@
 
 ```text
 specs/012-unified-navbar-glass/
-├── plan.md
-├── research.md
-├── data-model.md
-├── quickstart.md
-├── contracts/
-│   └── interfaces.md
-└── tasks.md             # /speckit-tasks
+├── plan.md, research.md, data-model.md, quickstart.md
+├── contracts/interfaces.md
+└── tasks.md
 ```
 
 ### Source Code (repository root)
 
 ```text
-src/hooks/use-liquid-glass.ts                          # НОВИЙ: скло доступне && не «Зменшити прозорість»
-src/components/navigation-bar/navigation-bar-icon-button.tsx  # скляна кнопка: GlassView / запасна View; icon | back; tone
-src/components/navigation-bar/navigation-bar-header.tsx       # без анімацій; «Назад» через NavigationBarIconButton; рядок short з accessory праворуч
-src/components/navigation-bar/themed-navigation-bar.tsx       # без scrollY/collapseDistance/isCollapsed; статичні градієнт і кути
-src/components/navigation-bar/navigation-bar-background.tsx   # статичні стилі замість анімованих
-src/components/navigation-bar/use-navigation-bar-progress.ts  # ВИДАЛИТИ
-src/components/navigation-bar/navigation-bar-chip.tsx         # ВИДАЛИТИ (єдине використання — «Місяць»)
-src/components/navigation-bar/types.ts, index.ts, constants.ts # прибрати пропи згортання й експорт чипа
-src/components/navigation-view.tsx                     # без доводки, розпірки, keyboardCollapse
-src/app/(tabs)/(objects)/object-form.tsx               # type='short', без subtitle
-src/app/(tabs)/(objects)/preview.tsx                   # type='short', без subtitle
-src/app/(tabs)/(objects)/[objectId]/service-form.tsx   # type='short', без subtitle
-src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx  # type='short', без subtitle, 📅 NavigationBarIconButton замість чипа
-src/app/(tabs)/(objects)/[objectId]/[month]/reading.tsx # type='short', без subtitle
-src/app/(tabs)/profile/theme.tsx                       # type='short', без subtitle
-src/app/(tabs)/profile/edit-name.tsx                   # type='short', без subtitle
-docs/patterns/navigation-bar-title.md                  # переписати: навбар без згортання, корені full / вкладені short
-docs/patterns/navigation-bar-buttons.md                # кнопки не ховаються під час скролу
-docs/patterns/navigation-bar-icon-buttons.md           # НОВИЙ: скляні кнопки рядка навбару
-docs/patterns/README.md                                # індекс
-.claude/skills/ui-check/flows/navbar.flow              # без згортання; висота до/після скролу
-.claude/skills/ui-check/flows/theme.flow               # без «Оформлення застосунку»
-канвас: project/ui.css, артборди з research R6         # Artifact publish
+src/hooks/use-liquid-glass.ts                                 # НОВИЙ
+src/components/navigation-bar/navigation-bar-icon-button.tsx  # скляна кнопка: content (icon | back), tone
+src/components/navigation-bar/navigation-bar-header.tsx       # «Назад» через NavigationBarIconButton, коло на полі 20 pt
+src/components/navigation-bar/navigation-bar-chip.tsx         # ВИДАЛИТИ
+src/components/navigation-bar/index.ts, types.ts              # експорт чипа й коментар accessory
+src/app/(tabs)/(outages)/index.tsx                            # ⚙️ з новими пропами
+src/app/(tabs)/(objects)/[objectId]/[month]/index.tsx         # 📅 замість чипа
+docs/patterns/navigation-bar-icon-buttons.md, README.md, …    # патерн і згадки
+канвас: project/ui.css, артборди з .back, ⚙️, «Місяць»         # Artifact publish
 ```
 
-**Structure Decision**: мобільний застосунок з одним пакетом. Зміна зосереджена в спільних компонентах навбару; екрани змінюють лише пропи.
+**Structure Decision**: зміна в спільних компонентах навбару; екрани змінюють лише кнопки.
 
 ## Complexity Tracking
 
-Не потрібно: порушень конституції немає.
+Не потрібно.
