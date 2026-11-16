@@ -221,7 +221,7 @@ US1 і US2 обидві змінюють `navigation-bar-header.tsx`, тому �
     - з клавіатурою навбар не змінюється.
   - Робиться в тому самому коміті, що й T008–T012 (конституція IV).
 - [ ] T030 [P] Оновити `docs/patterns/navigation-bar-buttons.md`: кнопки під заголовком завжди видимі й натискаються, не ховаються під час скролу. Прибрати пункт про `p ≥ 0.5` і «ховаються разом із заголовком». Градієнт заходить у ряд на `BUTTONS_GRADIENT_OVERLAP` (статично).
-- [ ] T031 [P] Створити `docs/patterns/navigation-bar-icon-buttons.md` — скляні кнопки рядка навбару:
+- [X] T031 [P] Створити `docs/patterns/navigation-bar-icon-buttons.md` — скляні кнопки рядка навбару:
   - `NavigationBarIconButton` (`content`, `tone`), `useLiquidGlass`;
   - `GlassView` `clear`/`regular` + `isInteractive` + тема застосунку;
   - запасна підкладка на Android, iOS < 26 і з «Зменшити прозорість»;
