@@ -60,16 +60,16 @@ description: "Task list for 012-unified-navbar-glass"
 
 **Independent Test**: quickstart 11.
 
-- [ ] T010 [US2] Прочитати канвас (`Artifact` `read`, `https://claude.ai/artifact/Px8EEBtJf8LRD97UwbGUjj`): `project/ui.css`, артборди з `class="back"`, шестернею ⚙️ і чипом «Місяць». У `project/ui.css` перевести `.back` на скляне коло 44 (`border-radius: 22px`, `backdrop-filter: blur(...)`, на `.hero` — `rgba(255,255,255,.18)` з обвідкою `.5px rgba(255,255,255,.35)`; `.back.dark` на білому — `var(--glass-bg)` і `var(--glass-rim)`; відблиск `inset 0 1px 0 var(--glass-hi)`) без `margin-left: -10px`, і додати клас `.glass-btn` з тим самим виглядом для ⚙️ і 📅. FR-008
-- [ ] T011 [US2] Артборди «Світла» (20, 20a–20e, 20l, 20s): шестерню перевести з `.chip` на `.glass-btn`. Артборди місяця (09, 09b, 09d–09i): чип «Місяць» → `.glass-btn` з 📅 (`aria-label="Змінити місяць"`) праворуч у `.hero-row`. FR-005, FR-008
-- [ ] T012 [US2] Опублікувати змінені файли канваса (`Artifact` publish з `url` канваса, лише змінені `files`) і перечитати 09, 10, 20 для звірки з екранами. SC-003
+- [X] T010 [US2] Прочитати канвас (`Artifact` `read`, `https://claude.ai/artifact/Px8EEBtJf8LRD97UwbGUjj`): `project/ui.css`, артборди з `class="back"`, шестернею ⚙️ і чипом «Місяць». У `project/ui.css` перевести `.back` на скляне коло 44 (`border-radius: 22px`, `backdrop-filter: blur(...)`, на `.hero` — `rgba(255,255,255,.18)` з обвідкою `.5px rgba(255,255,255,.35)`; `.back.dark` на білому — `var(--glass-bg)` і `var(--glass-rim)`; відблиск `inset 0 1px 0 var(--glass-hi)`) без `margin-left: -10px`, і додати клас `.glass-btn` з тим самим виглядом для ⚙️ і 📅. FR-008
+- [X] T011 [US2] Артборди «Світла» (20, 20a–20e, 20l, 20s): шестерню перевести з `.chip` на `.glass-btn`. Артборди місяця (09, 09b, 09d–09i): чип «Місяць» → `.glass-btn` з 📅 (`aria-label="Змінити місяць"`) праворуч у `.hero-row`. FR-005, FR-008
+- [X] T012 [US2] Опублікувати змінені файли канваса (`Artifact` publish з `url` канваса, лише змінені `files`) і перечитати 09, 10, 20 для звірки з екранами. SC-003
 
 ---
 
 ## Phase 5: Polish
 
-- [ ] T013 У `specs/012-unified-navbar-glass/spec.md` — **Status**: Implemented і підсумок українською
-- [ ] T014 `npx expo lint` і `npx tsc --noEmit` з кореня проєкту без помилок (конституція VI)
+- [X] T013 У `specs/012-unified-navbar-glass/spec.md` — **Status**: Implemented і підсумок українською
+- [X] T014 `npx expo lint` і `npx tsc --noEmit` з кореня проєкту без помилок (конституція VI)
 
 ## Dependencies
 
