@@ -1,6 +1,6 @@
 # Research: Вкладка «Аналітика»
 
-Нових залежностей і нативних модулів фіча не потребує: усе малюється наявними компонентами (`NavigationView`, `BottomSheet`, `Segment`, `ListCard`/`ListRow`, `AppImage`/`EmojiGlyph`, `SkeletonBone`) і звичайними `View`. Нових API Expo немає; стек усередині вкладки `NativeTabs` уже використовує «Профіль» (`(tabs)/profile/_layout.tsx`), тож той самий підхід звірено з робочим кодом SDK 58.
+Нових залежностей і нативних модулів фіча не потребує: усе малюється наявними компонентами (`NavigationView`, `BottomSheet`, `Segment`, `ListCard`/`ListRow`, `AppImage`/`EmojiGlyph`, `SkeletonBone`) і звичайними `View`. Нових API Expo немає; стек усередині вкладки `NativeTabs` уже використовує «Профіль» (`(tabs)/profile/_layout.tsx`), тож підхід уже працює на SDK 58; перед кодом його звіряють з документацією v58 (expo-router: Stack, native tabs, typed routes, `useLocalSearchParams`) у T001, висновок дописується в R1.
 
 ## R1. Маршрути: вкладка стає стеком
 

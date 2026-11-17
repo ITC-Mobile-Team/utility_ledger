@@ -34,7 +34,7 @@
 
 | Принцип | Статус | Як дотримано |
 |---|---|---|
-| I. Expo за документацією версії | ✅ | нових API й залежностей немає; стек у вкладці `NativeTabs` — як у «Профілі» на SDK 58 (research R1) |
+| I. Expo за документацією версії | ✅ | нових залежностей немає; використання expo-router (Stack у вкладці `NativeTabs`, typed routes, `useLocalSearchParams`) звіряється з документацією v58 першим кроком T001 до коду, висновок — у research R1 |
 | II. Expo Router і `src/` | ✅ | маршрути в `src/app/(tabs)/analytics/`; логіка в `src/services/analytics/`, стан у `src/providers/`, компоненти в `src/views/analytics/` |
 | III. CNG | ✅ | нативних змін немає; **development build не потрібна**, доставка OTA |
 | IV. Дизайн і патерни | ✅ | артборди 14, 14a–14d, 15; нові 14e (порожній) і 14s (завантаження) та плитка ↗️ на 14 — у канвасі; патерни `navigation-bar-title`, `navigation-bar-icon-buttons`, `tab-bar`, `pickers`, `empty-state-pulse`, `user-data`, `icons`, `buttons`, `test-ids`; `pickers.md`, `user-data.md` і `README.md` оновлюються в тій самій зміні |
