@@ -57,7 +57,7 @@
 
 ## R10. Кольори послуг у смузі
 
-- **Decision**: колір = насичений відповідник розділу іконки: `amberSoft → amber`, `waterSoft → water`, `gasSoft → gas`, `greenSoft → green`, `blueSoft → blue`, невідома іконка — `purple`. Якщо колір уже зайнятий іншою послугою — наступний вільний з ряду `amber, water, gas, green, blue, purple, coral`. Функція `getServiceAccent(icon)` поруч із `getServiceIconBackground` у `src/constants/service-icons.ts`.
+- **Decision**: колір = насичений відповідник розділу іконки: `amberSoft → amber`, `waterSoft → water`, `gasSoft → gas`, `greenSoft → green`, `blueSoft → blue`, невідома іконка — `purple`. Схожі кольори — одна родина (`blue`/`water`; `amber`/`gas`/`coral`): якщо родина вже зайнята послугою з більшою часткою, береться вільний колір з ряду `amber, water, gas, green, purple, blue, coral` — спершу з родини, якої не хоче жодна інша послуга (T038: на «Усіх адресах» Інтернет і Вода зливались в один синій). Функція `getServiceAccent(icon)` поруч із `getServiceIconBackground` у `src/constants/service-icons.ts`.
 
 ## R11. Плитка ↗️ (FR-016)
 
