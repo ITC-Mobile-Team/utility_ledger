@@ -11,6 +11,7 @@ export const appIcons = {
   document: '📄',
   receipt: '🧾',
   arrowUpRight: '↗️',
+  chart: '📊',
   archive: '🗄️',
   calendar: '📅',
   gauge: '🧮',

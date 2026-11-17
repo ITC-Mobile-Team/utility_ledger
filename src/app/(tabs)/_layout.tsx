@@ -8,11 +8,12 @@ export default function TabsLayout() {
   useOpenStartTab();
   const segments = useSegments();
   // Таб-бар видно лише на кореневих екранах табів: усе, що відкрито
-  // всередині «Обʼєктів», «Світла» і «Профілю», показується без нього
+  // всередині «Обʼєктів», «Світла», «Аналітики» і «Профілю», показується без нього
   const isTabBarHidden =
     (segments[1] === '(objects)' ||
       segments[1] === '(outages)' ||
-      segments[1] === 'profile') &&
+      segments[1] === 'profile' ||
+      segments[1] === 'analytics') &&
     segments.length > 2;
   // На iOS таб-бар сам підміняє contentInsetAdjustmentBehavior першого
   // скролу на 'automatic' і додає відступ під safe area. NavigationView лежить
@@ -71,7 +72,11 @@ export default function TabsLayout() {
           selectedColor={outagesColor}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name='analytics' indicatorColor={analyticsIndicator}>
+      <NativeTabs.Trigger
+        name='analytics'
+        disableAutomaticContentInsets={ownsInsets}
+        indicatorColor={analyticsIndicator}
+      >
         <NativeTabs.Trigger.Label selectedStyle={{ color: analyticsColor }}>
           Аналітика
         </NativeTabs.Trigger.Label>

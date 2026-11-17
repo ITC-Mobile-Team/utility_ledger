@@ -1,0 +1,47 @@
+# Вкладка «Аналітика» (specs/013-analytics-tab, quickstart 1, 5, 6, 8).
+# Потрібен увійдений користувач хоча б з однією адресою, у якої є місяці поточного року.
+launch
+tap role=tab&label=Аналітика
+wait id=analytics.total timeout=20
+check id=analytics.period.start "label~=1 січ"
+
+# Календар: «Скасувати» не змінює період
+tap id=analytics.period.start
+wait id=analytics.sheet.date.done
+see "Початкова дата"
+tap id=analytics.sheet.date.prev
+tap id=analytics.sheet.date.cancel
+gone id=analytics.sheet.date.done
+check id=analytics.period.start "label~=1 січ"
+
+# Календар: вибір дня і «Готово»
+tap id=analytics.period.start
+wait id=analytics.sheet.date.day.15
+tap id=analytics.sheet.date.day.15
+tap id=analytics.sheet.date.done
+gone id=analytics.sheet.date.done
+check id=analytics.period.start label~=15
+
+# Шторка адреси
+tap id=analytics.address
+wait id=analytics.sheet.address.0
+see Адреса
+tap id=analytics.sheet.address.0
+gone id=analytics.sheet.address.0
+
+# Перемикач і деталі з рядка місяця — одразу «Місяці»
+tap id=analytics.tabs.months
+# Рядки можуть бути під скляним таб-баром: догорнути
+swipe id=analytics.screen up distance=0.6
+wait id=analytics.month.0
+tap id=analytics.month.0
+wait id=analytics.details.screen
+see "від періоду"
+tap label=Назад
+wait id=analytics.total
+
+# Деталі з картки — «Послуги»
+tap id=analytics.total
+wait id=analytics.details.screen
+tap label=Назад
+wait id=analytics.total

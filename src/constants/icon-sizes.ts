@@ -42,6 +42,9 @@ export const iconTones: Partial<Record<AppIcon, AppColor>> = {
   trash: 'coralSoft',
   plus: 'plusSoft',
   minus: 'glyphLight',
+  // Плитка ↗️ у картці «Витрати»: синя гама пасує до синьо-сірого гліфа
+  arrowUpRight: 'blueSoft',
+  chart: 'greenSoft',
 };
 export const defaultIconTone: AppColor = 'blueSoft';
 export const getIconTone = (icon: AppIcon): AppColor =>
