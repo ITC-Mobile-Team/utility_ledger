@@ -105,16 +105,13 @@ export function DateRangeSheet({
 
       <View>
         <View style={styles.grid}>
+          {/* Підпис у клітинці тієї самої ширини, що день: центр над колом */}
           {WEEKDAYS.map((day) => (
-            <ThemedText
-              key={day}
-              color='muted'
-              font='labelStrong'
-              align='center'
-              style={styles.weekday}
-            >
-              {day}
-            </ThemedText>
+            <View key={day} style={styles.weekday}>
+              <ThemedText color='muted' font='labelStrong' align='center'>
+                {day}
+              </ThemedText>
+            </View>
           ))}
         </View>
         <View style={styles.grid}>
@@ -239,6 +236,7 @@ const styles = StyleSheet.create({
   },
   weekday: {
     width: DAY_WIDTH,
+    alignItems: 'center',
     paddingBottom: 6,
   },
   cell: {
