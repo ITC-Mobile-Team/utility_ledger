@@ -1,0 +1,65 @@
+# «Світло» з svitlo-proxy (специфікація 014): шторка міст (Херсон — «Незабаром»), Київ — підпис
+# «Дані: svitlo.live» і 60 черг, Львів — день без даних «не опубліковано» без помилки і «перевірено о»,
+# Полтава — POE без підпису і з «оновлено о».
+# Потрібен вхід. Сценарій ЗБЕРІГАЄ в акаунт місто Львів, а в кінці повертає Полтаву з чергами 1.1 і 6.2 —
+# якщо в акаунті були інші місто чи черги, відновіть їх після прогону.
+# Запуск з кореня проєкту: .claude/skills/ui-check/scripts/ui run .claude/skills/ui-check/flows/outages.flow
+launch
+open /outage-settings
+wait id=outageSettings.screen timeout=15
+
+# Шторка міст: у «Доступно» Київ і Біла Церква, у «Незабаром» лише Херсон
+tap id=outageSettings.city
+see label~=Київ, ДТЕК Київські електромережі
+drag 200,700 200,200
+sleep 0.8
+drag 200,700 200,200
+sleep 0.8
+see label~=Біла Церква, ДТЕК
+see НЕЗАБАРОМ
+see label~=Херсон, Постачальник ще не доданий
+drag 200,250 200,800
+sleep 0.8
+drag 200,250 200,800
+sleep 0.8
+
+# Київ: підпис про джерело і 60 черг
+tap label~=Київ, ДТЕК Київські електромережі
+wait id=outageSettings.dataSource
+check id=outageSettings.dataSource "label~=svitlo.live, не офіційне джерело"
+see id=outageSettings.queue.1.1
+see id=outageSettings.queue.30.1
+drag 200,700 200,200
+sleep 0.8
+drag 200,700 200,200
+sleep 0.8
+see id=outageSettings.queue.60.1
+
+# Львів: даних на обидва дні немає → «не опубліковано», не помилка
+drag 200,250 200,800
+sleep 0.8
+drag 200,250 200,800
+sleep 0.8
+drag 200,250 200,800
+sleep 0.8
+tap id=outageSettings.city
+tap label~=Львів, Львівобленерго
+wait id=outageSettings.dataSource
+tap id=outageSettings.queue.1.1
+tap id=outageSettings.save
+wait id=outages.day.today timeout=15
+see Графік на сьогодні не опубліковано timeout=15
+nosee Спробувати ще раз
+see text~=Львівобленерго · перевірено о timeout=10
+
+# Повернути Полтаву з чергами 1.1 і 6.2: POE, без підпису, «оновлено о»
+open /outage-settings
+wait id=outageSettings.screen
+tap id=outageSettings.city
+tap label~=Полтава, Полтаваобленерго
+gone id=outageSettings.dataSource
+tap id=outageSettings.queue.1.1
+tap id=outageSettings.queue.6.2
+tap id=outageSettings.save
+wait id=outages.day.today timeout=15
+see text~=Полтаваобленерго · оновлено о timeout=15
