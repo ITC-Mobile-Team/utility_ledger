@@ -72,6 +72,13 @@ export function formatTime(minutes: number) {
   return `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
 }
 
+// ISO-момент → «19:35» у поясі постачальника; undefined для невалідної дати
+export function formatZonedTime(iso: string, timeZone: string) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return formatTime(getZonedNow(timeZone, date).minutes);
+}
+
 // 90 → «1 год 30 хв»
 export function formatDuration(minutes: number) {
   const hours = Math.floor(minutes / 60);

@@ -215,6 +215,17 @@ export default function OutageSettingsScreen() {
                 )}
               </ListRow>
             </ListCard>
+            {provider?.dataSource && (
+              <ThemedText
+                font='footnote'
+                color='muted'
+                style={styles.help}
+                testID='outageSettings.dataSource'
+              >
+                Дані: {provider.dataSource.name}, не офіційне джерело — звіряйте
+                з сайтом обленерго
+              </ThemedText>
+            )}
           </VStack>
 
           {city && !provider && (

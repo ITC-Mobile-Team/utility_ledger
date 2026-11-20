@@ -1,6 +1,8 @@
 import {
   ensureNotificationPermission,
+  type FetchScheduleOptions,
   getProviderForCity,
+  SCHEDULE_TTL_MS,
   getZonedNow,
   normalizeNotificationSettings,
   showNotificationPermissionAlert,
@@ -88,10 +90,9 @@ export function useOutageSettings() {
   return useSyncExternalStore(repository.subscribe, repository.getSnapshot);
 }
 
-// Скільки графік з кешу вважається свіжим. Схема: запит → кеш → протягом TTL
-// показуємо кеш без запитів. Повторне відкриття екрана або повернення в
-// застосунок після TTL, як і pull-to-refresh, запускають ланцюг знову
-export const SCHEDULE_TTL_MS = 2 * 60 * 1000;
+// TTL кешу графіка — у src/services/outages/types.ts, щоб ним користувались
+// і постачальники
+export { SCHEDULE_TTL_MS };
 
 const isFresh = (schedule: OutageSchedule | undefined) =>
   Boolean(schedule) &&
@@ -122,33 +123,36 @@ export function useOutageSchedule(
   const isCacheRead = useRef(false);
   const controller = useRef<AbortController | null>(null);
 
-  const fetchSchedule = useCallback(async () => {
-    if (!provider) return;
-    controller.current?.abort();
-    const current = new AbortController();
-    controller.current = current;
-    try {
-      const next = await provider.fetchSchedule(current.signal);
-      if (current.signal.aborted) return;
-      latest.current = next;
-      setSchedule(next);
-      setError(undefined);
-      await repository.cacheSchedule(next);
-      // Попередження ставляться за найсвіжішим графіком
-      void syncOutageNotifications(repository.getSnapshot(), next).catch(
-        () => {},
-      );
-    } catch (e) {
-      if (current.signal.aborted) return;
-      setError(e instanceof Error ? e : new Error(String(e)));
-    } finally {
-      if (controller.current === current) controller.current = null;
-      if (!current.signal.aborted) {
-        setLoading(false);
-        setRefreshing(false);
+  const fetchSchedule = useCallback(
+    async (options?: FetchScheduleOptions) => {
+      if (!provider) return;
+      controller.current?.abort();
+      const current = new AbortController();
+      controller.current = current;
+      try {
+        const next = await provider.fetchSchedule(current.signal, options);
+        if (current.signal.aborted) return;
+        latest.current = next;
+        setSchedule(next);
+        setError(undefined);
+        await repository.cacheSchedule(next);
+        // Попередження ставляться за найсвіжішим графіком
+        void syncOutageNotifications(repository.getSnapshot(), next).catch(
+          () => {},
+        );
+      } catch (e) {
+        if (current.signal.aborted) return;
+        setError(e instanceof Error ? e : new Error(String(e)));
+      } finally {
+        if (controller.current === current) controller.current = null;
+        if (!current.signal.aborted) {
+          setLoading(false);
+          setRefreshing(false);
+        }
       }
-    }
-  }, [provider, repository]);
+    },
+    [provider, repository],
+  );
 
   // Запит лише коли кеш застарів і запит ще не йде
   const refreshIfStale = useCallback(() => {
@@ -188,10 +192,11 @@ export function useOutageSchedule(
     isLoading: isLoading && !schedule,
     isRefreshing,
     error,
-    // pull-to-refresh іде в мережу незалежно від TTL
+    // pull-to-refresh і «Спробувати ще раз» ідуть у мережу незалежно від TTL,
+    // в обхід памʼяті постачальника
     refresh: () => {
       setRefreshing(true);
-      void fetchSchedule();
+      void fetchSchedule({ force: true });
     },
   };
 }

@@ -26,6 +26,16 @@ export type OutageSchedule = {
   fetchedAt: string;
 };
 
+// Скільки отриманий графік вважається свіжим. Схема: запит → кеш → протягом
+// TTL показуємо кеш без запитів. Повторне відкриття екрана або повернення в
+// застосунок після TTL, як і pull-to-refresh, запускають ланцюг знову
+export const SCHEDULE_TTL_MS = 2 * 60 * 1000;
+
+export type FetchScheduleOptions = {
+  // pull-to-refresh: обійти памʼять постачальника й піти в мережу
+  force?: boolean;
+};
+
 // Постачальник графіків (обленерго). Щоб підключити нове місто, досить
 // реалізувати цей інтерфейс і додати постачальника в registry.ts
 export type OutageProvider = {
@@ -38,7 +48,13 @@ export type OutageProvider = {
   timeZone: string;
   // Сторінка, де можна дізнатися свою чергу за адресою
   lookupUrl?: string;
-  fetchSchedule(signal?: AbortSignal): Promise<OutageSchedule>;
+  // Неофіційний посередник, звідки беруться дані; вмикає підпис на екрані
+  // налаштувань
+  dataSource?: { name: string; url: string };
+  fetchSchedule(
+    signal?: AbortSignal,
+    options?: FetchScheduleOptions,
+  ): Promise<OutageSchedule>;
 };
 
 export type QueueSettings = {

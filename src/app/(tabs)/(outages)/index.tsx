@@ -14,6 +14,7 @@ import {
 import {
   addDays,
   findDay,
+  formatZonedTime,
   formatDuration,
   formatShortDate,
   getOffMinutes,
@@ -163,14 +164,19 @@ function ScheduleScreen({
     ? selectedQueue
     : firstQueue;
 
-  // POE пише «4 листопада 2026 19:35» — у навбарі досить часу
+  // POE пише «4 листопада 2026 19:35» — у навбарі досить часу. svitlo-proxy
+  // часу зміни графіка не дає — тоді показуємо, коли ми його перевірили
   const updatedTime = schedule?.updatedLabel?.match(/\d{1,2}:\d{2}$/)?.[0];
+  const checkedTime =
+    schedule && formatZonedTime(schedule.fetchedAt, provider.timeZone);
   const updated =
     isLoading || isRefreshing
       ? ' · оновлюємо…'
       : updatedTime
         ? ` · оновлено о ${updatedTime}`
-        : '';
+        : checkedTime
+          ? ` · перевірено о ${checkedTime}`
+          : '';
 
   return (
     <NavigationView
