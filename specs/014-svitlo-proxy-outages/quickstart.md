@@ -2,7 +2,7 @@
 
 ## Передумови
 
-- Dev server: `bunx expo start` (або `npx expo start`), iOS Simulator / Android-емулятор з наявною development build — нова не потрібна.
+- Dev server: `npx expo start`, iOS Simulator / Android-емулятор з наявною development build — нова не потрібна.
 - Акаунт з будь-яким обʼєктом; інтернет.
 
 ## 1. Розбір відповіді (без UI)
