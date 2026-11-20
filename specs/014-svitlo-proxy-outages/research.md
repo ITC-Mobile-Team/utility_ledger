@@ -59,7 +59,7 @@ Pull-to-refresh мусить іти в мережу (патерн `outage-provid
 | Хмельницький | `hmelnitska-oblast` | Хмельницькобленерго | https://hoe.com.ua/page/pogodinni-vidkljuchennja | 1.1…6.2 |
 | Рівне | `rivnenska-oblast` | Рівнеобленерго | https://www.roe.vsei.ua/disconnections | 1.1…6.2 |
 | Луцьк | `volinska-oblast` | Волиньобленерго | https://energy.volyn.ua/spozhyvacham/perervy-u-elektropostachanni/hrafik-vidkliuchen/ | 1.1…6.2 |
-| Тернопіль | `ternopilska-oblast` | Тернопільобленерго | https://www.toe.com.ua/ (з curl не відповів — звірити в браузері) | 1.1…6.2 |
+| Тернопіль | `ternopilska-oblast` | Тернопільобленерго | https://www.toe.com.ua/ (за Cloudflare — у браузері користувач проходить перевірку сам, посилання лишаємо) | 1.1…6.2 |
 | Івано-Франківськ | `ivano-frankivska-oblast` | Прикарпаттяобленерго | https://oe.if.ua/uk | 1.1…6.2 |
 | Ужгород | `zakarpatska-oblast` | Закарпаттяобленерго | https://zakarpat.energy/customers/break-in-electricity-supply/schedule/ | 1.1…6.2 |
 | Чернівці | `chernivetska-oblast` | Чернівціобленерго | https://oblenergo.cv.ua/shutdowns/ | 1…12 |
